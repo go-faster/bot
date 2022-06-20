@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: faster
+  name: bot
+  labels:
+    app: bot
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8090'
+    spec:
+      volumes:
+        - name: cache
+          emptyDir: {}
+      containers:
+        - name: bot
+          image: ghcr.io/go-faster/bot:main
+          resources:
+            requests:
+              cpu: 500m
+              memory: 256M
+            limits:
+              cpu: "2"
+              memory: 512M
+          env:
+            - name: HOME
+              value: /cache
+            - name: HTTP_ADDR
+              value: 0.0.0.0:8080
+            - name: METRICS_ADDR
+              value: 0.0.0.0:8090
+            - name: TG_NOTIFY_GROUP
+              value: go_faster
+            - name: TG_DEPLOY_NOTIFY_GROUP
+              value: gotd_test
+            - name: BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: BOT_TOKEN
+            - name: APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: APP_ID
+            - name: APP_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: APP_HASH
+            - name: GITHUB_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: GITHUB_PRIVATE_KEY
+            - name: GITHUB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: GITHUB_SECRET
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: GITHUB_APP_ID
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: GITHUB_CLIENT_ID
+          volumeMounts:
+            - mountPath: /cache
+              name: cache
