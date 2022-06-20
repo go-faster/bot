@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/bradleyfalzon/ghinstallation v1.1.1
-	github.com/brpaz/echozap v1.1.2
+	github.com/brpaz/echozap v1.1.3
 	github.com/cockroachdb/pebble v0.0.0-20211125005712-9791c0f4c052
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
