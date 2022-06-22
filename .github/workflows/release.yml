@@ -110,5 +110,5 @@ jobs:
 
       - name: Deploy
         run: |
-          ~/kubectl apply -f _deploy/deployment.release.yml
-          ~/kubectl -n gotd rollout status deployment/bot
+          ~/kubectl apply -f .k8s/deployment.release.yml
+          ~/kubectl -n faster rollout status deployment/bot
