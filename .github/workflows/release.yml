@@ -105,8 +105,8 @@ jobs:
 
       - name: Setup kubeconfig
         env:
-          KUBECONFIG_GPG_PASS: ${{ secrets.KUBECONFIG_GPG_PASS }}
-        run: ./_deploy/kubeconfig.sh
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: .k8s/kubeconfig.sh
 
       - name: Deploy
         run: |

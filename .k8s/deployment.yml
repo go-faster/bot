@@ -41,7 +41,7 @@ spec:
             - name: METRICS_ADDR
               value: 0.0.0.0:8090
             - name: TG_NOTIFY_GROUP
-              value: go_faster
+              value: gotd_ru
             - name: TG_DEPLOY_NOTIFY_GROUP
               value: gotd_test
             - name: BOT_TOKEN
