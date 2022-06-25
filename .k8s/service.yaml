@@ -6,11 +6,17 @@ metadata:
   name: bot
   labels:
     app: bot
+    prometheus: "true"
 spec:
   ports:
     - port: 80
       protocol: TCP
       targetPort: 8080
+      name: http
+    - port: 8080
+      protocol: TCP
+      targetPort: 8090
+      name: metrics
   selector:
     app: bot
   sessionAffinity: None
@@ -36,4 +42,4 @@ spec:
           service:
             name: bot
             port:
-              number: 80
+              name: http
