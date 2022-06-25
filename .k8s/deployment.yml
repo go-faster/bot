@@ -40,6 +40,8 @@ spec:
               value: 0.0.0.0:8080
             - name: METRICS_ADDR
               value: 0.0.0.0:8090
+            - name: CLICKHOUSE_ADDR
+              value: db.mcs.local:8123
             - name: TG_NOTIFY_GROUP
               value: go_faster_news
             - name: TG_DEPLOY_NOTIFY_GROUP
