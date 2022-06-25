@@ -293,7 +293,7 @@ func (b *App) Run(ctx context.Context) error {
 				)
 				for _, c := range info.Settings {
 					switch c.Key {
-					case "vcs.date":
+					case "vcs.time":
 						at, err = time.Parse(time.RFC3339, c.Value)
 						if err != nil {
 							return errors.Wrap(err, "parse time")
