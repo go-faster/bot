@@ -20,12 +20,20 @@ func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 		return errors.Wrap(err, "peer")
 	}
 
+	var options []styling.StyledTextOption
 	repo := e.GetRepo()
-	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx,
+	sender := e.GetSender()
+	options = append(options, styling.Plain("New star"),
 		styling.Plain("New star: "),
 		styling.TextURL(repo.GetFullName(), repo.GetHTMLURL()),
 		styling.Plain(fmt.Sprintf(" %d ⭐", repo.GetStargazersCount())),
-	); err != nil {
+		styling.Plain("by "),
+	)
+	options = append(options, styling.TextURL(sender.GetLogin(), sender.GetHTMLURL()))
+	if name := sender.GetName(); name != "" {
+		options = append(options, styling.Plain(fmt.Sprintf(" (%s)", name)))
+	}
+	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx, options...); err != nil {
 		return errors.Wrap(err, "send")
 	}
 	return nil
