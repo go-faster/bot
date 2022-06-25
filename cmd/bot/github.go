@@ -8,7 +8,7 @@ import (
 
 	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
 )
 
 func setupGithub(appID string, httpTransport http.RoundTripper) (*github.Client, error) {

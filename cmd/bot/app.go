@@ -14,7 +14,7 @@ import (
 	"github.com/brpaz/echozap"
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

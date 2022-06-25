@@ -8,7 +8,7 @@ import (
 
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 

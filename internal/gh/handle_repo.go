@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/styling"

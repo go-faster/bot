@@ -7,7 +7,7 @@ import (
 	"github.com/cockroachdb/pebble"
 	"github.com/cockroachdb/pebble/vfs"
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/metric/nonrecording"
 	"go.uber.org/zap/zaptest"

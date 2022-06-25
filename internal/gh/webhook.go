@@ -6,7 +6,10 @@ import (
 	"net/http"
 
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v45/github"
+	"github.com/gotd/td/telegram/message"
+	"github.com/gotd/td/telegram/message/peer"
+	"github.com/gotd/td/tg"
 	"github.com/labstack/echo/v4"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
@@ -14,11 +17,6 @@ import (
 	"go.opentelemetry.io/otel/metric/instrument/syncint64"
 	"go.opentelemetry.io/otel/metric/unit"
 	"go.uber.org/zap"
-
-	"github.com/gotd/td/telegram/message/peer"
-
-	"github.com/gotd/td/telegram/message"
-	"github.com/gotd/td/tg"
 
 	"github.com/go-faster/bot/internal/storage"
 )

@@ -8,7 +8,7 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
-	github.com/google/go-github/v42 v42.0.0
+	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.12.0
 	github.com/gotd/td v0.60.0
 	github.com/labstack/echo/v4 v4.7.2
@@ -16,6 +16,7 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/stretchr/testify v1.7.5
 	go.etcd.io/bbolt v1.3.6
+	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.32.0
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.30.0
@@ -70,7 +71,6 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.32.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
