@@ -296,8 +296,8 @@ func (b *App) Run(ctx context.Context) error {
 				}
 				var options []message.StyledTextOption
 				options = append(options,
-					styling.Plain("📦 Started "),
-					styling.Italic(fmt.Sprintf("Started (%s, %s, layer: %d) ",
+					styling.Plain("🚀 Started "),
+					styling.Italic(fmt.Sprintf("(%s, %s, layer: %d) ",
 						info.GoVersion, metrics.GetVersion(), tg.Layer),
 					),
 					styling.Blockquote(commit),
