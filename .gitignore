@@ -5,3 +5,5 @@ cmd/bot/bot
 _deploy/kubeconfig
 
 secret.yaml
+
+kubectl
