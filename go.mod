@@ -12,7 +12,6 @@ require (
 	github.com/gotd/contrib v0.12.0
 	github.com/gotd/td v0.60.0
 	github.com/labstack/echo/v4 v4.7.2
-	github.com/mergestat/timediff v0.0.3
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
 	github.com/stretchr/testify v1.7.5
