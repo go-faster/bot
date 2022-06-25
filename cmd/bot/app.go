@@ -300,7 +300,7 @@ func (b *App) Run(ctx context.Context) error {
 					styling.Italic(fmt.Sprintf("(%s, %s, layer: %d) ",
 						info.GoVersion, metrics.GetVersion(), tg.Layer),
 					),
-					styling.Blockquote(commit),
+					styling.Code(commit),
 				)
 				if _, err := b.sender.To(p).StyledText(ctx, options...); err != nil {
 					return errors.Wrap(err, "send")
