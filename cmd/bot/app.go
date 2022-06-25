@@ -255,6 +255,8 @@ func (b *App) Run(ctx context.Context) error {
 			Compression:    ch.CompressionZSTD,
 			TracerProvider: b.m.TracerProvider(),
 			MeterProvider:  b.m.MeterProvider(),
+
+			OpenTelemetryInstrumentation: true,
 		})
 		if err != nil {
 			return err
