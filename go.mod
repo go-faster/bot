@@ -16,6 +16,13 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/stretchr/testify v1.7.5
 	go.etcd.io/bbolt v1.3.6
+	go.opentelemetry.io/otel v1.7.0
+	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
+	go.opentelemetry.io/otel/exporters/prometheus v0.30.0
+	go.opentelemetry.io/otel/metric v0.30.0
+	go.opentelemetry.io/otel/sdk v1.7.0
+	go.opentelemetry.io/otel/sdk/metric v0.30.0
+	go.opentelemetry.io/otel/trace v1.7.0
 	go.uber.org/atomic v1.9.0
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.21.0
@@ -25,7 +32,7 @@ require (
 require (
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
-	github.com/benbjohnson/clock v1.1.0 // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -37,6 +44,8 @@ require (
 	github.com/getsentry/sentry-go v0.13.0 // indirect
 	github.com/go-faster/jx v0.37.0 // indirect
 	github.com/go-faster/xor v0.3.0 // indirect
+	github.com/go-logr/logr v1.2.3 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -61,8 +70,6 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.7.0 // indirect
-	go.opentelemetry.io/otel/trace v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect

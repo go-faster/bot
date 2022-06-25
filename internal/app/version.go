@@ -1,4 +1,4 @@
-package metrics
+package app
 
 import (
 	"runtime/debug"

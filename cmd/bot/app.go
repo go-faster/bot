@@ -32,10 +32,10 @@ import (
 	updhook "github.com/gotd/td/telegram/updates/hook"
 	"github.com/gotd/td/tg"
 
+	"github.com/go-faster/bot/internal/app"
 	"github.com/go-faster/bot/internal/botapi"
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/gh"
-	"github.com/go-faster/bot/internal/metrics"
 	"github.com/go-faster/bot/internal/storage"
 )
 
@@ -56,11 +56,11 @@ type App struct {
 
 	github *github.Client
 	http   *http.Client
-	mts    metrics.Metrics
-	logger *zap.Logger
+	m      *app.Metrics
+	lg     *zap.Logger
 }
 
-func InitApp(mts metrics.Metrics, logger *zap.Logger) (_ *App, rerr error) {
+func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -116,22 +116,22 @@ func InitApp(mts metrics.Metrics, logger *zap.Logger) (_ *App, rerr error) {
 	gaps := updates.New(updates.Config{
 		Handler: dispatcher,
 		Storage: stateStorage,
-		Logger:  logger.Named("gaps"),
+		Logger:  lg.Named("gaps"),
 	})
 	client := telegram.NewClient(appID, appHash, telegram.Options{
-		Logger: logger.Named("client"),
+		Logger: lg.Named("client"),
 		SessionStorage: &session.FileStorage{
 			Path: filepath.Join(sessionDir, sessionFileName(token)),
 		},
 		UpdateHandler: dispatch.NewLoggedDispatcher(
-			gaps, logger.Named("updates"),
+			gaps, lg.Named("updates"),
 		),
 		Middlewares: []telegram.Middleware{
 			// mts.Middleware, // HACK(ernado): fix contrib
 			updhook.UpdateHook(func(ctx context.Context, u tg.UpdatesClass) error {
 				go func() {
 					if err := gaps.Handle(ctx, u); err != nil {
-						logger.Error("Handle RPC response update error", zap.Error(err))
+						lg.Error("Handle RPC response update error", zap.Error(err))
 					}
 				}()
 				return nil
@@ -148,21 +148,21 @@ func InitApp(mts metrics.Metrics, logger *zap.Logger) (_ *App, rerr error) {
 	}
 
 	mux := dispatch.NewMessageMux()
-	var h dispatch.MessageHandler = metrics.NewMiddleware(mux, dd, mts, metrics.MiddlewareOptions{
+	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
 		BotAPI: botapi.NewClient(token, botapi.Options{
 			HTTPClient: httpClient,
 		}),
-		Logger: logger.Named("metrics"),
+		Logger: lg.Named("metrics"),
 	})
 	h = storage.NewHook(h, msgIDStore)
 
 	b := dispatch.NewBot(raw).
 		WithSender(sender).
-		WithLogger(logger).
+		WithLogger(lg).
 		Register(dispatcher).
 		OnMessage(h)
 
-	app := &App{
+	a := &App{
 		client:       client,
 		token:        token,
 		raw:          raw,
@@ -175,8 +175,8 @@ func InitApp(mts metrics.Metrics, logger *zap.Logger) (_ *App, rerr error) {
 		mux:          mux,
 		bot:          b,
 		http:         httpClient,
-		mts:          mts,
-		logger:       logger,
+		m:            m,
+		lg:           lg,
 	}
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
@@ -184,10 +184,10 @@ func InitApp(mts metrics.Metrics, logger *zap.Logger) (_ *App, rerr error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "setup github")
 		}
-		app.github = ghClient
+		a.github = ghClient
 	}
 
-	return app, nil
+	return a, nil
 }
 
 func (b *App) Close() error {
@@ -195,10 +195,10 @@ func (b *App) Close() error {
 }
 
 func (b *App) Run(ctx context.Context) error {
-	group, ctx := errgroup.WithContext(ctx)
+	g, ctx := errgroup.WithContext(ctx)
 
 	if secret, ok := os.LookupEnv("GITHUB_SECRET"); ok {
-		logger := b.logger.Named("webhook")
+		lg := b.lg.Named("webhook")
 
 		httpAddr := os.Getenv("HTTP_ADDR")
 		if httpAddr == "" {
@@ -206,7 +206,7 @@ func (b *App) Run(ctx context.Context) error {
 		}
 
 		webhook := gh.NewWebhook(b.storage, b.sender, secret).
-			WithLogger(logger)
+			WithLogger(lg)
 		if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 			webhook = webhook.WithNotifyGroup(notifyGroup)
 		}
@@ -215,7 +215,7 @@ func (b *App) Run(ctx context.Context) error {
 		e.Use(
 			middleware.Recover(),
 			middleware.RequestID(),
-			echozap.ZapLogger(logger.Named("requests")),
+			echozap.ZapLogger(lg.Named("requests")),
 		)
 
 		e.GET("/status", func(c echo.Context) error {
@@ -227,16 +227,16 @@ func (b *App) Run(ctx context.Context) error {
 			Addr:    httpAddr,
 			Handler: e,
 		}
-		group.Go(func() error {
-			logger.Info("ListenAndServe", zap.String("addr", server.Addr))
+		g.Go(func() error {
+			lg.Info("ListenAndServe", zap.String("addr", server.Addr))
 			return server.ListenAndServe()
 		})
-		group.Go(func() error {
+		g.Go(func() error {
 			<-ctx.Done()
 			shutCtx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 			defer cancel()
 
-			logger.Info("Shutdown", zap.String("addr", server.Addr))
+			lg.Info("Shutdown", zap.String("addr", server.Addr))
 			if err := server.Shutdown(shutCtx); err != nil {
 				return multierr.Append(err, server.Close())
 			}
@@ -244,9 +244,9 @@ func (b *App) Run(ctx context.Context) error {
 		})
 	}
 
-	group.Go(func() error {
+	g.Go(func() error {
 		return b.client.Run(ctx, func(ctx context.Context) error {
-			b.logger.Debug("Client initialized")
+			b.lg.Debug("Client initialized")
 
 			au := b.client.Auth()
 			status, err := au.Status(ctx)
@@ -265,7 +265,7 @@ func (b *App) Run(ctx context.Context) error {
 					return errors.Wrap(err, "auth status")
 				}
 			} else {
-				b.logger.Info("Bot login restored",
+				b.lg.Info("Bot login restored",
 					zap.String("name", status.User.Username),
 				)
 			}
@@ -298,7 +298,7 @@ func (b *App) Run(ctx context.Context) error {
 				options = append(options,
 					styling.Plain("🚀 Started "),
 					styling.Italic(fmt.Sprintf("(%s, %s, layer: %d) ",
-						info.GoVersion, metrics.GetVersion(), tg.Layer),
+						info.GoVersion, app.GetVersion(), tg.Layer),
 					),
 					styling.Code(commit),
 				)
@@ -311,23 +311,23 @@ func (b *App) Run(ctx context.Context) error {
 			return ctx.Err()
 		})
 	})
-	return group.Wait()
+	return g.Wait()
 }
 
-func runBot(ctx context.Context, mts metrics.Metrics, logger *zap.Logger) (rerr error) {
-	app, err := InitApp(mts, logger)
+func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
+	a, err := InitApp(m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}
 	defer func() {
-		multierr.AppendInto(&rerr, app.Close())
+		multierr.AppendInto(&rerr, a.Close())
 	}()
 
-	if err := setupBot(app); err != nil {
+	if err := setupBot(a); err != nil {
 		return errors.Wrap(err, "setup")
 	}
 
-	if err := app.Run(ctx); err != nil {
+	if err := a.Run(ctx); err != nil {
 		return errors.Wrap(err, "run")
 	}
 	return nil

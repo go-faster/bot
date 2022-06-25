@@ -1,4 +1,4 @@
-package metrics
+package app
 
 import (
 	"context"
@@ -21,7 +21,7 @@ type Middleware struct {
 	next       dispatch.MessageHandler
 	downloader *downloader.Downloader
 	client     *botapi.Client
-	metrics    Metrics
+	metrics    *Metrics
 
 	logger *zap.Logger
 }
@@ -30,7 +30,7 @@ type Middleware struct {
 func NewMiddleware(
 	next dispatch.MessageHandler,
 	d *downloader.Downloader,
-	metrics Metrics,
+	metrics *Metrics,
 	opts MiddlewareOptions,
 ) Middleware {
 	opts.setDefaults()

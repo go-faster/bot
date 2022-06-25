@@ -1,4 +1,4 @@
-package metrics
+package app
 
 import (
 	"context"
@@ -14,21 +14,20 @@ import (
 
 // Handler implements stats request handler.
 type Handler struct {
-	metrics Metrics
+	m *Metrics
 }
 
-// NewHandler creates new Handler.
-func NewHandler(m Metrics) Handler {
-	return Handler{metrics: m}
+func (m *Metrics) NewHandler() Handler {
+	return Handler{m: m}
 }
 
 func (h Handler) stats() string {
 	var w strings.Builder
 	fmt.Fprintf(&w, "Statistics:\n\n")
-	fmt.Fprintln(&w, "Messages:", h.metrics.Messages.Load())
-	fmt.Fprintln(&w, "Responses:", h.metrics.Responses.Load())
-	fmt.Fprintln(&w, "Media:", humanize.IBytes(uint64(h.metrics.MediaBytes.Load())))
-	fmt.Fprintln(&w, "Uptime:", time.Since(h.metrics.Start).Round(time.Second))
+	fmt.Fprintln(&w, "Messages:", h.m.Messages.Load())
+	fmt.Fprintln(&w, "Responses:", h.m.Responses.Load())
+	fmt.Fprintln(&w, "Media:", humanize.IBytes(uint64(h.m.MediaBytes.Load())))
+	fmt.Fprintln(&w, "Uptime:", time.Since(h.m.Start).Round(time.Second))
 	fmt.Fprintln(&w, "TL Layer version:", tg.Layer)
 	if v := GetVersion(); v != "" {
 		fmt.Fprintln(&w, "Version:", v)
