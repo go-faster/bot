@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -284,8 +285,17 @@ func (b *App) Run(ctx context.Context) error {
 				if err != nil {
 					return errors.Wrap(err, "resolve")
 				}
-				if _, err := b.sender.To(p).Textf(ctx,
-					"Started (%s, layer: %d)", metrics.GetVersion(), tg.Layer); err != nil {
+				info, _ := debug.ReadBuildInfo()
+				var commit string
+				for _, c := range info.Settings {
+					if c.Key == "vcs.revision" {
+						commit = c.Value[:7]
+						break
+					}
+				}
+				if _, err := b.sender.To(p).Textf(ctx, "Started (%s, layer: %d) [%s] %s",
+					metrics.GetVersion(), tg.Layer, commit, info.GoVersion,
+				); err != nil {
 					return errors.Wrap(err, "send")
 				}
 			}
