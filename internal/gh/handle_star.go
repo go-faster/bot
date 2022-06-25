@@ -23,7 +23,7 @@ func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 	var options []styling.StyledTextOption
 	repo := e.GetRepo()
 	sender := e.GetSender()
-	options = append(options, styling.Plain("New star"),
+	options = append(options,
 		styling.Plain("New star: "),
 		styling.TextURL(repo.GetFullName(), repo.GetHTMLURL()),
 		styling.Plain(fmt.Sprintf(" %d ⭐", repo.GetStargazersCount())),
