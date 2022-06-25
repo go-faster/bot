@@ -21,7 +21,7 @@ func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 	}
 
 	repo := e.GetRepo()
-	if _, err := h.sender.To(p).StyledText(ctx,
+	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx,
 		styling.Plain("New star: "),
 		styling.TextURL(repo.GetFullName(), repo.GetHTMLURL()),
 		styling.Plain(fmt.Sprintf(" %d ⭐", repo.GetStargazersCount())),
