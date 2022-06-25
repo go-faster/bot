@@ -302,7 +302,7 @@ func (b *App) Run(ctx context.Context) error {
 						commit = c.Value[:7]
 					}
 				}
-				if _, err := b.sender.To(p).Textf(ctx, "Started (%s, %s, layer: %d) %s (%s)",
+				if _, err := b.sender.To(p).Textf(ctx, "Started (%s, %s, layer: %d) %s (committed %s)",
 					info.GoVersion, metrics.GetVersion(), tg.Layer,
 					commit, timediff.TimeDiff(at),
 				); err != nil {
