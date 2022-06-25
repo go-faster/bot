@@ -103,7 +103,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "go_info{namespace=\"$namespace\", service=\"$service\"}",
+          "expr": "count(go_info{namespace=\"$namespace\", service=\"$service\"}) by (version)",
           "interval": "",
           "legendFormat": "{{version}}",
           "range": true,
@@ -1148,6 +1148,6 @@
   "timezone": "",
   "title": "Go",
   "uid": "CgCw8jKZz3",
-  "version": 10,
+  "version": 11,
   "weekStart": ""
 }
