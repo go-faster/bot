@@ -19,6 +19,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	bolt "go.etcd.io/bbolt"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -205,7 +206,7 @@ func (b *App) Run(ctx context.Context) error {
 			httpAddr = "localhost:8080"
 		}
 
-		webhook := gh.NewWebhook(b.storage, b.sender, secret).
+		webhook := gh.NewWebhook(b.storage, b.sender, secret, b.m.MeterProvider()).
 			WithLogger(lg)
 		if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 			webhook = webhook.WithNotifyGroup(notifyGroup)
@@ -216,6 +217,9 @@ func (b *App) Run(ctx context.Context) error {
 			middleware.Recover(),
 			middleware.RequestID(),
 			echozap.ZapLogger(lg.Named("requests")),
+			otelecho.Middleware("bot",
+				otelecho.WithTracerProvider(b.m.TracerProvider()),
+			),
 		)
 
 		e.GET("/status", func(c echo.Context) error {

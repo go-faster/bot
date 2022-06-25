@@ -8,6 +8,11 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v42/github"
 	"github.com/labstack/echo/v4"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/metric/instrument"
+	"go.opentelemetry.io/otel/metric/instrument/syncint64"
+	"go.opentelemetry.io/otel/metric/unit"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/peer"
@@ -27,14 +32,23 @@ type Webhook struct {
 	githubSecret string
 
 	logger *zap.Logger
+	events syncint64.Counter
 }
 
 // NewWebhook creates new web hook handler.
-func NewWebhook(msgID storage.MsgID, sender *message.Sender, githubSecret string) *Webhook {
+func NewWebhook(msgID storage.MsgID, sender *message.Sender, githubSecret string, meterProvider metric.MeterProvider) *Webhook {
+	meter := meterProvider.Meter("github.com/go-faster/bot/internal/gh/webhook")
+	eventCount, err := meter.SyncInt64().Counter("github_event_count",
+		instrument.WithDescription("GitHub event counts"),
+		instrument.WithUnit(unit.Dimensionless),
+	)
+	if err != nil {
+		panic(err)
+	}
 	return &Webhook{
+		events:       eventCount,
 		storage:      msgID,
 		sender:       sender,
-		notifyGroup:  "gotd_ru",
 		githubSecret: githubSecret,
 		logger:       zap.NewNop(),
 	}
@@ -71,7 +85,7 @@ func (h Webhook) handleHook(e echo.Context) error {
 	}
 	whType := github.WebHookType(e.Request())
 	if whType == "security_advisory" {
-		// Current github library is unable to handle this.
+		// Current GitHub library is unable to handle this.
 		return e.String(http.StatusOK, "ignored")
 	}
 
@@ -80,6 +94,10 @@ func (h Webhook) handleHook(e echo.Context) error {
 		h.logger.Error("Failed to parse webhook", zap.Error(err))
 		return echo.ErrInternalServerError
 	}
+
+	h.events.Add(e.Request().Context(), 1,
+		attribute.String("event", whType),
+	)
 
 	log := h.logger.With(
 		zap.String("type", fmt.Sprintf("%T", event)),

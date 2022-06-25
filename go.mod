@@ -70,6 +70,7 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
+	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.32.0 // indirect
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
