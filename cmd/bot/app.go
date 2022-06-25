@@ -17,7 +17,6 @@ import (
 	"github.com/google/go-github/v42/github"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/mergestat/timediff"
 	bolt "go.etcd.io/bbolt"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -287,24 +286,15 @@ func (b *App) Run(ctx context.Context) error {
 					return errors.Wrap(err, "resolve")
 				}
 				info, _ := debug.ReadBuildInfo()
-				var (
-					commit string
-					at     time.Time
-				)
+				var commit string
 				for _, c := range info.Settings {
 					switch c.Key {
-					case "vcs.time":
-						at, err = time.Parse(time.RFC3339, c.Value)
-						if err != nil {
-							return errors.Wrap(err, "parse time")
-						}
 					case "vcs.revision":
 						commit = c.Value[:7]
 					}
 				}
-				if _, err := b.sender.To(p).Textf(ctx, "Started (%s, %s, layer: %d) %s (committed %s)",
-					info.GoVersion, metrics.GetVersion(), tg.Layer,
-					commit, timediff.TimeDiff(at),
+				if _, err := b.sender.To(p).Textf(ctx, "Started (%s, %s, layer: %d) %s",
+					info.GoVersion, metrics.GetVersion(), tg.Layer, commit,
 				); err != nil {
 					return errors.Wrap(err, "send")
 				}
