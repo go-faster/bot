@@ -255,6 +255,7 @@ func (b *App) Run(ctx context.Context) error {
 			Compression:    ch.CompressionZSTD,
 			TracerProvider: b.m.TracerProvider(),
 			MeterProvider:  b.m.MeterProvider(),
+			Database:       "faster",
 
 			OpenTelemetryInstrumentation: true,
 		})
@@ -269,6 +270,9 @@ func (b *App) Run(ctx context.Context) error {
 		if err := client.Ping(ctx); err != nil {
 			return err
 		}
+		b.lg.Info("Connected to clickhouse",
+			zap.Stringer("server", client.ServerInfo()),
+		)
 		return nil
 	})
 
