@@ -169,13 +169,6 @@ func (h Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEv
 }
 
 func (h Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
-	// Ignore PR-s from dependabot (too much noise).
-	// TODO(ernado): delay and merge into single message
-	if e.GetPullRequest().GetUser().GetLogin() == "dependabot[bot]" {
-		h.logger.Info("Ignored PR from dependabot")
-		return nil
-	}
-
 	switch e.GetAction() {
 	case "opened":
 		return h.handlePROpened(ctx, e)
