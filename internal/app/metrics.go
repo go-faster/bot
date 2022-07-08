@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/gotd/contrib/middleware/tg_prom"
 	"github.com/povilasv/prommod"
 	promClient "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -33,6 +32,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/go-faster/bot/internal/oteltg"
 )
 
 type atomicMetric struct {
@@ -54,7 +55,7 @@ type Metrics struct {
 	Messages   *atomicMetric
 	Responses  *atomicMetric
 	MediaBytes *atomicMetric
-	Middleware *tg_prom.Middleware
+	Middleware *oteltg.Middleware
 
 	prometheus     *prometheus.Exporter
 	tracerProvider *sdktrace.TracerProvider
@@ -69,9 +70,6 @@ func (m *Metrics) Describe(desc chan<- *promClient.Desc) {
 	m.Messages.Describe(desc)
 	m.Responses.Describe(desc)
 	m.MediaBytes.Describe(desc)
-	for _, mm := range m.Middleware.Metrics() {
-		mm.Describe(desc)
-	}
 }
 
 // Collect implements prometheus.Collector.
@@ -79,9 +77,6 @@ func (m *Metrics) Collect(ch chan<- promClient.Metric) {
 	m.Messages.Collect(ch)
 	m.Responses.Collect(ch)
 	m.MediaBytes.Collect(ch)
-	for _, mm := range m.Middleware.Metrics() {
-		mm.Collect(ch)
-	}
 }
 
 // Config for metrics.
@@ -282,6 +277,10 @@ func NewMetrics(log *zap.Logger, cfg Config) (*Metrics, error) {
 	}
 
 	mux := http.NewServeMux()
+	mw, err := oteltg.New(promExporter.MeterProvider())
+	if err != nil {
+		return nil, errors.Wrap(err, "oteltg")
+	}
 	m := &Metrics{
 		prometheus: promExporter,
 		jaeger:     jaegerExporter,
@@ -295,7 +294,7 @@ func NewMetrics(log *zap.Logger, cfg Config) (*Metrics, error) {
 			Addr:    cfg.Addr,
 		},
 
-		Middleware: tg_prom.New(),
+		Middleware: mw,
 		Messages: newMetric(promClient.CounterOpts{
 			Name: "bot_messages",
 			Help: "Total count of received messages",
