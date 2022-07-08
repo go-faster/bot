@@ -34,7 +34,7 @@ func (m Middleware) Handle(next tg.Invoker) telegram.InvokeFunc {
 		err := next.Invoke(ctx, input, output)
 
 		// Observe.
-		m.duration(time.Since(start).Seconds(), attrs)
+		m.duration.Record(ctx, time.Since(start).Seconds(), attrs...)
 		if err != nil {
 			if rpcErr, ok := tgerr.As(err); ok {
 				attrs = append(attrs,
