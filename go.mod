@@ -3,14 +3,13 @@ module github.com/go-faster/bot
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.46.0
+	github.com/ClickHouse/ch-go v0.46.2
 	github.com/bradleyfalzon/ghinstallation v1.1.1
 	github.com/brpaz/echozap v1.1.3
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
 	github.com/google/go-github/v45 v45.2.0
-	github.com/gotd/contrib v0.12.0
 	github.com/gotd/td v0.60.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/povilasv/prommod v0.0.12
