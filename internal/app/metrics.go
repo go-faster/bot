@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/gotd/contrib/oteltg"
 	"github.com/povilasv/prommod"
 	promClient "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -32,8 +33,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
-
-	"github.com/go-faster/bot/internal/oteltg"
 )
 
 type atomicMetric struct {
@@ -276,18 +275,20 @@ func NewMetrics(log *zap.Logger, cfg Config) (*Metrics, error) {
 		return nil, errors.Wrap(err, "prometheus")
 	}
 
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithResource(res),
+		sdktrace.WithBatcher(jaegerExporter),
+	)
 	mux := http.NewServeMux()
-	mw, err := oteltg.New(promExporter.MeterProvider())
+	mw, err := oteltg.New(promExporter.MeterProvider(), tracerProvider)
 	if err != nil {
 		return nil, errors.Wrap(err, "oteltg")
 	}
 	m := &Metrics{
-		prometheus: promExporter,
-		jaeger:     jaegerExporter,
-		tracerProvider: sdktrace.NewTracerProvider(
-			sdktrace.WithResource(res),
-			sdktrace.WithBatcher(jaegerExporter),
-		),
+		prometheus:     promExporter,
+		jaeger:         jaegerExporter,
+		tracerProvider: tracerProvider,
+
 		mux: mux,
 		srv: &http.Server{
 			Handler: mux,

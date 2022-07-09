@@ -9,7 +9,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v45/github"
 	"github.com/stretchr/testify/require"
-	"go.opentelemetry.io/otel/metric/nonrecording"
+	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap/zaptest"
 
 	"github.com/gotd/td/bin"
@@ -89,7 +89,7 @@ func TestWebhook(t *testing.T) {
 	sender := message.NewSender(raw).WithResolver(mockResolver{
 		"test": channel,
 	})
-	hook := NewWebhook(storage.NewMsgID(db), sender, "secret", nonrecording.NewNoopMeterProvider()).
+	hook := NewWebhook(storage.NewMsgID(db), sender, "secret", metric.NewNoopMeterProvider()).
 		WithLogger(log).
 		WithNotifyGroup("test")
 

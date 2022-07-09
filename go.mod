@@ -3,13 +3,14 @@ module github.com/go-faster/bot
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.46.2
+	github.com/ClickHouse/ch-go v0.46.4-0.20220709164345-2c51335b81e9
 	github.com/bradleyfalzon/ghinstallation v1.1.1
 	github.com/brpaz/echozap v1.1.3
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
 	github.com/google/go-github/v45 v45.2.0
+	github.com/gotd/contrib v0.13.0
 	github.com/gotd/td v0.60.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/povilasv/prommod v0.0.12
@@ -17,13 +18,13 @@ require (
 	github.com/stretchr/testify v1.8.0
 	go.etcd.io/bbolt v1.3.6
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.32.0
-	go.opentelemetry.io/otel v1.7.0
+	go.opentelemetry.io/otel v1.8.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.30.0
-	go.opentelemetry.io/otel/metric v0.30.0
-	go.opentelemetry.io/otel/sdk v1.7.0
-	go.opentelemetry.io/otel/sdk/metric v0.30.0
-	go.opentelemetry.io/otel/trace v1.7.0
+	go.opentelemetry.io/otel/metric v0.31.0
+	go.opentelemetry.io/otel/sdk v1.8.0
+	go.opentelemetry.io/otel/sdk/metric v0.31.0
+	go.opentelemetry.io/otel/trace v1.8.0
 	go.uber.org/atomic v1.9.0
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.21.0
@@ -81,7 +82,7 @@ require (
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	golang.org/x/sys v0.0.0-20220708085239-5a0f0661e09d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/tools v0.1.11-0.20220415161144-46bc274e027b // indirect
