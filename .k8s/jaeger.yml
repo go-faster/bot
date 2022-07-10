@@ -1,3 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-clickhouse
+  namespace: faster-monitoring
+data:
+  config.yaml: |
+    address: tcp://db.mcs.local:9000
+    spans_table:
+    spans_index_table:
+    operations_table:
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,11 +36,32 @@ spec:
     spec:
       containers:
       - args:
-        - --memory.max-traces
-        - "10000"
+        - --grpc-storage-plugin.binary=/plugin/jaeger-clickhouse
+        - --grpc-storage-plugin.configuration-file=/plugin-config/config.yaml
+        - --grpc-storage-plugin.log-level=info
         env:
         - name: SPAN_STORAGE_TYPE
-          value: memory
+          value: grpc-plugin
+        volumeMounts:
+          - mountPath: /plugin-config
+            name: plugin-config
+            readOnly: true
+          - mountPath: /plugin
+            name: plugin-volume
+          - mountPath: /tmp
+            name: tmp
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: 14269
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 14269
+          initialDelaySeconds: 1
         image: jaegertracing/all-in-one:1.36
         imagePullPolicy: IfNotPresent
         name: jaeger
@@ -62,17 +96,31 @@ spec:
           readOnlyRootFilesystem: true
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /data
-          name: data
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
       terminationGracePeriodSeconds: 30
+      initContainers:
+        - image: ghcr.io/jaegertracing/jaeger-clickhouse:0.11.0
+          name: install-plugin
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /plugin-config
+              name: plugin-config
+            - mountPath: /plugin
+              name: plugin-volume
+            - mountPath: /tmp
+              name: tmp
       volumes:
       - emptyDir: {}
         name: data
+      - configMap:
+          name: jaeger-clickhouse
+        name: plugin-config
+      - emptyDir: {}
+        name: plugin-volume
+      - emptyDir: {}
+        name: tmp
 ---
 apiVersion: v1
 kind: Service
