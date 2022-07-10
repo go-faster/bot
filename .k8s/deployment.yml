@@ -34,6 +34,8 @@ spec:
               cpu: "2"
               memory: 512M
           env:
+            - name: OTEL_EXPORTER_JAEGER_AGENT_HOST
+              value: jaeger.faster-monitoring.svc.cluster.local
             - name: HOME
               value: /cache
             - name: HTTP_ADDR
