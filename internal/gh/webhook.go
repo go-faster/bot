@@ -99,6 +99,7 @@ func (h Webhook) handleHook(e echo.Context) error {
 		return echo.ErrNotFound
 	}
 	whType := github.WebHookType(r)
+	span.SetName("hook: " + whType)
 	span.SetAttributes(attribute.String("github.webhook.type", whType))
 	if whType == "security_advisory" {
 		// Current GitHub library is unable to handle this.
