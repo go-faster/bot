@@ -127,7 +127,7 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 			Path: filepath.Join(sessionDir, sessionFileName(token)),
 		},
 		UpdateHandler: dispatch.NewLoggedDispatcher(
-			gaps, lg.Named("updates"),
+			gaps, lg.Named("updates"), m.TracerProvider(),
 		),
 		Middlewares: []telegram.Middleware{
 			m.Middleware,
