@@ -12,10 +12,12 @@ import (
 	"github.com/gotd/td/tg"
 	"github.com/labstack/echo/v4"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/metric/instrument/syncint64"
 	"go.opentelemetry.io/otel/metric/unit"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/storage"
@@ -31,10 +33,17 @@ type Webhook struct {
 
 	logger *zap.Logger
 	events syncint64.Counter
+	tracer trace.Tracer
 }
 
 // NewWebhook creates new web hook handler.
-func NewWebhook(msgID storage.MsgID, sender *message.Sender, githubSecret string, meterProvider metric.MeterProvider) *Webhook {
+func NewWebhook(
+	msgID storage.MsgID,
+	sender *message.Sender,
+	githubSecret string,
+	meterProvider metric.MeterProvider,
+	tracerProvider trace.TracerProvider,
+) *Webhook {
 	meter := meterProvider.Meter("github.com/go-faster/bot/internal/gh/webhook")
 	eventCount, err := meter.SyncInt64().Counter("github_event_count",
 		instrument.WithDescription("GitHub event counts"),
@@ -49,6 +58,7 @@ func NewWebhook(msgID storage.MsgID, sender *message.Sender, githubSecret string
 		sender:       sender,
 		githubSecret: githubSecret,
 		logger:       zap.NewNop(),
+		tracer:       tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
 }
 
@@ -76,24 +86,34 @@ func (h Webhook) RegisterRoutes(e *echo.Echo) {
 }
 
 func (h Webhook) handleHook(e echo.Context) error {
-	payload, err := github.ValidatePayload(e.Request(), []byte(h.githubSecret))
+	ctx, span := h.tracer.Start(e.Request().Context(), "handleHook",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	r := e.Request().WithContext(ctx)
+	defer span.End()
+
+	payload, err := github.ValidatePayload(r, []byte(h.githubSecret))
 	if err != nil {
 		h.logger.Info("Failed to validate payload")
+		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrNotFound
 	}
-	whType := github.WebHookType(e.Request())
+	whType := github.WebHookType(r)
+	span.SetAttributes(attribute.String("github.webhook.type", whType))
 	if whType == "security_advisory" {
 		// Current GitHub library is unable to handle this.
+		span.SetStatus(codes.Ok, "ignored")
 		return e.String(http.StatusOK, "ignored")
 	}
 
 	event, err := github.ParseWebHook(whType, payload)
 	if err != nil {
 		h.logger.Error("Failed to parse webhook", zap.Error(err))
+		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrInternalServerError
 	}
 
-	h.events.Add(e.Request().Context(), 1,
+	h.events.Add(ctx, 1,
 		attribute.String("event", whType),
 	)
 
@@ -101,15 +121,16 @@ func (h Webhook) handleHook(e echo.Context) error {
 		zap.String("type", fmt.Sprintf("%T", event)),
 	)
 	log.Info("Processing event")
-	if err := h.processEvent(e, event, log); err != nil {
+	if err := h.processEvent(ctx, event, log); err != nil {
 		log.Error("Failed to process event", zap.Error(err))
+		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrInternalServerError
 	}
+	span.SetStatus(codes.Ok, "done")
 	return e.String(http.StatusOK, "done")
 }
 
-func (h Webhook) processEvent(e echo.Context, event interface{}, log *zap.Logger) error {
-	ctx := e.Request().Context()
+func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
 	switch event := event.(type) {
 	case *github.PullRequestEvent:
 		return h.handlePR(ctx, event)

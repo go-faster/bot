@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"io"
 
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/downloader"
@@ -23,7 +24,10 @@ type Bot struct {
 
 	logger *zap.Logger
 	rand   io.Reader
+	tracer trace.Tracer
 }
+
+const botInstrumentationName = "bot"
 
 // NewBot creates new bot.
 func NewBot(raw *tg.Client) *Bot {
@@ -39,6 +43,7 @@ func NewBot(raw *tg.Client) *Bot {
 		downloader: downloader.NewDownloader(),
 		logger:     zap.NewNop(),
 		rand:       rand.Reader,
+		tracer:     trace.NewNoopTracerProvider().Tracer(botInstrumentationName),
 	}
 }
 
@@ -63,6 +68,11 @@ func (b *Bot) WithSender(sender *message.Sender) *Bot {
 // WithLogger sets logger.
 func (b *Bot) WithLogger(logger *zap.Logger) *Bot {
 	b.logger = logger
+	return b
+}
+
+func (b *Bot) WithTracerProvider(provider trace.TracerProvider) *Bot {
+	b.tracer = provider.Tracer(botInstrumentationName)
 	return b
 }
 

@@ -55,6 +55,9 @@ func (b *Bot) handleChannel(ctx context.Context, channel *tg.Channel, m *tg.Mess
 }
 
 func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageClass) error {
+	ctx, span := b.tracer.Start(ctx, "handleMessage")
+	defer span.End()
+
 	switch m := msg.(type) {
 	case *tg.Message:
 		if m.Out {
@@ -87,6 +90,9 @@ func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageCl
 }
 
 func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
+	ctx, span := b.tracer.Start(ctx, "OnNewMessage")
+	defer span.End()
+
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		if !tg.IsUserBlocked(err) {
 			return errors.Wrapf(err, "handle message %d", u.Message.GetID())
@@ -98,6 +104,9 @@ func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMe
 }
 
 func (b *Bot) OnNewChannelMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewChannelMessage) error {
+	ctx, span := b.tracer.Start(ctx, "OnNewChannelMessage")
+	defer span.End()
+
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		return errors.Wrap(err, "handle")
 	}
