@@ -2,7 +2,6 @@ package gh
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -102,27 +101,6 @@ func (h Webhook) handleHook(e echo.Context) error {
 	whType := github.WebHookType(r)
 	span.SetName("hook: " + whType)
 	span.SetAttributes(attribute.String("github.webhook.type", whType))
-
-	{
-		// Extract attributes from raw GitHub event.
-		var ge github.Event
-		if err := json.Unmarshal(payload, &ge); err == nil {
-			var attrs []attribute.KeyValue
-			for _, v := range []attribute.KeyValue{
-				attribute.String("github.event.id", ge.GetID()),
-				attribute.String("github.event.org", ge.GetOrg().GetLogin()),
-				attribute.String("github.event.repo.full_name", ge.GetRepo().GetFullName()),
-				attribute.String("github.event.repo.name", ge.GetRepo().GetName()),
-				attribute.String("github.event.actor.login", ge.GetActor().GetLogin()),
-				attribute.String("github.event.actor.name", ge.GetActor().GetName()),
-			} {
-				if v.Value.AsString() != "" {
-					attrs = append(attrs, v)
-				}
-			}
-			span.SetAttributes(attrs...)
-		}
-	}
 
 	if whType == "security_advisory" {
 		// Current GitHub library is unable to handle this.
