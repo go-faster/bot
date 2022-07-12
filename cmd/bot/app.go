@@ -211,7 +211,7 @@ func (b *App) Run(ctx context.Context) error {
 			httpAddr = "localhost:8080"
 		}
 
-		webhook := gh.NewWebhook(b.storage, b.sender, secret, b.m.MeterProvider()).
+		webhook := gh.NewWebhook(b.storage, b.sender, secret, b.m.MeterProvider(), b.m.TracerProvider()).
 			WithLogger(lg)
 		if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 			webhook = webhook.WithNotifyGroup(notifyGroup)
