@@ -21,6 +21,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	bolt "go.etcd.io/bbolt"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -143,7 +144,10 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	raw := client.API()
 	sender := message.NewSender(raw)
 	dd := downloader.NewDownloader()
-	httpTransport := http.DefaultTransport
+	httpTransport := otelhttp.NewTransport(http.DefaultTransport,
+		otelhttp.WithTracerProvider(m.TracerProvider()),
+		otelhttp.WithMeterProvider(m.MeterProvider()),
+	)
 	httpClient := &http.Client{
 		Transport: httpTransport,
 		Timeout:   15 * time.Second,
