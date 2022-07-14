@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -16,6 +17,7 @@ import (
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v45/github"
+	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -323,6 +325,7 @@ func (b *App) Run(ctx context.Context) error {
 					return errors.Wrap(err, "resolve")
 				}
 				info, _ := debug.ReadBuildInfo()
+
 				var commit string
 				for _, c := range info.Settings {
 					switch c.Key {
@@ -330,15 +333,23 @@ func (b *App) Run(ctx context.Context) error {
 						commit = c.Value[:7]
 					}
 				}
+
 				var options []message.StyledTextOption
 				options = append(options,
 					styling.Plain("🚀 Started "),
-					styling.Italic(fmt.Sprintf("(%s, %s, layer: %d) ",
-						info.GoVersion, app.GetVersion(), tg.Layer),
+					styling.Italic(fmt.Sprintf("(%s, gotd %s, layer: %d) ",
+						info.GoVersion, app.GetGotdVersion(), tg.Layer),
 					),
 					styling.Code(commit),
 				)
-				if _, err := b.sender.To(p).StyledText(ctx, options...); err != nil {
+
+				var mrkp tg.ReplyMarkupClass
+				if module := info.Main.Path; module != "" && strings.HasPrefix(module, "github.com") {
+					commitLink := fmt.Sprintf("https://%s/commit/%s", module, commit)
+					mrkp = markup.SingleRow(markup.URL("Commit", commitLink))
+				}
+
+				if _, err := b.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
 					return errors.Wrap(err, "send")
 				}
 			}
