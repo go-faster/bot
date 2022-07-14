@@ -29,7 +29,7 @@ func (h Handler) stats() string {
 	fmt.Fprintln(&w, "Media:", humanize.IBytes(uint64(h.m.MediaBytes.Load())))
 	fmt.Fprintln(&w, "Uptime:", time.Since(h.m.Start).Round(time.Second))
 	fmt.Fprintln(&w, "TL Layer version:", tg.Layer)
-	if v := GetVersion(); v != "" {
+	if v := GetGotdVersion(); v != "" {
 		fmt.Fprintln(&w, "Version:", v)
 	}
 
