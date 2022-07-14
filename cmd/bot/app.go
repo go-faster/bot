@@ -346,7 +346,7 @@ func (b *App) Run(ctx context.Context) error {
 				var mrkp tg.ReplyMarkupClass
 				if module := info.Main.Path; module != "" && strings.HasPrefix(module, "github.com") {
 					commitLink := fmt.Sprintf("https://%s/commit/%s", module, commit)
-					mrkp = markup.SingleRow(markup.URL("Commit", commitLink))
+					mrkp = markup.InlineRow(markup.URL("Commit", commitLink))
 				}
 
 				if _, err := b.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
