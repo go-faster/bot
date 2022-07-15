@@ -3,12 +3,13 @@ module github.com/go-faster/bot
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.46.4-0.20220709164345-2c51335b81e9
+	github.com/ClickHouse/ch-go v0.47.1
 	github.com/bradleyfalzon/ghinstallation v1.1.1
 	github.com/brpaz/echozap v1.1.3
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
+	github.com/go-faster/jx v0.38.1
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
 	github.com/gotd/td v0.61.0
@@ -48,7 +49,6 @@ require (
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/getsentry/sentry-go v0.13.0 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
-	github.com/go-faster/jx v0.38.0 // indirect
 	github.com/go-faster/xor v0.3.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -62,7 +62,7 @@ require (
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
-	github.com/klauspost/compress v1.15.7 // indirect
+	github.com/klauspost/compress v1.15.8 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
