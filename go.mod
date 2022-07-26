@@ -12,7 +12,7 @@ require (
 	github.com/go-faster/jx v0.38.1
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
-	github.com/gotd/td v0.61.0
+	github.com/gotd/td v0.62.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
@@ -62,7 +62,7 @@ require (
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
-	github.com/klauspost/compress v1.15.8 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
