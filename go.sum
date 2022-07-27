@@ -34,8 +34,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/ClickHouse/ch-go v0.47.1 h1:4epuZI30bZaozLxEVsb6zpZvVyE1x5Bv3bhQbU6uCKo=
-github.com/ClickHouse/ch-go v0.47.1/go.mod h1:CL1kjJVNy5dMz5lWS52fMvL7nQnLYxjn+qEaOViz/Js=
+github.com/ClickHouse/ch-go v0.47.2 h1:94mxqpQc48PLijPp5McmrJ0MnRUV0/w768Q9JgPVb/k=
+github.com/ClickHouse/ch-go v0.47.2/go.mod h1:z97ZbsIa3G2xtr/mENSumixSf2kRCh+gSH3tvtUSRw8=
 github.com/CloudyKit/fastprinter v0.0.0-20170127035650-74b38d55f37a/go.mod h1:EFZQ978U7x8IRnstaskI3IysnWY5Ao3QgZUKOXlsAdw=
 github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53/go.mod h1:+3IMCy2vIlbG1XG/0ggNQv0SvxCAIpPM5b1nCz56Xno=
 github.com/CloudyKit/jet v2.1.3-0.20180809161101-62edd43e4f88+incompatible/go.mod h1:HPYO+50pSWkPoj9Q/eq0aRGByCL6ScRlUmiEX5Zgm+w=
