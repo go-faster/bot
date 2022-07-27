@@ -3,7 +3,7 @@ module github.com/go-faster/bot
 go 1.18
 
 require (
-	github.com/ClickHouse/ch-go v0.47.1
+	github.com/ClickHouse/ch-go v0.47.2
 	github.com/bradleyfalzon/ghinstallation v1.1.1
 	github.com/brpaz/echozap v1.1.3
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
