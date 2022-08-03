@@ -88,20 +88,20 @@ jobs:
       - name: Set up kubectl cache
         uses: actions/cache@v3
         with:
-          path: ~/kubectl
+          path: /tmp/kubectl
           key: kubectl-v1.22.4
 
       - name: Check kubectl
         id: "kubectl"
         uses: andstor/file-existence-action@v1
         with:
-          files: ~/kubectl
+          files: /tmp/kubectl
 
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
         run: |
-          wget -O ~/kubectl "https://dl.k8s.io/release/v1.22.4/bin/linux/amd64/kubectl"
-          chmod +x ~/kubectl
+          wget -O /tmp/kubectl "https://dl.k8s.io/release/v1.22.4/bin/linux/amd64/kubectl"
+          chmod +x /tmp/kubectl
 
       - name: Setup kubeconfig
         env:
@@ -110,5 +110,5 @@ jobs:
 
       - name: Deploy
         run: |
-          ~/kubectl apply -f .k8s/deployment.release.yml
-          ~/kubectl -n faster rollout status deployment/bot
+          /tmp/kubectl apply -f .k8s/deployment.release.yml
+          /tmp/kubectl -n faster rollout status deployment/bot
