@@ -242,10 +242,15 @@ func (m *Metrics) Run(ctx context.Context) error {
 
 // NewMetrics returns new Metrics.
 func NewMetrics(log *zap.Logger, cfg Config) (*Metrics, error) {
-	res, err := Resource(context.Background(), cfg.Namespace, cfg.Name)
-	if err != nil {
-		return nil, errors.Wrap(err, "resource")
+	// The Resource uses environmental variables for default resource attributes:
+	//
+	// - OTEL_RESOURCE_ATTRIBUTES
+	// - OTEL_SERVICE_NAME
+	if _, ok := os.LookupEnv("OTEL_SERVICE_NAME"); !ok && cfg.Name != "" {
+		// Default service name to provided name.
+		_ = os.Setenv("OTEL_SERVICE_NAME", cfg.Name)
 	}
+	res := resource.Default()
 
 	registry := promClient.NewPedanticRegistry()
 	// Register legacy prometheus-only runtime metrics.
