@@ -9,7 +9,7 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20220621233716-20e506ca4dc1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-faster/errors v0.6.1
-	github.com/go-faster/jx v0.38.1
+	github.com/go-faster/jx v0.39.0
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
 	github.com/gotd/td v0.64.0
