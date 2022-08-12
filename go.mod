@@ -13,7 +13,7 @@ require (
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
 	github.com/gotd/td v0.66.0
-	github.com/labstack/echo/v4 v4.7.2
+	github.com/labstack/echo/v4 v4.8.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
 	github.com/stretchr/testify v1.8.0
