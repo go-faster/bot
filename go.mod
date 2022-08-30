@@ -12,7 +12,7 @@ require (
 	github.com/go-faster/jx v0.39.0
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
-	github.com/gotd/td v0.68.0
+	github.com/gotd/td v0.68.1
 	github.com/labstack/echo/v4 v4.8.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
@@ -29,7 +29,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.9.0
 	go.uber.org/atomic v1.10.0
 	go.uber.org/multierr v1.8.0
-	go.uber.org/zap v1.22.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 )
 
@@ -76,7 +76,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
-	github.com/rogpeppe/go-internal v1.8.1 // indirect
+	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
