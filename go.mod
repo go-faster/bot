@@ -12,7 +12,7 @@ require (
 	github.com/go-faster/jx v0.39.0
 	github.com/google/go-github/v45 v45.2.0
 	github.com/gotd/contrib v0.13.0
-	github.com/gotd/td v0.68.1
+	github.com/gotd/td v0.69.0
 	github.com/labstack/echo/v4 v4.9.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
