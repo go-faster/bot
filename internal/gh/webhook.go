@@ -145,8 +145,7 @@ func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.L
 	case *github.DiscussionEvent:
 		return h.handleDiscussion(ctx, event)
 	case *github.StarEvent:
-		return nil
-		// return h.handleStar(ctx, event)
+		return h.handleStar(ctx, event)
 	default:
 		log.Info("No handler")
 		return nil
