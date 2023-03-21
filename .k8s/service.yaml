@@ -29,6 +29,7 @@ metadata:
   labels:
     app: bot
 spec:
+  ingressClassName: cilium
   rules:
   - host: bot.go-faster.org
     http:
