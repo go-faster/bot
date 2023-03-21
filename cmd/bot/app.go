@@ -131,7 +131,6 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 			gaps, lg.Named("updates"), m.TracerProvider(),
 		),
 		Middlewares: []telegram.Middleware{
-			m.Middleware,
 			updhook.UpdateHook(func(ctx context.Context, u tg.UpdatesClass) error {
 				go func() {
 					if err := gaps.Handle(ctx, u); err != nil {

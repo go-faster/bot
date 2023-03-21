@@ -64,17 +64,13 @@ func maxSize(sizes []tg.PhotoSizeClass) string {
 
 func (m Middleware) downloadMedia(ctx context.Context, rpc *tg.Client, loc tg.InputFileLocationClass) error {
 	h := sha256.New()
-	w := &metricWriter{
-		Increase: m.metrics.MediaBytes.Add,
-	}
 
 	if _, err := m.downloader.Download(rpc, loc).
-		Stream(ctx, io.MultiWriter(h, w)); err != nil {
+		Stream(ctx, h); err != nil {
 		return errors.Wrap(err, "stream")
 	}
 
 	m.logger.Info("Downloaded media",
-		zap.Int64("bytes", w.Bytes),
 		zap.String("sha256", fmt.Sprintf("%x", h.Sum(nil))),
 	)
 
@@ -151,8 +147,6 @@ func (m Middleware) handleMedia(ctx context.Context, rpc *tg.Client, msg *tg.Mes
 
 // OnMessage implements dispatch.MessageHandler.
 func (m Middleware) OnMessage(ctx context.Context, e dispatch.MessageEvent) error {
-	m.metrics.Messages.Inc()
-
 	if err := m.next.OnMessage(ctx, e); err != nil {
 		return err
 	}
@@ -161,6 +155,5 @@ func (m Middleware) OnMessage(ctx context.Context, e dispatch.MessageEvent) erro
 		return errors.Wrap(err, "handle media")
 	}
 
-	m.metrics.Responses.Inc()
 	return nil
 }

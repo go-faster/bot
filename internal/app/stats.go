@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"time"
 
-	"github.com/dustin/go-humanize"
+	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/tg"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -14,6 +13,8 @@ import (
 
 // Handler implements stats request handler.
 type Handler struct {
+	Middleware *oteltg.Middleware
+
 	m *Metrics
 }
 
@@ -24,10 +25,6 @@ func (m *Metrics) NewHandler() Handler {
 func (h Handler) stats() string {
 	var w strings.Builder
 	fmt.Fprintf(&w, "Statistics:\n\n")
-	fmt.Fprintln(&w, "Messages:", h.m.Messages.Load())
-	fmt.Fprintln(&w, "Responses:", h.m.Responses.Load())
-	fmt.Fprintln(&w, "Media:", humanize.IBytes(uint64(h.m.MediaBytes.Load())))
-	fmt.Fprintln(&w, "Uptime:", time.Since(h.m.Start).Round(time.Second))
 	fmt.Fprintln(&w, "TL Layer version:", tg.Layer)
 	if v := GetGotdVersion(); v != "" {
 		fmt.Fprintln(&w, "Version:", v)
