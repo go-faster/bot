@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/bradleyfalzon/ghinstallation"
+	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v45/github"
 )
