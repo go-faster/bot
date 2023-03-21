@@ -16,6 +16,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      KUBECONFIG: /tmp/kube-cfg
 
     steps:
       - name: Checkout
