@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
@@ -254,34 +253,6 @@ func (b *App) Run(ctx context.Context) error {
 			return nil
 		})
 	}
-
-	g.Go(func() error {
-		client, err := ch.Dial(ctx, ch.Options{
-			Address:        os.Getenv("CLICKHOUSE_ADDR"),
-			Compression:    ch.CompressionZSTD,
-			TracerProvider: b.m.TracerProvider(),
-			MeterProvider:  b.m.MeterProvider(),
-			Database:       "faster",
-
-			OpenTelemetryInstrumentation: true,
-		})
-		if err != nil {
-			return err
-		}
-		defer func() {
-			if err := client.Close(); err != nil {
-				b.lg.Error("Close clickhouse client", zap.Error(err))
-			}
-		}()
-		if err := client.Ping(ctx); err != nil {
-			return err
-		}
-		b.lg.Info("Connected to clickhouse",
-			zap.Stringer("server", client.ServerInfo()),
-		)
-		return nil
-	})
-
 	g.Go(func() error {
 		return b.client.Run(ctx, func(ctx context.Context) error {
 			b.lg.Debug("Client initialized")

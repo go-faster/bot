@@ -1,3 +1,4 @@
 #!/bin/sh
 
-echo "${KUBECONFIG}" | base64 -d > /tmp/kubeconfig
+mkdir -p ~/.kube
+echo "${KUBE}" > ~/.kube/config
