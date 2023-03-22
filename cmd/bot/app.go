@@ -63,7 +63,6 @@ type App struct {
 	http   *http.Client
 	m      *app.Metrics
 	lg     *zap.Logger
-	ch     *ch.Client
 }
 
 func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -170,25 +169,6 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		Register(dispatcher).
 		OnMessage(h)
 
-	eventsDB, err := ch.Dial(ctx, ch.Options{
-		Address:        os.Getenv("CLICKHOUSE_ADDR"),
-		Compression:    ch.CompressionZSTD,
-		TracerProvider: m.TracerProvider(),
-		MeterProvider:  m.MeterProvider(),
-		Database:       "faster",
-
-		Password: os.Getenv("CLICKHOUSE_PASSWORD"),
-		User:     os.Getenv("CLICKHOUSE_USER"),
-
-		OpenTelemetryInstrumentation: true,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "connect to clickhouse")
-	}
-	lg.Info("Connected to clickhouse",
-		zap.Stringer("server", eventsDB.ServerInfo()),
-	)
-
 	a := &App{
 		client:       client,
 		token:        token,
@@ -204,7 +184,6 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		http:         httpClient,
 		m:            m,
 		lg:           lg,
-		ch:           eventsDB,
 	}
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
@@ -275,7 +254,30 @@ func (a *App) Run(ctx context.Context) error {
 		})
 	}
 	g.Go(func() error {
+		db, err := ch.Dial(ctx, ch.Options{
+			Address:        os.Getenv("CLICKHOUSE_ADDR"),
+			Compression:    ch.CompressionZSTD,
+			TracerProvider: a.m.TracerProvider(),
+			MeterProvider:  a.m.MeterProvider(),
+			Database:       "faster",
 
+			Password: os.Getenv("CLICKHOUSE_PASSWORD"),
+			User:     os.Getenv("CLICKHOUSE_USER"),
+
+			OpenTelemetryInstrumentation: true,
+		})
+		if err != nil {
+			return errors.Wrap(err, "connect to clickhouse")
+		}
+		a.lg.Info("Clickhouse connection established",
+			zap.Stringer("server", db.ServerInfo()),
+		)
+		if err := db.Ping(ctx); err != nil {
+			return errors.Wrap(err, "ping clickhouse")
+		}
+		if err := db.Close(); err != nil {
+			return errors.Wrap(err, "close clickhouse")
+		}
 		return nil
 	})
 	g.Go(func() error {
