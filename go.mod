@@ -15,7 +15,7 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/prometheus/client_golang v1.14.0
 	github.com/stretchr/testify v1.8.2
-	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/bbolt v1.3.7
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0
 	go.opentelemetry.io/contrib/propagators/jaeger v1.15.0
