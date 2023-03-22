@@ -63,9 +63,10 @@ type App struct {
 	http   *http.Client
 	m      *app.Metrics
 	lg     *zap.Logger
+	ch     *ch.Client
 }
 
-func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
+func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -169,6 +170,25 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		Register(dispatcher).
 		OnMessage(h)
 
+	eventsDB, err := ch.Dial(ctx, ch.Options{
+		Address:        os.Getenv("CLICKHOUSE_ADDR"),
+		Compression:    ch.CompressionZSTD,
+		TracerProvider: m.TracerProvider(),
+		MeterProvider:  m.MeterProvider(),
+		Database:       "faster",
+
+		Password: os.Getenv("CLICKHOUSE_PASSWORD"),
+		User:     os.Getenv("CLICKHOUSE_USER"),
+
+		OpenTelemetryInstrumentation: true,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "connect to clickhouse")
+	}
+	lg.Info("Connected to clickhouse",
+		zap.Stringer("server", eventsDB.ServerInfo()),
+	)
+
 	a := &App{
 		client:       client,
 		token:        token,
@@ -184,6 +204,7 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		http:         httpClient,
 		m:            m,
 		lg:           lg,
+		ch:           eventsDB,
 	}
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
@@ -197,22 +218,22 @@ func InitApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	return a, nil
 }
 
-func (b *App) Close() error {
-	return multierr.Append(b.stateStorage.db.Close(), b.db.Close())
+func (a *App) Close() error {
+	return multierr.Append(a.stateStorage.db.Close(), a.db.Close())
 }
 
-func (b *App) Run(ctx context.Context) error {
+func (a *App) Run(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
 
 	if secret, ok := os.LookupEnv("GITHUB_SECRET"); ok {
-		lg := b.lg.Named("webhook")
+		lg := a.lg.Named("webhook")
 
 		httpAddr := os.Getenv("HTTP_ADDR")
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
 
-		webhook := gh.NewWebhook(b.storage, b.sender, secret, b.m.MeterProvider(), b.m.TracerProvider()).
+		webhook := gh.NewWebhook(a.storage, a.sender, secret, a.m.MeterProvider(), a.m.TracerProvider()).
 			WithLogger(lg)
 		if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 			webhook = webhook.WithNotifyGroup(notifyGroup)
@@ -224,7 +245,7 @@ func (b *App) Run(ctx context.Context) error {
 			middleware.RequestID(),
 			echozap.ZapLogger(lg.Named("requests")),
 			otelecho.Middleware("bot",
-				otelecho.WithTracerProvider(b.m.TracerProvider()),
+				otelecho.WithTracerProvider(a.m.TracerProvider()),
 			),
 		)
 
@@ -254,46 +275,21 @@ func (b *App) Run(ctx context.Context) error {
 		})
 	}
 	g.Go(func() error {
-		client, err := ch.Dial(ctx, ch.Options{
-			Address:        os.Getenv("CLICKHOUSE_ADDR"),
-			Compression:    ch.CompressionZSTD,
-			TracerProvider: b.m.TracerProvider(),
-			MeterProvider:  b.m.MeterProvider(),
-			Database:       "faster",
 
-			Password: os.Getenv("CLICKHOUSE_PASSWORD"),
-			User:     os.Getenv("CLICKHOUSE_USER"),
-
-			OpenTelemetryInstrumentation: true,
-		})
-		if err != nil {
-			return err
-		}
-		defer func() {
-			if err := client.Close(); err != nil {
-				b.lg.Error("Close clickhouse client", zap.Error(err))
-			}
-		}()
-		if err := client.Ping(ctx); err != nil {
-			return err
-		}
-		b.lg.Info("Connected to clickhouse",
-			zap.Stringer("server", client.ServerInfo()),
-		)
 		return nil
 	})
 	g.Go(func() error {
-		return b.client.Run(ctx, func(ctx context.Context) error {
-			b.lg.Debug("Client initialized")
+		return a.client.Run(ctx, func(ctx context.Context) error {
+			a.lg.Debug("Client initialized")
 
-			au := b.client.Auth()
+			au := a.client.Auth()
 			status, err := au.Status(ctx)
 			if err != nil {
 				return errors.Wrap(err, "auth status")
 			}
 
 			if !status.Authorized {
-				if _, err := au.Bot(ctx, b.token); err != nil {
+				if _, err := au.Bot(ctx, a.token); err != nil {
 					return errors.Wrap(err, "login")
 				}
 
@@ -303,24 +299,24 @@ func (b *App) Run(ctx context.Context) error {
 					return errors.Wrap(err, "auth status")
 				}
 			} else {
-				b.lg.Info("Bot login restored",
+				a.lg.Info("Bot login restored",
 					zap.String("name", status.User.Username),
 				)
 			}
 
-			if err := b.gaps.Auth(ctx, b.raw, status.User.ID, status.User.Bot, false); err != nil {
+			if err := a.gaps.Auth(ctx, a.raw, status.User.ID, status.User.Bot, false); err != nil {
 				return err
 			}
-			defer func() { _ = b.gaps.Logout() }()
+			defer func() { _ = a.gaps.Logout() }()
 
 			if _, disableRegister := os.LookupEnv("DISABLE_COMMAND_REGISTER"); !disableRegister {
-				if err := b.mux.RegisterCommands(ctx, b.raw); err != nil {
+				if err := a.mux.RegisterCommands(ctx, a.raw); err != nil {
 					return errors.Wrap(err, "register commands")
 				}
 			}
 
 			if deployNotify := os.Getenv("TG_DEPLOY_NOTIFY_GROUP"); deployNotify != "" {
-				p, err := b.sender.ResolveDomain(deployNotify, peer.OnlyChannel).AsInputPeer(ctx)
+				p, err := a.sender.ResolveDomain(deployNotify, peer.OnlyChannel).AsInputPeer(ctx)
 				if err != nil {
 					return errors.Wrap(err, "resolve")
 				}
@@ -349,7 +345,7 @@ func (b *App) Run(ctx context.Context) error {
 					mrkp = markup.InlineRow(markup.URL("Commit", commitLink))
 				}
 
-				if _, err := b.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
+				if _, err := a.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
 					return errors.Wrap(err, "send")
 				}
 			}
@@ -362,7 +358,7 @@ func (b *App) Run(ctx context.Context) error {
 }
 
 func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
-	a, err := InitApp(m, lg)
+	a, err := InitApp(ctx, m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}

@@ -12,5 +12,6 @@ func setupBot(a *App) error {
 		return err
 	})
 	a.mux.Handle("/stat", "Metrics and version", a.m.NewHandler())
+	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
 	return nil
 }
