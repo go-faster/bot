@@ -83,11 +83,8 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 	}
 
 	// Setting up session storage.
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return nil, errors.Wrap(err, "get home")
-	}
-	sessionDir := filepath.Join(home, ".td")
+	cacheDir := "/cache"
+	sessionDir := filepath.Join(cacheDir, ".td")
 	if err := os.MkdirAll(sessionDir, 0700); err != nil {
 		return nil, errors.Wrap(err, "mkdir")
 	}

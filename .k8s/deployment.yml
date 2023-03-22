@@ -22,7 +22,8 @@ spec:
     spec:
       volumes:
         - name: cache
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: bot
       containers:
         - name: bot
           image: ghcr.io/go-faster/bot:main
