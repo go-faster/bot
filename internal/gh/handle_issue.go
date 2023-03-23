@@ -35,7 +35,7 @@ func getIssueType(issue *github.Issue) issueType {
 
 func formatIssue(e *github.IssuesEvent) message.StyledTextOption {
 	issue := e.GetIssue()
-	sender := e.GetSender()
+	user := issue.GetUser()
 	formatter := func(eb *entity.Builder) error {
 		eb.Plain("New ")
 		eb.Plain(string(getIssueType(issue)))
@@ -46,7 +46,7 @@ func formatIssue(e *github.IssuesEvent) message.StyledTextOption {
 		)
 		eb.TextURL(urlName, issue.GetHTMLURL())
 		eb.Plain(" by ")
-		eb.TextURL(sender.GetLogin(), sender.GetHTMLURL())
+		eb.TextURL(user.GetLogin(), user.GetHTMLURL())
 		eb.Plain("\n\n")
 
 		eb.Italic(issue.GetTitle())
