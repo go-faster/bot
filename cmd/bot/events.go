@@ -122,6 +122,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		colTime proto.ColDateTime
 		colBody proto.ColStr
 		d       jx.Decoder
+		e       jx.Encoder
 
 		total     int
 		skipped   int
@@ -149,20 +150,36 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				}
 				sizeTotal += uint64(len(b))
 				d.ResetBytes(b)
+				e.Reset()
 				var (
-					payload []byte
-
 					repoID   int64
 					repoName string
+					repoURL  string
 					evType   string
 				)
+				e.ObjStart()
 				if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 					switch string(key) {
-					case "payload":
-						if payload, err = d.Raw(); err != nil {
-							return errors.Wrap(err, "payload")
+					case "actor":
+						v, err := d.Raw()
+						if err != nil {
+							return errors.Wrap(err, "actor")
 						}
+						e.Field("actor", func(e *jx.Encoder) {
+							e.Raw(v)
+						})
 						return nil
+					case "payload":
+						return d.ObjBytes(func(d *jx.Decoder, key []byte) error {
+							v, err := d.Raw()
+							if err != nil {
+								return errors.Wrap(err, "payload")
+							}
+							e.Field(string(key), func(e *jx.Encoder) {
+								e.Raw(v)
+							})
+							return nil
+						})
 					case "type":
 						if evType, err = d.Str(); err != nil {
 							return errors.Wrap(err, "type")
@@ -181,6 +198,11 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 									return errors.Wrap(err, "name")
 								}
 								return nil
+							case "url":
+								if repoURL, err = d.Str(); err != nil {
+									return errors.Wrap(err, "url")
+								}
+								return nil
 							default:
 								return d.Skip()
 							}
@@ -191,7 +213,23 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				}); err != nil {
 					return errors.Wrap(err, "decode")
 				}
-				d.ResetBytes(payload)
+				e.Field("repo", func(e *jx.Encoder) {
+					e.Field("id", func(e *jx.Encoder) {
+						e.Int64(repoID)
+					})
+					e.Field("name", func(e *jx.Encoder) {
+						// Strip first part of repo name?
+						e.Str(repoName)
+					})
+					e.Field("full_name", func(e *jx.Encoder) {
+						e.Str(repoName)
+					})
+					e.Field("url", func(e *jx.Encoder) {
+						e.Str(repoURL)
+					})
+				})
+				e.ObjEnd()
+				d.ResetBytes(e.Bytes())
 				if err := d.Validate(); err != nil {
 					return errors.Wrap(err, "validate")
 				}
@@ -222,7 +260,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				)
 
 				// Handle as event was received from webhook.
-				if err := a.wh.Handle(ctx, evType, payload); err != nil {
+				if err := a.wh.Handle(ctx, evType, e.Bytes()); err != nil {
 					return errors.Wrap(err, "handle")
 				}
 
