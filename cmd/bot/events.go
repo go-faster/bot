@@ -123,10 +123,11 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		colBody proto.ColStr
 		d       jx.Decoder
 
-		total   int
-		skipped int
-		hit     int
-		latest  time.Time
+		total     int
+		skipped   int
+		hit       int
+		processed int
+		latest    time.Time
 	)
 	if err := db.Do(ctx, ch.Query{
 		Body: q,
@@ -222,6 +223,8 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if err := a.wh.Handle(ctx, evType, b); err != nil {
 					return errors.Wrap(err, "handle")
 				}
+
+				processed++
 			}
 			return nil
 		},
@@ -234,6 +237,8 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		zap.String("lag.human", time.Since(latest).String()),
 		zap.Int("total", total),
 		zap.Int("skipped", skipped),
+		zap.Int("hit", hit),
+		zap.Int("processed", processed),
 	)
 
 	return nil
