@@ -127,6 +127,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		skipped   int
 		hit       int
 		processed int
+		sizeTotal uint64
 		latest    time.Time
 	)
 	if err := db.Do(ctx, ch.Query{
@@ -146,6 +147,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if t.After(latest) {
 					latest = t
 				}
+				sizeTotal += uint64(len(b))
 				d.ResetBytes(b)
 				var (
 					payload []byte
@@ -239,6 +241,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		zap.Int("skipped", skipped),
 		zap.Int("hit", hit),
 		zap.Int("processed", processed),
+		zap.String("parsed", humanize.Bytes(sizeTotal)),
 	)
 
 	return nil
