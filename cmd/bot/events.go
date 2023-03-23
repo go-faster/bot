@@ -104,7 +104,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 	}
 	defer cleanup()
 
-	q := fmt.Sprintf("SELECT (id, ts, event) FROM faster.github_events_raw WHERE ts >= toDateTime64(%d, 9) ORDER BY ", start.Unix())
+	q := fmt.Sprintf("SELECT id, ts, event FROM faster.github_events_raw WHERE ts >= toDateTime64(%d, 9) ORDER BY ts DESC, id DESC", start.Unix())
 	var (
 		colID   proto.ColUInt64
 		colTime proto.ColDateTime64
