@@ -91,7 +91,7 @@ func TestWebhook(t *testing.T) {
 		"test": channel,
 	})
 	hook := NewWebhook(
-		storage.NewMsgID(db), sender, "secret",
+		storage.NewMsgID(db), sender,
 		metric.NewNoopMeterProvider(), trace.NewNoopTracerProvider(),
 	).
 		WithLogger(log).
