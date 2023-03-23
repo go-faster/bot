@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ClickHouse/ch-go/internal/gold"
+	"github.com/go-faster/bot/internal/gold"
 )
 
 func TestStr(t *testing.T) {
