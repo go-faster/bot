@@ -106,7 +106,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 
 	q := fmt.Sprintf("SELECT id, ts, raw FROM faster.github_events_raw WHERE ts >= toDateTime64(%d, 9) ORDER BY ts DESC, id DESC", start.Unix())
 	var (
-		colID   proto.ColUInt64
+		colID   proto.ColInt64
 		colTime proto.ColDateTime64
 		colBody proto.ColStr
 		d       jx.Decoder
@@ -180,7 +180,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 					zap.Int64("repo_id", repoID),
 					zap.String("repo_name", repoName),
 					zap.String("type", t),
-					zap.Uint64("id", id),
+					zap.Int64("id", id),
 					zap.String("sha256", fmt.Sprintf("%x", h[:])),
 				)
 			}
