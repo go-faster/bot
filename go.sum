@@ -1,8 +1,8 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/ClickHouse/ch-go v0.53.1 h1:7Mxn/e0ZUzC/iZUyuHQIpi5WRLB5wzxKbsAG8h02bNk=
-github.com/ClickHouse/ch-go v0.53.1/go.mod h1:2jvyjBRb5zhzFvcOBxPelzpbB9qsS47vwJssurJe2OA=
+github.com/ClickHouse/ch-go v0.54.0 h1:WzPo/iZ8Gchb9Ze30TywMheOzKW5FkhTeZPxvz/iE6o=
+github.com/ClickHouse/ch-go v0.54.0/go.mod h1:2jvyjBRb5zhzFvcOBxPelzpbB9qsS47vwJssurJe2OA=
 github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53/go.mod h1:+3IMCy2vIlbG1XG/0ggNQv0SvxCAIpPM5b1nCz56Xno=
 github.com/CloudyKit/jet/v3 v3.0.0/go.mod h1:HKQPgSJmdK8hdoAbKUUWajkHyHo4RaU5rMdUywE7VMo=
 github.com/DataDog/zstd v1.5.2 h1:vUG4lAyuPCXO0TLbXvPv7EB7cNK1QV/luu55UHLrrn8=
