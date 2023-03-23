@@ -25,6 +25,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -59,6 +60,8 @@ type App struct {
 	storage storage.MsgID
 	mux     dispatch.MessageMux
 	bot     *dispatch.Bot
+
+	tracer trace.Tracer
 
 	github *github.Client
 	http   *http.Client
@@ -193,6 +196,8 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		m:            m,
 		lg:           lg,
 		wh:           webhook,
+
+		tracer: m.TracerProvider().Tracer(""),
 	}
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {

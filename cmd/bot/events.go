@@ -12,6 +12,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 	"github.com/redis/go-redis/v9"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -90,6 +91,12 @@ func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
 }
 
 func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
+	begin := time.Now()
+	ctx, span := a.tracer.Start(ctx, "FetchEvents",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	trackedRepo := map[string]struct{}{
 		"ClickHouse/ch-go":     {},
 		"ernado/oss-estimator": {},
@@ -218,6 +225,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 	}
 
 	a.lg.Info("FetchEvents",
+		zap.String("duration.human", time.Since(begin).String()),
 		zap.Int("total", total),
 		zap.Int("skipped", skipped),
 	)
