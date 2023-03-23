@@ -11,6 +11,7 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.0
 	github.com/google/go-github/v45 v45.2.0
+	github.com/google/go-github/v50 v50.1.0
 	github.com/gotd/contrib v0.15.0
 	github.com/gotd/td v0.79.0
 	github.com/labstack/echo/v4 v4.10.2
@@ -58,7 +59,6 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/go-github/v50 v50.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect

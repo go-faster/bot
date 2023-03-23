@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v45/github"
+	"github.com/google/go-github/v50/github"
 
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"

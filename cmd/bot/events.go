@@ -129,6 +129,9 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				var (
 					payload []byte
 					t       string
+
+					repoID   int64
+					repoName string
 				)
 				if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 					switch string(key) {
@@ -142,6 +145,23 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 							return errors.Wrap(err, "type")
 						}
 						return nil
+					case "repo":
+						return d.ObjBytes(func(d *jx.Decoder, key []byte) error {
+							switch string(key) {
+							case "id":
+								if repoID, err = d.Int64(); err != nil {
+									return errors.Wrap(err, "id")
+								}
+								return nil
+							case "name":
+								if repoName, err = d.Str(); err != nil {
+									return errors.Wrap(err, "name")
+								}
+								return nil
+							default:
+								return d.Skip()
+							}
+						})
 					default:
 						return d.Skip()
 					}
@@ -156,6 +176,13 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if _, err := r.Set(ctx, fmt.Sprintf("event:%s:%d:%d", t, ts.Unix(), id), h[:], time.Minute).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
+				a.lg.Debug("Event",
+					zap.Int64("repo_id", repoID),
+					zap.String("repo_name", repoName),
+					zap.String("type", t),
+					zap.Uint64("id", id),
+					zap.String("sha256", fmt.Sprintf("%x", h[:])),
+				)
 			}
 			return nil
 		},
