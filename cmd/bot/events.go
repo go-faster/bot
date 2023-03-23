@@ -126,6 +126,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		total   int
 		skipped int
 		hit     int
+		latest  time.Time
 	)
 	if err := db.Do(ctx, ch.Query{
 		Body: q,
@@ -139,7 +140,11 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				var (
 					id = colID.Row(i)
 					b  = colBody.RowBytes(i)
+					t  = colTime.Row(i)
 				)
+				if t.After(latest) {
+					latest = t
+				}
 				d.ResetBytes(b)
 				var (
 					payload []byte
@@ -226,6 +231,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 
 	a.lg.Info("FetchEvents",
 		zap.String("duration.human", time.Since(begin).String()),
+		zap.String("lag.human", time.Since(latest).String()),
 		zap.Int("total", total),
 		zap.Int("skipped", skipped),
 	)
