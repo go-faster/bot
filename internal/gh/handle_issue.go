@@ -79,6 +79,7 @@ func formatIssue(e *github.IssuesEvent) message.StyledTextOption {
 
 func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 	if e.GetAction() != "opened" {
+		h.logger.Info("Ignoring non-opened issue")
 		return nil
 	}
 
