@@ -82,6 +82,35 @@ func (h Webhook) RegisterRoutes(e *echo.Echo) {
 	e.POST("/hook", h.handleHook)
 }
 
+func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
+	ctx, span := h.tracer.Start(ctx, "Handle",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
+	if t == "security_advisory" {
+		// Current GitHub library is unable to handle this.
+		span.SetStatus(codes.Ok, "ignored")
+		return nil
+	}
+	event, err := github.ParseWebHook(t, data)
+	if err != nil {
+		return errors.Wrap(err, "parse")
+	}
+	h.events.Add(ctx, 1,
+		attribute.String("event", t),
+	)
+	log := h.logger.With(
+		zap.String("type", fmt.Sprintf("%T", event)),
+	)
+	log.Info("Processing event")
+	if err := h.processEvent(ctx, event, log); err != nil {
+		return errors.Wrap(err, "process")
+	}
+
+	return nil
+}
+
 func (h Webhook) handleHook(e echo.Context) error {
 	ctx, span := h.tracer.Start(e.Request().Context(), "handleHook",
 		trace.WithSpanKind(trace.SpanKindServer),
@@ -91,40 +120,18 @@ func (h Webhook) handleHook(e echo.Context) error {
 
 	payload, err := github.ValidatePayload(r, []byte(h.githubSecret))
 	if err != nil {
-		h.logger.Info("Failed to validate payload")
+		h.logger.Debug("Failed to validate payload")
 		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrNotFound
 	}
-	whType := github.WebHookType(r)
-	span.SetName("hook: " + whType)
-	span.SetAttributes(attribute.String("github.webhook.type", whType))
-
-	if whType == "security_advisory" {
-		// Current GitHub library is unable to handle this.
-		span.SetStatus(codes.Ok, "ignored")
-		return e.String(http.StatusOK, "ignored")
-	}
-
-	event, err := github.ParseWebHook(whType, payload)
-	if err != nil {
-		h.logger.Error("Failed to parse webhook", zap.Error(err))
+	if err := h.Handle(ctx, github.WebHookType(r), payload); err != nil {
+		h.logger.Error("Failed to handle",
+			zap.Error(err),
+		)
 		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrInternalServerError
 	}
 
-	h.events.Add(ctx, 1,
-		attribute.String("event", whType),
-	)
-
-	log := h.logger.With(
-		zap.String("type", fmt.Sprintf("%T", event)),
-	)
-	log.Info("Processing event")
-	if err := h.processEvent(ctx, event, log); err != nil {
-		log.Error("Failed to process event", zap.Error(err))
-		span.SetStatus(codes.Error, err.Error())
-		return echo.ErrInternalServerError
-	}
 	span.SetStatus(codes.Ok, "done")
 	return e.String(http.StatusOK, "done")
 }
