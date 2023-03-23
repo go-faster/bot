@@ -90,7 +90,83 @@ func (h Webhook) RegisterRoutes(e *echo.Echo) {
 	e.POST("/hook", h.handleHook)
 }
 
+func eventMapping() map[string]string {
+	return map[string]string{
+		"branch_protection_rule":         "BranchProtectionRuleEvent",
+		"check_run":                      "CheckRunEvent",
+		"check_suite":                    "CheckSuiteEvent",
+		"code_scanning_alert":            "CodeScanningAlertEvent",
+		"commit_comment":                 "CommitCommentEvent",
+		"content_reference":              "ContentReferenceEvent",
+		"create":                         "CreateEvent",
+		"delete":                         "DeleteEvent",
+		"deploy_key":                     "DeployKeyEvent",
+		"deployment":                     "DeploymentEvent",
+		"deployment_status":              "DeploymentStatusEvent",
+		"discussion":                     "DiscussionEvent",
+		"fork":                           "ForkEvent",
+		"github_app_authorization":       "GitHubAppAuthorizationEvent",
+		"gollum":                         "GollumEvent",
+		"installation":                   "InstallationEvent",
+		"installation_repositories":      "InstallationRepositoriesEvent",
+		"issue_comment":                  "IssueCommentEvent",
+		"issues":                         "IssuesEvent",
+		"label":                          "LabelEvent",
+		"marketplace_purchase":           "MarketplacePurchaseEvent",
+		"member":                         "MemberEvent",
+		"membership":                     "MembershipEvent",
+		"merge_group":                    "MergeGroupEvent",
+		"meta":                           "MetaEvent",
+		"milestone":                      "MilestoneEvent",
+		"organization":                   "OrganizationEvent",
+		"org_block":                      "OrgBlockEvent",
+		"package":                        "PackageEvent",
+		"page_build":                     "PageBuildEvent",
+		"ping":                           "PingEvent",
+		"project":                        "ProjectEvent",
+		"project_card":                   "ProjectCardEvent",
+		"project_column":                 "ProjectColumnEvent",
+		"public":                         "PublicEvent",
+		"pull_request":                   "PullRequestEvent",
+		"pull_request_review":            "PullRequestReviewEvent",
+		"pull_request_review_comment":    "PullRequestReviewCommentEvent",
+		"pull_request_review_thread":     "PullRequestReviewThreadEvent",
+		"pull_request_target":            "PullRequestTargetEvent",
+		"push":                           "PushEvent",
+		"repository":                     "RepositoryEvent",
+		"repository_dispatch":            "RepositoryDispatchEvent",
+		"repository_import":              "RepositoryImportEvent",
+		"repository_vulnerability_alert": "RepositoryVulnerabilityAlertEvent",
+		"release":                        "ReleaseEvent",
+		"secret_scanning_alert":          "SecretScanningAlertEvent",
+		"star":                           "StarEvent",
+		"status":                         "StatusEvent",
+		"team":                           "TeamEvent",
+		"team_add":                       "TeamAddEvent",
+		"user":                           "UserEvent",
+		"watch":                          "WatchEvent",
+		"workflow_dispatch":              "WorkflowDispatchEvent",
+		"workflow_job":                   "WorkflowJobEvent",
+		"workflow_run":                   "WorkflowRunEvent",
+	}
+}
+
+func reverseMapping(m map[string]string) map[string]string {
+	out := make(map[string]string, len(m))
+	for k, v := range m {
+		out[v] = k
+	}
+	return out
+}
+
+var _eventTypeToWebhookType = reverseMapping(eventMapping())
+
 func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
+	// Normalize event type to match X-Github-Event value.
+	if v, ok := _eventTypeToWebhookType[t]; ok {
+		t = v
+	}
+
 	ctx, span := h.tracer.Start(ctx, "Handle",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
