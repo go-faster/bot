@@ -11,6 +11,7 @@ import (
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 
@@ -108,6 +109,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		colID   proto.ColUInt64
 		colTime proto.ColDateTime64
 		colBody proto.ColStr
+		d       jx.Decoder
 	)
 	if err := db.Do(ctx, ch.Query{
 		Body: q,
@@ -123,9 +125,35 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 					ts = colTime.Row(i)
 					b  = colBody.RowBytes(i)
 				)
-
-				h := sha256.Sum256(b)
-				if _, err := r.Set(ctx, fmt.Sprintf("event:%d:%d", ts.Unix(), id), h[:], time.Minute).Result(); err != nil {
+				d.ResetBytes(b)
+				var (
+					payload []byte
+					t       string
+				)
+				if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
+					switch string(key) {
+					case "payload":
+						if payload, err = d.StrBytes(); err != nil {
+							return errors.Wrap(err, "payload")
+						}
+						return nil
+					case "type":
+						if t, err = d.Str(); err != nil {
+							return errors.Wrap(err, "type")
+						}
+						return nil
+					default:
+						return d.Skip()
+					}
+				}); err != nil {
+					return errors.Wrap(err, "decode")
+				}
+				d.ResetBytes(payload)
+				if err := d.Validate(); err != nil {
+					return errors.Wrap(err, "validate")
+				}
+				h := sha256.Sum256(payload)
+				if _, err := r.Set(ctx, fmt.Sprintf("event:%s:%d:%d", t, ts.Unix(), id), h[:], time.Minute).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
 			}
