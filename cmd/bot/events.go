@@ -90,6 +90,12 @@ func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
 }
 
 func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
+	trackedRepo := map[string]struct{}{
+		"ClickHouse/ch-go":     {},
+		"ernado/oss-estimator": {},
+		"ernado/du ":           {},
+	}
+
 	r := redis.NewClient(&redis.Options{
 		Addr: "redis:6379",
 	})
@@ -112,6 +118,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 
 		total   int
 		skipped int
+		hit     int
 	)
 	if err := db.Do(ctx, ch.Query{
 		Body: q,
@@ -173,17 +180,23 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if err := d.Validate(); err != nil {
 					return errors.Wrap(err, "validate")
 				}
-				k := fmt.Sprintf("v2:event:%x", id)
 				total++
+				if _, ok := trackedRepo[repoName]; !ok {
+					skipped++
+					continue
+				}
+
+				// Protect from duplicates.
+				k := fmt.Sprintf("v2:event:%x", id)
 				exists, err := r.Exists(ctx, k).Result()
 				if err != nil {
 					return errors.Wrap(err, "exists")
 				}
 				if exists != 0 {
-					skipped++
+					hit++
 					continue
 				}
-				if _, err := r.Set(ctx, k, 1, time.Minute).Result(); err != nil {
+				if _, err := r.Set(ctx, k, 1, time.Hour).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
 				a.lg.Info("Got event",
