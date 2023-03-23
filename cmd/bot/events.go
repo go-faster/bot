@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
 	"fmt"
 	"os"
 	"time"
@@ -110,6 +109,9 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		colTime proto.ColDateTime
 		colBody proto.ColStr
 		d       jx.Decoder
+
+		total   int
+		skipped int
 	)
 	if err := db.Do(ctx, ch.Query{
 		Body: q,
@@ -122,16 +124,15 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 			for i := 0; i < colID.Rows(); i++ {
 				var (
 					id = colID.Row(i)
-					ts = colTime.Row(i)
 					b  = colBody.RowBytes(i)
 				)
 				d.ResetBytes(b)
 				var (
 					payload []byte
-					t       string
 
 					repoID   int64
 					repoName string
+					evType   string
 				)
 				if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 					switch string(key) {
@@ -141,7 +142,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 						}
 						return nil
 					case "type":
-						if t, err = d.Str(); err != nil {
+						if evType, err = d.Str(); err != nil {
 							return errors.Wrap(err, "type")
 						}
 						return nil
@@ -172,16 +173,24 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if err := d.Validate(); err != nil {
 					return errors.Wrap(err, "validate")
 				}
-				h := sha256.Sum256(payload)
-				if _, err := r.Set(ctx, fmt.Sprintf("event:%s:%d:%d", t, ts.Unix(), id), h[:], time.Minute).Result(); err != nil {
+				k := fmt.Sprintf("v2:event:%x", id)
+				total++
+				exists, err := r.Exists(ctx, k).Result()
+				if err != nil {
+					return errors.Wrap(err, "exists")
+				}
+				if exists != 0 {
+					skipped++
+					continue
+				}
+				if _, err := r.Set(ctx, k, 1, time.Minute).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
-				a.lg.Debug("Event",
+				a.lg.Info("Got event",
+					zap.Int64("id", id),
+					zap.String("type", evType),
 					zap.Int64("repo_id", repoID),
 					zap.String("repo_name", repoName),
-					zap.String("type", t),
-					zap.Int64("id", id),
-					zap.String("sha256", fmt.Sprintf("%x", h[:])),
 				)
 			}
 			return nil
@@ -189,6 +198,11 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 	}); err != nil {
 		return errors.Wrap(err, "do")
 	}
+
+	a.lg.Info("FetchEvents",
+		zap.Int("total", total),
+		zap.Int("skipped", skipped),
+	)
 
 	return nil
 }
