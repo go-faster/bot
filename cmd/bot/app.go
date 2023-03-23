@@ -21,6 +21,7 @@ import (
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/redis/go-redis/v9"
 	bolt "go.etcd.io/bbolt"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -250,6 +251,21 @@ func (a *App) Run(ctx context.Context) error {
 			return nil
 		})
 	}
+	g.Go(func() error {
+		rdb := redis.NewClient(&redis.Options{
+			Addr: "redis:6379",
+		})
+
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+
+		if _, err := rdb.Ping(ctx).Result(); err != nil {
+			return errors.Wrap(err, "ping redis")
+		}
+
+		a.lg.Info("Redis connection established")
+		return nil
+	})
 	g.Go(func() error {
 		db, err := ch.Dial(ctx, ch.Options{
 			Address:        os.Getenv("CLICKHOUSE_ADDR"),

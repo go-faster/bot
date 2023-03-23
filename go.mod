@@ -15,6 +15,7 @@ require (
 	github.com/gotd/td v0.79.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/prometheus/client_golang v1.14.0
+	github.com/redis/go-redis/v9 v9.0.2
 	github.com/stretchr/testify v1.8.2
 	go.etcd.io/bbolt v1.3.7
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
@@ -44,6 +45,7 @@ require (
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
 	github.com/cockroachdb/redact v1.1.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dmarkham/enumer v1.5.8 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/getsentry/sentry-go v0.19.0 // indirect
