@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
@@ -102,6 +103,13 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
 	}
 	event, err := github.ParseWebHook(t, data)
 	if err != nil {
+		if strings.Contains(err.Error(), "unknown X-Github-Event") {
+			h.logger.Info("Unknown event type",
+				zap.String("type", t),
+			)
+			span.SetStatus(codes.Ok, "ignored")
+			return nil
+		}
 		return errors.Wrap(err, "parse")
 	}
 	h.events.Add(ctx, 1,
