@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ClickHouse/ch-go"
 	"github.com/ClickHouse/ch-go/proto"
 	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -23,8 +26,8 @@ func formatFloat(num float64) string {
 	return fmt.Sprintf("%.1f%s", v, u)
 }
 
-func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
-	db, err := ch.Dial(ctx, ch.Options{
+func (a *App) clickHouse(ctx context.Context) (db *ch.Client, cleanup func(), err error) {
+	db, err = ch.Dial(ctx, ch.Options{
 		Address:        os.Getenv("CLICKHOUSE_ADDR"),
 		Compression:    ch.CompressionZSTD,
 		TracerProvider: a.m.TracerProvider(),
@@ -37,13 +40,22 @@ func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
 		OpenTelemetryInstrumentation: true,
 	})
 	if err != nil {
-		return errors.Wrap(err, "connect to clickhouse")
+		return nil, nil, errors.Wrap(err, "connect")
 	}
-	defer func() {
+	cleanup = func() {
 		if err := db.Close(); err != nil {
 			a.lg.Error("Close clickhouse", zap.Error(err))
 		}
-	}()
+	}
+	return db, cleanup, nil
+}
+
+func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
+	db, cleanup, err := a.clickHouse(ctx)
+	if err != nil {
+		return errors.Wrap(err, "clickHouse")
+	}
+	defer cleanup()
 	var count, total proto.ColUInt64
 	if err := db.Do(ctx, ch.Query{
 		Body: "SELECT COUNT() FROM faster.github_events_raw WHERE ts > now() - toIntervalMinute(30)",
@@ -72,6 +84,55 @@ func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
 		formatInt(int(total.Row(0))),
 	); err != nil {
 		return errors.Wrap(err, "reply")
+	}
+
+	return nil
+}
+
+func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
+	r := redis.NewClient(&redis.Options{
+		Addr: "redis:6379",
+	})
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+	defer cancel()
+
+	db, cleanup, err := a.clickHouse(ctx)
+	if err != nil {
+		return errors.Wrap(err, "clickHouse")
+	}
+	defer cleanup()
+
+	q := fmt.Sprintf("SELECT (id, ts, event) FROM faster.github_events_raw WHERE ts >= toDateTime64(%d, 9) ORDER BY ", start.Unix())
+	var (
+		colID   proto.ColUInt64
+		colTime proto.ColDateTime64
+		colBody proto.ColStr
+	)
+	if err := db.Do(ctx, ch.Query{
+		Body: q,
+		Result: proto.Results{
+			{Name: "id", Data: &colID},
+			{Name: "ts", Data: &colTime},
+			{Name: "event", Data: &colBody},
+		},
+		OnResult: func(ctx context.Context, block proto.Block) error {
+			for i := 0; i < colID.Rows(); i++ {
+				var (
+					id = colID.Row(i)
+					ts = colTime.Row(i)
+					b  = colBody.RowBytes(i)
+				)
+
+				h := sha256.Sum256(b)
+				if _, err := r.Set(ctx, fmt.Sprintf("event:%d:%d", ts.Unix(), id), h[:], time.Minute).Result(); err != nil {
+					return errors.Wrap(err, "set")
+				}
+			}
+			return nil
+		},
+	}); err != nil {
+		return errors.Wrap(err, "do")
 	}
 
 	return nil

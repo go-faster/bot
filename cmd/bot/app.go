@@ -64,6 +64,7 @@ type App struct {
 	http   *http.Client
 	m      *app.Metrics
 	lg     *zap.Logger
+	wh     *gh.Webhook
 }
 
 func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -167,6 +168,15 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		Register(dispatcher).
 		OnMessage(h)
 
+	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider()).
+		WithLogger(lg)
+	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
+		webhook = webhook.WithNotifyGroup(notifyGroup)
+	}
+	if secret := os.Getenv("GITHUB_SECRET"); secret != "" {
+		webhook = webhook.WithSecret(secret)
+	}
+
 	a := &App{
 		client:       client,
 		token:        token,
@@ -182,6 +192,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		http:         httpClient,
 		m:            m,
 		lg:           lg,
+		wh:           webhook,
 	}
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
@@ -202,20 +213,13 @@ func (a *App) Close() error {
 func (a *App) Run(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
 
-	if secret, ok := os.LookupEnv("GITHUB_SECRET"); ok {
+	if a.wh.HasSecret() {
 		lg := a.lg.Named("webhook")
 
 		httpAddr := os.Getenv("HTTP_ADDR")
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
-
-		webhook := gh.NewWebhook(a.storage, a.sender, secret, a.m.MeterProvider(), a.m.TracerProvider()).
-			WithLogger(lg)
-		if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
-			webhook = webhook.WithNotifyGroup(notifyGroup)
-		}
-
 		e := echo.New()
 		e.Use(
 			middleware.Recover(),
@@ -225,12 +229,10 @@ func (a *App) Run(ctx context.Context) error {
 				otelecho.WithTracerProvider(a.m.TracerProvider()),
 			),
 		)
-
 		e.GET("/status", func(c echo.Context) error {
 			return c.String(http.StatusOK, "ok")
 		})
-		webhook.RegisterRoutes(e)
-
+		a.wh.RegisterRoutes(e)
 		server := http.Server{
 			Addr:    httpAddr,
 			Handler: e,
@@ -251,6 +253,20 @@ func (a *App) Run(ctx context.Context) error {
 			return nil
 		})
 	}
+	g.Go(func() error {
+		ticker := time.NewTicker(time.Second * 5)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case now := <-ticker.C:
+				if err := a.FetchEvents(ctx, now.Add(-time.Minute*10)); err != nil {
+					a.lg.Error("FetchEvents error", zap.Error(err))
+				}
+			}
+		}
+	})
 	g.Go(func() error {
 		rdb := redis.NewClient(&redis.Options{
 			Addr: "redis:6379",

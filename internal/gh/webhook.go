@@ -38,7 +38,6 @@ type Webhook struct {
 func NewWebhook(
 	msgID storage.MsgID,
 	sender *message.Sender,
-	githubSecret string,
 	meterProvider metric.MeterProvider,
 	tracerProvider trace.TracerProvider,
 ) *Webhook {
@@ -50,13 +49,21 @@ func NewWebhook(
 		panic(err)
 	}
 	return &Webhook{
-		events:       eventCount,
-		storage:      msgID,
-		sender:       sender,
-		githubSecret: githubSecret,
-		logger:       zap.NewNop(),
-		tracer:       tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
+		events:  eventCount,
+		storage: msgID,
+		sender:  sender,
+		logger:  zap.NewNop(),
+		tracer:  tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
+}
+
+func (h *Webhook) HasSecret() bool {
+	return h.githubSecret != ""
+}
+
+func (h *Webhook) WithSecret(v string) *Webhook {
+	h.githubSecret = v
+	return h
 }
 
 // WithSender sets message sender to use.
