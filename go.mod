@@ -10,7 +10,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.0
-	github.com/google/go-github/v45 v45.2.0
 	github.com/google/go-github/v50 v50.1.0
 	github.com/gotd/contrib v0.15.0
 	github.com/gotd/td v0.79.0
