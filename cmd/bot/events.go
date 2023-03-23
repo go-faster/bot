@@ -136,7 +136,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 					switch string(key) {
 					case "payload":
-						if payload, err = d.StrBytes(); err != nil {
+						if payload, err = d.Raw(); err != nil {
 							return errors.Wrap(err, "payload")
 						}
 						return nil
