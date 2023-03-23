@@ -222,7 +222,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				)
 
 				// Handle as event was received from webhook.
-				if err := a.wh.Handle(ctx, evType, b); err != nil {
+				if err := a.wh.Handle(ctx, evType, payload); err != nil {
 					return errors.Wrap(err, "handle")
 				}
 
