@@ -69,7 +69,7 @@
       "performed_via_github_app": null,
       "state_reason": null
     },
-  "repo": {
+  "repository": {
     "id": 610784405,
     "name": "ernado/oss-estimator",
     "full_name": "ernado/oss-estimator",

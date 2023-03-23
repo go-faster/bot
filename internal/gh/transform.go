@@ -115,7 +115,7 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 	}); err != nil {
 		return nil, errors.Wrap(err, "decode")
 	}
-	e.Field("repo", func(e *jx.Encoder) {
+	e.Field("repository", func(e *jx.Encoder) {
 		e.Obj(func(e *jx.Encoder) {
 			e.Field("id", func(e *jx.Encoder) {
 				e.Int64(repoID)
