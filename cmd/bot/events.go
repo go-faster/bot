@@ -187,7 +187,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				}
 
 				// Protect from duplicates.
-				k := fmt.Sprintf("v2:event:%x", id)
+				k := fmt.Sprintf("v3:event:%x", id)
 				exists, err := r.Exists(ctx, k).Result()
 				if err != nil {
 					return errors.Wrap(err, "exists")
@@ -205,6 +205,11 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 					zap.Int64("repo_id", repoID),
 					zap.String("repo_name", repoName),
 				)
+
+				// Handle as event was received from webhook.
+				if err := a.wh.Handle(ctx, evType, b); err != nil {
+					return errors.Wrap(err, "handle")
+				}
 			}
 			return nil
 		},
