@@ -16,8 +16,26 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.19.x"
-          cache: true
+          go-version: "1.20.x"
+          cache: false
+
+      - name: Get Go environment
+        id: go-env
+        run: |
+          echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
+          echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+          echo "lintcache=$HOME/.cache/golangci-lint" >> $GITHUB_ENV
+
+      - name: Set up cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.cache }}
+            ${{ env.modcache }}
+            ${{ env.lintcache }}
+          key: lint-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            lint-${{ runner.os }}-go-
 
       - name: Lint
         uses: golangci/golangci-lint-action@v3.4.0
