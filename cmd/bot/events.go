@@ -101,7 +101,8 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 	trackedRepo := map[string]struct{}{
 		"ClickHouse/ch-go":     {},
 		"ernado/oss-estimator": {},
-		"ernado/du ":           {},
+		"ernado/du":            {},
+		"VKCOM/statshouse":     {},
 	}
 
 	r := redis.NewClient(&redis.Options{
