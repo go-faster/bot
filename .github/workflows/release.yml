@@ -6,8 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
 
 jobs:
   deploy:
@@ -30,7 +29,6 @@ jobs:
           cache: false
 
       - name: Get Go environment
-        id: go-env
         run: |
           echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
           echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
@@ -44,13 +42,6 @@ jobs:
           key: release-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             release-${{ runner.os }}-go-
-
-      - name: Docker log in
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Image metadata
         id: meta
@@ -69,22 +60,16 @@ jobs:
           CGO_ENABLED: 0
         run: go build -v ./cmd/bot
 
-      - name: Image build
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - uses: ko-build/setup-ko@v0.6
 
-      - name: Get short commit SHA
-        id: var
-        shell: bash
+      - name: Get short SHA
         run: |
-          echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - run: ko build --bare --tags "${{ env.sha }}" ./cmd/bot
 
       - name: Generate deployment with SHA version
-        run: sed 's/:main/:sha-${{ steps.var.outputs.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
+        run: sed 's/:main/:${{ env.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
 
       - name: Set up kubectl cache
         uses: actions/cache@v3
