@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+
 jobs:
   deploy:
     environment: prod
@@ -64,9 +67,6 @@ jobs:
           echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - run: ko build --bare --tags "${{ env.sha }}" ./cmd/bot
-        env:
-          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate deployment with SHA version
         run: sed 's/:main/:${{ env.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
