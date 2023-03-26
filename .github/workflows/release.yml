@@ -81,10 +81,10 @@ jobs:
         id: var
         shell: bash
         run: |
-          echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+          echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Generate deployment with SHA version
-        run: sed 's/:main/:sha-${{ steps.var.outputs.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
+        run: sed 's/:main/:sha-${{ env.sha }}/g' .k8s/deployment.yml > .k8s/deployment.release.yml
 
       - name: Set up kubectl cache
         uses: actions/cache@v3
