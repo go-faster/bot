@@ -15,7 +15,7 @@ require (
 	github.com/gotd/td v0.79.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/prometheus/client_golang v1.14.0
-	github.com/redis/go-redis/v9 v9.0.2
+	github.com/redis/go-redis/v9 v9.0.3
 	github.com/stretchr/testify v1.8.2
 	go.etcd.io/bbolt v1.3.7
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
