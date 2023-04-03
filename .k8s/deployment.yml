@@ -30,10 +30,10 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 256M
-            limits:
-              cpu: "2"
               memory: 512M
+            limits:
+              cpu: "3"
+              memory: 1024M
           env:
             - name: OTEL_EXPORTER_JAEGER_AGENT_HOST
               value: jaeger.faster-monitoring.svc.cluster.local
