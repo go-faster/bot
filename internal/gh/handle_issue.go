@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
-
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"
+	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
 )
 
@@ -88,7 +88,9 @@ func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 		return errors.Wrap(err, "peer")
 	}
 
-	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx, formatIssue(e)); err != nil {
+	if _, err := h.sender.To(p).NoWebpage().
+		Row(markup.Button("Close")).
+		StyledText(ctx, formatIssue(e)); err != nil {
 		return errors.Wrap(err, "send")
 	}
 	return nil
