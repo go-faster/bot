@@ -24,26 +24,26 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: bot
+        - name: atlas
+          secret:
+            secretName: atlas
       initContainers:
         - name: migrate
           image: ghcr.io/go-faster/bot/migrate:main
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: bot
-                  key: DATABASE_URL
+          volumeMounts:
+            - mountPath: "/"
+              name: atlas
+              readOnly: true
           args:
             - migrate
+            - --env prod
             - apply
-            - --url
-            - $DATABASE_URL
           resources:
             requests:
-              cpu: 500m
+              cpu: 100m
               memory: 64M
             limits:
-              cpu: "1"
+              cpu: 500m
               memory: 128M
       containers:
         - name: bot
