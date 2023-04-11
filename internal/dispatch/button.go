@@ -8,10 +8,10 @@ import (
 
 type Button struct {
 	QueryID int64
-	User    *tg.InputUser
+	Input   *tg.InputUser
+	Data    []byte
 
-	user *tg.User
-
+	User *tg.User
 	baseEvent
 }
 
