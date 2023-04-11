@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"io"
 
+	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
@@ -22,6 +23,7 @@ type Bot struct {
 	rpc        *tg.Client
 	sender     *message.Sender
 	downloader *downloader.Downloader
+	github     *github.Client
 
 	logger *zap.Logger
 	rand   io.Reader
@@ -54,6 +56,11 @@ func NewBot(raw *tg.Client) *Bot {
 // OnMessage sets message handler.
 func (b *Bot) OnMessage(handler MessageHandler) *Bot {
 	b.onMessage = handler
+	return b
+}
+
+func (b *Bot) WithGitHub(client *github.Client) *Bot {
+	b.github = client
 	return b
 }
 

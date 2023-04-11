@@ -11,6 +11,8 @@ import (
 	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/go-faster/bot/internal/action"
 )
 
 type issueType string
@@ -96,7 +98,13 @@ func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 
 	if _, err := h.sender.To(p).NoWebpage().
 		Row(
-			markup.Callback("Close", []byte{'c', 'l', 'o', 'z'}),
+			markup.Callback("Close",
+				action.Marshal(action.Action{
+					Action: "close",
+					ID:     e.GetIssue().GetNumber(),
+					Entity: "issue",
+				}),
+			),
 		).
 		StyledText(ctx, formatIssue(e)); err != nil {
 		return errors.Wrap(err, "send")
