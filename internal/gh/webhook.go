@@ -167,7 +167,7 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error)
 		t = v
 	}
 
-	ctx, span := h.tracer.Start(ctx, "Handle",
+	ctx, span := h.tracer.Start(ctx, "wh.Handle",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -211,7 +211,7 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error)
 }
 
 func (h Webhook) handleHook(e echo.Context) error {
-	ctx, span := h.tracer.Start(e.Request().Context(), "handleHook",
+	ctx, span := h.tracer.Start(e.Request().Context(), "wh.handleHook",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	r := e.Request().WithContext(ctx)
@@ -238,7 +238,7 @@ func (h Webhook) handleHook(e echo.Context) error {
 func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
 	evType := fmt.Sprintf("%T", event)
 	evType = strings.TrimPrefix(evType, "*github.")
-	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("processEvent: %s", evType),
+	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
 		trace.WithSpanKind(trace.SpanKindServer),
 		trace.WithAttributes(attribute.String("event", evType)),
 	)
