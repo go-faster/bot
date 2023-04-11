@@ -35,11 +35,11 @@ spec:
               name: atlas
               readOnly: true
           args:
+            - migrate
+            - apply
             - --config
             - file://root/.config/atlas.hcl
             - --env prod
-            - migrate
-            - apply
           resources:
             requests:
               cpu: 100m
