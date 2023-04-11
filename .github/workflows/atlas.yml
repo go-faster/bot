@@ -4,6 +4,8 @@ on:
     branches:
       - main
   pull_request:
+    paths:
+      - 'migrations/*'
   workflow_dispatch:
 jobs:
   lint:
