@@ -31,7 +31,7 @@ spec:
         - name: migrate
           image: ghcr.io/go-faster/bot/migrate:main
           volumeMounts:
-            - mountPath: "/root/.config/atlas.hcl"
+            - mountPath: "/root/.config/"
               name: atlas
               readOnly: true
           args:
