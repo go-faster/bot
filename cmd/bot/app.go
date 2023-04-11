@@ -17,8 +17,10 @@ import (
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
+	updhook "github.com/gotd/td/telegram/updates/hook"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
@@ -37,7 +39,6 @@ import (
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/peer"
 	"github.com/gotd/td/telegram/updates"
-	updhook "github.com/gotd/td/telegram/updates/hook"
 	"github.com/gotd/td/tg"
 
 	"github.com/go-faster/bot/internal/app"
@@ -122,6 +123,12 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		Storage: stateStorage,
 		Logger:  lg.Named("gaps"),
 	})
+
+	otg, err := oteltg.New(m.MeterProvider(), m.TracerProvider())
+	if err != nil {
+		return nil, errors.Wrap(err, "otel")
+	}
+
 	client := telegram.NewClient(appID, appHash, telegram.Options{
 		Logger: lg.Named("client"),
 		SessionStorage: &session.FileStorage{
@@ -131,6 +138,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 			gaps, lg.Named("updates"), m.TracerProvider(),
 		),
 		Middlewares: []telegram.Middleware{
+			otg,
 			updhook.UpdateHook(func(ctx context.Context, u tg.UpdatesClass) error {
 				go func() {
 					if err := gaps.Handle(ctx, u); err != nil {
