@@ -1,14 +1,10 @@
-name: Atlas CI
+name: atlas
 on:
-  # Run whenever code is changed in the master branch,
-  # change this to your root branch.
   push:
     branches:
-      - master
-  # Run on PRs where something changed under the `path/to/migration/dir/` directory.
+      - main
   pull_request:
-    paths:
-      - 'path/to/migration/dir/*'
+  workflow_dispatch:
 jobs:
   lint:
     services:
