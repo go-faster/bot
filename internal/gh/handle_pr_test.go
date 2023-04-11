@@ -80,7 +80,7 @@ func TestWebhook(t *testing.T) {
 	log := zaptest.NewLogger(t)
 	db, err := pebble.Open("golovach_lena.db", &pebble.Options{FS: vfs.NewMem()})
 	a.NoError(err)
-	store := storage.NewMsgID(db)
+	store := storage.NewPebble(db)
 
 	a.NoError(store.UpdateLastMsgID(channel.ChannelID, lastMsgID))
 	a.NoError(store.SetPRNotification(event, msgID))
@@ -91,7 +91,7 @@ func TestWebhook(t *testing.T) {
 		"test": channel,
 	})
 	hook := NewWebhook(
-		storage.NewMsgID(db), sender,
+		storage.NewPebble(db), sender,
 		metric.NewNoopMeterProvider(), trace.NewNoopTracerProvider(),
 	).
 		WithLogger(log).

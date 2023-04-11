@@ -59,7 +59,7 @@ type App struct {
 	gaps         *updates.Manager
 	dispatcher   tg.UpdateDispatcher
 	db           *pebble.DB
-	storage      storage.MsgID
+	storage      storage.Pebble
 	mux          dispatch.MessageMux
 	tracer       trace.Tracer
 	openai       *openai.Client
@@ -117,7 +117,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 			multierr.AppendInto(&rerr, db.Close())
 		}
 	}()
-	msgIDStore := storage.NewMsgID(db)
+	msgIDStore := storage.NewPebble(db)
 
 	stateStorage := NewBoltState(stateDb)
 	dispatcher := tg.NewUpdateDispatcher()

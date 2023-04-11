@@ -24,7 +24,7 @@ import (
 
 // Webhook is a Github events web hook handler.
 type Webhook struct {
-	storage storage.MsgID
+	storage storage.Storage
 
 	sender       *message.Sender
 	notifyGroup  string
@@ -37,7 +37,7 @@ type Webhook struct {
 
 // NewWebhook creates new web hook handler.
 func NewWebhook(
-	msgID storage.MsgID,
+	msgID storage.Storage,
 	sender *message.Sender,
 	meterProvider metric.MeterProvider,
 	tracerProvider trace.TracerProvider,

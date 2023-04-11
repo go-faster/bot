@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 
+	"github.com/google/go-github/v50/github"
 	"go.uber.org/multierr"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -11,11 +12,17 @@ import (
 // Hook is event handler which saves last message ID of dialog to the Pebble storage.
 type Hook struct {
 	next    dispatch.MessageHandler
-	storage MsgID
+	storage Storage
+}
+
+type Storage interface {
+	UpdateLastMsgID(channelID int64, msgID int) error
+	SetPRNotification(pr *github.PullRequestEvent, msgID int) error
+	FindPRNotification(channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, err error)
 }
 
 // NewHook creates new hook.
-func NewHook(next dispatch.MessageHandler, storage MsgID) Hook {
+func NewHook(next dispatch.MessageHandler, storage Storage) Hook {
 	return Hook{next: next, storage: storage}
 }
 
