@@ -44,6 +44,8 @@ import (
 	"github.com/go-faster/bot/internal/app"
 	"github.com/go-faster/bot/internal/botapi"
 	"github.com/go-faster/bot/internal/dispatch"
+	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/entdb"
 	"github.com/go-faster/bot/internal/gh"
 	"github.com/go-faster/bot/internal/storage"
 )
@@ -66,6 +68,7 @@ type App struct {
 	m            *app.Metrics
 	lg           *zap.Logger
 	wh           *gh.Webhook
+	ent          *ent.Client
 }
 
 func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -171,7 +174,13 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		webhook = webhook.WithSecret(secret)
 	}
 
+	entClient, err := entdb.Open(os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return nil, errors.Wrap(err, "open database")
+	}
+
 	a := &App{
+		ent:          entClient,
 		client:       client,
 		token:        token,
 		raw:          raw,
