@@ -202,6 +202,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 	_ = dispatch.NewBot(raw).
 		WithSender(sender).
 		WithLogger(lg).
+		WithTracerProvider(m.TracerProvider()).
 		Register(dispatcher).
 		OnMessage(h).
 		OnButton(a)

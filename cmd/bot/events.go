@@ -53,6 +53,9 @@ func (a *App) clickHouse(ctx context.Context) (db *ch.Client, cleanup func(), er
 }
 
 func (a *App) HandleEvents(ctx context.Context, e dispatch.MessageEvent) error {
+	ctx, span := a.tracer.Start(ctx, "HandleEvents")
+	defer span.End()
+
 	db, cleanup, err := a.clickHouse(ctx)
 	if err != nil {
 		return errors.Wrap(err, "clickHouse")

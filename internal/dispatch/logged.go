@@ -33,7 +33,7 @@ func (d LoggedDispatcher) Handle(ctx context.Context, u tg.UpdatesClass) error {
 		zap.String("t", fmt.Sprintf("%T", u)),
 	)
 	ctx, span := d.tracer.Start(ctx, "handle: "+u.TypeName(),
-		trace.WithSpanKind(trace.SpanKindClient),
+		trace.WithSpanKind(trace.SpanKindServer),
 		trace.WithAttributes(),
 	)
 	defer span.End()
