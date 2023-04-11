@@ -24,6 +24,27 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: bot
+      initContainers:
+        - name: migrate
+          image: ghcr.io/go-faster/bot/migrate:main
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: DATABASE_URL
+          args:
+            - migrate
+            - apply
+            - --url
+            - $DATABASE_URL
+          resources:
+            requests:
+              cpu: 500m
+              memory: 64M
+            limits:
+              cpu: "1"
+              memory: 128M
       containers:
         - name: bot
           image: ghcr.io/go-faster/bot:main
