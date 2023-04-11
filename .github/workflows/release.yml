@@ -46,7 +46,7 @@ jobs:
             ${{ env.modcache }}
           key: release-${{ runner.os }}-go-${{ env.goversion }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-            release-${{ runner.os }}-go-
+            release-${{ runner.os }}-go-${{ env.goversion }}
 
       - name: Docker log in
         uses: docker/login-action@v2
