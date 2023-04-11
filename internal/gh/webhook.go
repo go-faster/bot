@@ -161,7 +161,7 @@ func reverseMapping(m map[string]string) map[string]string {
 
 var _eventTypeToWebhookType = reverseMapping(eventMapping())
 
-func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
+func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error) {
 	// Normalize event type to match X-Github-Event value.
 	if v, ok := _eventTypeToWebhookType[t]; ok {
 		t = v
@@ -171,6 +171,14 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
+
+	defer func() {
+		if rerr != nil {
+			span.SetStatus(codes.Error, rerr.Error())
+		} else {
+			span.SetStatus(codes.Ok, "Done")
+		}
+	}()
 
 	if t == "security_advisory" {
 		// Current GitHub library is unable to handle this.
