@@ -9,6 +9,7 @@ import (
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/styling"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func getDiscussionType(d *github.Discussion) string {
@@ -47,6 +48,11 @@ func formatDiscussion(e *github.DiscussionEvent) message.StyledTextOption {
 }
 
 func (h Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handleDiscussion",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	if e.GetAction() != "created" {
 		return nil
 	}

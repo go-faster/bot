@@ -7,10 +7,16 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/telegram/message/styling"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
 func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handleStar",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	if a := e.GetAction(); a != "created" {
 		h.logger.Debug("Skipping action", zap.String("action", a))
 		return nil

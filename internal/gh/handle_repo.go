@@ -5,12 +5,18 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/styling"
 )
 
 func (h Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handleRepo",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	switch e.GetAction() {
 	case "created", "publicized":
 		p, err := h.notifyPeer(ctx)

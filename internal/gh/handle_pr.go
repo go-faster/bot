@@ -9,6 +9,7 @@ import (
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -54,6 +55,11 @@ func (h Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *mess
 }
 
 func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handlePRClosed",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	prID := e.GetPullRequest().GetNumber()
 	log := h.logger.With(zap.Int("pr", prID), zap.String("repo", e.GetRepo().GetFullName()))
 	if !e.GetPullRequest().GetMerged() {
@@ -135,6 +141,11 @@ func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent)
 }
 
 func (h Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handlePROpened",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	p, err := h.notifyPeer(ctx)
 	if err != nil {
 		return errors.Wrap(err, "peer")

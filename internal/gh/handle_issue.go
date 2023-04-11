@@ -10,6 +10,7 @@ import (
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type issueType string
@@ -78,6 +79,11 @@ func formatIssue(e *github.IssuesEvent) message.StyledTextOption {
 }
 
 func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handleIssue",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	if e.GetAction() != "opened" {
 		h.logger.Info("Ignoring non-opened issue")
 		return nil

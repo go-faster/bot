@@ -6,11 +6,17 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/gotd/td/telegram/message/styling"
 )
 
 func (h Webhook) handleRelease(ctx context.Context, e *github.ReleaseEvent) error {
+	ctx, span := h.tracer.Start(ctx, "handleRelease",
+		trace.WithSpanKind(trace.SpanKindServer),
+	)
+	defer span.End()
+
 	if e.GetAction() != "published" {
 		return nil
 	}
