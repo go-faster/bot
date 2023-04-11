@@ -45,6 +45,7 @@ func (h Handler) OnMessage(ctx context.Context, e dispatch.MessageEvent) error {
 		}
 		_, err = e.Reply().StyledText(ctx,
 			styling.Bold(prompt),
+			styling.Plain("\n"),
 			styling.Plain(resp.Choices[0].Message.Content),
 		)
 		return err
