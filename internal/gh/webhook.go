@@ -238,7 +238,7 @@ func (h Webhook) handleHook(e echo.Context) error {
 func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
 	evType := fmt.Sprintf("%T", event)
 	evType = strings.TrimPrefix(evType, "*github.")
-	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("processEvent: %T", evType),
+	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("processEvent: %s", evType),
 		trace.WithSpanKind(trace.SpanKindServer),
 		trace.WithAttributes(attribute.String("event", evType)),
 	)
