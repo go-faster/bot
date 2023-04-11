@@ -188,9 +188,9 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) error {
 		}
 		return errors.Wrap(err, "parse")
 	}
-	h.events.Add(ctx, 1,
-		attribute.String("event", t),
-	)
+	attr := attribute.String("event", t)
+	span.SetAttributes(attr)
+	h.events.Add(ctx, 1, attr)
 	log := h.logger.With(
 		zap.String("type", fmt.Sprintf("%T", event)),
 	)
