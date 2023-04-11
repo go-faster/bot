@@ -27,26 +27,26 @@ spec:
         - name: atlas
           secret:
             secretName: atlas
-#      initContainers:
-#        - name: migrate
-#          image: ghcr.io/go-faster/bot/migrate:main
-#          volumeMounts:
-#            - mountPath: "/root/.config/atlas.hcl"
-#              name: atlas
-#              readOnly: true
-#          args:
-#            - --config
-#            - file://root/.config/atlas.hcl
-#            - --env prod
-#            - migrate
-#            - apply
-#          resources:
-#            requests:
-#              cpu: 100m
-#              memory: 64M
-#            limits:
-#              cpu: 500m
-#              memory: 128M
+      initContainers:
+        - name: migrate
+          image: ghcr.io/go-faster/bot/migrate:main
+          volumeMounts:
+            - mountPath: "/root/.config/atlas.hcl"
+              name: atlas
+              readOnly: true
+          args:
+            - --config
+            - file://root/.config/atlas.hcl
+            - --env prod
+            - migrate
+            - apply
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64M
+            limits:
+              cpu: 500m
+              memory: 128M
       containers:
         - name: bot
           image: ghcr.io/go-faster/bot:main
