@@ -89,7 +89,9 @@ func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 	}
 
 	if _, err := h.sender.To(p).NoWebpage().
-		Row(markup.Button("Close")).
+		Row(
+			markup.Callback("Close", []byte{'c', 'l', 'o', 'z'}),
+		).
 		StyledText(ctx, formatIssue(e)); err != nil {
 		return errors.Wrap(err, "send")
 	}
