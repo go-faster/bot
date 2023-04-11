@@ -22,6 +22,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
+	"github.com/sashabaranov/go-openai"
 	bolt "go.etcd.io/bbolt"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -63,6 +64,7 @@ type App struct {
 
 	tracer trace.Tracer
 
+	openai *openai.Client
 	github *github.Client
 	http   *http.Client
 	m      *app.Metrics
@@ -196,6 +198,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		m:            m,
 		lg:           lg,
 		wh:           webhook,
+		openai:       openai.NewClient(os.Getenv("OPENAI_TOKEN")),
 
 		tracer: m.TracerProvider().Tracer(""),
 	}
