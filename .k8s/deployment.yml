@@ -39,7 +39,8 @@ spec:
             - apply
             - --config
             - file://root/.config/atlas.hcl
-            - --env prod
+            - --env
+            - prod
           resources:
             requests:
               cpu: 100m
