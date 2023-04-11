@@ -91,6 +91,10 @@ func (e MessageEvent) Reply() *message.Builder {
 	return e.sender.To(e.Peer).ReplyMsg(e.Message)
 }
 
+func (e MessageEvent) TypingAction() *message.TypingActionBuilder {
+	return e.sender.To(e.Peer).TypingAction()
+}
+
 // MessageHandler is a simple message event handler.
 type MessageHandler interface {
 	OnMessage(ctx context.Context, e MessageEvent) error

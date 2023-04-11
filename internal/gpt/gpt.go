@@ -2,6 +2,7 @@ package gpt
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram/message/styling"
@@ -17,13 +18,33 @@ type Handler struct {
 }
 
 // New creates new Handler.
-func New(api *openai.Client) Handler {
+func New(api *openai.Client, client *tg.Client) Handler {
 	return Handler{api: api}
 }
 
 // OnMessage implements dispatch.MessageHandler.
 func (h Handler) OnMessage(ctx context.Context, e dispatch.MessageEvent) error {
 	return e.WithReply(ctx, func(reply *tg.Message) error {
+		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
+
+		defer func() { _ = e.TypingAction().Cancel(ctx) }()
+		sendTyping := func() { _ = e.TypingAction().Typing(ctx) }
+		sendTyping()
+		go func() {
+			ticker := time.NewTicker(time.Second * 2)
+			defer ticker.Stop()
+
+			for {
+				select {
+				case <-ticker.C:
+					sendTyping()
+				case <-ctx.Done():
+					return
+				}
+			}
+		}()
+
 		prompt := reply.GetMessage()
 		resp, err := h.api.CreateChatCompletion(
 			ctx,
