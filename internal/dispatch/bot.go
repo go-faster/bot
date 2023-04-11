@@ -17,6 +17,7 @@ import (
 type Bot struct {
 	onMessage MessageHandler
 	onInline  InlineHandler
+	onButton  ButtonHandler
 
 	rpc        *tg.Client
 	sender     *message.Sender
@@ -38,6 +39,9 @@ func NewBot(raw *tg.Client) *Bot {
 		onInline: InlineHandlerFunc(func(context.Context, InlineQuery) error {
 			return nil
 		}),
+		onButton: ButtonHandlerFunc(func(context.Context, Button) error {
+			return nil
+		}),
 		rpc:        raw,
 		sender:     message.NewSender(raw),
 		downloader: downloader.NewDownloader(),
@@ -56,6 +60,12 @@ func (b *Bot) OnMessage(handler MessageHandler) *Bot {
 // OnInline sets inline query handler.
 func (b *Bot) OnInline(handler InlineHandler) *Bot {
 	b.onInline = handler
+	return b
+}
+
+// OnButton sets button handler.
+func (b *Bot) OnButton(handler ButtonHandler) *Bot {
+	b.onButton = handler
 	return b
 }
 
@@ -81,5 +91,6 @@ func (b *Bot) Register(dispatcher tg.UpdateDispatcher) *Bot {
 	dispatcher.OnNewMessage(b.OnNewMessage)
 	dispatcher.OnNewChannelMessage(b.OnNewChannelMessage)
 	dispatcher.OnBotInlineQuery(b.OnBotInlineQuery)
+	dispatcher.OnBotCallbackQuery(b.OnBotCallbackQuery)
 	return b
 }

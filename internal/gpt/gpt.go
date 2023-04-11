@@ -18,7 +18,7 @@ type Handler struct {
 }
 
 // New creates new Handler.
-func New(api *openai.Client, client *tg.Client) Handler {
+func New(api *openai.Client) Handler {
 	return Handler{api: api}
 }
 

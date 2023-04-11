@@ -48,28 +48,23 @@ import (
 )
 
 type App struct {
-	client *telegram.Client
-	token  string
-	raw    *tg.Client
-	sender *message.Sender
-
+	client       *telegram.Client
+	token        string
+	raw          *tg.Client
+	sender       *message.Sender
 	stateStorage *BoltState
 	gaps         *updates.Manager
 	dispatcher   tg.UpdateDispatcher
-
-	db      *pebble.DB
-	storage storage.MsgID
-	mux     dispatch.MessageMux
-	bot     *dispatch.Bot
-
-	tracer trace.Tracer
-
-	openai *openai.Client
-	github *github.Client
-	http   *http.Client
-	m      *app.Metrics
-	lg     *zap.Logger
-	wh     *gh.Webhook
+	db           *pebble.DB
+	storage      storage.MsgID
+	mux          dispatch.MessageMux
+	tracer       trace.Tracer
+	openai       *openai.Client
+	github       *github.Client
+	http         *http.Client
+	m            *app.Metrics
+	lg           *zap.Logger
+	wh           *gh.Webhook
 }
 
 func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -159,20 +154,6 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 	}
 
 	mux := dispatch.NewMessageMux()
-	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
-		BotAPI: botapi.NewClient(token, botapi.Options{
-			HTTPClient: httpClient,
-		}),
-		Logger: lg.Named("metrics"),
-	})
-	h = storage.NewHook(h, msgIDStore)
-
-	b := dispatch.NewBot(raw).
-		WithSender(sender).
-		WithLogger(lg).
-		Register(dispatcher).
-		OnMessage(h)
-
 	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider()).
 		WithLogger(lg)
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
@@ -193,7 +174,6 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		db:           db,
 		storage:      msgIDStore,
 		mux:          mux,
-		bot:          b,
 		http:         httpClient,
 		m:            m,
 		lg:           lg,
@@ -202,6 +182,21 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 
 		tracer: m.TracerProvider().Tracer(""),
 	}
+
+	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
+		BotAPI: botapi.NewClient(token, botapi.Options{
+			HTTPClient: httpClient,
+		}),
+		Logger: lg.Named("metrics"),
+	})
+	h = storage.NewHook(h, msgIDStore)
+
+	_ = dispatch.NewBot(raw).
+		WithSender(sender).
+		WithLogger(lg).
+		Register(dispatcher).
+		OnMessage(h).
+		OnButton(a)
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
 		ghClient, err := setupGithub(v, httpTransport)
