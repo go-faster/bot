@@ -36,6 +36,7 @@ jobs:
         run: |
           echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
           echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+          echo "goversion=$(go env GOVERSION)" >> $GITHUB_ENV
 
       - name: Set up cache
         uses: actions/cache@v3
@@ -43,7 +44,7 @@ jobs:
           path: |
             ${{ env.cache }}
             ${{ env.modcache }}
-          key: release-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: release-${{ runner.os }}-go-${{ env.goversion }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             release-${{ runner.os }}-go-
 
