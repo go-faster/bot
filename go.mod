@@ -13,6 +13,7 @@ require (
 	github.com/go-faster/jx v1.0.0
 	github.com/go-faster/simon v0.4.0
 	github.com/google/go-github/v50 v50.2.0
+	github.com/google/uuid v1.3.0
 	github.com/gotd/contrib v0.15.0
 	github.com/gotd/td v0.79.0
 	github.com/jackc/pgx/v5 v5.3.1
@@ -21,7 +22,6 @@ require (
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/sashabaranov/go-openai v1.7.0
 	github.com/stretchr/testify v1.8.2
-	go.etcd.io/bbolt v1.3.7
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.40.0
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.40.0
@@ -75,7 +75,6 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.0 // indirect

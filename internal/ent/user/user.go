@@ -11,6 +11,10 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUsername holds the string denoting the username field in the database.
+	FieldUsername = "username"
+	// FieldFirstName holds the string denoting the first_name field in the database.
+	FieldFirstName = "first_name"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -18,6 +22,8 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
+	FieldUsername,
+	FieldFirstName,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -36,4 +42,14 @@ type Order func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByUsername orders the results by the username field.
+func ByUsername(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUsername, opts...).ToFunc()
+}
+
+// ByFirstName orders the results by the first_name field.
+func ByFirstName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldFirstName, opts...).ToFunc()
 }

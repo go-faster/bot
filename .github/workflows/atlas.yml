@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.0.1
         with:
-          fetch-depth:
+          fetch-depth: 0 # Mandatory unless "latest" is set below.
       - uses: ariga/atlas-action@v0
         with:
           dir: migrations

@@ -9,6 +9,42 @@ import (
 	"github.com/go-faster/bot/internal/ent"
 )
 
+// The LastChannelMessageFunc type is an adapter to allow the use of ordinary
+// function as LastChannelMessage mutator.
+type LastChannelMessageFunc func(context.Context, *ent.LastChannelMessageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LastChannelMessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LastChannelMessageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LastChannelMessageMutation", m)
+}
+
+// The PRNotificationFunc type is an adapter to allow the use of ordinary
+// function as PRNotification mutator.
+type PRNotificationFunc func(context.Context, *ent.PRNotificationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PRNotificationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PRNotificationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PRNotificationMutation", m)
+}
+
+// The TelegramSessionFunc type is an adapter to allow the use of ordinary
+// function as TelegramSession mutator.
+type TelegramSessionFunc func(context.Context, *ent.TelegramSessionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TelegramSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TelegramSessionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TelegramSessionMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

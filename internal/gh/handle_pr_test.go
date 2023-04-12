@@ -18,7 +18,7 @@ import (
 	"github.com/gotd/td/tg"
 	"github.com/gotd/td/tgerr"
 
-	"github.com/go-faster/bot/internal/storage"
+	"github.com/go-faster/bot/internal/state"
 )
 
 type mockResolver map[string]tg.InputPeerClass
@@ -80,10 +80,10 @@ func TestWebhook(t *testing.T) {
 	log := zaptest.NewLogger(t)
 	db, err := pebble.Open("golovach_lena.db", &pebble.Options{FS: vfs.NewMem()})
 	a.NoError(err)
-	store := storage.NewMsgID(db)
+	store := state.NewPebble(db)
 
-	a.NoError(store.UpdateLastMsgID(channel.ChannelID, lastMsgID))
-	a.NoError(store.SetPRNotification(event, msgID))
+	a.NoError(store.UpdateLastMsgID(context.Background(), channel.ChannelID, lastMsgID))
+	a.NoError(store.SetPRNotification(context.Background(), event, msgID))
 
 	invoker := &mockInvoker{}
 	raw := tg.NewClient(invoker)
@@ -91,7 +91,7 @@ func TestWebhook(t *testing.T) {
 		"test": channel,
 	})
 	hook := NewWebhook(
-		storage.NewMsgID(db), sender,
+		state.NewPebble(db), sender,
 		metric.NewNoopMeterProvider(), trace.NewNoopTracerProvider(),
 	).
 		WithLogger(log).

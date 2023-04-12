@@ -12,6 +12,12 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
+	LastChannelMessage *LastChannelMessageClient
+	// PRNotification is the client for interacting with the PRNotification builders.
+	PRNotification *PRNotificationClient
+	// TelegramSession is the client for interacting with the TelegramSession builders.
+	TelegramSession *TelegramSessionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -145,6 +151,9 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.LastChannelMessage = NewLastChannelMessageClient(tx.config)
+	tx.PRNotification = NewPRNotificationClient(tx.config)
+	tx.TelegramSession = NewTelegramSessionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 
@@ -155,7 +164,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: User.QueryXXX(), the query will be executed
+// applies a query, for example: LastChannelMessage.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

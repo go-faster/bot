@@ -19,12 +19,12 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
-	"github.com/go-faster/bot/internal/storage"
+	"github.com/go-faster/bot/internal/state"
 )
 
 // Webhook is a Github events web hook handler.
 type Webhook struct {
-	storage storage.MsgID
+	storage state.Storage
 
 	sender       *message.Sender
 	notifyGroup  string
@@ -37,7 +37,7 @@ type Webhook struct {
 
 // NewWebhook creates new web hook handler.
 func NewWebhook(
-	msgID storage.MsgID,
+	msgID state.Storage,
 	sender *message.Sender,
 	meterProvider metric.MeterProvider,
 	tracerProvider trace.TracerProvider,

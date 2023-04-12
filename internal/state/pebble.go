@@ -1,6 +1,7 @@
-package storage
+package state
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/cockroachdb/pebble"
@@ -9,31 +10,31 @@ import (
 	"go.uber.org/multierr"
 )
 
-// PRMsgIDKey generates key for given PR.
-func PRMsgIDKey(pr *github.PullRequestEvent) []byte {
+// pebblePRMsgIDKey generates key for given PR.
+func pebblePRMsgIDKey(pr *github.PullRequestEvent) []byte {
 	key := strconv.AppendInt([]byte("pr_"), pr.GetRepo().GetID(), 10)
 	key = strconv.AppendInt(key, int64(pr.GetPullRequest().GetNumber()), 10)
 	return key
 }
 
-// LastMsgIDKey generates last message ID key for given channel.
-func LastMsgIDKey(channelID int64) []byte {
+// pebbleLastMsgIDKey generates last message ID key for given channel.
+func pebbleLastMsgIDKey(channelID int64) []byte {
 	return strconv.AppendInt([]byte("last_msg_"), channelID, 10)
 }
 
-// MsgID is a simple message ID storage.
-type MsgID struct {
+// Pebble is a simple message ID storage.
+type Pebble struct {
 	db *pebble.DB
 }
 
-// NewMsgID creates new MsgID.
-func NewMsgID(db *pebble.DB) MsgID {
-	return MsgID{db: db}
+// NewPebble creates new Pebble.
+func NewPebble(db *pebble.DB) Pebble {
+	return Pebble{db: db}
 }
 
 // UpdateLastMsgID updates last message ID for given channel.
-func (m MsgID) UpdateLastMsgID(channelID int64, msgID int) (rerr error) {
-	key := LastMsgIDKey(channelID)
+func (m Pebble) UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) (rerr error) {
+	key := pebbleLastMsgIDKey(channelID)
 
 	b := m.db.NewIndexedBatch()
 	data, closer, err := b.Get(key)
@@ -68,13 +69,13 @@ func (m MsgID) UpdateLastMsgID(channelID int64, msgID int) (rerr error) {
 }
 
 // SetPRNotification sets PR notification message ID.
-func (m MsgID) SetPRNotification(pr *github.PullRequestEvent, msgID int) error {
-	return m.db.Set(PRMsgIDKey(pr), strconv.AppendInt(nil, int64(msgID), 10), pebble.Sync)
+func (m Pebble) SetPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error {
+	return m.db.Set(pebblePRMsgIDKey(pr), strconv.AppendInt(nil, int64(msgID), 10), pebble.Sync)
 }
 
 // FindPRNotification finds PR notification message ID and last message ID for given channel.
 // NB: even if last message ID was not found, function returns non-zero msgID.
-func (m MsgID) FindPRNotification(channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error) {
+func (m Pebble) FindPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error) {
 	prID := pr.GetPullRequest().GetNumber()
 	snap := m.db.NewSnapshot()
 	defer func() {
@@ -82,12 +83,12 @@ func (m MsgID) FindPRNotification(channelID int64, pr *github.PullRequestEvent) 
 	}()
 
 	var err error
-	msgID, err = findInt(snap, PRMsgIDKey(pr))
+	msgID, err = pebbleFindInt(snap, pebblePRMsgIDKey(pr))
 	if err != nil {
 		return 0, 0, errors.Wrapf(err, "find msg ID of PR #%d notification", prID)
 	}
 
-	lastMsgID, err = findInt(snap, LastMsgIDKey(channelID))
+	lastMsgID, err = pebbleFindInt(snap, pebbleLastMsgIDKey(channelID))
 	if err != nil {
 		return msgID, 0, errors.Wrapf(err, "find last msg ID of channel %d", channelID)
 	}
@@ -95,7 +96,7 @@ func (m MsgID) FindPRNotification(channelID int64, pr *github.PullRequestEvent) 
 	return msgID, lastMsgID, nil
 }
 
-func findInt(snap *pebble.Snapshot, key []byte) (_ int, rerr error) {
+func pebbleFindInt(snap *pebble.Snapshot, key []byte) (_ int, rerr error) {
 	data, closer, err := snap.Get(key)
 	if err != nil {
 		return 0, err

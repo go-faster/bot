@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"os"
-	"path/filepath"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -14,18 +12,16 @@ import (
 
 	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
-	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
-	updhook "github.com/gotd/td/telegram/updates/hook"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
 	"github.com/sashabaranov/go-openai"
-	bolt "go.etcd.io/bbolt"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel/trace"
@@ -33,12 +29,10 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/gotd/td/session"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/downloader"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/peer"
-	"github.com/gotd/td/telegram/updates"
 	"github.com/gotd/td/tg"
 
 	"github.com/go-faster/bot/internal/app"
@@ -46,32 +40,29 @@ import (
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/entdb"
+	"github.com/go-faster/bot/internal/entsession"
 	"github.com/go-faster/bot/internal/gh"
-	"github.com/go-faster/bot/internal/storage"
+	"github.com/go-faster/bot/internal/state"
 )
 
 type App struct {
-	client       *telegram.Client
-	token        string
-	raw          *tg.Client
-	sender       *message.Sender
-	stateStorage *BoltState
-	gaps         *updates.Manager
-	dispatcher   tg.UpdateDispatcher
-	db           *pebble.DB
-	storage      storage.MsgID
-	mux          dispatch.MessageMux
-	tracer       trace.Tracer
-	openai       *openai.Client
-	github       *github.Client
-	http         *http.Client
-	m            *app.Metrics
-	lg           *zap.Logger
-	wh           *gh.Webhook
-	ent          *ent.Client
+	client     *telegram.Client
+	token      string
+	raw        *tg.Client
+	sender     *message.Sender
+	dispatcher tg.UpdateDispatcher
+	mux        dispatch.MessageMux
+	tracer     trace.Tracer
+	openai     *openai.Client
+	github     *github.Client
+	http       *http.Client
+	m          *app.Metrics
+	lg         *zap.Logger
+	wh         *gh.Webhook
+	db         *ent.Client
 }
 
-func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
+func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -88,68 +79,27 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		return nil, errors.New("no BOT_TOKEN provided")
 	}
 
-	// Setting up session storage.
-	cacheDir := "/cache"
-	sessionDir := filepath.Join(cacheDir, ".td")
-	if err := os.MkdirAll(sessionDir, 0700); err != nil {
-		return nil, errors.Wrap(err, "mkdir")
-	}
-
-	stateDb, err := bolt.Open(filepath.Join(sessionDir, "gaps-state.bbolt"), fs.ModePerm, bolt.DefaultOptions)
+	db, err := entdb.Open(os.Getenv("DATABASE_URL"))
 	if err != nil {
-		return nil, errors.Wrap(err, "state database")
+		return nil, errors.Wrap(err, "open database")
 	}
-	defer func() {
-		if rerr != nil {
-			multierr.AppendInto(&rerr, stateDb.Close())
-		}
-	}()
-
-	db, err := pebble.Open(
-		filepath.Join(sessionDir, fmt.Sprintf("bot.%s.state", tokHash(token))),
-		&pebble.Options{},
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "database")
-	}
-	defer func() {
-		if rerr != nil {
-			multierr.AppendInto(&rerr, db.Close())
-		}
-	}()
-	msgIDStore := storage.NewMsgID(db)
-
-	stateStorage := NewBoltState(stateDb)
+	msgIDStore := state.NewEnt(db)
 	dispatcher := tg.NewUpdateDispatcher()
-	gaps := updates.New(updates.Config{
-		Handler: dispatcher,
-		Storage: stateStorage,
-		Logger:  lg.Named("gaps"),
-	})
 
 	otg, err := oteltg.New(m.MeterProvider(), m.TracerProvider())
 	if err != nil {
 		return nil, errors.Wrap(err, "otel")
 	}
 
+	uuidNameSpaceBotToken := uuid.MustParse("24085c34-5e70-4b1b-9fd9-a82a98879839")
 	client := telegram.NewClient(appID, appHash, telegram.Options{
 		Logger: lg.Named("client"),
-		SessionStorage: &session.FileStorage{
-			Path: filepath.Join(sessionDir, sessionFileName(token)),
+		SessionStorage: entsession.Storage{
+			Database: db,
+			UUID:     uuid.NewSHA1(uuidNameSpaceBotToken, []byte(token)),
 		},
-		UpdateHandler: dispatch.NewLoggedDispatcher(
-			gaps, lg.Named("updates"), m.TracerProvider(),
-		),
 		Middlewares: []telegram.Middleware{
 			otg,
-			updhook.UpdateHook(func(ctx context.Context, u tg.UpdatesClass) error {
-				go func() {
-					if err := gaps.Handle(ctx, u); err != nil {
-						lg.Error("Handle RPC response update error", zap.Error(err))
-					}
-				}()
-				return nil
-			}),
 		},
 	})
 	raw := client.API()
@@ -174,28 +124,19 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		webhook = webhook.WithSecret(secret)
 	}
 
-	entClient, err := entdb.Open(os.Getenv("DATABASE_URL"))
-	if err != nil {
-		return nil, errors.Wrap(err, "open database")
-	}
-
 	a := &App{
-		ent:          entClient,
-		client:       client,
-		token:        token,
-		raw:          raw,
-		sender:       sender,
-		stateStorage: stateStorage,
-		gaps:         gaps,
-		dispatcher:   dispatcher,
-		db:           db,
-		storage:      msgIDStore,
-		mux:          mux,
-		http:         httpClient,
-		m:            m,
-		lg:           lg,
-		wh:           webhook,
-		openai:       openai.NewClient(os.Getenv("OPENAI_TOKEN")),
+		db:         db,
+		client:     client,
+		token:      token,
+		raw:        raw,
+		sender:     sender,
+		dispatcher: dispatcher,
+		mux:        mux,
+		http:       httpClient,
+		m:          m,
+		lg:         lg,
+		wh:         webhook,
+		openai:     openai.NewClient(os.Getenv("OPENAI_TOKEN")),
 
 		tracer: m.TracerProvider().Tracer(""),
 	}
@@ -206,14 +147,13 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		}),
 		Logger: lg.Named("metrics"),
 	})
-	h = storage.NewHook(h, msgIDStore)
 
-	_ = dispatch.NewBot(raw).
+	dispatch.NewBot(raw).
 		WithSender(sender).
 		WithLogger(lg).
 		WithTracerProvider(m.TracerProvider()).
 		Register(dispatcher).
-		OnMessage(h).
+		OnMessage(state.NewHook(h, msgIDStore)).
 		OnButton(a)
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
@@ -228,7 +168,7 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 }
 
 func (a *App) Close() error {
-	return multierr.Append(a.stateStorage.db.Close(), a.db.Close())
+	return a.db.Close()
 }
 
 func (a *App) Run(ctx context.Context) error {
@@ -350,17 +290,14 @@ func (a *App) Run(ctx context.Context) error {
 				if err != nil {
 					return errors.Wrap(err, "auth status")
 				}
+				a.lg.Info("Bot logged in",
+					zap.String("name", status.User.Username),
+				)
 			} else {
 				a.lg.Info("Bot login restored",
 					zap.String("name", status.User.Username),
 				)
 			}
-
-			if err := a.gaps.Auth(ctx, a.raw, status.User.ID, status.User.Bot, false); err != nil {
-				return err
-			}
-			defer func() { _ = a.gaps.Logout() }()
-
 			if _, disableRegister := os.LookupEnv("DISABLE_COMMAND_REGISTER"); !disableRegister {
 				if err := a.mux.RegisterCommands(ctx, a.raw); err != nil {
 					return errors.Wrap(err, "register commands")
@@ -410,7 +347,7 @@ func (a *App) Run(ctx context.Context) error {
 }
 
 func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
-	a, err := InitApp(ctx, m, lg)
+	a, err := initApp(m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}
