@@ -62,7 +62,7 @@ type App struct {
 	db         *ent.Client
 }
 
-func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
+func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -90,11 +90,13 @@ func InitApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 	if err != nil {
 		return nil, errors.Wrap(err, "otel")
 	}
+
+	uuidNameSpaceBotToken := uuid.MustParse("24085c34-5e70-4b1b-9fd9-a82a98879839")
 	client := telegram.NewClient(appID, appHash, telegram.Options{
 		Logger: lg.Named("client"),
 		SessionStorage: entsession.Storage{
 			Database: db,
-			UUID:     uuid.NewSHA1(uuid.NameSpaceDNS, []byte(token)),
+			UUID:     uuid.NewSHA1(uuidNameSpaceBotToken, []byte(token)),
 		},
 		Middlewares: []telegram.Middleware{
 			otg,
@@ -288,6 +290,9 @@ func (a *App) Run(ctx context.Context) error {
 				if err != nil {
 					return errors.Wrap(err, "auth status")
 				}
+				a.lg.Info("Bot logged in",
+					zap.String("name", status.User.Username),
+				)
 			} else {
 				a.lg.Info("Bot login restored",
 					zap.String("name", status.User.Username),
@@ -342,7 +347,7 @@ func (a *App) Run(ctx context.Context) error {
 }
 
 func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
-	a, err := InitApp(ctx, m, lg)
+	a, err := initApp(m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}
