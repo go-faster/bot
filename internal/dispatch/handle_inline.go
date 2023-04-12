@@ -4,13 +4,14 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/tg"
 )
 
 func (b *Bot) OnBotInlineQuery(ctx context.Context, e tg.Entities, u *tg.UpdateBotInlineQuery) error {
-	b.logger.Info("Got inline query",
+	zctx.From(ctx).Info("Got inline query",
 		zap.String("query", u.Query),
 		zap.String("offset", u.Offset),
 	)
@@ -33,7 +34,7 @@ func (b *Bot) OnBotInlineQuery(ctx context.Context, e tg.Entities, u *tg.UpdateB
 		Enquirer:  user.AsInput(),
 		geo:       geo,
 		user:      user,
-		baseEvent: b.baseEvent(),
+		baseEvent: b.baseEvent(ctx),
 	}); err != nil {
 		return errors.Wrap(err, "handle inline")
 	}

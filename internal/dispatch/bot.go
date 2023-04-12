@@ -6,12 +6,10 @@ import (
 	"io"
 
 	"github.com/google/go-github/v50/github"
-	"go.opentelemetry.io/otel/trace"
-	"go.uber.org/zap"
-
 	"github.com/gotd/td/telegram/downloader"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // Bot represents generic Telegram bot state and event dispatcher.
@@ -25,7 +23,6 @@ type Bot struct {
 	downloader *downloader.Downloader
 	github     *github.Client
 
-	logger *zap.Logger
 	rand   io.Reader
 	tracer trace.Tracer
 }
@@ -47,7 +44,6 @@ func NewBot(raw *tg.Client) *Bot {
 		rpc:        raw,
 		sender:     message.NewSender(raw),
 		downloader: downloader.NewDownloader(),
-		logger:     zap.NewNop(),
 		rand:       rand.Reader,
 		tracer:     trace.NewNoopTracerProvider().Tracer(botInstrumentationName),
 	}
@@ -79,12 +75,6 @@ func (b *Bot) OnButton(handler ButtonHandler) *Bot {
 // WithSender sets message sender to use.
 func (b *Bot) WithSender(sender *message.Sender) *Bot {
 	b.sender = sender
-	return b
-}
-
-// WithLogger sets logger.
-func (b *Bot) WithLogger(logger *zap.Logger) *Bot {
-	b.logger = logger
 	return b
 }
 

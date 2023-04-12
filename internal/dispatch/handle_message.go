@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -12,7 +13,7 @@ import (
 )
 
 func (b *Bot) handleUser(ctx context.Context, user *tg.User, m *tg.Message) error {
-	b.logger.Info("Got message",
+	zctx.From(ctx).Info("Got message",
 		zap.String("text", m.Message),
 		zap.Int64("user_id", user.ID),
 		zap.String("user_first_name", user.FirstName),
@@ -23,12 +24,12 @@ func (b *Bot) handleUser(ctx context.Context, user *tg.User, m *tg.Message) erro
 		Peer:      user.AsInputPeer(),
 		user:      user,
 		Message:   m,
-		baseEvent: b.baseEvent(),
+		baseEvent: b.baseEvent(ctx),
 	})
 }
 
 func (b *Bot) handleChat(ctx context.Context, chat *tg.Chat, m *tg.Message) error {
-	b.logger.Info("Got message from chat",
+	zctx.From(ctx).Info("Got message from chat",
 		zap.String("text", m.Message),
 		zap.Int64("chat_id", chat.ID),
 	)
@@ -37,22 +38,22 @@ func (b *Bot) handleChat(ctx context.Context, chat *tg.Chat, m *tg.Message) erro
 		Peer:      chat.AsInputPeer(),
 		chat:      chat,
 		Message:   m,
-		baseEvent: b.baseEvent(),
+		baseEvent: b.baseEvent(ctx),
 	})
 }
 
 func (b *Bot) handleChannel(ctx context.Context, channel *tg.Channel, m *tg.Message) error {
-	b.logger.Info("Got message from channel",
+	zctx.From(ctx).Info("Got message from channel",
 		zap.String("text", m.Message),
 		zap.String("username", channel.Username),
 		zap.Int64("channel_id", channel.ID),
 	)
-
 	return b.onMessage.OnMessage(ctx, MessageEvent{
-		Peer:      channel.AsInputPeer(),
+		Peer:    channel.AsInputPeer(),
+		Message: m,
+
 		channel:   channel,
-		Message:   m,
-		baseEvent: b.baseEvent(),
+		baseEvent: b.baseEvent(ctx),
 	})
 }
 
@@ -116,7 +117,7 @@ func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMe
 			return errors.Wrapf(err, "handle message %d", u.Message.GetID())
 		}
 
-		b.logger.Debug("Bot is blocked by user")
+		zctx.From(ctx).Debug("Bot is blocked by user")
 	}
 	return nil
 }
