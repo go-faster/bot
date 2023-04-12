@@ -233,23 +233,31 @@ func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.L
 	evType = strings.TrimPrefix(evType, "*github.")
 	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
 		trace.WithSpanKind(trace.SpanKindServer),
-		trace.WithAttributes(attribute.String("event", evType)),
+		trace.WithAttributes(attribute.String("e", evType)),
 	)
 	defer span.End()
 
-	switch event := event.(type) {
+	switch e := event.(type) {
 	case *github.PullRequestEvent:
-		return h.handlePR(ctx, event)
+		return h.handlePR(ctx, e)
 	case *github.ReleaseEvent:
-		return h.handleRelease(ctx, event)
+		return h.handleRelease(ctx, e)
 	case *github.RepositoryEvent:
-		return h.handleRepo(ctx, event)
+		return h.handleRepo(ctx, e)
 	case *github.IssuesEvent:
-		return h.handleIssue(ctx, event)
+		return h.handleIssue(ctx, e)
 	case *github.DiscussionEvent:
-		return h.handleDiscussion(ctx, event)
+		return h.handleDiscussion(ctx, e)
 	case *github.StarEvent:
-		return h.handleStar(ctx, event)
+		return h.handleStar(ctx, e)
+	case *github.CheckRunEvent:
+		return h.handleCheckRun(ctx, e)
+	case *github.CheckSuiteEvent:
+		return h.handleCheckSuite(ctx, e)
+	case *github.WorkflowRun:
+		return h.handleWorkflowRun(ctx, e)
+	case *github.WorkflowJob:
+		return h.handleWorkflowJob(ctx, e)
 	default:
 		log.Info("No handler")
 		return nil
