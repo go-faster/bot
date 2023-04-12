@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/tg"
@@ -89,9 +91,25 @@ func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageCl
 	return nil
 }
 
-func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
+func (b *Bot) logError(span trace.Span, msg tg.MessageClass, rerr *error) {
+	if *rerr == nil {
+		return
+	}
+	b.logger.Error("Message handler error",
+		zap.Int("msg_id", msg.GetID()),
+		zap.Error(*rerr),
+	)
+	span.SetAttributes(
+		attribute.Int("telegram.message_id", msg.GetID()),
+	)
+	span.RecordError(*rerr)
+}
+
+func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) (rerr error) {
 	ctx, span := b.tracer.Start(ctx, "OnNewMessage")
 	defer span.End()
+
+	defer b.logError(span, u.Message, &rerr)
 
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		if !tg.IsUserBlocked(err) {
@@ -103,9 +121,10 @@ func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMe
 	return nil
 }
 
-func (b *Bot) OnNewChannelMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewChannelMessage) error {
+func (b *Bot) OnNewChannelMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewChannelMessage) (rerr error) {
 	ctx, span := b.tracer.Start(ctx, "OnNewChannelMessage")
 	defer span.End()
+	defer b.logError(span, u.Message, &rerr)
 
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		return errors.Wrap(err, "handle")
