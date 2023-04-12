@@ -60,7 +60,6 @@ type App struct {
 	lg         *zap.Logger
 	wh         *gh.Webhook
 	db         *ent.Client
-	bot        *dispatch.Bot
 }
 
 func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -94,7 +93,8 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 
 	uuidNameSpaceBotToken := uuid.MustParse("24085c34-5e70-4b1b-9fd9-a82a98879839")
 	client := telegram.NewClient(appID, appHash, telegram.Options{
-		Logger: lg.Named("client"),
+		UpdateHandler: dispatcher,
+		Logger:        lg.Named("client"),
 		SessionStorage: entsession.Storage{
 			Database: db,
 			UUID:     uuid.NewSHA1(uuidNameSpaceBotToken, []byte(token)),
@@ -148,7 +148,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		}),
 		Logger: lg.Named("metrics"),
 	})
-	a.bot = dispatch.NewBot(raw).
+	_ = dispatch.NewBot(raw).
 		WithSender(sender).
 		WithLogger(lg).
 		WithTracerProvider(m.TracerProvider()).
