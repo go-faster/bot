@@ -25,8 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.1
-        with:
-          fetch-depth:
       - uses: ariga/atlas-action@v0
         with:
           dir: migrations
