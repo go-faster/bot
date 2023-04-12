@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
@@ -25,6 +26,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// GPTDialog is the client for interacting with the GPTDialog builders.
+	GPTDialog *GPTDialogClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
 	LastChannelMessage *LastChannelMessageClient
 	// PRNotification is the client for interacting with the PRNotification builders.
@@ -46,6 +49,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.GPTDialog = NewGPTDialogClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
 	c.TelegramSession = NewTelegramSessionClient(c.config)
@@ -132,6 +136,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                ctx,
 		config:             cfg,
+		GPTDialog:          NewGPTDialogClient(cfg),
 		LastChannelMessage: NewLastChannelMessageClient(cfg),
 		PRNotification:     NewPRNotificationClient(cfg),
 		TelegramSession:    NewTelegramSessionClient(cfg),
@@ -155,6 +160,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                ctx,
 		config:             cfg,
+		GPTDialog:          NewGPTDialogClient(cfg),
 		LastChannelMessage: NewLastChannelMessageClient(cfg),
 		PRNotification:     NewPRNotificationClient(cfg),
 		TelegramSession:    NewTelegramSessionClient(cfg),
@@ -165,7 +171,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		LastChannelMessage.
+//		GPTDialog.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -187,6 +193,7 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.GPTDialog.Use(hooks...)
 	c.LastChannelMessage.Use(hooks...)
 	c.PRNotification.Use(hooks...)
 	c.TelegramSession.Use(hooks...)
@@ -196,6 +203,7 @@ func (c *Client) Use(hooks ...Hook) {
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.GPTDialog.Intercept(interceptors...)
 	c.LastChannelMessage.Intercept(interceptors...)
 	c.PRNotification.Intercept(interceptors...)
 	c.TelegramSession.Intercept(interceptors...)
@@ -205,6 +213,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *GPTDialogMutation:
+		return c.GPTDialog.mutate(ctx, m)
 	case *LastChannelMessageMutation:
 		return c.LastChannelMessage.mutate(ctx, m)
 	case *PRNotificationMutation:
@@ -215,6 +225,124 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// GPTDialogClient is a client for the GPTDialog schema.
+type GPTDialogClient struct {
+	config
+}
+
+// NewGPTDialogClient returns a client for the GPTDialog from the given config.
+func NewGPTDialogClient(c config) *GPTDialogClient {
+	return &GPTDialogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gptdialog.Hooks(f(g(h())))`.
+func (c *GPTDialogClient) Use(hooks ...Hook) {
+	c.hooks.GPTDialog = append(c.hooks.GPTDialog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `gptdialog.Intercept(f(g(h())))`.
+func (c *GPTDialogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.GPTDialog = append(c.inters.GPTDialog, interceptors...)
+}
+
+// Create returns a builder for creating a GPTDialog entity.
+func (c *GPTDialogClient) Create() *GPTDialogCreate {
+	mutation := newGPTDialogMutation(c.config, OpCreate)
+	return &GPTDialogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GPTDialog entities.
+func (c *GPTDialogClient) CreateBulk(builders ...*GPTDialogCreate) *GPTDialogCreateBulk {
+	return &GPTDialogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GPTDialog.
+func (c *GPTDialogClient) Update() *GPTDialogUpdate {
+	mutation := newGPTDialogMutation(c.config, OpUpdate)
+	return &GPTDialogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GPTDialogClient) UpdateOne(gd *GPTDialog) *GPTDialogUpdateOne {
+	mutation := newGPTDialogMutation(c.config, OpUpdateOne, withGPTDialog(gd))
+	return &GPTDialogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GPTDialogClient) UpdateOneID(id int) *GPTDialogUpdateOne {
+	mutation := newGPTDialogMutation(c.config, OpUpdateOne, withGPTDialogID(id))
+	return &GPTDialogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GPTDialog.
+func (c *GPTDialogClient) Delete() *GPTDialogDelete {
+	mutation := newGPTDialogMutation(c.config, OpDelete)
+	return &GPTDialogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *GPTDialogClient) DeleteOne(gd *GPTDialog) *GPTDialogDeleteOne {
+	return c.DeleteOneID(gd.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *GPTDialogClient) DeleteOneID(id int) *GPTDialogDeleteOne {
+	builder := c.Delete().Where(gptdialog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GPTDialogDeleteOne{builder}
+}
+
+// Query returns a query builder for GPTDialog.
+func (c *GPTDialogClient) Query() *GPTDialogQuery {
+	return &GPTDialogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeGPTDialog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a GPTDialog entity by its id.
+func (c *GPTDialogClient) Get(ctx context.Context, id int) (*GPTDialog, error) {
+	return c.Query().Where(gptdialog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GPTDialogClient) GetX(ctx context.Context, id int) *GPTDialog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *GPTDialogClient) Hooks() []Hook {
+	return c.hooks.GPTDialog
+}
+
+// Interceptors returns the client interceptors.
+func (c *GPTDialogClient) Interceptors() []Interceptor {
+	return c.inters.GPTDialog
+}
+
+func (c *GPTDialogClient) mutate(ctx context.Context, m *GPTDialogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&GPTDialogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&GPTDialogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&GPTDialogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&GPTDialogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown GPTDialog mutation op: %q", m.Op())
 	}
 }
 
@@ -693,9 +821,10 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		LastChannelMessage, PRNotification, TelegramSession, User []ent.Hook
+		GPTDialog, LastChannelMessage, PRNotification, TelegramSession, User []ent.Hook
 	}
 	inters struct {
-		LastChannelMessage, PRNotification, TelegramSession, User []ent.Interceptor
+		GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
+		User []ent.Interceptor
 	}
 )

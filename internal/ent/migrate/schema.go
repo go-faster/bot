@@ -8,6 +8,30 @@ import (
 )
 
 var (
+	// GptDialogsColumns holds the columns for the "gpt_dialogs" table.
+	GptDialogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "peer_id", Type: field.TypeString},
+		{Name: "prompt_msg_id", Type: field.TypeInt},
+		{Name: "prompt_msg", Type: field.TypeString},
+		{Name: "gpt_msg_id", Type: field.TypeInt},
+		{Name: "gpt_msg", Type: field.TypeString},
+		{Name: "thread_top_msg_id", Type: field.TypeInt, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// GptDialogsTable holds the schema information for the "gpt_dialogs" table.
+	GptDialogsTable = &schema.Table{
+		Name:       "gpt_dialogs",
+		Columns:    GptDialogsColumns,
+		PrimaryKey: []*schema.Column{GptDialogsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "gptdialog_peer_id_thread_top_msg_id",
+				Unique:  false,
+				Columns: []*schema.Column{GptDialogsColumns[1], GptDialogsColumns[6]},
+			},
+		},
+	}
 	// LastChannelMessagesColumns holds the columns for the "last_channel_messages" table.
 	LastChannelMessagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -64,6 +88,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		GptDialogsTable,
 		LastChannelMessagesTable,
 		PrNotificationsTable,
 		TelegramSessionsTable,

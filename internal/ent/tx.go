@@ -12,6 +12,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// GPTDialog is the client for interacting with the GPTDialog builders.
+	GPTDialog *GPTDialogClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
 	LastChannelMessage *LastChannelMessageClient
 	// PRNotification is the client for interacting with the PRNotification builders.
@@ -151,6 +153,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.GPTDialog = NewGPTDialogClient(tx.config)
 	tx.LastChannelMessage = NewLastChannelMessageClient(tx.config)
 	tx.PRNotification = NewPRNotificationClient(tx.config)
 	tx.TelegramSession = NewTelegramSessionClient(tx.config)
@@ -164,7 +167,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: LastChannelMessage.QueryXXX(), the query will be executed
+// applies a query, for example: GPTDialog.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.
