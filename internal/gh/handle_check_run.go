@@ -9,7 +9,7 @@ import (
 )
 
 func (h Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handleCheckRun",
+	_, span := h.tracer.Start(ctx, "handleCheckRun",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()

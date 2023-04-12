@@ -9,7 +9,7 @@ import (
 )
 
 func (h Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handleCheckSuite",
+	_, span := h.tracer.Start(ctx, "handleCheckSuite",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()

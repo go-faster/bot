@@ -9,7 +9,7 @@ import (
 )
 
 func (h Webhook) handleWorkflowJob(ctx context.Context, e *github.WorkflowJob) error {
-	ctx, span := h.tracer.Start(ctx, "handleWorkflowJob",
+	_, span := h.tracer.Start(ctx, "handleWorkflowJob",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
