@@ -83,8 +83,8 @@ func TestWebhook(t *testing.T) {
 	a.NoError(err)
 	store := state.NewPebble(db)
 
-	a.NoError(store.UpdateLastMsgID(context.Background(), channel.ChannelID, lastMsgID))
-	a.NoError(store.SetPRNotification(context.Background(), event, msgID))
+	a.NoError(store.UpdateLastMsgID(ctx, channel.ChannelID, lastMsgID))
+	a.NoError(store.SetPRNotification(ctx, event, msgID))
 
 	invoker := &mockInvoker{}
 	raw := tg.NewClient(invoker)
