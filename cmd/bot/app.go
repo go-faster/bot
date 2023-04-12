@@ -53,7 +53,7 @@ type App struct {
 	raw        *tg.Client
 	sender     *message.Sender
 	dispatcher tg.UpdateDispatcher
-	mux        dispatch.MessageMux
+	mux        *dispatch.MessageMux
 	tracer     trace.Tracer
 	openai     *openai.Client
 	github     *github.Client
@@ -123,7 +123,8 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		Timeout:   15 * time.Second,
 	}
 
-	mux := dispatch.NewMessageMux()
+	mux := dispatch.NewMessageMux().
+		WithTracerProvider(m.TracerProvider())
 	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider())
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
