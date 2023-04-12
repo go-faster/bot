@@ -8,9 +8,53 @@ import (
 )
 
 var (
+	// LastChannelMessagesColumns holds the columns for the "last_channel_messages" table.
+	LastChannelMessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "message_id", Type: field.TypeInt},
+	}
+	// LastChannelMessagesTable holds the schema information for the "last_channel_messages" table.
+	LastChannelMessagesTable = &schema.Table{
+		Name:       "last_channel_messages",
+		Columns:    LastChannelMessagesColumns,
+		PrimaryKey: []*schema.Column{LastChannelMessagesColumns[0]},
+	}
+	// PrNotificationsColumns holds the columns for the "pr_notifications" table.
+	PrNotificationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "repo_id", Type: field.TypeInt64},
+		{Name: "pull_request_id", Type: field.TypeInt},
+		{Name: "message_id", Type: field.TypeInt},
+	}
+	// PrNotificationsTable holds the schema information for the "pr_notifications" table.
+	PrNotificationsTable = &schema.Table{
+		Name:       "pr_notifications",
+		Columns:    PrNotificationsColumns,
+		PrimaryKey: []*schema.Column{PrNotificationsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "prnotification_repo_id_pull_request_id",
+				Unique:  true,
+				Columns: []*schema.Column{PrNotificationsColumns[1], PrNotificationsColumns[2]},
+			},
+		},
+	}
+	// TelegramSessionsColumns holds the columns for the "telegram_sessions" table.
+	TelegramSessionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "data", Type: field.TypeBytes},
+	}
+	// TelegramSessionsTable holds the schema information for the "telegram_sessions" table.
+	TelegramSessionsTable = &schema.Table{
+		Name:       "telegram_sessions",
+		Columns:    TelegramSessionsColumns,
+		PrimaryKey: []*schema.Column{TelegramSessionsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "username", Type: field.TypeString},
+		{Name: "first_name", Type: field.TypeString},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -20,6 +64,9 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		LastChannelMessagesTable,
+		PrNotificationsTable,
+		TelegramSessionsTable,
 		UsersTable,
 	}
 )

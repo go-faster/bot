@@ -9,10 +9,14 @@ import (
 	"log"
 
 	"github.com/go-faster/bot/internal/ent/migrate"
+	"github.com/google/uuid"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
+	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramsession"
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
@@ -21,6 +25,12 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
+	LastChannelMessage *LastChannelMessageClient
+	// PRNotification is the client for interacting with the PRNotification builders.
+	PRNotification *PRNotificationClient
+	// TelegramSession is the client for interacting with the TelegramSession builders.
+	TelegramSession *TelegramSessionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -36,6 +46,9 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
+	c.PRNotification = NewPRNotificationClient(c.config)
+	c.TelegramSession = NewTelegramSessionClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -117,9 +130,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		User:   NewUserClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		LastChannelMessage: NewLastChannelMessageClient(cfg),
+		PRNotification:     NewPRNotificationClient(cfg),
+		TelegramSession:    NewTelegramSessionClient(cfg),
+		User:               NewUserClient(cfg),
 	}, nil
 }
 
@@ -137,16 +153,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		User:   NewUserClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		LastChannelMessage: NewLastChannelMessageClient(cfg),
+		PRNotification:     NewPRNotificationClient(cfg),
+		TelegramSession:    NewTelegramSessionClient(cfg),
+		User:               NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		User.
+//		LastChannelMessage.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -168,22 +187,388 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.LastChannelMessage.Use(hooks...)
+	c.PRNotification.Use(hooks...)
+	c.TelegramSession.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.LastChannelMessage.Intercept(interceptors...)
+	c.PRNotification.Intercept(interceptors...)
+	c.TelegramSession.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *LastChannelMessageMutation:
+		return c.LastChannelMessage.mutate(ctx, m)
+	case *PRNotificationMutation:
+		return c.PRNotification.mutate(ctx, m)
+	case *TelegramSessionMutation:
+		return c.TelegramSession.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// LastChannelMessageClient is a client for the LastChannelMessage schema.
+type LastChannelMessageClient struct {
+	config
+}
+
+// NewLastChannelMessageClient returns a client for the LastChannelMessage from the given config.
+func NewLastChannelMessageClient(c config) *LastChannelMessageClient {
+	return &LastChannelMessageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `lastchannelmessage.Hooks(f(g(h())))`.
+func (c *LastChannelMessageClient) Use(hooks ...Hook) {
+	c.hooks.LastChannelMessage = append(c.hooks.LastChannelMessage, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `lastchannelmessage.Intercept(f(g(h())))`.
+func (c *LastChannelMessageClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LastChannelMessage = append(c.inters.LastChannelMessage, interceptors...)
+}
+
+// Create returns a builder for creating a LastChannelMessage entity.
+func (c *LastChannelMessageClient) Create() *LastChannelMessageCreate {
+	mutation := newLastChannelMessageMutation(c.config, OpCreate)
+	return &LastChannelMessageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LastChannelMessage entities.
+func (c *LastChannelMessageClient) CreateBulk(builders ...*LastChannelMessageCreate) *LastChannelMessageCreateBulk {
+	return &LastChannelMessageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LastChannelMessage.
+func (c *LastChannelMessageClient) Update() *LastChannelMessageUpdate {
+	mutation := newLastChannelMessageMutation(c.config, OpUpdate)
+	return &LastChannelMessageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LastChannelMessageClient) UpdateOne(lcm *LastChannelMessage) *LastChannelMessageUpdateOne {
+	mutation := newLastChannelMessageMutation(c.config, OpUpdateOne, withLastChannelMessage(lcm))
+	return &LastChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LastChannelMessageClient) UpdateOneID(id int64) *LastChannelMessageUpdateOne {
+	mutation := newLastChannelMessageMutation(c.config, OpUpdateOne, withLastChannelMessageID(id))
+	return &LastChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LastChannelMessage.
+func (c *LastChannelMessageClient) Delete() *LastChannelMessageDelete {
+	mutation := newLastChannelMessageMutation(c.config, OpDelete)
+	return &LastChannelMessageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LastChannelMessageClient) DeleteOne(lcm *LastChannelMessage) *LastChannelMessageDeleteOne {
+	return c.DeleteOneID(lcm.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LastChannelMessageClient) DeleteOneID(id int64) *LastChannelMessageDeleteOne {
+	builder := c.Delete().Where(lastchannelmessage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LastChannelMessageDeleteOne{builder}
+}
+
+// Query returns a query builder for LastChannelMessage.
+func (c *LastChannelMessageClient) Query() *LastChannelMessageQuery {
+	return &LastChannelMessageQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLastChannelMessage},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LastChannelMessage entity by its id.
+func (c *LastChannelMessageClient) Get(ctx context.Context, id int64) (*LastChannelMessage, error) {
+	return c.Query().Where(lastchannelmessage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LastChannelMessageClient) GetX(ctx context.Context, id int64) *LastChannelMessage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LastChannelMessageClient) Hooks() []Hook {
+	return c.hooks.LastChannelMessage
+}
+
+// Interceptors returns the client interceptors.
+func (c *LastChannelMessageClient) Interceptors() []Interceptor {
+	return c.inters.LastChannelMessage
+}
+
+func (c *LastChannelMessageClient) mutate(ctx context.Context, m *LastChannelMessageMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LastChannelMessageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LastChannelMessageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LastChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LastChannelMessageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LastChannelMessage mutation op: %q", m.Op())
+	}
+}
+
+// PRNotificationClient is a client for the PRNotification schema.
+type PRNotificationClient struct {
+	config
+}
+
+// NewPRNotificationClient returns a client for the PRNotification from the given config.
+func NewPRNotificationClient(c config) *PRNotificationClient {
+	return &PRNotificationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `prnotification.Hooks(f(g(h())))`.
+func (c *PRNotificationClient) Use(hooks ...Hook) {
+	c.hooks.PRNotification = append(c.hooks.PRNotification, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `prnotification.Intercept(f(g(h())))`.
+func (c *PRNotificationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PRNotification = append(c.inters.PRNotification, interceptors...)
+}
+
+// Create returns a builder for creating a PRNotification entity.
+func (c *PRNotificationClient) Create() *PRNotificationCreate {
+	mutation := newPRNotificationMutation(c.config, OpCreate)
+	return &PRNotificationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PRNotification entities.
+func (c *PRNotificationClient) CreateBulk(builders ...*PRNotificationCreate) *PRNotificationCreateBulk {
+	return &PRNotificationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PRNotification.
+func (c *PRNotificationClient) Update() *PRNotificationUpdate {
+	mutation := newPRNotificationMutation(c.config, OpUpdate)
+	return &PRNotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PRNotificationClient) UpdateOne(pn *PRNotification) *PRNotificationUpdateOne {
+	mutation := newPRNotificationMutation(c.config, OpUpdateOne, withPRNotification(pn))
+	return &PRNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PRNotificationClient) UpdateOneID(id int) *PRNotificationUpdateOne {
+	mutation := newPRNotificationMutation(c.config, OpUpdateOne, withPRNotificationID(id))
+	return &PRNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PRNotification.
+func (c *PRNotificationClient) Delete() *PRNotificationDelete {
+	mutation := newPRNotificationMutation(c.config, OpDelete)
+	return &PRNotificationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PRNotificationClient) DeleteOne(pn *PRNotification) *PRNotificationDeleteOne {
+	return c.DeleteOneID(pn.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PRNotificationClient) DeleteOneID(id int) *PRNotificationDeleteOne {
+	builder := c.Delete().Where(prnotification.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PRNotificationDeleteOne{builder}
+}
+
+// Query returns a query builder for PRNotification.
+func (c *PRNotificationClient) Query() *PRNotificationQuery {
+	return &PRNotificationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePRNotification},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PRNotification entity by its id.
+func (c *PRNotificationClient) Get(ctx context.Context, id int) (*PRNotification, error) {
+	return c.Query().Where(prnotification.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PRNotificationClient) GetX(ctx context.Context, id int) *PRNotification {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PRNotificationClient) Hooks() []Hook {
+	return c.hooks.PRNotification
+}
+
+// Interceptors returns the client interceptors.
+func (c *PRNotificationClient) Interceptors() []Interceptor {
+	return c.inters.PRNotification
+}
+
+func (c *PRNotificationClient) mutate(ctx context.Context, m *PRNotificationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PRNotificationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PRNotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PRNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PRNotificationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PRNotification mutation op: %q", m.Op())
+	}
+}
+
+// TelegramSessionClient is a client for the TelegramSession schema.
+type TelegramSessionClient struct {
+	config
+}
+
+// NewTelegramSessionClient returns a client for the TelegramSession from the given config.
+func NewTelegramSessionClient(c config) *TelegramSessionClient {
+	return &TelegramSessionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `telegramsession.Hooks(f(g(h())))`.
+func (c *TelegramSessionClient) Use(hooks ...Hook) {
+	c.hooks.TelegramSession = append(c.hooks.TelegramSession, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `telegramsession.Intercept(f(g(h())))`.
+func (c *TelegramSessionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TelegramSession = append(c.inters.TelegramSession, interceptors...)
+}
+
+// Create returns a builder for creating a TelegramSession entity.
+func (c *TelegramSessionClient) Create() *TelegramSessionCreate {
+	mutation := newTelegramSessionMutation(c.config, OpCreate)
+	return &TelegramSessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TelegramSession entities.
+func (c *TelegramSessionClient) CreateBulk(builders ...*TelegramSessionCreate) *TelegramSessionCreateBulk {
+	return &TelegramSessionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TelegramSession.
+func (c *TelegramSessionClient) Update() *TelegramSessionUpdate {
+	mutation := newTelegramSessionMutation(c.config, OpUpdate)
+	return &TelegramSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TelegramSessionClient) UpdateOne(ts *TelegramSession) *TelegramSessionUpdateOne {
+	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSession(ts))
+	return &TelegramSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TelegramSessionClient) UpdateOneID(id uuid.UUID) *TelegramSessionUpdateOne {
+	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSessionID(id))
+	return &TelegramSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TelegramSession.
+func (c *TelegramSessionClient) Delete() *TelegramSessionDelete {
+	mutation := newTelegramSessionMutation(c.config, OpDelete)
+	return &TelegramSessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TelegramSessionClient) DeleteOne(ts *TelegramSession) *TelegramSessionDeleteOne {
+	return c.DeleteOneID(ts.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TelegramSessionClient) DeleteOneID(id uuid.UUID) *TelegramSessionDeleteOne {
+	builder := c.Delete().Where(telegramsession.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TelegramSessionDeleteOne{builder}
+}
+
+// Query returns a query builder for TelegramSession.
+func (c *TelegramSessionClient) Query() *TelegramSessionQuery {
+	return &TelegramSessionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTelegramSession},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TelegramSession entity by its id.
+func (c *TelegramSessionClient) Get(ctx context.Context, id uuid.UUID) (*TelegramSession, error) {
+	return c.Query().Where(telegramsession.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TelegramSessionClient) GetX(ctx context.Context, id uuid.UUID) *TelegramSession {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TelegramSessionClient) Hooks() []Hook {
+	return c.hooks.TelegramSession
+}
+
+// Interceptors returns the client interceptors.
+func (c *TelegramSessionClient) Interceptors() []Interceptor {
+	return c.inters.TelegramSession
+}
+
+func (c *TelegramSessionClient) mutate(ctx context.Context, m *TelegramSessionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TelegramSessionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TelegramSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TelegramSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TelegramSessionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TelegramSession mutation op: %q", m.Op())
 	}
 }
 
@@ -233,7 +618,7 @@ func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
+func (c *UserClient) UpdateOneID(id int64) *UserUpdateOne {
 	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -250,7 +635,7 @@ func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
+func (c *UserClient) DeleteOneID(id int64) *UserDeleteOne {
 	builder := c.Delete().Where(user.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -267,12 +652,12 @@ func (c *UserClient) Query() *UserQuery {
 }
 
 // Get returns a User entity by its id.
-func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
+func (c *UserClient) Get(ctx context.Context, id int64) (*User, error) {
 	return c.Query().Where(user.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *UserClient) GetX(ctx context.Context, id int) *User {
+func (c *UserClient) GetX(ctx context.Context, id int64) *User {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -308,9 +693,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		User []ent.Hook
+		LastChannelMessage, PRNotification, TelegramSession, User []ent.Hook
 	}
 	inters struct {
-		User []ent.Interceptor
+		LastChannelMessage, PRNotification, TelegramSession, User []ent.Interceptor
 	}
 )

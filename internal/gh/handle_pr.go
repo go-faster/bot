@@ -97,7 +97,7 @@ func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent)
 		return fallback(ctx)
 	}
 
-	msgID, lastMsgID, err := h.storage.FindPRNotification(ch.ChannelID, e)
+	msgID, lastMsgID, err := h.storage.FindPRNotification(context.Background(), ch.ChannelID, e)
 	if msgID != 0 {
 		log.Debug("Found PR notification ID", zap.Int("msg_id", msgID))
 		replyID = msgID
@@ -170,12 +170,12 @@ func (h Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEv
 
 	ch, ok := p.(*tg.InputPeerChannel)
 	if !ok {
-		return h.storage.SetPRNotification(event, msgID)
+		return h.storage.SetPRNotification(context.Background(), event, msgID)
 	}
 
 	return multierr.Append(
-		h.storage.UpdateLastMsgID(ch.ChannelID, msgID),
-		h.storage.SetPRNotification(event, msgID),
+		h.storage.UpdateLastMsgID(context.Background(), ch.ChannelID, msgID),
+		h.storage.SetPRNotification(context.Background(), event, msgID),
 	)
 }
 

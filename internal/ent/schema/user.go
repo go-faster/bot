@@ -13,11 +13,13 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name"),
+		field.Int64("id").Unique().Immutable(),
+		field.String("username"),
+		field.String("first_name"),
 	}
 }
 
 // Edges of the User.
 func (User) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{}
 }

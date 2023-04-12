@@ -1,4 +1,4 @@
-package storage
+package state
 
 import (
 	"context"
@@ -16,9 +16,9 @@ type Hook struct {
 }
 
 type Storage interface {
-	UpdateLastMsgID(channelID int64, msgID int) error
-	SetPRNotification(pr *github.PullRequestEvent, msgID int) error
-	FindPRNotification(channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, err error)
+	UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) error
+	SetPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error
+	FindPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error)
 }
 
 // NewHook creates new hook.
@@ -34,7 +34,7 @@ func (h Hook) OnMessage(ctx context.Context, e dispatch.MessageEvent) error {
 	}
 
 	return multierr.Append(
-		h.storage.UpdateLastMsgID(ch.ID, e.Message.ID),
+		h.storage.UpdateLastMsgID(context.Background(), ch.ID, e.Message.ID),
 		h.next.OnMessage(ctx, e),
 	)
 }

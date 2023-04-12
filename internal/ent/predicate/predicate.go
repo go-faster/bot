@@ -6,5 +6,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// LastChannelMessage is the predicate function for lastchannelmessage builders.
+type LastChannelMessage func(*sql.Selector)
+
+// PRNotification is the predicate function for prnotification builders.
+type PRNotification func(*sql.Selector)
+
+// TelegramSession is the predicate function for telegramsession builders.
+type TelegramSession func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

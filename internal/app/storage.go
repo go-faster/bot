@@ -1,9 +1,13 @@
 package app
 
-import "github.com/google/go-github/v50/github"
+import (
+	"context"
+
+	"github.com/google/go-github/v50/github"
+)
 
 type Storage interface {
-	UpdateLastMsgID(channelID int64, msgID int) (rerr error)
-	SetPRNotification(pr *github.PullRequestEvent, msgID int) error
-	FindPRNotification(channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error)
+	UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) (rerr error)
+	SetPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error
+	FindPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error)
 }

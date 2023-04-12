@@ -27,6 +27,18 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
+// SetUsername sets the "username" field.
+func (uu *UserUpdate) SetUsername(s string) *UserUpdate {
+	uu.mutation.SetUsername(s)
+	return uu
+}
+
+// SetFirstName sets the "first_name" field.
+func (uu *UserUpdate) SetFirstName(s string) *UserUpdate {
+	uu.mutation.SetFirstName(s)
+	return uu
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -60,13 +72,19 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 }
 
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uu.mutation.Username(); ok {
+		_spec.SetField(user.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -86,6 +104,18 @@ type UserUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserMutation
+}
+
+// SetUsername sets the "username" field.
+func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
+	uuo.mutation.SetUsername(s)
+	return uuo
+}
+
+// SetFirstName sets the "first_name" field.
+func (uuo *UserUpdateOne) SetFirstName(s string) *UserUpdateOne {
+	uuo.mutation.SetFirstName(s)
+	return uuo
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -134,7 +164,7 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64))
 	id, ok := uuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
@@ -158,6 +188,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uuo.mutation.Username(); ok {
+		_spec.SetField(user.FieldUsername, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

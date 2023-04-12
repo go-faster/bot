@@ -12,6 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
+	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramsession"
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
@@ -73,7 +76,10 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			user.Table: user.ValidColumn,
+			lastchannelmessage.Table: lastchannelmessage.ValidColumn,
+			prnotification.Table:     prnotification.ValidColumn,
+			telegramsession.Table:    telegramsession.ValidColumn,
+			user.Table:               user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

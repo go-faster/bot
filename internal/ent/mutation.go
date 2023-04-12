@@ -10,7 +10,12 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
+	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramsession"
+	"github.com/go-faster/bot/internal/ent/user"
+	"github.com/google/uuid"
 )
 
 const (
@@ -22,15 +27,1256 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeUser = "User"
+	TypeLastChannelMessage = "LastChannelMessage"
+	TypePRNotification     = "PRNotification"
+	TypeTelegramSession    = "TelegramSession"
+	TypeUser               = "User"
 )
+
+// LastChannelMessageMutation represents an operation that mutates the LastChannelMessage nodes in the graph.
+type LastChannelMessageMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	message_id    *int
+	addmessage_id *int
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*LastChannelMessage, error)
+	predicates    []predicate.LastChannelMessage
+}
+
+var _ ent.Mutation = (*LastChannelMessageMutation)(nil)
+
+// lastchannelmessageOption allows management of the mutation configuration using functional options.
+type lastchannelmessageOption func(*LastChannelMessageMutation)
+
+// newLastChannelMessageMutation creates new mutation for the LastChannelMessage entity.
+func newLastChannelMessageMutation(c config, op Op, opts ...lastchannelmessageOption) *LastChannelMessageMutation {
+	m := &LastChannelMessageMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLastChannelMessage,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLastChannelMessageID sets the ID field of the mutation.
+func withLastChannelMessageID(id int64) lastchannelmessageOption {
+	return func(m *LastChannelMessageMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LastChannelMessage
+		)
+		m.oldValue = func(ctx context.Context) (*LastChannelMessage, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LastChannelMessage.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLastChannelMessage sets the old LastChannelMessage of the mutation.
+func withLastChannelMessage(node *LastChannelMessage) lastchannelmessageOption {
+	return func(m *LastChannelMessageMutation) {
+		m.oldValue = func(context.Context) (*LastChannelMessage, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LastChannelMessageMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LastChannelMessageMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of LastChannelMessage entities.
+func (m *LastChannelMessageMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LastChannelMessageMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LastChannelMessageMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LastChannelMessage.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetMessageID sets the "message_id" field.
+func (m *LastChannelMessageMutation) SetMessageID(i int) {
+	m.message_id = &i
+	m.addmessage_id = nil
+}
+
+// MessageID returns the value of the "message_id" field in the mutation.
+func (m *LastChannelMessageMutation) MessageID() (r int, exists bool) {
+	v := m.message_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMessageID returns the old "message_id" field's value of the LastChannelMessage entity.
+// If the LastChannelMessage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LastChannelMessageMutation) OldMessageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMessageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMessageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMessageID: %w", err)
+	}
+	return oldValue.MessageID, nil
+}
+
+// AddMessageID adds i to the "message_id" field.
+func (m *LastChannelMessageMutation) AddMessageID(i int) {
+	if m.addmessage_id != nil {
+		*m.addmessage_id += i
+	} else {
+		m.addmessage_id = &i
+	}
+}
+
+// AddedMessageID returns the value that was added to the "message_id" field in this mutation.
+func (m *LastChannelMessageMutation) AddedMessageID() (r int, exists bool) {
+	v := m.addmessage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetMessageID resets all changes to the "message_id" field.
+func (m *LastChannelMessageMutation) ResetMessageID() {
+	m.message_id = nil
+	m.addmessage_id = nil
+}
+
+// Where appends a list predicates to the LastChannelMessageMutation builder.
+func (m *LastChannelMessageMutation) Where(ps ...predicate.LastChannelMessage) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LastChannelMessageMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LastChannelMessageMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LastChannelMessage, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LastChannelMessageMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LastChannelMessageMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LastChannelMessage).
+func (m *LastChannelMessageMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LastChannelMessageMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.message_id != nil {
+		fields = append(fields, lastchannelmessage.FieldMessageID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LastChannelMessageMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		return m.MessageID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LastChannelMessageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		return m.OldMessageID(ctx)
+	}
+	return nil, fmt.Errorf("unknown LastChannelMessage field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LastChannelMessageMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMessageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LastChannelMessage field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LastChannelMessageMutation) AddedFields() []string {
+	var fields []string
+	if m.addmessage_id != nil {
+		fields = append(fields, lastchannelmessage.FieldMessageID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LastChannelMessageMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		return m.AddedMessageID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LastChannelMessageMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMessageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LastChannelMessage numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LastChannelMessageMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LastChannelMessageMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LastChannelMessageMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown LastChannelMessage nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LastChannelMessageMutation) ResetField(name string) error {
+	switch name {
+	case lastchannelmessage.FieldMessageID:
+		m.ResetMessageID()
+		return nil
+	}
+	return fmt.Errorf("unknown LastChannelMessage field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LastChannelMessageMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LastChannelMessageMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LastChannelMessageMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LastChannelMessageMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LastChannelMessageMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LastChannelMessageMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LastChannelMessageMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LastChannelMessage unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LastChannelMessageMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LastChannelMessage edge %s", name)
+}
+
+// PRNotificationMutation represents an operation that mutates the PRNotification nodes in the graph.
+type PRNotificationMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int
+	repo_id            *int64
+	addrepo_id         *int64
+	pull_request_id    *int
+	addpull_request_id *int
+	message_id         *int
+	addmessage_id      *int
+	clearedFields      map[string]struct{}
+	done               bool
+	oldValue           func(context.Context) (*PRNotification, error)
+	predicates         []predicate.PRNotification
+}
+
+var _ ent.Mutation = (*PRNotificationMutation)(nil)
+
+// prnotificationOption allows management of the mutation configuration using functional options.
+type prnotificationOption func(*PRNotificationMutation)
+
+// newPRNotificationMutation creates new mutation for the PRNotification entity.
+func newPRNotificationMutation(c config, op Op, opts ...prnotificationOption) *PRNotificationMutation {
+	m := &PRNotificationMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePRNotification,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPRNotificationID sets the ID field of the mutation.
+func withPRNotificationID(id int) prnotificationOption {
+	return func(m *PRNotificationMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PRNotification
+		)
+		m.oldValue = func(ctx context.Context) (*PRNotification, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PRNotification.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPRNotification sets the old PRNotification of the mutation.
+func withPRNotification(node *PRNotification) prnotificationOption {
+	return func(m *PRNotificationMutation) {
+		m.oldValue = func(context.Context) (*PRNotification, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PRNotificationMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PRNotificationMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PRNotificationMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PRNotificationMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PRNotification.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetRepoID sets the "repo_id" field.
+func (m *PRNotificationMutation) SetRepoID(i int64) {
+	m.repo_id = &i
+	m.addrepo_id = nil
+}
+
+// RepoID returns the value of the "repo_id" field in the mutation.
+func (m *PRNotificationMutation) RepoID() (r int64, exists bool) {
+	v := m.repo_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRepoID returns the old "repo_id" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldRepoID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRepoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRepoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRepoID: %w", err)
+	}
+	return oldValue.RepoID, nil
+}
+
+// AddRepoID adds i to the "repo_id" field.
+func (m *PRNotificationMutation) AddRepoID(i int64) {
+	if m.addrepo_id != nil {
+		*m.addrepo_id += i
+	} else {
+		m.addrepo_id = &i
+	}
+}
+
+// AddedRepoID returns the value that was added to the "repo_id" field in this mutation.
+func (m *PRNotificationMutation) AddedRepoID() (r int64, exists bool) {
+	v := m.addrepo_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRepoID resets all changes to the "repo_id" field.
+func (m *PRNotificationMutation) ResetRepoID() {
+	m.repo_id = nil
+	m.addrepo_id = nil
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (m *PRNotificationMutation) SetPullRequestID(i int) {
+	m.pull_request_id = &i
+	m.addpull_request_id = nil
+}
+
+// PullRequestID returns the value of the "pull_request_id" field in the mutation.
+func (m *PRNotificationMutation) PullRequestID() (r int, exists bool) {
+	v := m.pull_request_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPullRequestID returns the old "pull_request_id" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldPullRequestID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPullRequestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPullRequestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPullRequestID: %w", err)
+	}
+	return oldValue.PullRequestID, nil
+}
+
+// AddPullRequestID adds i to the "pull_request_id" field.
+func (m *PRNotificationMutation) AddPullRequestID(i int) {
+	if m.addpull_request_id != nil {
+		*m.addpull_request_id += i
+	} else {
+		m.addpull_request_id = &i
+	}
+}
+
+// AddedPullRequestID returns the value that was added to the "pull_request_id" field in this mutation.
+func (m *PRNotificationMutation) AddedPullRequestID() (r int, exists bool) {
+	v := m.addpull_request_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPullRequestID resets all changes to the "pull_request_id" field.
+func (m *PRNotificationMutation) ResetPullRequestID() {
+	m.pull_request_id = nil
+	m.addpull_request_id = nil
+}
+
+// SetMessageID sets the "message_id" field.
+func (m *PRNotificationMutation) SetMessageID(i int) {
+	m.message_id = &i
+	m.addmessage_id = nil
+}
+
+// MessageID returns the value of the "message_id" field in the mutation.
+func (m *PRNotificationMutation) MessageID() (r int, exists bool) {
+	v := m.message_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMessageID returns the old "message_id" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldMessageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMessageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMessageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMessageID: %w", err)
+	}
+	return oldValue.MessageID, nil
+}
+
+// AddMessageID adds i to the "message_id" field.
+func (m *PRNotificationMutation) AddMessageID(i int) {
+	if m.addmessage_id != nil {
+		*m.addmessage_id += i
+	} else {
+		m.addmessage_id = &i
+	}
+}
+
+// AddedMessageID returns the value that was added to the "message_id" field in this mutation.
+func (m *PRNotificationMutation) AddedMessageID() (r int, exists bool) {
+	v := m.addmessage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetMessageID resets all changes to the "message_id" field.
+func (m *PRNotificationMutation) ResetMessageID() {
+	m.message_id = nil
+	m.addmessage_id = nil
+}
+
+// Where appends a list predicates to the PRNotificationMutation builder.
+func (m *PRNotificationMutation) Where(ps ...predicate.PRNotification) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PRNotificationMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PRNotificationMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PRNotification, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PRNotificationMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PRNotificationMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PRNotification).
+func (m *PRNotificationMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PRNotificationMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.repo_id != nil {
+		fields = append(fields, prnotification.FieldRepoID)
+	}
+	if m.pull_request_id != nil {
+		fields = append(fields, prnotification.FieldPullRequestID)
+	}
+	if m.message_id != nil {
+		fields = append(fields, prnotification.FieldMessageID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PRNotificationMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case prnotification.FieldRepoID:
+		return m.RepoID()
+	case prnotification.FieldPullRequestID:
+		return m.PullRequestID()
+	case prnotification.FieldMessageID:
+		return m.MessageID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PRNotificationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case prnotification.FieldRepoID:
+		return m.OldRepoID(ctx)
+	case prnotification.FieldPullRequestID:
+		return m.OldPullRequestID(ctx)
+	case prnotification.FieldMessageID:
+		return m.OldMessageID(ctx)
+	}
+	return nil, fmt.Errorf("unknown PRNotification field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PRNotificationMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case prnotification.FieldRepoID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRepoID(v)
+		return nil
+	case prnotification.FieldPullRequestID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPullRequestID(v)
+		return nil
+	case prnotification.FieldMessageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMessageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PRNotification field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PRNotificationMutation) AddedFields() []string {
+	var fields []string
+	if m.addrepo_id != nil {
+		fields = append(fields, prnotification.FieldRepoID)
+	}
+	if m.addpull_request_id != nil {
+		fields = append(fields, prnotification.FieldPullRequestID)
+	}
+	if m.addmessage_id != nil {
+		fields = append(fields, prnotification.FieldMessageID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PRNotificationMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case prnotification.FieldRepoID:
+		return m.AddedRepoID()
+	case prnotification.FieldPullRequestID:
+		return m.AddedPullRequestID()
+	case prnotification.FieldMessageID:
+		return m.AddedMessageID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PRNotificationMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case prnotification.FieldRepoID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRepoID(v)
+		return nil
+	case prnotification.FieldPullRequestID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPullRequestID(v)
+		return nil
+	case prnotification.FieldMessageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMessageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PRNotification numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PRNotificationMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PRNotificationMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PRNotificationMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown PRNotification nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PRNotificationMutation) ResetField(name string) error {
+	switch name {
+	case prnotification.FieldRepoID:
+		m.ResetRepoID()
+		return nil
+	case prnotification.FieldPullRequestID:
+		m.ResetPullRequestID()
+		return nil
+	case prnotification.FieldMessageID:
+		m.ResetMessageID()
+		return nil
+	}
+	return fmt.Errorf("unknown PRNotification field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PRNotificationMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PRNotificationMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PRNotificationMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PRNotificationMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PRNotificationMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PRNotificationMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PRNotificationMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown PRNotification unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PRNotificationMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown PRNotification edge %s", name)
+}
+
+// TelegramSessionMutation represents an operation that mutates the TelegramSession nodes in the graph.
+type TelegramSessionMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *uuid.UUID
+	data          *[]byte
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*TelegramSession, error)
+	predicates    []predicate.TelegramSession
+}
+
+var _ ent.Mutation = (*TelegramSessionMutation)(nil)
+
+// telegramsessionOption allows management of the mutation configuration using functional options.
+type telegramsessionOption func(*TelegramSessionMutation)
+
+// newTelegramSessionMutation creates new mutation for the TelegramSession entity.
+func newTelegramSessionMutation(c config, op Op, opts ...telegramsessionOption) *TelegramSessionMutation {
+	m := &TelegramSessionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTelegramSession,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTelegramSessionID sets the ID field of the mutation.
+func withTelegramSessionID(id uuid.UUID) telegramsessionOption {
+	return func(m *TelegramSessionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TelegramSession
+		)
+		m.oldValue = func(ctx context.Context) (*TelegramSession, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TelegramSession.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTelegramSession sets the old TelegramSession of the mutation.
+func withTelegramSession(node *TelegramSession) telegramsessionOption {
+	return func(m *TelegramSessionMutation) {
+		m.oldValue = func(context.Context) (*TelegramSession, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TelegramSessionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TelegramSessionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of TelegramSession entities.
+func (m *TelegramSessionMutation) SetID(id uuid.UUID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TelegramSessionMutation) ID() (id uuid.UUID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TelegramSessionMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uuid.UUID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TelegramSession.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetData sets the "data" field.
+func (m *TelegramSessionMutation) SetData(b []byte) {
+	m.data = &b
+}
+
+// Data returns the value of the "data" field in the mutation.
+func (m *TelegramSessionMutation) Data() (r []byte, exists bool) {
+	v := m.data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldData returns the old "data" field's value of the TelegramSession entity.
+// If the TelegramSession object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TelegramSessionMutation) OldData(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldData: %w", err)
+	}
+	return oldValue.Data, nil
+}
+
+// ResetData resets all changes to the "data" field.
+func (m *TelegramSessionMutation) ResetData() {
+	m.data = nil
+}
+
+// Where appends a list predicates to the TelegramSessionMutation builder.
+func (m *TelegramSessionMutation) Where(ps ...predicate.TelegramSession) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TelegramSessionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TelegramSessionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.TelegramSession, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TelegramSessionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TelegramSessionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (TelegramSession).
+func (m *TelegramSessionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TelegramSessionMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.data != nil {
+		fields = append(fields, telegramsession.FieldData)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TelegramSessionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case telegramsession.FieldData:
+		return m.Data()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TelegramSessionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case telegramsession.FieldData:
+		return m.OldData(ctx)
+	}
+	return nil, fmt.Errorf("unknown TelegramSession field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TelegramSessionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case telegramsession.FieldData:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetData(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TelegramSession field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TelegramSessionMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TelegramSessionMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TelegramSessionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown TelegramSession numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TelegramSessionMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TelegramSessionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TelegramSessionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown TelegramSession nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TelegramSessionMutation) ResetField(name string) error {
+	switch name {
+	case telegramsession.FieldData:
+		m.ResetData()
+		return nil
+	}
+	return fmt.Errorf("unknown TelegramSession field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TelegramSessionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TelegramSessionMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TelegramSessionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TelegramSessionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TelegramSessionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TelegramSessionMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TelegramSessionMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown TelegramSession unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TelegramSessionMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown TelegramSession edge %s", name)
+}
 
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int
+	id            *int64
+	username      *string
+	first_name    *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*User, error)
@@ -57,7 +1303,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 }
 
 // withUserID sets the ID field of the mutation.
-func withUserID(id int) userOption {
+func withUserID(id int64) userOption {
 	return func(m *UserMutation) {
 		var (
 			err   error
@@ -107,9 +1353,15 @@ func (m UserMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of User entities.
+func (m *UserMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id int, exists bool) {
+func (m *UserMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -120,12 +1372,12 @@ func (m *UserMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UserMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -133,6 +1385,78 @@ func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetUsername sets the "username" field.
+func (m *UserMutation) SetUsername(s string) {
+	m.username = &s
+}
+
+// Username returns the value of the "username" field in the mutation.
+func (m *UserMutation) Username() (r string, exists bool) {
+	v := m.username
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUsername returns the old "username" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUsername requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUsername: %w", err)
+	}
+	return oldValue.Username, nil
+}
+
+// ResetUsername resets all changes to the "username" field.
+func (m *UserMutation) ResetUsername() {
+	m.username = nil
+}
+
+// SetFirstName sets the "first_name" field.
+func (m *UserMutation) SetFirstName(s string) {
+	m.first_name = &s
+}
+
+// FirstName returns the value of the "first_name" field in the mutation.
+func (m *UserMutation) FirstName() (r string, exists bool) {
+	v := m.first_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFirstName returns the old "first_name" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldFirstName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFirstName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFirstName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFirstName: %w", err)
+	}
+	return oldValue.FirstName, nil
+}
+
+// ResetFirstName resets all changes to the "first_name" field.
+func (m *UserMutation) ResetFirstName() {
+	m.first_name = nil
 }
 
 // Where appends a list predicates to the UserMutation builder.
@@ -169,7 +1493,13 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 2)
+	if m.username != nil {
+		fields = append(fields, user.FieldUsername)
+	}
+	if m.first_name != nil {
+		fields = append(fields, user.FieldFirstName)
+	}
 	return fields
 }
 
@@ -177,6 +1507,12 @@ func (m *UserMutation) Fields() []string {
 // return value indicates that this field was not set, or was not defined in the
 // schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case user.FieldUsername:
+		return m.Username()
+	case user.FieldFirstName:
+		return m.FirstName()
+	}
 	return nil, false
 }
 
@@ -184,6 +1520,12 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case user.FieldUsername:
+		return m.OldUsername(ctx)
+	case user.FieldFirstName:
+		return m.OldFirstName(ctx)
+	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
 
@@ -192,6 +1534,20 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldUsername:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUsername(v)
+		return nil
+	case user.FieldFirstName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFirstName(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -213,6 +1569,8 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown User numeric field %s", name)
 }
 
@@ -238,6 +1596,14 @@ func (m *UserMutation) ClearField(name string) error {
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
+	switch name {
+	case user.FieldUsername:
+		m.ResetUsername()
+		return nil
+	case user.FieldFirstName:
+		m.ResetFirstName()
+		return nil
+	}
 	return fmt.Errorf("unknown User field %s", name)
 }
 
