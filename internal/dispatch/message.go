@@ -53,7 +53,7 @@ func (e MessageEvent) WithReply(ctx context.Context, cb func(reply *tg.Message) 
 	var (
 		msg *tg.Message
 		err error
-		log = e.logger.With(
+		log = e.lg.With(
 			zap.Int("msg_id", e.Message.ID),
 			zap.Int("reply_to_msg_id", h.ReplyToMsgID),
 		)

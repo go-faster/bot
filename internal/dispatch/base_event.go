@@ -5,16 +5,17 @@ import (
 	"io"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
 )
 
-func (b *Bot) baseEvent() baseEvent {
+func (b *Bot) baseEvent(ctx context.Context) baseEvent {
 	return baseEvent{
 		sender: b.sender,
-		logger: b.logger,
+		lg:     zctx.From(ctx),
 		rpc:    b.rpc,
 		rand:   b.rand,
 	}
@@ -22,14 +23,14 @@ func (b *Bot) baseEvent() baseEvent {
 
 type baseEvent struct {
 	sender *message.Sender
-	logger *zap.Logger
+	lg     *zap.Logger
 	rpc    *tg.Client
 	rand   io.Reader
 }
 
-// Logger returns associated logger.
+// Logger returns associated lg.
 func (e baseEvent) Logger() *zap.Logger {
-	return e.logger
+	return e.lg
 }
 
 // RPC returns Telegram RPC client.

@@ -4,14 +4,16 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 func (b *Bot) OnBotCallbackQuery(ctx context.Context, e tg.Entities, u *tg.UpdateBotCallbackQuery) error {
-	b.logger.Info("Got callback query")
 	ctx, span := b.tracer.Start(ctx, "OnBotCallbackQuery")
 	defer span.End()
+
+	zctx.From(ctx).Info("Got callback query")
 
 	user, ok := e.Users[u.UserID]
 	if !ok {
@@ -31,7 +33,7 @@ func (b *Bot) OnBotCallbackQuery(ctx context.Context, e tg.Entities, u *tg.Updat
 		Data:    u.Data,
 		User:    user,
 
-		baseEvent: b.baseEvent(),
+		baseEvent: b.baseEvent(ctx),
 	}); err != nil {
 		return errors.Wrap(err, "handle onButton")
 	}

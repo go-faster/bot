@@ -13,9 +13,11 @@ import (
 	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
+	"github.com/gotd/td/bin"
 	"github.com/gotd/td/telegram/message/markup"
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/labstack/echo/v4"
@@ -101,6 +103,11 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 			Tracer:   m.TracerProvider().Tracer("entsession"),
 		},
 		Middlewares: []telegram.Middleware{
+			telegram.MiddlewareFunc(func(next tg.Invoker) telegram.InvokeFunc {
+				return func(ctx context.Context, input bin.Encoder, output bin.Decoder) error {
+					return next.Invoke(zctx.With(ctx, lg), input, output)
+				}
+			}),
 			otg,
 		},
 	})
@@ -150,7 +157,6 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	})
 	_ = dispatch.NewBot(raw).
 		WithSender(sender).
-		WithLogger(lg).
 		WithTracerProvider(m.TracerProvider()).
 		Register(dispatcher).
 		OnMessage(state.NewHook(h, msgIDStore)).
