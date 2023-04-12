@@ -83,7 +83,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "open database")
 	}
-	msgIDStore := state.NewEnt(db)
+	msgIDStore := state.NewEnt(db, m.TracerProvider())
 	dispatcher := tg.NewUpdateDispatcher()
 
 	otg, err := oteltg.New(m.MeterProvider(), m.TracerProvider())

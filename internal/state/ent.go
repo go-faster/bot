@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
@@ -13,10 +14,16 @@ import (
 )
 
 type Ent struct {
-	db *ent.Client
+	db     *ent.Client
+	tracer trace.Tracer
 }
 
 func (e Ent) UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) error {
+	ctx, span := e.tracer.Start(ctx, "UpdateLastMsgID",
+		trace.WithSpanKind(trace.SpanKindClient),
+	)
+	defer span.End()
+
 	if err := e.db.LastChannelMessage.Create().
 		SetID(channelID).
 		SetMessageID(msgID).
@@ -31,6 +38,11 @@ func (e Ent) UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) er
 }
 
 func (e Ent) SetPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error {
+	ctx, span := e.tracer.Start(ctx, "SetPRNotification",
+		trace.WithSpanKind(trace.SpanKindClient),
+	)
+	defer span.End()
+
 	if err := e.db.PRNotification.Create().
 		SetPullRequestID(pr.GetPullRequest().GetNumber()).
 		SetRepoID(pr.GetRepo().GetID()).
@@ -45,6 +57,11 @@ func (e Ent) SetPRNotification(ctx context.Context, pr *github.PullRequestEvent,
 }
 
 func (e Ent) FindPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error) {
+	ctx, span := e.tracer.Start(ctx, "FindPRNotification",
+		trace.WithSpanKind(trace.SpanKindClient),
+	)
+	defer span.End()
+
 	tx, err := e.db.Tx(ctx)
 	if err != nil {
 		return 0, 0, errors.Wrap(err, "begin tx")
@@ -83,8 +100,8 @@ func (e Ent) FindPRNotification(ctx context.Context, channelID int64, pr *github
 	return msgID, lastMsgID, nil
 }
 
-func NewEnt(db *ent.Client) *Ent {
-	return &Ent{db: db}
+func NewEnt(db *ent.Client, t trace.TracerProvider) *Ent {
+	return &Ent{db: db, tracer: t.Tracer("state")}
 }
 
 var _ Storage = (*Ent)(nil)
