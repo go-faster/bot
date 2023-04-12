@@ -14,7 +14,7 @@ func (h Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) er
 	)
 	defer span.End()
 
-	span.AddEvent("Event",
+	span.AddEvent("CheckRunEvent",
 		trace.WithStackTrace(true),
 		trace.WithAttributes(
 			attribute.String("action", e.GetAction()),
@@ -23,8 +23,10 @@ func (h Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) er
 			attribute.String("check_run.conclusion", e.GetCheckRun().GetConclusion()),
 			attribute.String("check_run.head_sha", e.GetCheckRun().GetHeadSHA()),
 
+			attribute.Int64("organization.id", e.GetOrg().GetID()),
 			attribute.String("organization.login", e.GetOrg().GetLogin()),
 			attribute.String("repository.full_name", e.GetRepo().GetFullName()),
+			attribute.Int64("repository.id", e.GetRepo().GetID()),
 		),
 	)
 

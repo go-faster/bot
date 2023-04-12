@@ -23,6 +23,9 @@ func (h Webhook) handleWorkflowRun(ctx context.Context, e *github.WorkflowRun) e
 			attribute.String("head_sha", e.GetHeadSHA()),
 			attribute.String("event", e.GetEvent()),
 
+			attribute.Int64("organization.id", e.GetRepository().GetOrganization().GetID()),
+			attribute.String("organization.login", e.GetRepository().GetOrganization().GetLogin()),
+			attribute.Int64("repository.id", e.GetRepository().GetID()),
 			attribute.String("repository.full_name", e.GetRepository().GetFullName()),
 		),
 	)

@@ -22,8 +22,10 @@ func (h Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent
 			attribute.String("check_suite.conclusion", e.GetCheckSuite().GetConclusion()),
 			attribute.String("check_suite.head_sha", e.GetCheckSuite().GetHeadSHA()),
 
+			attribute.Int64("organization.id", e.GetOrg().GetID()),
 			attribute.String("organization.login", e.GetOrg().GetLogin()),
 			attribute.String("repository.full_name", e.GetRepo().GetFullName()),
+			attribute.Int64("repository.id", e.GetRepo().GetID()),
 		),
 	)
 
