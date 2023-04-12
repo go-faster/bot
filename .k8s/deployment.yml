@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         app: bot
+        service.opentelemetry.io/name: go-faster.bot
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '8090'
