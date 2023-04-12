@@ -60,6 +60,7 @@ type App struct {
 	lg         *zap.Logger
 	wh         *gh.Webhook
 	db         *ent.Client
+	bot        *dispatch.Bot
 }
 
 func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -147,8 +148,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		}),
 		Logger: lg.Named("metrics"),
 	})
-
-	_ = dispatch.NewBot(raw).
+	a.bot = dispatch.NewBot(raw).
 		WithSender(sender).
 		WithLogger(lg).
 		WithTracerProvider(m.TracerProvider()).
