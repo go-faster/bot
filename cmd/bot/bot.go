@@ -12,8 +12,10 @@ func setupBot(a *App) error {
 		_, err := e.Reply().Text(ctx, "What?")
 		return err
 	})
-	a.mux.Handle("/gpt", "ChatGPT 3.5", gpt.New(a.openai))
 	a.mux.Handle("/stat", "Metrics and version", a.m.NewHandler())
 	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
+	hgpt := gpt.New(a.openai, a.db)
+	a.mux.HandleFunc("/gpt", "ChatGPT 3.5", hgpt.OnCommand)
+	a.mux.SetFallbackFunc(hgpt.OnReply)
 	return nil
 }
