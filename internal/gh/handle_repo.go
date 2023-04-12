@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -33,7 +34,7 @@ func (h Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) erro
 
 		return nil
 	default:
-		h.logger.Info("Action ignored", zap.String("action", e.GetAction()))
+		zctx.From(ctx).Info("Action ignored", zap.String("action", e.GetAction()))
 
 		return nil
 	}

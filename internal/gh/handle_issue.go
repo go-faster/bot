@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"
@@ -87,7 +88,7 @@ func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 	defer span.End()
 
 	if e.GetAction() != "opened" {
-		h.logger.Info("Ignoring non-opened issue")
+		zctx.From(ctx).Info("Ignoring non-opened issue")
 		return nil
 	}
 

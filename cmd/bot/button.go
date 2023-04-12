@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -19,10 +20,10 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 	defer span.End()
 	if e.Input == nil {
 		span.SetStatus(codes.Ok, "Ignored")
-		a.lg.Info("OnButton: no user")
+		zctx.From(ctx).Info("OnButton: no user")
 		return nil
 	}
-	a.lg.Info("OnButton",
+	zctx.From(ctx).Info("OnButton",
 		zap.String("user", e.Input.String()),
 	)
 

@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/go-faster/bot/internal/zctx"
+	"github.com/go-faster/simon/sdk/zctx"
 )
 
 const (

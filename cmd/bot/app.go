@@ -116,8 +116,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	}
 
 	mux := dispatch.NewMessageMux()
-	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider()).
-		WithLogger(lg)
+	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider())
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
 	}

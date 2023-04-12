@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/peer"
@@ -30,7 +31,6 @@ type Webhook struct {
 	notifyGroup  string
 	githubSecret string
 
-	logger *zap.Logger
 	events instrument.Int64Counter
 	tracer trace.Tracer
 }
@@ -53,7 +53,6 @@ func NewWebhook(
 		events:  eventCount,
 		storage: msgID,
 		sender:  sender,
-		logger:  zap.NewNop(),
 		tracer:  tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
 }
@@ -76,12 +75,6 @@ func (h *Webhook) WithSender(sender *message.Sender) *Webhook {
 // WithNotifyGroup sets channel name to send notifications.
 func (h *Webhook) WithNotifyGroup(domain string) *Webhook {
 	h.notifyGroup = domain
-	return h
-}
-
-// WithLogger sets logger to use.
-func (h *Webhook) WithLogger(logger *zap.Logger) *Webhook {
-	h.logger = logger
 	return h
 }
 
@@ -188,7 +181,7 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error)
 	event, err := github.ParseWebHook(t, data)
 	if err != nil {
 		if strings.Contains(err.Error(), "unknown X-Github-Event") {
-			h.logger.Info("Unknown event type",
+			zctx.From(ctx).Info("Unknown event type",
 				zap.String("type", t),
 			)
 			span.SetStatus(codes.Ok, "ignored")
@@ -199,7 +192,7 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error)
 	attr := attribute.String("event", t)
 	span.SetAttributes(attr)
 	h.events.Add(ctx, 1, attr)
-	log := h.logger.With(
+	log := zctx.From(ctx).With(
 		zap.String("type", fmt.Sprintf("%T", event)),
 	)
 	log.Info("Processing event")
@@ -219,12 +212,12 @@ func (h Webhook) handleHook(e echo.Context) error {
 
 	payload, err := github.ValidatePayload(r, []byte(h.githubSecret))
 	if err != nil {
-		h.logger.Debug("Failed to validate payload")
+		zctx.From(ctx).Debug("Failed to validate payload")
 		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrNotFound
 	}
 	if err := h.Handle(ctx, github.WebHookType(r), payload); err != nil {
-		h.logger.Error("Failed to handle",
+		zctx.From(ctx).Error("Failed to handle",
 			zap.Error(err),
 		)
 		span.SetStatus(codes.Error, err.Error())

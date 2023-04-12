@@ -8,6 +8,7 @@ import (
 
 	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
@@ -61,9 +62,9 @@ func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent)
 	defer span.End()
 
 	prID := e.GetPullRequest().GetNumber()
-	log := h.logger.With(zap.Int("pr", prID), zap.String("repo", e.GetRepo().GetFullName()))
+	log := zctx.From(ctx).With(zap.Int("pr", prID), zap.String("repo", e.GetRepo().GetFullName()))
 	if !e.GetPullRequest().GetMerged() {
-		h.logger.Info("Ignoring non-merged PR")
+		zctx.From(ctx).Info("Ignoring non-merged PR")
 		return nil
 	}
 

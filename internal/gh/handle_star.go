@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/telegram/message/styling"
 	"go.opentelemetry.io/otel/trace"
@@ -18,7 +19,7 @@ func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 	defer span.End()
 
 	if a := e.GetAction(); a != "created" {
-		h.logger.Debug("Skipping action", zap.String("action", a))
+		zctx.From(ctx).Debug("Skipping action", zap.String("action", a))
 		return nil
 	}
 	p, err := h.notifyPeer(ctx)

@@ -7,6 +7,7 @@ import (
 	"github.com/cockroachdb/pebble"
 	"github.com/cockroachdb/pebble/vfs"
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/metric"
@@ -77,7 +78,7 @@ func TestWebhook(t *testing.T) {
 	}
 	event := prEvent(prID, orgID)
 
-	log := zaptest.NewLogger(t)
+	lg := zaptest.NewLogger(t)
 	db, err := pebble.Open("golovach_lena.db", &pebble.Options{FS: vfs.NewMem()})
 	a.NoError(err)
 	store := state.NewPebble(db)
@@ -94,10 +95,9 @@ func TestWebhook(t *testing.T) {
 		state.NewPebble(db), sender,
 		metric.NewNoopMeterProvider(), trace.NewNoopTracerProvider(),
 	).
-		WithLogger(log).
 		WithNotifyGroup("test")
 
-	err = hook.handlePRClosed(ctx, event)
+	err = hook.handlePRClosed(zctx.With(ctx, lg), event)
 	a.NoError(err)
 
 	a.NotNil(invoker.lastReq)

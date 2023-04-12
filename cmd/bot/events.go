@@ -11,6 +11,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -186,7 +187,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				if _, err := r.Set(ctx, k, 1, time.Hour).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
-				a.lg.Info("Got event",
+				zctx.From(ctx).Info("Got event",
 					zap.Int64("id", id),
 					zap.String("type", ev.Type),
 					zap.Int64("repo_id", ev.RepoID),
@@ -206,7 +207,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		return errors.Wrap(err, "do")
 	}
 
-	a.lg.Info("FetchEvents",
+	zctx.From(ctx).Info("FetchEvents",
 		zap.String("duration.human", time.Since(begin).String()),
 		zap.String("lag.human", time.Since(latest).String()),
 		zap.Int("total", total),
