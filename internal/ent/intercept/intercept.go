@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/prnotification"
@@ -69,6 +70,33 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 		return err
 	}
 	return f(ctx, query)
+}
+
+// The GPTDialogFunc type is an adapter to allow the use of ordinary function as a Querier.
+type GPTDialogFunc func(context.Context, *ent.GPTDialogQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f GPTDialogFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.GPTDialogQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.GPTDialogQuery", q)
+}
+
+// The TraverseGPTDialog type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseGPTDialog func(context.Context, *ent.GPTDialogQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseGPTDialog) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseGPTDialog) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.GPTDialogQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.GPTDialogQuery", q)
 }
 
 // The LastChannelMessageFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -182,6 +210,8 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
+	case *ent.GPTDialogQuery:
+		return &query[*ent.GPTDialogQuery, predicate.GPTDialog, gptdialog.Order]{typ: ent.TypeGPTDialog, tq: q}, nil
 	case *ent.LastChannelMessageQuery:
 		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.Order]{typ: ent.TypeLastChannelMessage, tq: q}, nil
 	case *ent.PRNotificationQuery:

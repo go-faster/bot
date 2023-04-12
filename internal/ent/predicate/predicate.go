@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// GPTDialog is the predicate function for gptdialog builders.
+type GPTDialog func(*sql.Selector)
+
 // LastChannelMessage is the predicate function for lastchannelmessage builders.
 type LastChannelMessage func(*sql.Selector)
 

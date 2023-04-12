@@ -13,9 +13,15 @@ func TestMessageMux_OnMessage(t *testing.T) {
 	ctx := context.Background()
 	mux := NewMessageMux()
 
-	calls := 0
+	cmdCalls := 0
 	mux.HandleFunc("/github", "test", func(ctx context.Context, e MessageEvent) error {
-		calls++
+		cmdCalls++
+		return nil
+	})
+
+	fallbackCalls := 0
+	mux.SetFallbackFunc(func(ctx context.Context, e MessageEvent) error {
+		fallbackCalls++
 		return nil
 	})
 
@@ -29,7 +35,10 @@ func TestMessageMux_OnMessage(t *testing.T) {
 	send("github/")
 	send("github/gotd")
 	send("github/gotd/td")
-	a.Zero(calls)
+	a.Zero(cmdCalls)
+	a.Equal(fallbackCalls, 3)
+
 	send("/github")
-	a.Equal(1, calls)
+	a.Equal(1, cmdCalls)
+	a.Equal(fallbackCalls, 3)
 }

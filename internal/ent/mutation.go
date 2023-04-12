@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/prnotification"
@@ -27,11 +29,787 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeGPTDialog          = "GPTDialog"
 	TypeLastChannelMessage = "LastChannelMessage"
 	TypePRNotification     = "PRNotification"
 	TypeTelegramSession    = "TelegramSession"
 	TypeUser               = "User"
 )
+
+// GPTDialogMutation represents an operation that mutates the GPTDialog nodes in the graph.
+type GPTDialogMutation struct {
+	config
+	op                   Op
+	typ                  string
+	id                   *int
+	peer_id              *string
+	prompt_msg_id        *int
+	addprompt_msg_id     *int
+	prompt_msg           *string
+	gpt_msg_id           *int
+	addgpt_msg_id        *int
+	gpt_msg              *string
+	thread_top_msg_id    *int
+	addthread_top_msg_id *int
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*GPTDialog, error)
+	predicates           []predicate.GPTDialog
+}
+
+var _ ent.Mutation = (*GPTDialogMutation)(nil)
+
+// gptdialogOption allows management of the mutation configuration using functional options.
+type gptdialogOption func(*GPTDialogMutation)
+
+// newGPTDialogMutation creates new mutation for the GPTDialog entity.
+func newGPTDialogMutation(c config, op Op, opts ...gptdialogOption) *GPTDialogMutation {
+	m := &GPTDialogMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGPTDialog,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGPTDialogID sets the ID field of the mutation.
+func withGPTDialogID(id int) gptdialogOption {
+	return func(m *GPTDialogMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GPTDialog
+		)
+		m.oldValue = func(ctx context.Context) (*GPTDialog, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GPTDialog.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGPTDialog sets the old GPTDialog of the mutation.
+func withGPTDialog(node *GPTDialog) gptdialogOption {
+	return func(m *GPTDialogMutation) {
+		m.oldValue = func(context.Context) (*GPTDialog, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GPTDialogMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GPTDialogMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GPTDialogMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GPTDialogMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GPTDialog.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetPeerID sets the "peer_id" field.
+func (m *GPTDialogMutation) SetPeerID(s string) {
+	m.peer_id = &s
+}
+
+// PeerID returns the value of the "peer_id" field in the mutation.
+func (m *GPTDialogMutation) PeerID() (r string, exists bool) {
+	v := m.peer_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPeerID returns the old "peer_id" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldPeerID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPeerID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPeerID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPeerID: %w", err)
+	}
+	return oldValue.PeerID, nil
+}
+
+// ResetPeerID resets all changes to the "peer_id" field.
+func (m *GPTDialogMutation) ResetPeerID() {
+	m.peer_id = nil
+}
+
+// SetPromptMsgID sets the "prompt_msg_id" field.
+func (m *GPTDialogMutation) SetPromptMsgID(i int) {
+	m.prompt_msg_id = &i
+	m.addprompt_msg_id = nil
+}
+
+// PromptMsgID returns the value of the "prompt_msg_id" field in the mutation.
+func (m *GPTDialogMutation) PromptMsgID() (r int, exists bool) {
+	v := m.prompt_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPromptMsgID returns the old "prompt_msg_id" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldPromptMsgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPromptMsgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPromptMsgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPromptMsgID: %w", err)
+	}
+	return oldValue.PromptMsgID, nil
+}
+
+// AddPromptMsgID adds i to the "prompt_msg_id" field.
+func (m *GPTDialogMutation) AddPromptMsgID(i int) {
+	if m.addprompt_msg_id != nil {
+		*m.addprompt_msg_id += i
+	} else {
+		m.addprompt_msg_id = &i
+	}
+}
+
+// AddedPromptMsgID returns the value that was added to the "prompt_msg_id" field in this mutation.
+func (m *GPTDialogMutation) AddedPromptMsgID() (r int, exists bool) {
+	v := m.addprompt_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPromptMsgID resets all changes to the "prompt_msg_id" field.
+func (m *GPTDialogMutation) ResetPromptMsgID() {
+	m.prompt_msg_id = nil
+	m.addprompt_msg_id = nil
+}
+
+// SetPromptMsg sets the "prompt_msg" field.
+func (m *GPTDialogMutation) SetPromptMsg(s string) {
+	m.prompt_msg = &s
+}
+
+// PromptMsg returns the value of the "prompt_msg" field in the mutation.
+func (m *GPTDialogMutation) PromptMsg() (r string, exists bool) {
+	v := m.prompt_msg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPromptMsg returns the old "prompt_msg" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldPromptMsg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPromptMsg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPromptMsg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPromptMsg: %w", err)
+	}
+	return oldValue.PromptMsg, nil
+}
+
+// ResetPromptMsg resets all changes to the "prompt_msg" field.
+func (m *GPTDialogMutation) ResetPromptMsg() {
+	m.prompt_msg = nil
+}
+
+// SetGptMsgID sets the "gpt_msg_id" field.
+func (m *GPTDialogMutation) SetGptMsgID(i int) {
+	m.gpt_msg_id = &i
+	m.addgpt_msg_id = nil
+}
+
+// GptMsgID returns the value of the "gpt_msg_id" field in the mutation.
+func (m *GPTDialogMutation) GptMsgID() (r int, exists bool) {
+	v := m.gpt_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGptMsgID returns the old "gpt_msg_id" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldGptMsgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGptMsgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGptMsgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGptMsgID: %w", err)
+	}
+	return oldValue.GptMsgID, nil
+}
+
+// AddGptMsgID adds i to the "gpt_msg_id" field.
+func (m *GPTDialogMutation) AddGptMsgID(i int) {
+	if m.addgpt_msg_id != nil {
+		*m.addgpt_msg_id += i
+	} else {
+		m.addgpt_msg_id = &i
+	}
+}
+
+// AddedGptMsgID returns the value that was added to the "gpt_msg_id" field in this mutation.
+func (m *GPTDialogMutation) AddedGptMsgID() (r int, exists bool) {
+	v := m.addgpt_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetGptMsgID resets all changes to the "gpt_msg_id" field.
+func (m *GPTDialogMutation) ResetGptMsgID() {
+	m.gpt_msg_id = nil
+	m.addgpt_msg_id = nil
+}
+
+// SetGptMsg sets the "gpt_msg" field.
+func (m *GPTDialogMutation) SetGptMsg(s string) {
+	m.gpt_msg = &s
+}
+
+// GptMsg returns the value of the "gpt_msg" field in the mutation.
+func (m *GPTDialogMutation) GptMsg() (r string, exists bool) {
+	v := m.gpt_msg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGptMsg returns the old "gpt_msg" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldGptMsg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGptMsg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGptMsg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGptMsg: %w", err)
+	}
+	return oldValue.GptMsg, nil
+}
+
+// ResetGptMsg resets all changes to the "gpt_msg" field.
+func (m *GPTDialogMutation) ResetGptMsg() {
+	m.gpt_msg = nil
+}
+
+// SetThreadTopMsgID sets the "thread_top_msg_id" field.
+func (m *GPTDialogMutation) SetThreadTopMsgID(i int) {
+	m.thread_top_msg_id = &i
+	m.addthread_top_msg_id = nil
+}
+
+// ThreadTopMsgID returns the value of the "thread_top_msg_id" field in the mutation.
+func (m *GPTDialogMutation) ThreadTopMsgID() (r int, exists bool) {
+	v := m.thread_top_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldThreadTopMsgID returns the old "thread_top_msg_id" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldThreadTopMsgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldThreadTopMsgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldThreadTopMsgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldThreadTopMsgID: %w", err)
+	}
+	return oldValue.ThreadTopMsgID, nil
+}
+
+// AddThreadTopMsgID adds i to the "thread_top_msg_id" field.
+func (m *GPTDialogMutation) AddThreadTopMsgID(i int) {
+	if m.addthread_top_msg_id != nil {
+		*m.addthread_top_msg_id += i
+	} else {
+		m.addthread_top_msg_id = &i
+	}
+}
+
+// AddedThreadTopMsgID returns the value that was added to the "thread_top_msg_id" field in this mutation.
+func (m *GPTDialogMutation) AddedThreadTopMsgID() (r int, exists bool) {
+	v := m.addthread_top_msg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearThreadTopMsgID clears the value of the "thread_top_msg_id" field.
+func (m *GPTDialogMutation) ClearThreadTopMsgID() {
+	m.thread_top_msg_id = nil
+	m.addthread_top_msg_id = nil
+	m.clearedFields[gptdialog.FieldThreadTopMsgID] = struct{}{}
+}
+
+// ThreadTopMsgIDCleared returns if the "thread_top_msg_id" field was cleared in this mutation.
+func (m *GPTDialogMutation) ThreadTopMsgIDCleared() bool {
+	_, ok := m.clearedFields[gptdialog.FieldThreadTopMsgID]
+	return ok
+}
+
+// ResetThreadTopMsgID resets all changes to the "thread_top_msg_id" field.
+func (m *GPTDialogMutation) ResetThreadTopMsgID() {
+	m.thread_top_msg_id = nil
+	m.addthread_top_msg_id = nil
+	delete(m.clearedFields, gptdialog.FieldThreadTopMsgID)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *GPTDialogMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *GPTDialogMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the GPTDialog entity.
+// If the GPTDialog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GPTDialogMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *GPTDialogMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the GPTDialogMutation builder.
+func (m *GPTDialogMutation) Where(ps ...predicate.GPTDialog) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the GPTDialogMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *GPTDialogMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.GPTDialog, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *GPTDialogMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *GPTDialogMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (GPTDialog).
+func (m *GPTDialogMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GPTDialogMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.peer_id != nil {
+		fields = append(fields, gptdialog.FieldPeerID)
+	}
+	if m.prompt_msg_id != nil {
+		fields = append(fields, gptdialog.FieldPromptMsgID)
+	}
+	if m.prompt_msg != nil {
+		fields = append(fields, gptdialog.FieldPromptMsg)
+	}
+	if m.gpt_msg_id != nil {
+		fields = append(fields, gptdialog.FieldGptMsgID)
+	}
+	if m.gpt_msg != nil {
+		fields = append(fields, gptdialog.FieldGptMsg)
+	}
+	if m.thread_top_msg_id != nil {
+		fields = append(fields, gptdialog.FieldThreadTopMsgID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, gptdialog.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GPTDialogMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case gptdialog.FieldPeerID:
+		return m.PeerID()
+	case gptdialog.FieldPromptMsgID:
+		return m.PromptMsgID()
+	case gptdialog.FieldPromptMsg:
+		return m.PromptMsg()
+	case gptdialog.FieldGptMsgID:
+		return m.GptMsgID()
+	case gptdialog.FieldGptMsg:
+		return m.GptMsg()
+	case gptdialog.FieldThreadTopMsgID:
+		return m.ThreadTopMsgID()
+	case gptdialog.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GPTDialogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case gptdialog.FieldPeerID:
+		return m.OldPeerID(ctx)
+	case gptdialog.FieldPromptMsgID:
+		return m.OldPromptMsgID(ctx)
+	case gptdialog.FieldPromptMsg:
+		return m.OldPromptMsg(ctx)
+	case gptdialog.FieldGptMsgID:
+		return m.OldGptMsgID(ctx)
+	case gptdialog.FieldGptMsg:
+		return m.OldGptMsg(ctx)
+	case gptdialog.FieldThreadTopMsgID:
+		return m.OldThreadTopMsgID(ctx)
+	case gptdialog.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown GPTDialog field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GPTDialogMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case gptdialog.FieldPeerID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPeerID(v)
+		return nil
+	case gptdialog.FieldPromptMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPromptMsgID(v)
+		return nil
+	case gptdialog.FieldPromptMsg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPromptMsg(v)
+		return nil
+	case gptdialog.FieldGptMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGptMsgID(v)
+		return nil
+	case gptdialog.FieldGptMsg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGptMsg(v)
+		return nil
+	case gptdialog.FieldThreadTopMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetThreadTopMsgID(v)
+		return nil
+	case gptdialog.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GPTDialog field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GPTDialogMutation) AddedFields() []string {
+	var fields []string
+	if m.addprompt_msg_id != nil {
+		fields = append(fields, gptdialog.FieldPromptMsgID)
+	}
+	if m.addgpt_msg_id != nil {
+		fields = append(fields, gptdialog.FieldGptMsgID)
+	}
+	if m.addthread_top_msg_id != nil {
+		fields = append(fields, gptdialog.FieldThreadTopMsgID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GPTDialogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case gptdialog.FieldPromptMsgID:
+		return m.AddedPromptMsgID()
+	case gptdialog.FieldGptMsgID:
+		return m.AddedGptMsgID()
+	case gptdialog.FieldThreadTopMsgID:
+		return m.AddedThreadTopMsgID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GPTDialogMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case gptdialog.FieldPromptMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPromptMsgID(v)
+		return nil
+	case gptdialog.FieldGptMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGptMsgID(v)
+		return nil
+	case gptdialog.FieldThreadTopMsgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddThreadTopMsgID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GPTDialog numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GPTDialogMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(gptdialog.FieldThreadTopMsgID) {
+		fields = append(fields, gptdialog.FieldThreadTopMsgID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GPTDialogMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GPTDialogMutation) ClearField(name string) error {
+	switch name {
+	case gptdialog.FieldThreadTopMsgID:
+		m.ClearThreadTopMsgID()
+		return nil
+	}
+	return fmt.Errorf("unknown GPTDialog nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GPTDialogMutation) ResetField(name string) error {
+	switch name {
+	case gptdialog.FieldPeerID:
+		m.ResetPeerID()
+		return nil
+	case gptdialog.FieldPromptMsgID:
+		m.ResetPromptMsgID()
+		return nil
+	case gptdialog.FieldPromptMsg:
+		m.ResetPromptMsg()
+		return nil
+	case gptdialog.FieldGptMsgID:
+		m.ResetGptMsgID()
+		return nil
+	case gptdialog.FieldGptMsg:
+		m.ResetGptMsg()
+		return nil
+	case gptdialog.FieldThreadTopMsgID:
+		m.ResetThreadTopMsgID()
+		return nil
+	case gptdialog.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown GPTDialog field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GPTDialogMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GPTDialogMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GPTDialogMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GPTDialogMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GPTDialogMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GPTDialogMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GPTDialogMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown GPTDialog unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GPTDialogMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown GPTDialog edge %s", name)
+}
 
 // LastChannelMessageMutation represents an operation that mutates the LastChannelMessage nodes in the graph.
 type LastChannelMessageMutation struct {

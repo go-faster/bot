@@ -2,8 +2,21 @@
 
 package ent
 
+import (
+	"time"
+
+	"github.com/go-faster/bot/internal/ent/gptdialog"
+	"github.com/go-faster/bot/internal/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	gptdialogFields := schema.GPTDialog{}.Fields()
+	_ = gptdialogFields
+	// gptdialogDescCreatedAt is the schema descriptor for created_at field.
+	gptdialogDescCreatedAt := gptdialogFields[6].Descriptor()
+	// gptdialog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	gptdialog.DefaultCreatedAt = gptdialogDescCreatedAt.Default.(func() time.Time)
 }

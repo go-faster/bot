@@ -9,6 +9,18 @@ import (
 	"github.com/go-faster/bot/internal/ent"
 )
 
+// The GPTDialogFunc type is an adapter to allow the use of ordinary
+// function as GPTDialog mutator.
+type GPTDialogFunc func(context.Context, *ent.GPTDialogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f GPTDialogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.GPTDialogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GPTDialogMutation", m)
+}
+
 // The LastChannelMessageFunc type is an adapter to allow the use of ordinary
 // function as LastChannelMessage mutator.
 type LastChannelMessageFunc func(context.Context, *ent.LastChannelMessageMutation) (ent.Value, error)

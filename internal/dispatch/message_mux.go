@@ -17,6 +17,7 @@ type handle struct {
 // MessageMux is message event router.
 type MessageMux struct {
 	prefixes map[string]handle
+	fallback MessageHandler
 }
 
 // NewMessageMux creates new MessageMux.
@@ -48,7 +49,21 @@ func (m MessageMux) OnMessage(ctx context.Context, e MessageEvent) error {
 		}
 	}
 
+	if h := m.fallback; h != nil {
+		return h.OnMessage(ctx, e)
+	}
+
 	return nil
+}
+
+// SetFallback sets fallback handler, if mux is unable to find a command handler.
+func (m *MessageMux) SetFallback(h MessageHandler) {
+	m.fallback = h
+}
+
+// SetFallbackFunc sets fallback handler, if mux is unable to find a command handler.
+func (m *MessageMux) SetFallbackFunc(h func(ctx context.Context, e MessageEvent) error) {
+	m.SetFallback(MessageHandlerFunc(h))
 }
 
 // RegisterCommands registers all mux commands using https://core.telegram.org/method/bots.setBotCommands.

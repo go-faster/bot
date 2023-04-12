@@ -2,73 +2,179 @@ package gpt
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram/message/styling"
+	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
 	"github.com/sashabaranov/go-openai"
 
 	"github.com/go-faster/bot/internal/dispatch"
+	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/ent/gptdialog"
 )
 
 // Handler implements GPT request handler.
 type Handler struct {
+	db  *ent.Client
 	api *openai.Client
 }
 
 // New creates new Handler.
-func New(api *openai.Client) Handler {
-	return Handler{api: api}
+func New(api *openai.Client, db *ent.Client) Handler {
+	return Handler{api: api, db: db}
+}
+
+// OnReply handles replies to gpt generated messages.
+func (h Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
+	reply := e.Message
+
+	replyHdr, ok := reply.GetReplyTo()
+	if !ok {
+		return nil
+	}
+
+	tx, err := h.db.Tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = tx.Rollback()
+	}()
+
+	var (
+		pred     = gptdialog.GptMsgID(replyHdr.ReplyToMsgID)
+		topMsgID = &replyHdr.ReplyToMsgID
+	)
+	if threadTopID, ok := replyHdr.GetReplyToTopID(); ok {
+		pred = gptdialog.Or(pred, gptdialog.ThreadTopMsgID(threadTopID))
+		topMsgID = &threadTopID
+	}
+
+	thread, err := tx.GPTDialog.Query().
+		Where(pred).
+		Order(gptdialog.ByGptMsgID()).
+		All(ctx)
+	if err != nil {
+		return err
+	}
+
+	var dialog []openai.ChatCompletionMessage
+	for _, row := range thread {
+		dialog = append(dialog,
+			openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: row.PromptMsg,
+			},
+			openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleAssistant,
+				Content: row.GptMsg,
+			},
+		)
+	}
+
+	if err := h.generateCompletion(ctx, e, reply, tx.GPTDialog, dialog, topMsgID); err != nil {
+		return errors.Wrap(err, "generate completion")
+	}
+
+	return tx.Commit()
 }
 
 // OnMessage implements dispatch.MessageHandler.
-func (h Handler) OnMessage(ctx context.Context, e dispatch.MessageEvent) error {
+func (h Handler) OnCommand(ctx context.Context, e dispatch.MessageEvent) error {
 	return e.WithReply(ctx, func(reply *tg.Message) error {
-		ctx, cancel := context.WithCancel(ctx)
-		defer cancel()
-
-		defer func() { _ = e.TypingAction().Cancel(ctx) }()
-		sendTyping := func() { _ = e.TypingAction().Typing(ctx) }
-		sendTyping()
-		go func() {
-			ticker := time.NewTicker(time.Second * 2)
-			defer ticker.Stop()
-
-			for {
-				select {
-				case <-ticker.C:
-					sendTyping()
-				case <-ctx.Done():
-					return
-				}
-			}
-		}()
-
-		prompt := reply.GetMessage()
-		resp, err := h.api.CreateChatCompletion(
-			ctx,
-			openai.ChatCompletionRequest{
-				Model: openai.GPT3Dot5Turbo,
-				Messages: []openai.ChatCompletionMessage{
-					{
-						Role:    openai.ChatMessageRoleUser,
-						Content: prompt,
-					},
-				},
-			},
-		)
-		if err != nil {
-			if _, err := e.Reply().Text(ctx, "GPT server request failed"); err != nil {
-				return errors.Wrap(err, "send")
-			}
-			return errors.Wrap(err, "send GPT request")
-		}
-		_, err = e.Reply().StyledText(ctx,
-			styling.Bold(prompt),
-			styling.Plain("\n"),
-			styling.Plain(resp.Choices[0].Message.Content),
-		)
-		return err
+		return h.generateCompletion(ctx, e, reply, h.db.GPTDialog, nil, nil)
 	})
+}
+
+func (h Handler) generateCompletion(
+	ctx context.Context,
+	e dispatch.MessageEvent,
+	reply *tg.Message,
+	tx *ent.GPTDialogClient,
+	dialog []openai.ChatCompletionMessage,
+	topMsgId *int,
+) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	defer func() { _ = e.TypingAction().Cancel(ctx) }()
+	sendTyping := func() { _ = e.TypingAction().Typing(ctx) }
+	sendTyping()
+	go func() {
+		ticker := time.NewTicker(time.Second * 2)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				sendTyping()
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	prompt := reply.GetMessage()
+	resp, err := h.api.CreateChatCompletion(
+		ctx,
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: append(dialog, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: prompt,
+			}),
+		},
+	)
+	if err != nil {
+		if _, err := e.Reply().Text(ctx, "GPT server request failed"); err != nil {
+			return errors.Wrap(err, "send error report")
+		}
+		return errors.Wrap(err, "send GPT request")
+	}
+
+	choices := resp.Choices
+	if len(choices) < 1 {
+		return errors.Wrap(err, "GPT returned no message")
+	}
+	gptMessage := choices[0].Message.Content
+
+	msgID, err := unpack.MessageID(e.Reply().StyledText(ctx,
+		styling.Bold(prompt),
+		styling.Plain("\n"),
+		styling.Plain(gptMessage),
+	))
+	if err != nil {
+		return errors.Wrap(err, "send message")
+	}
+
+	var peerID string
+	switch peer := reply.PeerID.(type) {
+	case *tg.PeerChannel:
+		peerID = fmt.Sprintf("channel_%d", peer.ChannelID)
+	case *tg.PeerChat:
+		peerID = fmt.Sprintf("chat_%d", peer.ChatID)
+	case *tg.PeerUser:
+		peerID = fmt.Sprintf("user_%d", peer.UserID)
+	default:
+		return errors.Errorf("unexpected input peer type %T", peer)
+	}
+
+	{
+		// Save message to the dialog.
+		b := tx.Create().
+			SetPeerID(peerID).
+			SetPromptMsg(prompt).
+			SetPromptMsgID(reply.ID).
+			SetGptMsg(gptMessage).
+			SetGptMsgID(msgID).
+			SetNillableThreadTopMsgID(topMsgId)
+		if err := b.Exec(ctx); err != nil {
+			return errors.Wrapf(err, "insert message %d", msgID)
+		}
+	}
+
+	return nil
 }
