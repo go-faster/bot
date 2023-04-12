@@ -3,6 +3,7 @@ package entsession
 import (
 	"context"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/google/uuid"
 	"github.com/gotd/td/session"
@@ -41,7 +42,10 @@ func (s Storage) StoreSession(ctx context.Context, data []byte) error {
 	if err := s.Database.TelegramSession.Create().
 		SetID(s.UUID).
 		SetData(data).
-		OnConflict().UpdateData().Exec(ctx); err != nil {
+		OnConflict(
+			sql.ConflictColumns("id"),
+			sql.ResolveWithNewValues(),
+		).UpdateData().Exec(ctx); err != nil {
 		return errors.Wrap(err, "store session")
 	}
 	return nil

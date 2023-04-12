@@ -3,6 +3,7 @@ package state
 import (
 	"context"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
 
@@ -31,7 +32,10 @@ func (e Ent) SetPRNotification(ctx context.Context, pr *github.PullRequestEvent,
 		SetPullRequestID(pr.GetPullRequest().GetNumber()).
 		SetRepoID(pr.GetRepo().GetID()).
 		SetMessageID(msgID).
-		OnConflict().UpdateNewValues().Exec(ctx); err != nil {
+		OnConflict(
+			sql.ConflictColumns("repo_id", "pull_request_id"),
+			sql.ResolveWithNewValues(),
+		).UpdateNewValues().Exec(ctx); err != nil {
 		return errors.Wrap(err, "upsert")
 	}
 	return nil
