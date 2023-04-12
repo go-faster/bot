@@ -111,8 +111,10 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		)
 	}
 
-	if err := h.generateCompletion(ctx, e, reply, tx.GPTDialog, dialog, topMsgID); err != nil {
-		return errors.Wrap(err, "generate completion")
+	if len(dialog) > 0 {
+		if err := h.generateCompletion(ctx, e, reply, tx.GPTDialog, dialog, topMsgID); err != nil {
+			return errors.Wrap(err, "generate completion")
+		}
 	}
 
 	return tx.Commit()
