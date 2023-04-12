@@ -11,12 +11,13 @@ import (
 )
 
 func (b *Bot) OnBotInlineQuery(ctx context.Context, e tg.Entities, u *tg.UpdateBotInlineQuery) error {
+	ctx, span := b.tracer.Start(ctx, "OnBotInlineQuery")
+	defer span.End()
+
 	zctx.From(ctx).Info("Got inline query",
 		zap.String("query", u.Query),
 		zap.String("offset", u.Offset),
 	)
-	ctx, span := b.tracer.Start(ctx, "OnBotInlineQuery")
-	defer span.End()
 
 	user, ok := e.Users[u.UserID]
 	if !ok {

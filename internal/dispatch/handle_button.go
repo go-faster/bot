@@ -10,9 +10,10 @@ import (
 )
 
 func (b *Bot) OnBotCallbackQuery(ctx context.Context, e tg.Entities, u *tg.UpdateBotCallbackQuery) error {
-	zctx.From(ctx).Info("Got callback query")
 	ctx, span := b.tracer.Start(ctx, "OnBotCallbackQuery")
 	defer span.End()
+
+	zctx.From(ctx).Info("Got callback query")
 
 	user, ok := e.Users[u.UserID]
 	if !ok {

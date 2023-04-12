@@ -6,10 +6,13 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
 	"github.com/sashabaranov/go-openai"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -21,22 +24,30 @@ import (
 type Handler struct {
 	db     *ent.Client
 	api    *openai.Client
-	logger *zap.Logger
+	tracer trace.Tracer
 }
 
 // New creates new Handler.
-func New(api *openai.Client, db *ent.Client) *Handler {
-	return &Handler{api: api, db: db, logger: zap.NewNop()}
-}
-
-// WithLogger sets logger.
-func (h *Handler) WithLogger(logger *zap.Logger) *Handler {
-	h.logger = logger
-	return h
+func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
+	return &Handler{api: api, db: db, tracer: tp.Tracer("gpt")}
 }
 
 // OnReply handles replies to gpt generated messages.
-func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
+func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr error) {
+	ctx, span := h.tracer.Start(ctx, "OnReply")
+	defer span.End()
+
+	defer func() {
+		if rerr != nil {
+			span.RecordError(rerr)
+			span.SetStatus(codes.Error, rerr.Error())
+		} else {
+			span.SetStatus(codes.Ok, "OK")
+		}
+	}()
+
+	lg := zctx.From(ctx)
+
 	reply := e.Message
 
 	replyHdr, ok := reply.GetReplyTo()
@@ -78,7 +89,7 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
 		lastMsg = zap.String("last_msg", thread[len(thread)-1].GptMsg)
 	}
 
-	h.logger.Info("Query dialog",
+	lg.Info("Query dialog",
 		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
 		zap.Intp("top_msg_id", topMsgID),
 		zap.Int("got", len(thread)),
