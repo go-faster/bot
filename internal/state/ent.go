@@ -20,7 +20,10 @@ func (e Ent) UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) er
 	if err := e.db.LastChannelMessage.Create().
 		SetID(channelID).
 		SetMessageID(msgID).
-		OnConflict().UpdateMessageID().
+		OnConflict(
+			sql.ConflictColumns("id"),
+			sql.ResolveWithNewValues(),
+		).UpdateMessageID().
 		Exec(ctx); err != nil {
 		return errors.Wrap(err, "upsert")
 	}
