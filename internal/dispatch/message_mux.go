@@ -26,7 +26,7 @@ func NewMessageMux() MessageMux {
 }
 
 // Handle adds given prefix and handler to the mux.
-func (m MessageMux) Handle(prefix, description string, handler MessageHandler) {
+func (m *MessageMux) Handle(prefix, description string, handler MessageHandler) {
 	m.prefixes[prefix] = handle{
 		MessageHandler: handler,
 		description:    description,
@@ -34,12 +34,12 @@ func (m MessageMux) Handle(prefix, description string, handler MessageHandler) {
 }
 
 // HandleFunc adds given prefix and handler to the mux.
-func (m MessageMux) HandleFunc(prefix, description string, handler func(ctx context.Context, e MessageEvent) error) {
+func (m *MessageMux) HandleFunc(prefix, description string, handler func(ctx context.Context, e MessageEvent) error) {
 	m.Handle(prefix, description, MessageHandlerFunc(handler))
 }
 
 // OnMessage implements MessageHandler.
-func (m MessageMux) OnMessage(ctx context.Context, e MessageEvent) error {
+func (m *MessageMux) OnMessage(ctx context.Context, e MessageEvent) error {
 	for prefix, handler := range m.prefixes {
 		if strings.HasPrefix(e.Message.Message, prefix) {
 			if err := handler.OnMessage(ctx, e); err != nil {
@@ -67,7 +67,7 @@ func (m *MessageMux) SetFallbackFunc(h func(ctx context.Context, e MessageEvent)
 }
 
 // RegisterCommands registers all mux commands using https://core.telegram.org/method/bots.setBotCommands.
-func (m MessageMux) RegisterCommands(ctx context.Context, raw *tg.Client) error {
+func (m *MessageMux) RegisterCommands(ctx context.Context, raw *tg.Client) error {
 	commands := make([]tg.BotCommand, 0, len(m.prefixes))
 	for prefix, handler := range m.prefixes {
 		if handler.description == "" {
