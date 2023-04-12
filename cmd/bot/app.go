@@ -97,6 +97,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		SessionStorage: entsession.Storage{
 			Database: db,
 			UUID:     uuid.NewSHA1(uuidNameSpaceBotToken, []byte(token)),
+			Tracer:   m.TracerProvider().Tracer("entsession"),
 		},
 		Middlewares: []telegram.Middleware{
 			otg,
