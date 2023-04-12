@@ -10,6 +10,7 @@ import (
 	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
 	"github.com/sashabaranov/go-openai"
+	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/ent"
@@ -18,17 +19,24 @@ import (
 
 // Handler implements GPT request handler.
 type Handler struct {
-	db  *ent.Client
-	api *openai.Client
+	db     *ent.Client
+	api    *openai.Client
+	logger *zap.Logger
 }
 
 // New creates new Handler.
-func New(api *openai.Client, db *ent.Client) Handler {
-	return Handler{api: api, db: db}
+func New(api *openai.Client, db *ent.Client) *Handler {
+	return &Handler{api: api, db: db, logger: zap.NewNop()}
+}
+
+// WithLogger sets logger.
+func (h *Handler) WithLogger(logger *zap.Logger) *Handler {
+	h.logger = logger
+	return h
 }
 
 // OnReply handles replies to gpt generated messages.
-func (h Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
+func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
 	reply := e.Message
 
 	replyHdr, ok := reply.GetReplyTo()
@@ -61,6 +69,23 @@ func (h Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
 		return err
 	}
 
+	var (
+		firstMsg = zap.Skip()
+		lastMsg  = zap.Skip()
+	)
+	if len(thread) > 0 {
+		firstMsg = zap.String("first_msg", thread[0].PromptMsg)
+		lastMsg = zap.String("last_msg", thread[len(thread)-1].GptMsg)
+	}
+
+	h.logger.Info("Query dialog",
+		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
+		zap.Intp("top_msg_id", topMsgID),
+		zap.Int("got", len(thread)),
+		firstMsg,
+		lastMsg,
+	)
+
 	var dialog []openai.ChatCompletionMessage
 	for _, row := range thread {
 		dialog = append(dialog,
@@ -83,13 +108,13 @@ func (h Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) error {
 }
 
 // OnMessage implements dispatch.MessageHandler.
-func (h Handler) OnCommand(ctx context.Context, e dispatch.MessageEvent) error {
+func (h *Handler) OnCommand(ctx context.Context, e dispatch.MessageEvent) error {
 	return e.WithReply(ctx, func(reply *tg.Message) error {
 		return h.generateCompletion(ctx, e, reply, h.db.GPTDialog, nil, nil)
 	})
 }
 
-func (h Handler) generateCompletion(
+func (h *Handler) generateCompletion(
 	ctx context.Context,
 	e dispatch.MessageEvent,
 	reply *tg.Message,
