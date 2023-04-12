@@ -148,7 +148,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		Logger: lg.Named("metrics"),
 	})
 
-	dispatch.NewBot(raw).
+	_ = dispatch.NewBot(raw).
 		WithSender(sender).
 		WithLogger(lg).
 		WithTracerProvider(m.TracerProvider()).
