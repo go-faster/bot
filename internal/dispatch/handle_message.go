@@ -92,11 +92,11 @@ func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageCl
 	return nil
 }
 
-func (b *Bot) logError(span trace.Span, msg tg.MessageClass, rerr *error) {
+func (b *Bot) logError(ctx context.Context, span trace.Span, msg tg.MessageClass, rerr *error) {
 	if *rerr == nil {
 		return
 	}
-	b.logger.Error("Message handler error",
+	zctx.From(ctx).Error("Message handler error",
 		zap.Int("msg_id", msg.GetID()),
 		zap.Error(*rerr),
 	)
@@ -110,7 +110,7 @@ func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMe
 	ctx, span := b.tracer.Start(ctx, "OnNewMessage")
 	defer span.End()
 
-	defer b.logError(span, u.Message, &rerr)
+	defer b.logError(ctx, span, u.Message, &rerr)
 
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		if !tg.IsUserBlocked(err) {
@@ -125,7 +125,7 @@ func (b *Bot) OnNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMe
 func (b *Bot) OnNewChannelMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewChannelMessage) (rerr error) {
 	ctx, span := b.tracer.Start(ctx, "OnNewChannelMessage")
 	defer span.End()
-	defer b.logError(span, u.Message, &rerr)
+	defer b.logError(ctx, span, u.Message, &rerr)
 
 	if err := b.handleMessage(ctx, e, u.Message); err != nil {
 		return errors.Wrap(err, "handle")
