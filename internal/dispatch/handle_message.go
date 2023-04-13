@@ -2,6 +2,7 @@ package dispatch
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
@@ -12,7 +13,7 @@ import (
 	"github.com/gotd/td/tg"
 )
 
-func (b *Bot) handleUser(ctx context.Context, user *tg.User, m *tg.Message) error {
+func (b *Bot) handleUser(ctx context.Context, user, sender *tg.User, m *tg.Message) error {
 	zctx.From(ctx).Info("Got message",
 		zap.String("text", m.Message),
 		zap.Int64("user_id", user.ID),
@@ -21,37 +22,43 @@ func (b *Bot) handleUser(ctx context.Context, user *tg.User, m *tg.Message) erro
 	)
 
 	return b.onMessage.OnMessage(ctx, MessageEvent{
-		Peer:      user.AsInputPeer(),
+		Peer:    user.AsInputPeer(),
+		Message: m,
+
+		msgSender: sender,
 		user:      user,
-		Message:   m,
 		baseEvent: b.baseEvent(ctx),
 	})
 }
 
-func (b *Bot) handleChat(ctx context.Context, chat *tg.Chat, m *tg.Message) error {
+func (b *Bot) handleChat(ctx context.Context, chat *tg.Chat, sender *tg.User, m *tg.Message) error {
 	zctx.From(ctx).Info("Got message from chat",
 		zap.String("text", m.Message),
 		zap.Int64("chat_id", chat.ID),
 	)
 
 	return b.onMessage.OnMessage(ctx, MessageEvent{
-		Peer:      chat.AsInputPeer(),
+		Peer:    chat.AsInputPeer(),
+		Message: m,
+
+		msgSender: sender,
 		chat:      chat,
-		Message:   m,
 		baseEvent: b.baseEvent(ctx),
 	})
 }
 
-func (b *Bot) handleChannel(ctx context.Context, channel *tg.Channel, m *tg.Message) error {
+func (b *Bot) handleChannel(ctx context.Context, channel *tg.Channel, sender *tg.User, m *tg.Message) error {
 	zctx.From(ctx).Info("Got message from channel",
 		zap.String("text", m.Message),
 		zap.String("username", channel.Username),
 		zap.Int64("channel_id", channel.ID),
 	)
+
 	return b.onMessage.OnMessage(ctx, MessageEvent{
 		Peer:    channel.AsInputPeer(),
 		Message: m,
 
+		msgSender: sender,
 		channel:   channel,
 		baseEvent: b.baseEvent(ctx),
 	})
@@ -67,25 +74,48 @@ func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageCl
 			return nil
 		}
 
+		var sender *tg.User
+		if p, ok := m.GetFromID(); ok {
+			lg := zctx.From(ctx).With(zap.String("from_peer", fmt.Sprintf("%#v", p)))
+			zctx.With(ctx, lg)
+
+			pu, ok := p.(*tg.PeerUser)
+			if !ok {
+				lg.Info("Not gonna answer to non-user sender")
+				return nil
+			}
+			sender = e.Users[pu.UserID]
+
+			if sender != nil && sender.Bot {
+				lg.Info("Not gonna answer to bot")
+				return nil
+			}
+		}
+
 		switch p := m.PeerID.(type) {
 		case *tg.PeerUser:
 			user, ok := e.Users[p.UserID]
 			if !ok {
 				return errors.Errorf("unknown user ID %d", p.UserID)
 			}
-			return b.handleUser(ctx, user, m)
+
+			if sender == nil {
+				sender = user
+			}
+
+			return b.handleUser(ctx, user, sender, m)
 		case *tg.PeerChat:
 			chat, ok := e.Chats[p.ChatID]
 			if !ok {
 				return errors.Errorf("unknown chat ID %d", p.ChatID)
 			}
-			return b.handleChat(ctx, chat, m)
+			return b.handleChat(ctx, chat, sender, m)
 		case *tg.PeerChannel:
 			channel, ok := e.Channels[p.ChannelID]
 			if !ok {
 				return errors.Errorf("unknown channel ID %d", p.ChannelID)
 			}
-			return b.handleChannel(ctx, channel, m)
+			return b.handleChannel(ctx, channel, sender, m)
 		}
 	}
 

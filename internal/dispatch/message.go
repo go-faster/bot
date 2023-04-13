@@ -15,11 +15,18 @@ type MessageEvent struct {
 	Peer    tg.InputPeerClass
 	Message *tg.Message
 
-	user    *tg.User
-	chat    *tg.Chat
-	channel *tg.Channel
+	user      *tg.User
+	chat      *tg.Chat
+	channel   *tg.Channel
+	msgSender *tg.User
 
 	baseEvent
+}
+
+// MessageFrom returns user whom send the messag and true, if `from` field was present in event.
+func (e MessageEvent) MessageFrom() (u *tg.User, _ bool) {
+	u = e.msgSender
+	return u, u != nil
 }
 
 // User returns User object and true if message got from user.
