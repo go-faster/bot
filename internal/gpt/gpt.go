@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+	"text/template"
 	"time"
 	"unicode/utf8"
 
@@ -100,6 +102,8 @@ type Handler struct {
 	api    *openai.Client
 	tracer trace.Tracer
 
+	systemPrompt *template.Template
+
 	rateLimiters
 	limitCfg LimitConfig
 }
@@ -111,6 +115,12 @@ func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
 		db:     db,
 		tracer: tp.Tracer("gpt"),
 	}
+}
+
+// WithSystemPromptTemplate sets template to setup a system prompt before completion.
+func (h *Handler) WithSystemPromptTemplate(t *template.Template) *Handler {
+	h.systemPrompt = t
+	return h
 }
 
 // WithMessageLimit sets message limit in runes.
@@ -139,11 +149,13 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 	if !ok {
 		return nil
 	}
+
 	lg := zctx.From(ctx).With(
 		zap.String("reply", reply.Message),
-		zap.Int("reply_to_msg", replyHdr.ReplyToMsgID),
+		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
 		zap.Int("top_thread_id", replyHdr.ReplyToTopID),
 	)
+	ctx = zctx.With(ctx, lg)
 
 	tx, err := h.db.Tx(ctx)
 	if err != nil {
@@ -190,8 +202,6 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 	}
 
 	lg.Info("Query dialog",
-		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
-		zap.Intp("top_msg_id", topMsgID),
 		zap.Int("got", len(thread)),
 		firstMsg,
 		lastMsg,
@@ -307,6 +317,20 @@ func (h *Handler) generateCompletion(
 			return errors.Wrap(err, "send message limit error")
 		}
 		return nil
+	}
+
+	if t := h.systemPrompt; t != nil {
+		data := generateSystemPromptData(e)
+
+		var sb strings.Builder
+		if err := t.Execute(&sb, data); err != nil {
+			zctx.From(ctx).Error("System prompt execution error", zap.Error(err))
+		} else {
+			dialog = append(dialog, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: sb.String(),
+			})
+		}
 	}
 
 	resp, err := h.api.CreateChatCompletion(
