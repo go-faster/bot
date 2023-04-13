@@ -33,6 +33,26 @@ func (uc *UserCreate) SetFirstName(s string) *UserCreate {
 	return uc
 }
 
+// SetLastName sets the "last_name" field.
+func (uc *UserCreate) SetLastName(s string) *UserCreate {
+	uc.mutation.SetLastName(s)
+	return uc
+}
+
+// SetGithubToken sets the "github_token" field.
+func (uc *UserCreate) SetGithubToken(s string) *UserCreate {
+	uc.mutation.SetGithubToken(s)
+	return uc
+}
+
+// SetNillableGithubToken sets the "github_token" field if the given value is not nil.
+func (uc *UserCreate) SetNillableGithubToken(s *string) *UserCreate {
+	if s != nil {
+		uc.SetGithubToken(*s)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(i int64) *UserCreate {
 	uc.mutation.SetID(i)
@@ -79,6 +99,9 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.FirstName(); !ok {
 		return &ValidationError{Name: "first_name", err: errors.New(`ent: missing required field "User.first_name"`)}
 	}
+	if _, ok := uc.mutation.LastName(); !ok {
+		return &ValidationError{Name: "last_name", err: errors.New(`ent: missing required field "User.last_name"`)}
+	}
 	return nil
 }
 
@@ -119,6 +142,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)
 		_node.FirstName = value
+	}
+	if value, ok := uc.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+		_node.LastName = value
+	}
+	if value, ok := uc.mutation.GithubToken(); ok {
+		_spec.SetField(user.FieldGithubToken, field.TypeString, value)
+		_node.GithubToken = value
 	}
 	return _node, _spec
 }
@@ -196,6 +227,36 @@ func (u *UserUpsert) UpdateFirstName() *UserUpsert {
 	return u
 }
 
+// SetLastName sets the "last_name" field.
+func (u *UserUpsert) SetLastName(v string) *UserUpsert {
+	u.Set(user.FieldLastName, v)
+	return u
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsert) UpdateLastName() *UserUpsert {
+	u.SetExcluded(user.FieldLastName)
+	return u
+}
+
+// SetGithubToken sets the "github_token" field.
+func (u *UserUpsert) SetGithubToken(v string) *UserUpsert {
+	u.Set(user.FieldGithubToken, v)
+	return u
+}
+
+// UpdateGithubToken sets the "github_token" field to the value that was provided on create.
+func (u *UserUpsert) UpdateGithubToken() *UserUpsert {
+	u.SetExcluded(user.FieldGithubToken)
+	return u
+}
+
+// ClearGithubToken clears the value of the "github_token" field.
+func (u *UserUpsert) ClearGithubToken() *UserUpsert {
+	u.SetNull(user.FieldGithubToken)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -269,6 +330,41 @@ func (u *UserUpsertOne) SetFirstName(v string) *UserUpsertOne {
 func (u *UserUpsertOne) UpdateFirstName() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateFirstName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *UserUpsertOne) SetLastName(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateLastName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// SetGithubToken sets the "github_token" field.
+func (u *UserUpsertOne) SetGithubToken(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetGithubToken(v)
+	})
+}
+
+// UpdateGithubToken sets the "github_token" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateGithubToken() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateGithubToken()
+	})
+}
+
+// ClearGithubToken clears the value of the "github_token" field.
+func (u *UserUpsertOne) ClearGithubToken() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearGithubToken()
 	})
 }
 
@@ -506,6 +602,41 @@ func (u *UserUpsertBulk) SetFirstName(v string) *UserUpsertBulk {
 func (u *UserUpsertBulk) UpdateFirstName() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateFirstName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *UserUpsertBulk) SetLastName(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateLastName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// SetGithubToken sets the "github_token" field.
+func (u *UserUpsertBulk) SetGithubToken(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetGithubToken(v)
+	})
+}
+
+// UpdateGithubToken sets the "github_token" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateGithubToken() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateGithubToken()
+	})
+}
+
+// ClearGithubToken clears the value of the "github_token" field.
+func (u *UserUpsertBulk) ClearGithubToken() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearGithubToken()
 	})
 }
 

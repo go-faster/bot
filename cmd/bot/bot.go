@@ -14,6 +14,7 @@ func setupBot(a *App) error {
 	})
 	a.mux.Handle("/stat", "Metrics and version", a.m.NewHandler())
 	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
+	a.mux.HandleFunc("/gh_pat", "Set GitHub personal token", a.HandleGitHubPersonalToken)
 	hgpt := gpt.New(a.openai, a.db, a.m.TracerProvider())
 	a.mux.HandleFunc("/gpt", "ChatGPT 3.5", hgpt.OnCommand)
 	a.mux.SetFallbackFunc(hgpt.OnReply)

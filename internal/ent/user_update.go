@@ -39,6 +39,32 @@ func (uu *UserUpdate) SetFirstName(s string) *UserUpdate {
 	return uu
 }
 
+// SetLastName sets the "last_name" field.
+func (uu *UserUpdate) SetLastName(s string) *UserUpdate {
+	uu.mutation.SetLastName(s)
+	return uu
+}
+
+// SetGithubToken sets the "github_token" field.
+func (uu *UserUpdate) SetGithubToken(s string) *UserUpdate {
+	uu.mutation.SetGithubToken(s)
+	return uu
+}
+
+// SetNillableGithubToken sets the "github_token" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableGithubToken(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetGithubToken(*s)
+	}
+	return uu
+}
+
+// ClearGithubToken clears the value of the "github_token" field.
+func (uu *UserUpdate) ClearGithubToken() *UserUpdate {
+	uu.mutation.ClearGithubToken()
+	return uu
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -86,6 +112,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)
 	}
+	if value, ok := uu.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.GithubToken(); ok {
+		_spec.SetField(user.FieldGithubToken, field.TypeString, value)
+	}
+	if uu.mutation.GithubTokenCleared() {
+		_spec.ClearField(user.FieldGithubToken, field.TypeString)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -115,6 +150,32 @@ func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
 // SetFirstName sets the "first_name" field.
 func (uuo *UserUpdateOne) SetFirstName(s string) *UserUpdateOne {
 	uuo.mutation.SetFirstName(s)
+	return uuo
+}
+
+// SetLastName sets the "last_name" field.
+func (uuo *UserUpdateOne) SetLastName(s string) *UserUpdateOne {
+	uuo.mutation.SetLastName(s)
+	return uuo
+}
+
+// SetGithubToken sets the "github_token" field.
+func (uuo *UserUpdateOne) SetGithubToken(s string) *UserUpdateOne {
+	uuo.mutation.SetGithubToken(s)
+	return uuo
+}
+
+// SetNillableGithubToken sets the "github_token" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGithubToken(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetGithubToken(*s)
+	}
+	return uuo
+}
+
+// ClearGithubToken clears the value of the "github_token" field.
+func (uuo *UserUpdateOne) ClearGithubToken() *UserUpdateOne {
+	uuo.mutation.ClearGithubToken()
 	return uuo
 }
 
@@ -194,6 +255,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.GithubToken(); ok {
+		_spec.SetField(user.FieldGithubToken, field.TypeString, value)
+	}
+	if uuo.mutation.GithubTokenCleared() {
+		_spec.ClearField(user.FieldGithubToken, field.TypeString)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

@@ -19,7 +19,11 @@ type User struct {
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// FirstName holds the value of the "first_name" field.
-	FirstName    string `json:"first_name,omitempty"`
+	FirstName string `json:"first_name,omitempty"`
+	// LastName holds the value of the "last_name" field.
+	LastName string `json:"last_name,omitempty"`
+	// PAT
+	GithubToken  string `json:"github_token,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -30,7 +34,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUsername, user.FieldFirstName:
+		case user.FieldUsername, user.FieldFirstName, user.FieldLastName, user.FieldGithubToken:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -64,6 +68,18 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field first_name", values[i])
 			} else if value.Valid {
 				u.FirstName = value.String
+			}
+		case user.FieldLastName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field last_name", values[i])
+			} else if value.Valid {
+				u.LastName = value.String
+			}
+		case user.FieldGithubToken:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field github_token", values[i])
+			} else if value.Valid {
+				u.GithubToken = value.String
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -106,6 +122,12 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("first_name=")
 	builder.WriteString(u.FirstName)
+	builder.WriteString(", ")
+	builder.WriteString("last_name=")
+	builder.WriteString(u.LastName)
+	builder.WriteString(", ")
+	builder.WriteString("github_token=")
+	builder.WriteString(u.GithubToken)
 	builder.WriteByte(')')
 	return builder.String()
 }
