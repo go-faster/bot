@@ -46,14 +46,16 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		}
 	}()
 
-	lg := zctx.From(ctx)
-
 	reply := e.Message
-
 	replyHdr, ok := reply.GetReplyTo()
 	if !ok {
 		return nil
 	}
+	lg := zctx.From(ctx).With(
+		zap.String("reply", reply.Message),
+		zap.Int("reply_to_msg", replyHdr.ReplyToMsgID),
+		zap.Int("top_thread_id", replyHdr.ReplyToTopID),
+	)
 
 	tx, err := h.db.Tx(ctx)
 	if err != nil {
@@ -63,6 +65,33 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		_ = tx.Rollback()
 	}()
 
+	// ID 0: prompt
+	// ID 1: /gpt command
+	// ID 2: gpt answer
+	// ROWS:
+	// gpt_msg_id=2,prompt_msg_id=1
+
+	// ID 3: user reply to 2
+	// SEARCH ALL:
+	// gpt_msg_id==2 || thread_top_id==0
+	// ID 4: answer to reply
+	// ROWS:
+	// gpt_msg_id=2,prompt_msg_id=1
+	// gpt_msg_id=4,prompt_msg_id=3,thread_top_id=0
+
+	// ID 5: user reply to 4
+	// SEARCH ALL:
+	// gpt_msg_id==4 || thread_top_id==0
+	// ID 6: answer to reply
+	// ROWS:
+	// gpt_msg_id=2,prompt_msg_id=1
+	// gpt_msg_id=4,prompt_msg_id=3,thread_top_id=0
+	// gpt_msg_id=6,prompt_msg_id=4,thread_top_id=0
+
+	// ID 7: user reply to 5
+	// SEARCH ALL:
+	// gpt_msg_id==5 || thread_top_id==0
+
 	var (
 		pred     = gptdialog.GptMsgID(replyHdr.ReplyToMsgID)
 		topMsgID = &replyHdr.ReplyToMsgID
@@ -70,6 +99,16 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 	if threadTopID, ok := replyHdr.GetReplyToTopID(); ok {
 		pred = gptdialog.Or(pred, gptdialog.ThreadTopMsgID(threadTopID))
 		topMsgID = &threadTopID
+	}
+
+	switch exist, err := tx.GPTDialog.Query().
+		Where(gptdialog.GptMsgID(replyHdr.ReplyToMsgID)).
+		Exist(ctx); {
+	case err != nil:
+		return err
+	case !exist:
+		lg.Info("Do not answer to reply to message which is generated not by bot")
+		return nil
 	}
 
 	thread, err := tx.GPTDialog.Query().
