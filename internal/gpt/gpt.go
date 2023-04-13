@@ -65,33 +65,6 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		_ = tx.Rollback()
 	}()
 
-	// ID 0: prompt
-	// ID 1: /gpt command
-	// ID 2: gpt answer
-	// ROWS:
-	// gpt_msg_id=2,prompt_msg_id=1
-
-	// ID 3: user reply to 2
-	// SEARCH ALL:
-	// gpt_msg_id==2 || thread_top_id==0
-	// ID 4: answer to reply
-	// ROWS:
-	// gpt_msg_id=2,prompt_msg_id=1
-	// gpt_msg_id=4,prompt_msg_id=3,thread_top_id=0
-
-	// ID 5: user reply to 4
-	// SEARCH ALL:
-	// gpt_msg_id==4 || thread_top_id==0
-	// ID 6: answer to reply
-	// ROWS:
-	// gpt_msg_id=2,prompt_msg_id=1
-	// gpt_msg_id=4,prompt_msg_id=3,thread_top_id=0
-	// gpt_msg_id=6,prompt_msg_id=4,thread_top_id=0
-
-	// ID 7: user reply to 5
-	// SEARCH ALL:
-	// gpt_msg_id==5 || thread_top_id==0
-
 	var (
 		pred     = gptdialog.GptMsgID(replyHdr.ReplyToMsgID)
 		topMsgID = &replyHdr.ReplyToMsgID
