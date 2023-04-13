@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"unicode/utf8"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
@@ -25,11 +26,26 @@ type Handler struct {
 	db     *ent.Client
 	api    *openai.Client
 	tracer trace.Tracer
+
+	msgLimit    int
+	dialogLimit int
 }
 
 // New creates new Handler.
 func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
 	return &Handler{api: api, db: db, tracer: tp.Tracer("gpt")}
+}
+
+// WithMessageLimit sets message limit in runes.
+func (h *Handler) WithMessageLimit(msgLimit int) *Handler {
+	h.msgLimit = msgLimit
+	return h
+}
+
+// WithDialogLimit sets dialog depth limit.
+func (h *Handler) WithDialogLimit(dialogLimit int) *Handler {
+	h.dialogLimit = dialogLimit
+	return h
 }
 
 // OnReply handles replies to gpt generated messages.
@@ -123,10 +139,19 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		)
 	}
 
-	if len(dialog) > 0 {
-		if err := h.generateCompletion(ctx, e, reply, tx.GPTDialog, dialog, topMsgID); err != nil {
-			return errors.Wrap(err, "generate completion")
+	switch l := len(dialog); {
+	case l < 1:
+		// No dialog, exit.
+		return nil
+	case h.dialogLimit > 0 && l > h.dialogLimit:
+		if _, err := e.Reply().Text(ctx, "Dialog depth limit exceeded. Create a new thread by using gpt command."); err != nil {
+			return errors.Wrap(err, "send dialog limit error")
 		}
+		return nil
+	}
+
+	if err := h.generateCompletion(ctx, e, reply, tx.GPTDialog, dialog, topMsgID); err != nil {
+		return errors.Wrap(err, "generate completion")
 	}
 
 	return tx.Commit()
@@ -168,6 +193,13 @@ func (h *Handler) generateCompletion(
 	}()
 
 	prompt := reply.GetMessage()
+	if h.msgLimit > 0 && utf8.RuneCountInString(prompt) > h.msgLimit {
+		if _, err := e.Reply().Text(ctx, "Message is too big."); err != nil {
+			return errors.Wrap(err, "send message limit error")
+		}
+		return nil
+	}
+
 	resp, err := h.api.CreateChatCompletion(
 		ctx,
 		openai.ChatCompletionRequest{
