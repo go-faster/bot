@@ -5,5 +5,6 @@ env "dev" {
   dev = "docker://postgres/15/test?search_path=public"
 
   # atlas migrate --env dev diff --to ent://internal/ent/schema name
-  src = "ent://internal/ent/schema"
+  # https://github.com/ariga/atlas/pull/1582
+  # src = "ent://internal/ent/schema"
 }
