@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDefaultSystemPrompt(t *testing.T) {
+func TestDefaultContextPrompt(t *testing.T) {
 	var sb strings.Builder
-	defaultSystemPrompt.Execute(&sb, SystemPromptData{
+	defaultContextPrompt.Execute(&sb, ContextPromptData{
 		Prompter: PromptUser{
 			Username:  "catent",
 			FirstName: "Aleksandr",

@@ -6,25 +6,25 @@ import (
 	"github.com/go-faster/bot/internal/dispatch"
 )
 
-// PromptUser defines system prompt data of user asking the question.
+// PromptUser defines context prompt data of user asking the question.
 type PromptUser struct {
 	Username  string
 	FirstName string
 }
 
-// SystemPromptData is a data structure passed to system prompt template.
-type SystemPromptData struct {
+// ContextPromptData is a data structure passed to context prompt template.
+type ContextPromptData struct {
 	Prompter PromptUser
 	// ChatTitle is a chat title where prompt was generated.
 	ChatTitle string
 }
 
-var defaultSystemPrompt = template.Must(template.New("system_prompt").Parse(`Chat title is: {{ printf "%q" .ChatTitle }}
-User's nickname is: {{ printf "%q" .Prompter.Username }}
-User's name is: {{ printf "%q" .Prompter.FirstName }}
+var defaultContextPrompt = template.Must(template.New("context_prompt").Parse(`Chat title is: {{ printf "%q" .ChatTitle }}
+My nickname is: {{ printf "%q" .Prompter.Username }}
+My name is: {{ printf "%q" .Prompter.FirstName }}
 `))
 
-func generateSystemPromptData(e dispatch.MessageEvent) (data SystemPromptData) {
+func generateContextPromptData(e dispatch.MessageEvent) (data ContextPromptData) {
 	if from, ok := e.MessageFrom(); ok {
 		data.Prompter = PromptUser{
 			Username:  from.Username,

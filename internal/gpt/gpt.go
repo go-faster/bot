@@ -102,7 +102,7 @@ type Handler struct {
 	api    *openai.Client
 	tracer trace.Tracer
 
-	systemPrompt *template.Template
+	contextPrompt *template.Template
 
 	rateLimiters
 	limitCfg LimitConfig
@@ -117,9 +117,9 @@ func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
 	}
 }
 
-// WithSystemPromptTemplate sets template to setup a system prompt before completion.
-func (h *Handler) WithSystemPromptTemplate(t *template.Template) *Handler {
-	h.systemPrompt = t
+// WithContextPromptTemplate sets template to setup a context prompt before completion.
+func (h *Handler) WithContextPromptTemplate(t *template.Template) *Handler {
+	h.contextPrompt = t
 	return h
 }
 
@@ -319,17 +319,19 @@ func (h *Handler) generateCompletion(
 		return nil
 	}
 
-	if t := h.systemPrompt; t != nil {
-		data := generateSystemPromptData(e)
+	if t := h.contextPrompt; t != nil {
+		data := generateContextPromptData(e)
 
 		var sb strings.Builder
 		if err := t.Execute(&sb, data); err != nil {
-			zctx.From(ctx).Error("System prompt execution error", zap.Error(err))
+			zctx.From(ctx).Error("Context prompt execution error", zap.Error(err))
 		} else {
-			dialog = append(dialog, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleSystem,
-				Content: sb.String(),
-			})
+			dialog = append([]openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: sb.String(),
+				},
+			}, dialog...)
 		}
 	}
 
