@@ -1,0 +1,5 @@
+fail_on_severity: 'low'
+allow_licenses:
+  - 'MIT'
+  - 'BSD-3-Clause'
+  - 'Apache-2.0'
