@@ -62,6 +62,16 @@ func FirstName(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldFirstName, v))
 }
 
+// LastName applies equality check predicate on the "last_name" field. It's identical to LastNameEQ.
+func LastName(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLastName, v))
+}
+
+// GithubToken applies equality check predicate on the "github_token" field. It's identical to GithubTokenEQ.
+func GithubToken(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldGithubToken, v))
+}
+
 // UsernameEQ applies the EQ predicate on the "username" field.
 func UsernameEQ(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldUsername, v))
@@ -190,6 +200,146 @@ func FirstNameEqualFold(v string) predicate.User {
 // FirstNameContainsFold applies the ContainsFold predicate on the "first_name" field.
 func FirstNameContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldFirstName, v))
+}
+
+// LastNameEQ applies the EQ predicate on the "last_name" field.
+func LastNameEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLastName, v))
+}
+
+// LastNameNEQ applies the NEQ predicate on the "last_name" field.
+func LastNameNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldLastName, v))
+}
+
+// LastNameIn applies the In predicate on the "last_name" field.
+func LastNameIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldLastName, vs...))
+}
+
+// LastNameNotIn applies the NotIn predicate on the "last_name" field.
+func LastNameNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldLastName, vs...))
+}
+
+// LastNameGT applies the GT predicate on the "last_name" field.
+func LastNameGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldLastName, v))
+}
+
+// LastNameGTE applies the GTE predicate on the "last_name" field.
+func LastNameGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldLastName, v))
+}
+
+// LastNameLT applies the LT predicate on the "last_name" field.
+func LastNameLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldLastName, v))
+}
+
+// LastNameLTE applies the LTE predicate on the "last_name" field.
+func LastNameLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldLastName, v))
+}
+
+// LastNameContains applies the Contains predicate on the "last_name" field.
+func LastNameContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldLastName, v))
+}
+
+// LastNameHasPrefix applies the HasPrefix predicate on the "last_name" field.
+func LastNameHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldLastName, v))
+}
+
+// LastNameHasSuffix applies the HasSuffix predicate on the "last_name" field.
+func LastNameHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldLastName, v))
+}
+
+// LastNameEqualFold applies the EqualFold predicate on the "last_name" field.
+func LastNameEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldLastName, v))
+}
+
+// LastNameContainsFold applies the ContainsFold predicate on the "last_name" field.
+func LastNameContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldLastName, v))
+}
+
+// GithubTokenEQ applies the EQ predicate on the "github_token" field.
+func GithubTokenEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldGithubToken, v))
+}
+
+// GithubTokenNEQ applies the NEQ predicate on the "github_token" field.
+func GithubTokenNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldGithubToken, v))
+}
+
+// GithubTokenIn applies the In predicate on the "github_token" field.
+func GithubTokenIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldGithubToken, vs...))
+}
+
+// GithubTokenNotIn applies the NotIn predicate on the "github_token" field.
+func GithubTokenNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldGithubToken, vs...))
+}
+
+// GithubTokenGT applies the GT predicate on the "github_token" field.
+func GithubTokenGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldGithubToken, v))
+}
+
+// GithubTokenGTE applies the GTE predicate on the "github_token" field.
+func GithubTokenGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldGithubToken, v))
+}
+
+// GithubTokenLT applies the LT predicate on the "github_token" field.
+func GithubTokenLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldGithubToken, v))
+}
+
+// GithubTokenLTE applies the LTE predicate on the "github_token" field.
+func GithubTokenLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldGithubToken, v))
+}
+
+// GithubTokenContains applies the Contains predicate on the "github_token" field.
+func GithubTokenContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldGithubToken, v))
+}
+
+// GithubTokenHasPrefix applies the HasPrefix predicate on the "github_token" field.
+func GithubTokenHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldGithubToken, v))
+}
+
+// GithubTokenHasSuffix applies the HasSuffix predicate on the "github_token" field.
+func GithubTokenHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldGithubToken, v))
+}
+
+// GithubTokenIsNil applies the IsNil predicate on the "github_token" field.
+func GithubTokenIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldGithubToken))
+}
+
+// GithubTokenNotNil applies the NotNil predicate on the "github_token" field.
+func GithubTokenNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldGithubToken))
+}
+
+// GithubTokenEqualFold applies the EqualFold predicate on the "github_token" field.
+func GithubTokenEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldGithubToken, v))
+}
+
+// GithubTokenContainsFold applies the ContainsFold predicate on the "github_token" field.
+func GithubTokenContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldGithubToken, v))
 }
 
 // And groups predicates with the AND operator between them.

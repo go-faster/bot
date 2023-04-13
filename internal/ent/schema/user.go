@@ -16,6 +16,8 @@ func (User) Fields() []ent.Field {
 		field.Int64("id").Unique().Immutable(),
 		field.String("username"),
 		field.String("first_name"),
+		field.String("last_name"),
+		field.String("github_token").Optional().Comment("PAT"),
 	}
 }
 

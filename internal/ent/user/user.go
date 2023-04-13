@@ -15,6 +15,10 @@ const (
 	FieldUsername = "username"
 	// FieldFirstName holds the string denoting the first_name field in the database.
 	FieldFirstName = "first_name"
+	// FieldLastName holds the string denoting the last_name field in the database.
+	FieldLastName = "last_name"
+	// FieldGithubToken holds the string denoting the github_token field in the database.
+	FieldGithubToken = "github_token"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -24,6 +28,8 @@ var Columns = []string{
 	FieldID,
 	FieldUsername,
 	FieldFirstName,
+	FieldLastName,
+	FieldGithubToken,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -52,4 +58,14 @@ func ByUsername(opts ...sql.OrderTermOption) Order {
 // ByFirstName orders the results by the first_name field.
 func ByFirstName(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldFirstName, opts...).ToFunc()
+}
+
+// ByLastName orders the results by the last_name field.
+func ByLastName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldLastName, opts...).ToFunc()
+}
+
+// ByGithubToken orders the results by the github_token field.
+func ByGithubToken(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldGithubToken, opts...).ToFunc()
 }
