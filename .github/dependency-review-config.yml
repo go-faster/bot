@@ -1,5 +1,4 @@
 fail_on_severity: 'low'
-comment-summary-in-pr: true
 allow_licenses:
   - 'MIT'
   - 'BSD-3-Clause'
