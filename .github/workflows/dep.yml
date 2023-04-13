@@ -11,6 +11,8 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    env:
+      FIRST_COMMIT_SHA: bca36d71977c623525a48c631309fcedb26605a9
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
@@ -18,5 +20,5 @@ jobs:
         uses: actions/dependency-review-action@v3
         with:
           head-ref: HEAD
-          base-ref: bca36d71977c623525a48c631309fcedb26605a9
+          base-ref: "{{ env.FIRST_COMMIT_SHA }}"
           config-file: './.github/dependency-review-config.yml'
