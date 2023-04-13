@@ -20,8 +20,8 @@ type ContextPromptData struct {
 }
 
 var defaultContextPrompt = template.Must(template.New("context_prompt").Parse(`Chat title is: {{ printf "%q" .ChatTitle }}
-My nickname is: {{ printf "%q" .Prompter.Username }}
-My name is: {{ printf "%q" .Prompter.FirstName }}
+User's nickname is: {{ printf "%q" .Prompter.Username }}
+User's name is: {{ printf "%q" .Prompter.FirstName }}
 `))
 
 func generateContextPromptData(e dispatch.MessageEvent) (data ContextPromptData) {

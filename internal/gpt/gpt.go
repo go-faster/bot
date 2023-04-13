@@ -111,9 +111,10 @@ type Handler struct {
 // New creates new Handler.
 func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
 	return &Handler{
-		api:    api,
-		db:     db,
-		tracer: tp.Tracer("gpt"),
+		api:           api,
+		db:            db,
+		tracer:        tp.Tracer("gpt"),
+		contextPrompt: defaultContextPrompt,
 	}
 }
 
@@ -331,7 +332,7 @@ func (h *Handler) generateCompletion(
 			lg.Debug("Using context prompt", zap.String("context_prompt", sb.String()))
 			dialog = append([]openai.ChatCompletionMessage{
 				{
-					Role:    openai.ChatMessageRoleUser,
+					Role:    openai.ChatMessageRoleSystem,
 					Content: sb.String(),
 				},
 			}, dialog...)

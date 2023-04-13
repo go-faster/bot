@@ -17,7 +17,7 @@ func TestDefaultContextPrompt(t *testing.T) {
 		ChatTitle: "go faster chat",
 	}))
 	require.Equal(t, `Chat title is: "go faster chat"
-My nickname is: "catent"
-My name is: "Aleksandr"
+User's nickname is: "catent"
+User's name is: "Aleksandr"
 `, sb.String())
 }
