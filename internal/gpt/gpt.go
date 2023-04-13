@@ -319,13 +319,16 @@ func (h *Handler) generateCompletion(
 		return nil
 	}
 
+	lg := zctx.From(ctx)
+
 	if t := h.contextPrompt; t != nil {
 		data := generateContextPromptData(e)
 
 		var sb strings.Builder
 		if err := t.Execute(&sb, data); err != nil {
-			zctx.From(ctx).Error("Context prompt execution error", zap.Error(err))
+			lg.Error("Context prompt execution error", zap.Error(err))
 		} else {
+			lg.Debug("Using context prompt", zap.String("context_prompt", sb.String()))
 			dialog = append([]openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
