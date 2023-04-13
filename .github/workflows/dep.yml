@@ -1,0 +1,21 @@
+name: 'Dependency Review'
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v3
+        with:
+          base-ref: bca36d71977c623525a48c631309fcedb26605a9
+          config-file: './.github/dependency-review-config.yml'
