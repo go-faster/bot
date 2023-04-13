@@ -225,7 +225,7 @@ func (a *App) Run(ctx context.Context) error {
 		})
 	}
 	g.Go(func() error {
-		ticker := time.NewTicker(time.Second * 5)
+		ticker := time.NewTicker(time.Second * 15)
 		defer ticker.Stop()
 		for {
 			select {
