@@ -133,6 +133,9 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		webhook = webhook.WithSecret(secret)
 	}
 
+	openaiConfig := openai.DefaultConfig(os.Getenv("OPENAI_TOKEN"))
+	openaiConfig.HTTPClient = httpClient
+
 	a := &App{
 		db:         db,
 		client:     client,
@@ -145,7 +148,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		m:          m,
 		lg:         lg,
 		wh:         webhook,
-		openai:     openai.NewClient(os.Getenv("OPENAI_TOKEN")),
+		openai:     openai.NewClientWithConfig(openaiConfig),
 
 		tracer: m.TracerProvider().Tracer(""),
 	}
