@@ -58,7 +58,6 @@ type App struct {
 	tracer     trace.Tracer
 	openai     *openai.Client
 	github     *github.Client
-	http       *http.Client
 	m          *app.Metrics
 	lg         *zap.Logger
 	wh         *gh.Webhook
@@ -120,10 +119,6 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		otelhttp.WithTracerProvider(m.TracerProvider()),
 		otelhttp.WithMeterProvider(m.MeterProvider()),
 	)
-	httpClient := &http.Client{
-		Transport: httpTransport,
-		Timeout:   15 * time.Second,
-	}
 
 	r := redis.NewClient(&redis.Options{
 		Addr: "redis:6379",
@@ -141,7 +136,10 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	}
 
 	openaiConfig := openai.DefaultConfig(os.Getenv("OPENAI_TOKEN"))
-	openaiConfig.HTTPClient = httpClient
+	openaiConfig.HTTPClient = &http.Client{
+		Transport: httpTransport,
+		Timeout:   time.Minute,
+	}
 
 	a := &App{
 		cache:      r,
@@ -152,7 +150,6 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		sender:     sender,
 		dispatcher: dispatcher,
 		mux:        mux,
-		http:       httpClient,
 		m:          m,
 		lg:         lg,
 		wh:         webhook,
@@ -163,7 +160,10 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 
 	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
 		BotAPI: botapi.NewClient(token, botapi.Options{
-			HTTPClient: httpClient,
+			HTTPClient: &http.Client{
+				Transport: httpTransport,
+				Timeout:   15 * time.Second,
+			},
 		}),
 		Logger: lg.Named("metrics"),
 	})
