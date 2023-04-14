@@ -11,7 +11,7 @@ import (
 	"github.com/gotd/td/telegram/message/styling"
 )
 
-func (h Webhook) handleRelease(ctx context.Context, e *github.ReleaseEvent) error {
+func (h *Webhook) handleRelease(ctx context.Context, e *github.ReleaseEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handleRelease",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

@@ -62,6 +62,7 @@ type App struct {
 	lg         *zap.Logger
 	wh         *gh.Webhook
 	db         *ent.Client
+	cache      *redis.Client
 }
 
 func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -123,9 +124,13 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		Timeout:   15 * time.Second,
 	}
 
+	r := redis.NewClient(&redis.Options{
+		Addr: "redis:6379",
+	})
+
 	mux := dispatch.NewMessageMux().
 		WithTracerProvider(m.TracerProvider())
-	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider())
+	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
 	}
@@ -137,6 +142,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	openaiConfig.HTTPClient = httpClient
 
 	a := &App{
+		cache:      r,
 		db:         db,
 		client:     client,
 		token:      token,
@@ -239,14 +245,10 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	})
 	g.Go(func() error {
-		rdb := redis.NewClient(&redis.Options{
-			Addr: "redis:6379",
-		})
-
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 		defer cancel()
 
-		if _, err := rdb.Ping(ctx).Result(); err != nil {
+		if _, err := a.cache.Ping(ctx).Result(); err != nil {
 			return errors.Wrap(err, "ping redis")
 		}
 

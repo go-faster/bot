@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
+func (h *Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handleStar",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

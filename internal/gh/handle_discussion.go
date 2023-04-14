@@ -47,7 +47,7 @@ func formatDiscussion(e *github.DiscussionEvent) message.StyledTextOption {
 	return styling.Custom(formatter)
 }
 
-func (h Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEvent) error {
+func (h *Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handleDiscussion",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

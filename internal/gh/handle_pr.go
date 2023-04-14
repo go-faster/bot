@@ -41,7 +41,7 @@ func getPullRequestMergedBy(e *github.PullRequestEvent) styling.StyledTextOption
 	return styling.TextURL(u.GetLogin(), u.GetHTMLURL())
 }
 
-func (h Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *message.Builder {
+func (h *Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *message.Builder {
 	r := h.sender.To(p).NoWebpage()
 	if u, _ := url.Parse(e.GetPullRequest().GetHTMLURL()); u != nil {
 		files, checks := *u, *u
@@ -55,7 +55,7 @@ func (h Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *mess
 	return r
 }
 
-func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
+func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handlePRClosed",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
@@ -141,7 +141,7 @@ func (h Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent)
 	return nil
 }
 
-func (h Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEvent) error {
+func (h *Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handlePROpened",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
@@ -180,7 +180,7 @@ func (h Webhook) handlePROpened(ctx context.Context, event *github.PullRequestEv
 	)
 }
 
-func (h Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
+func (h *Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
 	switch e.GetAction() {
 	case "opened":
 		return h.handlePROpened(ctx, e)

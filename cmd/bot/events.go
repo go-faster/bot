@@ -12,7 +12,6 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 	"github.com/go-faster/simon/sdk/zctx"
-	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
@@ -112,10 +111,6 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 		"xelaj/tl":              {},
 	}
 
-	r := redis.NewClient(&redis.Options{
-		Addr: "redis:6379",
-	})
-
 	ctx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
 
@@ -176,7 +171,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 
 				// Protect from duplicates.
 				k := fmt.Sprintf("v3:event:%x", id)
-				exists, err := r.Exists(ctx, k).Result()
+				exists, err := a.cache.Exists(ctx, k).Result()
 				if err != nil {
 					return errors.Wrap(err, "exists")
 				}
@@ -184,7 +179,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 					hit++
 					continue
 				}
-				if _, err := r.Set(ctx, k, 1, time.Hour).Result(); err != nil {
+				if _, err := a.cache.Set(ctx, k, 1, time.Hour).Result(); err != nil {
 					return errors.Wrap(err, "set")
 				}
 				zctx.From(ctx).Info("Got event",

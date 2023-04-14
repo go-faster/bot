@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func (h Webhook) handleWorkflowJob(ctx context.Context, e *github.WorkflowJob) error {
+func (h *Webhook) handleWorkflowJob(ctx context.Context, e *github.WorkflowJob) error {
 	_, span := h.tracer.Start(ctx, "handleWorkflowJob",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
@@ -13,6 +14,7 @@ import (
 	"github.com/gotd/td/telegram/message/peer"
 	"github.com/gotd/td/tg"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
@@ -33,6 +35,7 @@ type Webhook struct {
 
 	events instrument.Int64Counter
 	tracer trace.Tracer
+	cache  *redis.Client
 }
 
 // NewWebhook creates new web hook handler.
@@ -79,7 +82,7 @@ func (h *Webhook) WithNotifyGroup(domain string) *Webhook {
 }
 
 // RegisterRoutes registers hook using given Echo router.
-func (h Webhook) RegisterRoutes(e *echo.Echo) {
+func (h *Webhook) RegisterRoutes(e *echo.Echo) {
 	e.POST("/hook", h.handleHook)
 }
 
@@ -154,7 +157,7 @@ func reverseMapping(m map[string]string) map[string]string {
 
 var _eventTypeToWebhookType = reverseMapping(eventMapping())
 
-func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error) {
+func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error) {
 	// Normalize event type to match X-Github-Event value.
 	if v, ok := _eventTypeToWebhookType[t]; ok {
 		t = v
@@ -203,12 +206,39 @@ func (h Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error)
 	return nil
 }
 
-func (h Webhook) handleHook(e echo.Context) error {
+func (h *Webhook) handleHook(e echo.Context) error {
 	ctx, span := h.tracer.Start(e.Request().Context(), "wh.handleHook",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	r := e.Request().WithContext(ctx)
 	defer span.End()
+
+	id := e.Request().Header.Get("X-GitHub-Delivery")
+	if id == "" {
+		zctx.From(ctx).Debug("No delivery ID")
+		span.SetStatus(codes.Error, "no delivery id")
+		return echo.ErrNotFound
+	}
+	span.SetAttributes(attribute.String("delivery_id", id))
+	cacheKey := fmt.Sprintf("gh:delivery:%s", id)
+
+	if h.cache != nil {
+		// Check if we already processed this event.
+		// Don't fail entire request if cache is failing.
+		exists, err := h.cache.Exists(ctx, cacheKey).Result()
+		if err != nil {
+			zctx.From(ctx).Error("Failed to check cache",
+				zap.Error(err),
+			)
+		}
+		if exists == 1 {
+			zctx.From(ctx).Debug("Already processed",
+				zap.String("id", id),
+			)
+			span.SetStatus(codes.Ok, "hit")
+			return e.String(http.StatusOK, "hit")
+		}
+	}
 
 	payload, err := github.ValidatePayload(r, []byte(h.githubSecret))
 	if err != nil {
@@ -224,11 +254,19 @@ func (h Webhook) handleHook(e echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
+	if h.cache != nil {
+		if err := h.cache.Set(ctx, cacheKey, 1, time.Hour).Err(); err != nil {
+			zctx.From(ctx).Error("Failed to set cache",
+				zap.Error(err),
+			)
+		}
+	}
+
 	span.SetStatus(codes.Ok, "done")
 	return e.String(http.StatusOK, "done")
 }
 
-func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
+func (h *Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
 	evType := fmt.Sprintf("%T", event)
 	evType = strings.TrimPrefix(evType, "*github.")
 	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
@@ -264,10 +302,15 @@ func (h Webhook) processEvent(ctx context.Context, event interface{}, log *zap.L
 	}
 }
 
-func (h Webhook) notifyPeer(ctx context.Context) (tg.InputPeerClass, error) {
+func (h *Webhook) notifyPeer(ctx context.Context) (tg.InputPeerClass, error) {
 	p, err := h.sender.ResolveDomain(h.notifyGroup, peer.OnlyChannel).AsInputPeer(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "resolve")
 	}
 	return p, nil
+}
+
+func (h *Webhook) WithCache(c *redis.Client) *Webhook {
+	h.cache = c
+	return h
 }

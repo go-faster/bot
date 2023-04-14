@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func (h Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
+func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
 	_, span := h.tracer.Start(ctx, "handleCheckSuite",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

@@ -81,7 +81,7 @@ func formatIssue(e *github.IssuesEvent) message.StyledTextOption {
 	return styling.Custom(formatter)
 }
 
-func (h Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
+func (h *Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handleIssue",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)

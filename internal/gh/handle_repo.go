@@ -12,7 +12,7 @@ import (
 	"github.com/gotd/td/telegram/message/styling"
 )
 
-func (h Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) error {
+func (h *Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) error {
 	ctx, span := h.tracer.Start(ctx, "handleRepo",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
