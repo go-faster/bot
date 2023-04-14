@@ -85,6 +85,6 @@ func (a Action) MarshalBinary() ([]byte, error) {
 }
 
 func Marshal(a Action) []byte {
-	data, _ := a.MarshalBinary()
+	data, _ := a.MarshalText()
 	return data
 }

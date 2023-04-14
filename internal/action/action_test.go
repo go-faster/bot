@@ -18,7 +18,12 @@ func TestAction(t *testing.T) {
 	require.Less(t, len(data), 50)
 	t.Logf("data=%s [%s]", data, a.String())
 
-	var out Action
-	require.NoError(t, out.UnmarshalText(data))
-	require.Equal(t, a, out)
+	for _, buf := range [][]byte{
+		data,
+		Marshal(a),
+	} {
+		var out Action
+		require.NoError(t, out.UnmarshalText(buf))
+		require.Equal(t, a, out)
+	}
 }
