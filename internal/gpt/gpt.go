@@ -348,7 +348,7 @@ func (h *Handler) generateCompletion(
 
 	// Cut some context, if it exceeds model token limit.
 	originalLen := len(dialog)
-	dialog, tokens, err := cutDialog(h.tokenizer, modelTokenLimit, dialog)
+	dialog, tokens, err := cutDialog(h.tokenizer, modelTokenLimit-modelAnswerReserve, dialog)
 	if err != nil {
 		return errors.Wrap(err, "cut dialog")
 	}
