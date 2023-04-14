@@ -10,8 +10,9 @@ type eventMeta struct {
 	Organization   string // go-faster
 	OrganizationID int64  // 93744681
 
-	Repository   string // bot
-	RepositoryID int64  // 512150878
+	Repository         string // bot
+	RepositoryID       int64  // 512150878
+	RepositoryFullName string // go-faster/bot
 }
 
 func (m *eventMeta) Fields() []zap.Field {
@@ -19,10 +20,7 @@ func (m *eventMeta) Fields() []zap.Field {
 		return nil
 	}
 	return []zap.Field{
-		zap.String("org.name", m.Organization),
-		zap.Int64("org.id", m.OrganizationID),
-		zap.String("repo.name", m.Repository),
-		zap.Int64("repo.id", m.RepositoryID),
+		zap.String("repo", m.RepositoryFullName),
 	}
 }
 
@@ -35,6 +33,7 @@ func (m *eventMeta) Attributes() []attribute.KeyValue {
 		attribute.Int64("org.id", m.OrganizationID),
 		attribute.String("repo.name", m.Repository),
 		attribute.Int64("repo.id", m.RepositoryID),
+		attribute.String("repo", m.RepositoryFullName),
 	}
 }
 
@@ -73,6 +72,13 @@ func extractEventMeta(raw []byte) (*eventMeta, error) {
 				return err
 			}
 			m.Repository = v
+			return nil
+		case "full_name":
+			v, err := d.Str()
+			if err != nil {
+				return err
+			}
+			m.RepositoryFullName = v
 			return nil
 		case "id":
 			v, err := d.Int64()
