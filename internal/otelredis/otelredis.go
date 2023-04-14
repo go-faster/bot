@@ -20,6 +20,10 @@ func NewHook(tp trace.TracerProvider) *Hook {
 
 func (h Hook) DialHook(next redis.DialHook) redis.DialHook {
 	return func(ctx context.Context, network, addr string) (net.Conn, error) {
+		ctx, span := h.tracer.Start(ctx, "redis: Dial",
+			trace.WithSpanKind(trace.SpanKindClient),
+		)
+		defer span.End()
 		return next(ctx, network, addr)
 	}
 }
@@ -36,6 +40,10 @@ func (h Hook) ProcessHook(next redis.ProcessHook) redis.ProcessHook {
 
 func (h Hook) ProcessPipelineHook(next redis.ProcessPipelineHook) redis.ProcessPipelineHook {
 	return func(ctx context.Context, cmds []redis.Cmder) error {
+		ctx, span := h.tracer.Start(ctx, "redis: Pipeline",
+			trace.WithSpanKind(trace.SpanKindClient),
+		)
+		defer span.End()
 		return next(ctx, cmds)
 	}
 }
