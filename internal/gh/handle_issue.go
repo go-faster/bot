@@ -101,9 +101,10 @@ func (h *Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error 
 		Row(
 			markup.Callback("Close",
 				action.Marshal(action.Action{
-					Type:   "close",
-					ID:     e.GetIssue().GetNumber(),
-					Entity: "issue",
+					Type:         "close",
+					ID:           e.GetIssue().GetNumber(),
+					Entity:       "issue",
+					RepositoryID: e.GetRepo().GetID(),
 				}),
 			),
 		).
