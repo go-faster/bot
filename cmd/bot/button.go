@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/go-faster/errors"
@@ -30,7 +29,7 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 	)
 
 	var act action.Action
-	if err := json.Unmarshal(e.Data, &act); err != nil {
+	if err := act.UnmarshalText(e.Data); err != nil {
 		answer := &tg.MessagesSetBotCallbackAnswerRequest{
 			QueryID: e.QueryID,
 			Message: fmt.Sprintf("Error: %s", err),
@@ -61,8 +60,8 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 
 	span.SetAttributes(
 		attribute.Int("action.id", act.ID),
-		attribute.String("action.entity", act.Entity),
-		attribute.String("action.type", act.Type),
+		attribute.Stringer("action.entity", act.Entity),
+		attribute.Stringer("action.type", act.Type),
 	)
 
 	answer := &tg.MessagesSetBotCallbackAnswerRequest{

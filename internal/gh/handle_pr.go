@@ -50,10 +50,10 @@ func (h *Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *mes
 		files.Path = path.Join(files.Path, "files")
 		checks.Path = path.Join(checks.Path, "checks")
 		mergeAction := action.Action{
-			Type:         "merge",
+			Type:         action.Merge,
 			ID:           e.GetPullRequest().GetNumber(),
 			RepositoryID: e.GetRepo().GetID(),
-			Entity:       "pr",
+			Entity:       action.PullRequest,
 		}
 		r = r.Row(
 			markup.URL("Diff🔀", files.String()),
@@ -160,15 +160,15 @@ func (h *Webhook) handlePROpened(ctx context.Context, event *github.PullRequestE
 	if err != nil {
 		return errors.Wrap(err, "peer")
 	}
-	action := " opened"
+	a := " opened"
 	if event.GetPullRequest().GetDraft() {
-		action = " drafted"
+		a = " drafted"
 	}
 
 	msgID, err := unpack.MessageID(h.notifyPR(p, event).StyledText(ctx,
 		styling.Plain("New pull request "),
 		getPullRequestURL(event),
-		styling.Plain(action),
+		styling.Plain(a),
 		styling.Plain(" by "),
 		getPullRequestAuthor(event),
 		styling.Plain("\n\n"),

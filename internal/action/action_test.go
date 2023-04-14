@@ -1,0 +1,24 @@
+package action
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
+
+func TestAction(t *testing.T) {
+	a := Action{
+		Entity:       PullRequest,
+		ID:           1,
+		RepositoryID: 2,
+		Type:         Merge,
+	}
+	data, err := a.MarshalText()
+	require.NoError(t, err)
+	require.Less(t, len(data), 50)
+	t.Logf("data=%s [%s]", data, a.String())
+
+	var out Action
+	require.NoError(t, out.UnmarshalText(data))
+	require.Equal(t, a, out)
+}
