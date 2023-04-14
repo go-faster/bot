@@ -348,19 +348,29 @@ func (h *Handler) generateCompletion(
 
 	// Cut some context, if it exceeds model token limit.
 	originalLen := len(dialog)
-	dialog, err := cutDialog(h.tokenizer, modelTokenLimit, dialog)
+	dialog, tokens, err := cutDialog(h.tokenizer, modelTokenLimit, dialog)
 	if err != nil {
 		return errors.Wrap(err, "cut dialog")
 	}
-	if diff := originalLen - len(dialog); diff != 0 {
-		lg.Debug("Cut dialog context", zap.Int("cut", diff))
-	}
+
 	// Unlikely, but tell user what happened.
 	if len(dialog) < 1 {
 		if _, err := e.Reply().Text(ctx, "Too many tokens."); err != nil {
 			return errors.Wrap(err, "send message limit error")
 		}
 		return nil
+	}
+
+	{
+		cut := zap.Skip()
+		if diff := originalLen - len(dialog); diff != 0 {
+			cut = zap.Int("cut", diff)
+		}
+		lg.Debug("Sending chat completion request",
+			zap.Int("dialog_tokens", tokens),
+			zap.Int("dialog_msgs", len(dialog)),
+			cut,
+		)
 	}
 
 	resp, err := h.api.CreateChatCompletion(

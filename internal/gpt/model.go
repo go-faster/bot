@@ -18,15 +18,14 @@ var _ = map[bool]struct{}{
 	false:                   {},
 }
 
-func cutDialog(tokenizer tokenizer.Codec, limit int, dialog []openai.ChatCompletionMessage) ([]openai.ChatCompletionMessage, error) {
-	var tokens int
+func cutDialog(tokenizer tokenizer.Codec, limit int, dialog []openai.ChatCompletionMessage) (_ []openai.ChatCompletionMessage, tokens int, _ error) {
 	for i := len(dialog) - 1; i >= 0; i-- {
 		msg := dialog[i]
 		// FIXME(tdakkota): dramatically inefficient.
 		// 	Probably we should fork it and optimize it.
 		ids, _, err := tokenizer.Encode(msg.Content)
 		if err != nil {
-			return nil, errors.Wrap(err, "tokenizer error")
+			return nil, 0, errors.Wrap(err, "tokenizer error")
 		}
 
 		tokens += len(ids)
@@ -35,5 +34,5 @@ func cutDialog(tokenizer tokenizer.Codec, limit int, dialog []openai.ChatComplet
 			break
 		}
 	}
-	return dialog, nil
+	return dialog, tokens, nil
 }
