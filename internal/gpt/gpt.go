@@ -334,12 +334,10 @@ func (h *Handler) generateCompletion(
 			lg.Error("Context prompt execution error", zap.Error(err))
 		} else {
 			lg.Debug("Using context prompt", zap.String("context_prompt", sb.String()))
-			dialog = append([]openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: sb.String(),
-				},
-			}, dialog...)
+			dialog = append(dialog, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: sb.String(),
+			})
 		}
 	}
 
