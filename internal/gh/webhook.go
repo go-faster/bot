@@ -285,7 +285,7 @@ func (h *Webhook) handleHook(e echo.Context) error {
 	return e.String(http.StatusOK, "done")
 }
 
-func (h *Webhook) processEvent(ctx context.Context, event interface{}) error {
+func (h *Webhook) processEvent(ctx context.Context, event interface{}) (rerr error) {
 	lg := zctx.From(ctx)
 
 	evType := fmt.Sprintf("%T", event)
@@ -295,6 +295,15 @@ func (h *Webhook) processEvent(ctx context.Context, event interface{}) error {
 		trace.WithAttributes(attribute.String("e", evType)),
 	)
 	defer span.End()
+
+	defer func() {
+		if rerr != nil {
+			span.RecordError(rerr)
+			span.SetStatus(codes.Error, rerr.Error())
+		} else {
+			span.SetStatus(codes.Ok, "Done")
+		}
+	}()
 
 	switch e := event.(type) {
 	case *github.PullRequestEvent:
