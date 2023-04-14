@@ -180,7 +180,14 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 	}
 	attrs = append(attrs, meta.Attributes()...)
 	span.SetAttributes(attrs...)
-	h.events.Add(ctx, 1, attrs...)
+	defer func() {
+		if rerr != nil {
+			attrs = append(attrs, attribute.String("status", "error"))
+		} else {
+			attrs = append(attrs, attribute.String("status", "ok"))
+		}
+		h.events.Add(ctx, 1, attrs...)
+	}()
 
 	fields := []zap.Field{
 		zap.String("type", t),
