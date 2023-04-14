@@ -322,9 +322,9 @@ func (h *Webhook) processEvent(ctx context.Context, event interface{}) (rerr err
 		return h.handleCheckRun(ctx, e)
 	case *github.CheckSuiteEvent:
 		return h.handleCheckSuite(ctx, e)
-	case *github.WorkflowRun:
+	case *github.WorkflowRunEvent:
 		return h.handleWorkflowRun(ctx, e)
-	case *github.WorkflowJob:
+	case *github.WorkflowJobEvent:
 		return h.handleWorkflowJob(ctx, e)
 	default:
 		lg.Info("No handler")
