@@ -168,6 +168,27 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 	)
 	defer span.End()
 
+	attrs := []attribute.KeyValue{
+		attribute.String("event", t),
+	}
+	meta, err := extractEventMeta(data)
+	if err != nil {
+		zctx.From(ctx).Error("Failed to extract event meta",
+			zap.String("type", t),
+			zap.Error(err),
+		)
+	}
+	attrs = append(attrs, meta.Attributes()...)
+	span.SetAttributes(attrs...)
+	h.events.Add(ctx, 1, attrs...)
+
+	fields := []zap.Field{
+		zap.String("type", t),
+	}
+	fields = append(fields, meta.Fields()...)
+	lg := zctx.From(ctx).With(fields...)
+	ctx = zctx.With(ctx, lg)
+
 	defer func() {
 		if rerr != nil {
 			span.SetStatus(codes.Error, rerr.Error())
@@ -184,7 +205,7 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 	event, err := github.ParseWebHook(t, data)
 	if err != nil {
 		if strings.Contains(err.Error(), "unknown X-Github-Event") {
-			zctx.From(ctx).Info("Unknown event type",
+			lg.Info("Unknown event type",
 				zap.String("type", t),
 			)
 			span.SetStatus(codes.Ok, "ignored")
@@ -192,19 +213,12 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		}
 		return errors.Wrap(err, "parse")
 	}
-	attrs := []attribute.KeyValue{
-		attribute.String("event", t),
-	}
-	if meta, err := extractEventMeta(data); err == nil {
-		attrs = append(attrs, meta.Attributes()...)
-	}
-	span.SetAttributes(attrs...)
-	h.events.Add(ctx, 1, attrs...)
-	log := zctx.From(ctx).With(
-		zap.String("type", fmt.Sprintf("%T", event)),
+
+	lg.Info("Processing event")
+	span.SetAttributes(
+		attribute.String("event.go.type", fmt.Sprintf("%T", event)),
 	)
-	log.Info("Processing event")
-	if err := h.processEvent(ctx, event, log); err != nil {
+	if err := h.processEvent(ctx, event); err != nil {
 		return errors.Wrap(err, "process")
 	}
 
@@ -271,7 +285,9 @@ func (h *Webhook) handleHook(e echo.Context) error {
 	return e.String(http.StatusOK, "done")
 }
 
-func (h *Webhook) processEvent(ctx context.Context, event interface{}, log *zap.Logger) error {
+func (h *Webhook) processEvent(ctx context.Context, event interface{}) error {
+	lg := zctx.From(ctx)
+
 	evType := fmt.Sprintf("%T", event)
 	evType = strings.TrimPrefix(evType, "*github.")
 	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
@@ -302,7 +318,7 @@ func (h *Webhook) processEvent(ctx context.Context, event interface{}, log *zap.
 	case *github.WorkflowJob:
 		return h.handleWorkflowJob(ctx, e)
 	default:
-		log.Info("No handler")
+		lg.Info("No handler")
 		return nil
 	}
 }

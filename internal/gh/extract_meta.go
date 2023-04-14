@@ -3,6 +3,7 @@ package gh
 import (
 	"github.com/go-faster/jx"
 	"go.opentelemetry.io/otel/attribute"
+	"go.uber.org/zap"
 )
 
 type eventMeta struct {
@@ -13,7 +14,22 @@ type eventMeta struct {
 	RepositoryID int64  // 512150878
 }
 
-func (m eventMeta) Attributes() []attribute.KeyValue {
+func (m *eventMeta) Fields() []zap.Field {
+	if m == nil {
+		return nil
+	}
+	return []zap.Field{
+		zap.String("org.name", m.Organization),
+		zap.Int64("org.id", m.OrganizationID),
+		zap.String("repo.name", m.Repository),
+		zap.Int64("repo.id", m.RepositoryID),
+	}
+}
+
+func (m *eventMeta) Attributes() []attribute.KeyValue {
+	if m == nil {
+		return nil
+	}
 	return []attribute.KeyValue{
 		attribute.String("org.name", m.Organization),
 		attribute.Int64("org.id", m.OrganizationID),
