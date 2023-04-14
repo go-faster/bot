@@ -16,6 +16,7 @@ import (
 	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
 	"github.com/sashabaranov/go-openai"
+	"github.com/tiktoken-go/tokenizer"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -102,6 +103,7 @@ type Handler struct {
 	api    *openai.Client
 	tracer trace.Tracer
 
+	tokenizer     tokenizer.Codec
 	contextPrompt *template.Template
 
 	rateLimiters
@@ -111,9 +113,11 @@ type Handler struct {
 // New creates new Handler.
 func New(api *openai.Client, db *ent.Client, tp trace.TracerProvider) *Handler {
 	return &Handler{
-		api:           api,
-		db:            db,
-		tracer:        tp.Tracer("gpt"),
+		api:    api,
+		db:     db,
+		tracer: tp.Tracer("gpt"),
+		// TODO(tdakkota): syncrohnize it with model used in requests.
+		tokenizer:     errors.Must(tokenizer.ForModel(tokenizerModel)),
 		contextPrompt: defaultContextPrompt,
 	}
 }
@@ -312,9 +316,8 @@ func (h *Handler) generateCompletion(
 	}
 
 	prompt := reply.GetMessage()
-	if msgLimit := h.limitCfg.MessageSizeLimit; msgLimit > 0 &&
-		utf8.RuneCountInString(prompt) > msgLimit {
-		if _, err := e.Reply().Text(ctx, "Message is too big."); err != nil {
+	if msgLimit := h.limitCfg.MessageSizeLimit; msgLimit > 0 && utf8.RuneCountInString(prompt) > msgLimit {
+		if _, err := e.Reply().Text(ctx, "Too many characters."); err != nil {
 			return errors.Wrap(err, "send message limit error")
 		}
 		return nil
@@ -322,6 +325,7 @@ func (h *Handler) generateCompletion(
 
 	lg := zctx.From(ctx)
 
+	// Add context prompt.
 	if t := h.contextPrompt; t != nil {
 		data := generateContextPromptData(e)
 
@@ -330,23 +334,40 @@ func (h *Handler) generateCompletion(
 			lg.Error("Context prompt execution error", zap.Error(err))
 		} else {
 			lg.Debug("Using context prompt", zap.String("context_prompt", sb.String()))
-			dialog = append([]openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: sb.String(),
-				},
-			}, dialog...)
+			dialog = append(dialog, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleSystem,
+				Content: sb.String(),
+			})
 		}
+	}
+
+	dialog = append(dialog, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleUser,
+		Content: prompt,
+	})
+
+	// Cut some context, if it exceeds model token limit.
+	originalLen := len(dialog)
+	dialog, err := cutDialog(h.tokenizer, modelTokenLimit, dialog)
+	if err != nil {
+		return errors.Wrap(err, "cut dialog")
+	}
+	if diff := originalLen - len(dialog); diff != 0 {
+		lg.Debug("Cut dialog context", zap.Int("cut", diff))
+	}
+	// Unlikely, but tell user what happened.
+	if len(dialog) < 1 {
+		if _, err := e.Reply().Text(ctx, "Too many tokens."); err != nil {
+			return errors.Wrap(err, "send message limit error")
+		}
+		return nil
 	}
 
 	resp, err := h.api.CreateChatCompletion(
 		ctx,
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
-			Messages: append(dialog, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: prompt,
-			}),
+			Model:    model,
+			Messages: dialog,
 		},
 	)
 	if err != nil {
