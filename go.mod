@@ -13,6 +13,7 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.0
 	github.com/go-faster/simon v0.4.0
+	github.com/go-logr/zapr v1.2.3
 	github.com/google/go-github/v50 v50.2.0
 	github.com/google/uuid v1.3.0
 	github.com/gotd/contrib v0.15.0

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-logr/zapr"
 	promClient "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -223,6 +224,8 @@ func getEnvOr(name, def string) string {
 }
 
 func newMetrics(ctx context.Context, lg *zap.Logger) (*Metrics, error) {
+	otel.SetLogger(zapr.NewLogger(lg.Named("otel")))
+
 	addr := prometheusAddr()
 	if v := os.Getenv("METRICS_ADDR"); v != "" {
 		addr = v
