@@ -9,6 +9,18 @@ import (
 	"github.com/go-faster/bot/internal/ent"
 )
 
+// The CheckFunc type is an adapter to allow the use of ordinary
+// function as Check mutator.
+type CheckFunc func(context.Context, *ent.CheckMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CheckFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CheckMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CheckMutation", m)
+}
+
 // The GPTDialogFunc type is an adapter to allow the use of ordinary
 // function as GPTDialog mutator.
 type GPTDialogFunc func(context.Context, *ent.GPTDialogMutation) (ent.Value, error)

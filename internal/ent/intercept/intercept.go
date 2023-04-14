@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
@@ -70,6 +71,33 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 		return err
 	}
 	return f(ctx, query)
+}
+
+// The CheckFunc type is an adapter to allow the use of ordinary function as a Querier.
+type CheckFunc func(context.Context, *ent.CheckQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f CheckFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.CheckQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.CheckQuery", q)
+}
+
+// The TraverseCheck type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseCheck func(context.Context, *ent.CheckQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseCheck) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseCheck) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CheckQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.CheckQuery", q)
 }
 
 // The GPTDialogFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -210,6 +238,8 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
+	case *ent.CheckQuery:
+		return &query[*ent.CheckQuery, predicate.Check, check.Order]{typ: ent.TypeCheck, tq: q}, nil
 	case *ent.GPTDialogQuery:
 		return &query[*ent.GPTDialogQuery, predicate.GPTDialog, gptdialog.Order]{typ: ent.TypeGPTDialog, tq: q}, nil
 	case *ent.LastChannelMessageQuery:

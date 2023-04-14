@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
@@ -26,6 +27,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Check is the client for interacting with the Check builders.
+	Check *CheckClient
 	// GPTDialog is the client for interacting with the GPTDialog builders.
 	GPTDialog *GPTDialogClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
@@ -49,6 +52,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Check = NewCheckClient(c.config)
 	c.GPTDialog = NewGPTDialogClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
@@ -136,6 +140,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                ctx,
 		config:             cfg,
+		Check:              NewCheckClient(cfg),
 		GPTDialog:          NewGPTDialogClient(cfg),
 		LastChannelMessage: NewLastChannelMessageClient(cfg),
 		PRNotification:     NewPRNotificationClient(cfg),
@@ -160,6 +165,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                ctx,
 		config:             cfg,
+		Check:              NewCheckClient(cfg),
 		GPTDialog:          NewGPTDialogClient(cfg),
 		LastChannelMessage: NewLastChannelMessageClient(cfg),
 		PRNotification:     NewPRNotificationClient(cfg),
@@ -171,7 +177,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		GPTDialog.
+//		Check.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -193,26 +199,30 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.GPTDialog.Use(hooks...)
-	c.LastChannelMessage.Use(hooks...)
-	c.PRNotification.Use(hooks...)
-	c.TelegramSession.Use(hooks...)
-	c.User.Use(hooks...)
+	for _, n := range []interface{ Use(...Hook) }{
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.TelegramSession,
+		c.User,
+	} {
+		n.Use(hooks...)
+	}
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.GPTDialog.Intercept(interceptors...)
-	c.LastChannelMessage.Intercept(interceptors...)
-	c.PRNotification.Intercept(interceptors...)
-	c.TelegramSession.Intercept(interceptors...)
-	c.User.Intercept(interceptors...)
+	for _, n := range []interface{ Intercept(...Interceptor) }{
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.TelegramSession,
+		c.User,
+	} {
+		n.Intercept(interceptors...)
+	}
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *CheckMutation:
+		return c.Check.mutate(ctx, m)
 	case *GPTDialogMutation:
 		return c.GPTDialog.mutate(ctx, m)
 	case *LastChannelMessageMutation:
@@ -225,6 +235,124 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// CheckClient is a client for the Check schema.
+type CheckClient struct {
+	config
+}
+
+// NewCheckClient returns a client for the Check from the given config.
+func NewCheckClient(c config) *CheckClient {
+	return &CheckClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `check.Hooks(f(g(h())))`.
+func (c *CheckClient) Use(hooks ...Hook) {
+	c.hooks.Check = append(c.hooks.Check, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `check.Intercept(f(g(h())))`.
+func (c *CheckClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Check = append(c.inters.Check, interceptors...)
+}
+
+// Create returns a builder for creating a Check entity.
+func (c *CheckClient) Create() *CheckCreate {
+	mutation := newCheckMutation(c.config, OpCreate)
+	return &CheckCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Check entities.
+func (c *CheckClient) CreateBulk(builders ...*CheckCreate) *CheckCreateBulk {
+	return &CheckCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Check.
+func (c *CheckClient) Update() *CheckUpdate {
+	mutation := newCheckMutation(c.config, OpUpdate)
+	return &CheckUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CheckClient) UpdateOne(ch *Check) *CheckUpdateOne {
+	mutation := newCheckMutation(c.config, OpUpdateOne, withCheck(ch))
+	return &CheckUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CheckClient) UpdateOneID(id int) *CheckUpdateOne {
+	mutation := newCheckMutation(c.config, OpUpdateOne, withCheckID(id))
+	return &CheckUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Check.
+func (c *CheckClient) Delete() *CheckDelete {
+	mutation := newCheckMutation(c.config, OpDelete)
+	return &CheckDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CheckClient) DeleteOne(ch *Check) *CheckDeleteOne {
+	return c.DeleteOneID(ch.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CheckClient) DeleteOneID(id int) *CheckDeleteOne {
+	builder := c.Delete().Where(check.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CheckDeleteOne{builder}
+}
+
+// Query returns a query builder for Check.
+func (c *CheckClient) Query() *CheckQuery {
+	return &CheckQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCheck},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Check entity by its id.
+func (c *CheckClient) Get(ctx context.Context, id int) (*Check, error) {
+	return c.Query().Where(check.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CheckClient) GetX(ctx context.Context, id int) *Check {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CheckClient) Hooks() []Hook {
+	return c.hooks.Check
+}
+
+// Interceptors returns the client interceptors.
+func (c *CheckClient) Interceptors() []Interceptor {
+	return c.inters.Check
+}
+
+func (c *CheckClient) mutate(ctx context.Context, m *CheckMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CheckCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CheckUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CheckUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CheckDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Check mutation op: %q", m.Op())
 	}
 }
 
@@ -821,10 +949,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		GPTDialog, LastChannelMessage, PRNotification, TelegramSession, User []ent.Hook
+		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
+		User []ent.Hook
 	}
 	inters struct {
-		GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
+		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
 		User []ent.Interceptor
 	}
 )
