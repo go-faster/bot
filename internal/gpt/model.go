@@ -23,16 +23,17 @@ func cutDialog(tokenizer tokenizer.Codec, limit int, dialog []openai.ChatComplet
 		msg := dialog[i]
 		// FIXME(tdakkota): dramatically inefficient.
 		// 	Probably we should fork it and optimize it.
-		ids, _, err := tokenizer.Encode(msg.Content)
+		_, tks, err := tokenizer.Encode(msg.Content)
 		if err != nil {
 			return nil, 0, errors.Wrap(err, "tokenizer error")
 		}
+		msgTokens := len(tks)
 
-		tokens += len(ids)
-		if tokens >= limit {
+		if tokens+msgTokens >= limit {
 			dialog = dialog[i+1:]
 			break
 		}
+		tokens += msgTokens
 	}
 	return dialog, tokens, nil
 }

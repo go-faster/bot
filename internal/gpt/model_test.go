@@ -54,9 +54,10 @@ func Test_cutDialog(t *testing.T) {
 		t.Run(fmt.Sprintf("Test%d", i+1), func(t *testing.T) {
 			a := require.New(t)
 
-			got, _, err := cutDialog(codec, tt.limit, tt.msgs)
+			got, tokens, err := cutDialog(codec, tt.limit, tt.msgs)
 			a.NoError(err)
 
+			a.Greater(tt.limit, tokens)
 			a.Equal(tt.expect, got)
 		})
 	}
