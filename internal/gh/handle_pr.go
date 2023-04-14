@@ -20,6 +20,8 @@ import (
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
+
+	"github.com/go-faster/bot/internal/action"
 )
 
 func getPullRequestURL(e *github.PullRequestEvent) styling.StyledTextOption {
@@ -47,9 +49,16 @@ func (h *Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *mes
 		files, checks := *u, *u
 		files.Path = path.Join(files.Path, "files")
 		checks.Path = path.Join(checks.Path, "checks")
+		mergeAction := action.Action{
+			Type:         "merge",
+			ID:           e.GetPullRequest().GetNumber(),
+			RepositoryID: e.GetRepo().GetID(),
+			Entity:       "pr",
+		}
 		r = r.Row(
 			markup.URL("Diff🔀", files.String()),
 			markup.URL("Checks▶", checks.String()),
+			markup.Callback("Merge🚀", action.Marshal(mergeAction)),
 		)
 	}
 	return r

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/go-faster/bot/internal/action"
 	"github.com/go-faster/bot/internal/dispatch"
+	"github.com/go-faster/bot/internal/ent/user"
 )
 
 func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
@@ -41,15 +43,31 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 		return nil
 	}
 
+	var hasToken bool
+	{
+		users, err := a.db.User.Query().Where(
+			user.ID(e.User.ID),
+		).All(ctx)
+		if err != nil {
+			return errors.Wrap(err, "query user")
+		}
+		for _, u := range users {
+			if u.GithubToken != "" {
+				hasToken = true
+				break
+			}
+		}
+	}
+
 	span.SetAttributes(
 		attribute.Int("action.id", act.ID),
 		attribute.String("action.entity", act.Entity),
-		attribute.String("action.action", act.Action),
+		attribute.String("action.type", act.Type),
 	)
 
 	answer := &tg.MessagesSetBotCallbackAnswerRequest{
 		QueryID:   e.QueryID,
-		Message:   fmt.Sprintf("Hello, %s!", e.User.FirstName),
+		Message:   fmt.Sprintf("%s(t=%v): %s", e.User.Username, hasToken, act),
 		CacheTime: 30,
 	}
 	if _, err := e.RPC().MessagesSetBotCallbackAnswer(ctx, answer); err != nil {

@@ -34,7 +34,7 @@ func (h *Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) err
 
 		return nil
 	default:
-		zctx.From(ctx).Info("Action ignored", zap.String("action", e.GetAction()))
+		zctx.From(ctx).Info("Type ignored", zap.String("action", e.GetAction()))
 
 		return nil
 	}
