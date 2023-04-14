@@ -44,6 +44,7 @@ import (
 	"github.com/go-faster/bot/internal/entdb"
 	"github.com/go-faster/bot/internal/entsession"
 	"github.com/go-faster/bot/internal/gh"
+	"github.com/go-faster/bot/internal/otelredis"
 	"github.com/go-faster/bot/internal/state"
 )
 
@@ -127,6 +128,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	r := redis.NewClient(&redis.Options{
 		Addr: "redis:6379",
 	})
+	r.AddHook(otelredis.NewHook(m.TracerProvider()))
 
 	mux := dispatch.NewMessageMux().
 		WithTracerProvider(m.TracerProvider())
