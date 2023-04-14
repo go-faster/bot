@@ -8,6 +8,27 @@ import (
 )
 
 var (
+	// ChecksColumns holds the columns for the "checks" table.
+	ChecksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "repo_id", Type: field.TypeInt},
+		{Name: "name", Type: field.TypeString},
+		{Name: "status", Type: field.TypeString},
+		{Name: "conclusion", Type: field.TypeString, Nullable: true},
+	}
+	// ChecksTable holds the schema information for the "checks" table.
+	ChecksTable = &schema.Table{
+		Name:       "checks",
+		Columns:    ChecksColumns,
+		PrimaryKey: []*schema.Column{ChecksColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "check_repo_id_id",
+				Unique:  true,
+				Columns: []*schema.Column{ChecksColumns[1], ChecksColumns[0]},
+			},
+		},
+	}
 	// GptDialogsColumns holds the columns for the "gpt_dialogs" table.
 	GptDialogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -90,6 +111,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ChecksTable,
 		GptDialogsTable,
 		LastChannelMessagesTable,
 		PrNotificationsTable,

@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
@@ -29,12 +30,565 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeCheck              = "Check"
 	TypeGPTDialog          = "GPTDialog"
 	TypeLastChannelMessage = "LastChannelMessage"
 	TypePRNotification     = "PRNotification"
 	TypeTelegramSession    = "TelegramSession"
 	TypeUser               = "User"
 )
+
+// CheckMutation represents an operation that mutates the Check nodes in the graph.
+type CheckMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	repo_id       *int
+	addrepo_id    *int
+	name          *string
+	status        *string
+	conclusion    *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*Check, error)
+	predicates    []predicate.Check
+}
+
+var _ ent.Mutation = (*CheckMutation)(nil)
+
+// checkOption allows management of the mutation configuration using functional options.
+type checkOption func(*CheckMutation)
+
+// newCheckMutation creates new mutation for the Check entity.
+func newCheckMutation(c config, op Op, opts ...checkOption) *CheckMutation {
+	m := &CheckMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCheck,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCheckID sets the ID field of the mutation.
+func withCheckID(id int) checkOption {
+	return func(m *CheckMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Check
+		)
+		m.oldValue = func(ctx context.Context) (*Check, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Check.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCheck sets the old Check of the mutation.
+func withCheck(node *Check) checkOption {
+	return func(m *CheckMutation) {
+		m.oldValue = func(context.Context) (*Check, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CheckMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CheckMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Check entities.
+func (m *CheckMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CheckMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CheckMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Check.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetRepoID sets the "repo_id" field.
+func (m *CheckMutation) SetRepoID(i int) {
+	m.repo_id = &i
+	m.addrepo_id = nil
+}
+
+// RepoID returns the value of the "repo_id" field in the mutation.
+func (m *CheckMutation) RepoID() (r int, exists bool) {
+	v := m.repo_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRepoID returns the old "repo_id" field's value of the Check entity.
+// If the Check object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CheckMutation) OldRepoID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRepoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRepoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRepoID: %w", err)
+	}
+	return oldValue.RepoID, nil
+}
+
+// AddRepoID adds i to the "repo_id" field.
+func (m *CheckMutation) AddRepoID(i int) {
+	if m.addrepo_id != nil {
+		*m.addrepo_id += i
+	} else {
+		m.addrepo_id = &i
+	}
+}
+
+// AddedRepoID returns the value that was added to the "repo_id" field in this mutation.
+func (m *CheckMutation) AddedRepoID() (r int, exists bool) {
+	v := m.addrepo_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRepoID resets all changes to the "repo_id" field.
+func (m *CheckMutation) ResetRepoID() {
+	m.repo_id = nil
+	m.addrepo_id = nil
+}
+
+// SetName sets the "name" field.
+func (m *CheckMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *CheckMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Check entity.
+// If the Check object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CheckMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *CheckMutation) ResetName() {
+	m.name = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *CheckMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *CheckMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the Check entity.
+// If the Check object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CheckMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *CheckMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetConclusion sets the "conclusion" field.
+func (m *CheckMutation) SetConclusion(s string) {
+	m.conclusion = &s
+}
+
+// Conclusion returns the value of the "conclusion" field in the mutation.
+func (m *CheckMutation) Conclusion() (r string, exists bool) {
+	v := m.conclusion
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConclusion returns the old "conclusion" field's value of the Check entity.
+// If the Check object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CheckMutation) OldConclusion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConclusion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConclusion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConclusion: %w", err)
+	}
+	return oldValue.Conclusion, nil
+}
+
+// ClearConclusion clears the value of the "conclusion" field.
+func (m *CheckMutation) ClearConclusion() {
+	m.conclusion = nil
+	m.clearedFields[check.FieldConclusion] = struct{}{}
+}
+
+// ConclusionCleared returns if the "conclusion" field was cleared in this mutation.
+func (m *CheckMutation) ConclusionCleared() bool {
+	_, ok := m.clearedFields[check.FieldConclusion]
+	return ok
+}
+
+// ResetConclusion resets all changes to the "conclusion" field.
+func (m *CheckMutation) ResetConclusion() {
+	m.conclusion = nil
+	delete(m.clearedFields, check.FieldConclusion)
+}
+
+// Where appends a list predicates to the CheckMutation builder.
+func (m *CheckMutation) Where(ps ...predicate.Check) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CheckMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CheckMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Check, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CheckMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CheckMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Check).
+func (m *CheckMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CheckMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.repo_id != nil {
+		fields = append(fields, check.FieldRepoID)
+	}
+	if m.name != nil {
+		fields = append(fields, check.FieldName)
+	}
+	if m.status != nil {
+		fields = append(fields, check.FieldStatus)
+	}
+	if m.conclusion != nil {
+		fields = append(fields, check.FieldConclusion)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CheckMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case check.FieldRepoID:
+		return m.RepoID()
+	case check.FieldName:
+		return m.Name()
+	case check.FieldStatus:
+		return m.Status()
+	case check.FieldConclusion:
+		return m.Conclusion()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CheckMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case check.FieldRepoID:
+		return m.OldRepoID(ctx)
+	case check.FieldName:
+		return m.OldName(ctx)
+	case check.FieldStatus:
+		return m.OldStatus(ctx)
+	case check.FieldConclusion:
+		return m.OldConclusion(ctx)
+	}
+	return nil, fmt.Errorf("unknown Check field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CheckMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case check.FieldRepoID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRepoID(v)
+		return nil
+	case check.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case check.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case check.FieldConclusion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConclusion(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Check field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CheckMutation) AddedFields() []string {
+	var fields []string
+	if m.addrepo_id != nil {
+		fields = append(fields, check.FieldRepoID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CheckMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case check.FieldRepoID:
+		return m.AddedRepoID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CheckMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case check.FieldRepoID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRepoID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Check numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CheckMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(check.FieldConclusion) {
+		fields = append(fields, check.FieldConclusion)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CheckMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CheckMutation) ClearField(name string) error {
+	switch name {
+	case check.FieldConclusion:
+		m.ClearConclusion()
+		return nil
+	}
+	return fmt.Errorf("unknown Check nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CheckMutation) ResetField(name string) error {
+	switch name {
+	case check.FieldRepoID:
+		m.ResetRepoID()
+		return nil
+	case check.FieldName:
+		m.ResetName()
+		return nil
+	case check.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case check.FieldConclusion:
+		m.ResetConclusion()
+		return nil
+	}
+	return fmt.Errorf("unknown Check field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CheckMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CheckMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CheckMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CheckMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CheckMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CheckMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CheckMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Check unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CheckMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Check edge %s", name)
+}
 
 // GPTDialogMutation represents an operation that mutates the GPTDialog nodes in the graph.
 type GPTDialogMutation struct {

@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Check is the predicate function for check builders.
+type Check func(*sql.Selector)
+
 // GPTDialog is the predicate function for gptdialog builders.
 type GPTDialog func(*sql.Selector)
 
