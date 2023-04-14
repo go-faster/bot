@@ -192,9 +192,14 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		}
 		return errors.Wrap(err, "parse")
 	}
-	attr := attribute.String("event", t)
-	span.SetAttributes(attr)
-	h.events.Add(ctx, 1, attr)
+	attrs := []attribute.KeyValue{
+		attribute.String("event", t),
+	}
+	if meta, err := extractEventMeta(data); err == nil {
+		attrs = append(attrs, meta.Attributes()...)
+	}
+	span.SetAttributes(attrs...)
+	h.events.Add(ctx, 1, attrs...)
 	log := zctx.From(ctx).With(
 		zap.String("type", fmt.Sprintf("%T", event)),
 	)
