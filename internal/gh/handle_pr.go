@@ -58,7 +58,7 @@ func (h *Webhook) notifyPR(p tg.InputPeerClass, e *github.PullRequestEvent) *mes
 		r = r.Row(
 			markup.URL("Diff🔀", files.String()),
 			markup.URL("Checks▶", checks.String()),
-			markup.Callback("Merge🚀", action.Marshal(mergeAction)),
+			markup.Callback("Test button", action.Marshal(mergeAction)),
 		)
 	}
 	return r

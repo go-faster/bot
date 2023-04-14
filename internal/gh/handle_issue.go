@@ -99,7 +99,7 @@ func (h *Webhook) handleIssue(ctx context.Context, e *github.IssuesEvent) error 
 
 	if _, err := h.sender.To(p).NoWebpage().
 		Row(
-			markup.Callback("Close",
+			markup.Callback("Test button",
 				action.Marshal(action.Action{
 					Type:         "close",
 					ID:           e.GetIssue().GetNumber(),
