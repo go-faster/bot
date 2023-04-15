@@ -45,7 +45,7 @@ func updateLastMsgID(ctx context.Context, db *ent.LastChannelMessageClient, chan
 		SetID(channelID).
 		SetMessageID(msgID).
 		OnConflict(
-			sql.ConflictColumns("id"),
+			sql.ConflictColumns(lastchannelmessage.FieldID),
 			sql.ResolveWithNewValues(),
 		).
 		UpdateMessageID().
@@ -111,11 +111,14 @@ func (h *Webhook) setPRNotification(ctx context.Context, pr *github.PullRequestE
 	defer span.End()
 
 	if err := h.db.PRNotification.Create().
-		SetPullRequestID(pr.GetPullRequest().GetNumber()).
 		SetRepoID(pr.GetRepo().GetID()).
+		SetPullRequestID(pr.GetPullRequest().GetNumber()).
 		SetMessageID(msgID).
 		OnConflict(
-			sql.ConflictColumns("repo_id", "pull_request_id"),
+			sql.ConflictColumns(
+				prnotification.FieldRepoID,
+				prnotification.FieldPullRequestID,
+			),
 			sql.ResolveWithNewValues(),
 		).
 		UpdateNewValues().
@@ -166,7 +169,7 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) ([]C
 		SetRepoID(c.GetRepo().GetID()).
 		SetPullRequestID(pullRequestID).
 		OnConflict(
-			sql.ConflictColumns("id"),
+			sql.ConflictColumns(check.FieldID),
 			sql.ResolveWithNewValues(),
 		).
 		UpdateNewValues().
