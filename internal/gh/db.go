@@ -74,29 +74,29 @@ func (h *Webhook) findPRNotification(ctx context.Context, channelID int64, pr *g
 		_ = tx.Rollback()
 	}()
 
-	{
-		list, err := tx.LastChannelMessage.Query().Where(
-			lastchannelmessage.IDEQ(channelID),
-		).All(ctx)
-		if err != nil {
-			return 0, 0, errors.Wrap(err, "query last message")
-		}
-		for _, v := range list {
-			lastMsgID = v.MessageID
-		}
-	}
-	{
-		list, err := tx.PRNotification.Query().Where(
+	switch n, err := tx.PRNotification.Query().
+		Where(
 			prnotification.PullRequestIDEQ(pr.GetPullRequest().GetNumber()),
 			prnotification.RepoIDEQ(pr.GetRepo().GetID()),
-		).All(ctx)
-		if err != nil {
-			return 0, 0, errors.Wrap(err, "query pr notification")
-		}
-		for _, v := range list {
-			msgID = v.MessageID
-		}
+		).
+		First(ctx); {
+	case err == nil:
+		msgID = n.MessageID
+	case ent.IsNotFound(err):
+	default:
+		return 0, 0, errors.Wrap(err, "query last message")
 	}
+
+	switch m, err := tx.LastChannelMessage.Query().
+		Where(lastchannelmessage.IDEQ(channelID)).
+		First(ctx); {
+	case err == nil:
+		lastMsgID = m.MessageID
+	case ent.IsNotFound(err):
+	default:
+		return 0, 0, errors.Wrap(err, "query last message")
+	}
+
 	if err := tx.Commit(); err != nil {
 		return 0, 0, errors.Wrap(err, "commit")
 	}
