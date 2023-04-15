@@ -36,7 +36,7 @@ func (e Ent) UpsertCheck(ctx context.Context, c *github.CheckRunEvent) ([]Check,
 		_ = tx.Rollback()
 	}()
 	if err := tx.Check.Create().
-		SetID(run.GetID()).
+		SetID(run.GetCheckSuite().GetID()).
 		SetName(run.GetName()).
 		SetStatus(run.GetStatus()).
 		SetConclusion(run.GetConclusion()).
