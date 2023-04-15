@@ -16,7 +16,9 @@ import (
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
+	"github.com/go-faster/bot/internal/ent/telegramuserstate"
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
@@ -78,12 +80,14 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			check.Table:              check.ValidColumn,
-			gptdialog.Table:          gptdialog.ValidColumn,
-			lastchannelmessage.Table: lastchannelmessage.ValidColumn,
-			prnotification.Table:     prnotification.ValidColumn,
-			telegramsession.Table:    telegramsession.ValidColumn,
-			user.Table:               user.ValidColumn,
+			check.Table:                check.ValidColumn,
+			gptdialog.Table:            gptdialog.ValidColumn,
+			lastchannelmessage.Table:   lastchannelmessage.ValidColumn,
+			prnotification.Table:       prnotification.ValidColumn,
+			telegramchannelstate.Table: telegramchannelstate.ValidColumn,
+			telegramsession.Table:      telegramsession.ValidColumn,
+			telegramuserstate.Table:    telegramuserstate.ValidColumn,
+			user.Table:                 user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

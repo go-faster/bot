@@ -18,8 +18,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/bin"
+	"github.com/gotd/td/telegram"
+	"github.com/gotd/td/telegram/downloader"
+	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/markup"
+	"github.com/gotd/td/telegram/message/peer"
 	"github.com/gotd/td/telegram/message/styling"
+	"github.com/gotd/td/telegram/updates"
+	updhook "github.com/gotd/td/telegram/updates/hook"
+	"github.com/gotd/td/tg"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
@@ -31,17 +38,12 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/gotd/td/telegram"
-	"github.com/gotd/td/telegram/downloader"
-	"github.com/gotd/td/telegram/message"
-	"github.com/gotd/td/telegram/message/peer"
-	"github.com/gotd/td/tg"
-
 	"github.com/go-faster/bot/internal/app"
 	"github.com/go-faster/bot/internal/botapi"
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/entdb"
+	"github.com/go-faster/bot/internal/entgaps"
 	"github.com/go-faster/bot/internal/entsession"
 	"github.com/go-faster/bot/internal/gh"
 	"github.com/go-faster/bot/internal/otelredis"
@@ -63,6 +65,7 @@ type App struct {
 	wh         *gh.Webhook
 	db         *ent.Client
 	cache      *redis.Client
+	gaps       *updates.Manager
 }
 
 func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -87,7 +90,13 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		return nil, errors.Wrap(err, "open database")
 	}
 	msgIDStore := state.NewEnt(db, m.TracerProvider())
+	gapsStore := entgaps.New(db, m.TracerProvider())
 	dispatcher := tg.NewUpdateDispatcher()
+	updatesHandler := updates.New(updates.Config{
+		Handler: dispatcher,
+		Storage: gapsStore,
+		Logger:  lg.Named("gaps"),
+	})
 
 	otg, err := oteltg.New(m.MeterProvider(), m.TracerProvider())
 	if err != nil {
@@ -96,7 +105,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 
 	uuidNameSpaceBotToken := uuid.MustParse("24085c34-5e70-4b1b-9fd9-a82a98879839")
 	client := telegram.NewClient(appID, appHash, telegram.Options{
-		UpdateHandler: dispatcher,
+		UpdateHandler: updatesHandler,
 		Logger:        lg.Named("client"),
 		SessionStorage: entsession.Storage{
 			Database: db,
@@ -109,6 +118,8 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 					return next.Invoke(zctx.With(ctx, lg), input, output)
 				}
 			}),
+			// NB: This is critical for updates handler to work.
+			updhook.UpdateHook(updatesHandler.Handle),
 			otg,
 		},
 	})
@@ -145,6 +156,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		cache:      r,
 		db:         db,
 		client:     client,
+		gaps:       updatesHandler,
 		token:      token,
 		raw:        raw,
 		sender:     sender,
@@ -312,49 +324,74 @@ func (a *App) Run(ctx context.Context) error {
 					zap.String("name", status.User.Username),
 				)
 			}
-			if _, disableRegister := os.LookupEnv("DISABLE_COMMAND_REGISTER"); !disableRegister {
-				if err := a.mux.RegisterCommands(ctx, a.raw); err != nil {
-					return errors.Wrap(err, "register commands")
-				}
-			}
 
-			if deployNotify := os.Getenv("TG_DEPLOY_NOTIFY_GROUP"); deployNotify != "" {
-				p, err := a.sender.ResolveDomain(deployNotify, peer.OnlyChannel).AsInputPeer(ctx)
+			ready := make(chan struct{})
+			g, ctx := errgroup.WithContext(ctx)
+			g.Go(func() error {
+				self, err := a.client.Self(ctx)
 				if err != nil {
-					return errors.Wrap(err, "resolve")
+					return errors.Wrap(err, "self")
 				}
-				info, _ := debug.ReadBuildInfo()
+				if err := a.gaps.Run(ctx, a.client.API(), self.ID, updates.AuthOptions{
+					IsBot: true,
+					OnStart: func(ctx context.Context) {
+						close(ready)
+					},
+				}); err != nil {
+					return errors.Wrap(err, "gaps")
+				}
+				return nil
+			})
+			g.Go(func() error {
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				case <-ready:
+				}
 
-				var commit string
-				for _, c := range info.Settings {
-					switch c.Key {
-					case "vcs.revision":
-						commit = c.Value[:7]
+				if _, disableRegister := os.LookupEnv("DISABLE_COMMAND_REGISTER"); !disableRegister {
+					if err := a.mux.RegisterCommands(ctx, a.raw); err != nil {
+						return errors.Wrap(err, "register commands")
 					}
 				}
 
-				var options []message.StyledTextOption
-				options = append(options,
-					styling.Plain("🚀 Started "),
-					styling.Italic(fmt.Sprintf("(%s, gotd %s, layer: %d) ",
-						info.GoVersion, app.GetGotdVersion(), tg.Layer),
-					),
-					styling.Code(commit),
-				)
+				if deployNotify := os.Getenv("TG_DEPLOY_NOTIFY_GROUP"); deployNotify != "" {
+					p, err := a.sender.ResolveDomain(deployNotify, peer.OnlyChannel).AsInputPeer(ctx)
+					if err != nil {
+						return errors.Wrap(err, "resolve")
+					}
+					info, _ := debug.ReadBuildInfo()
 
-				var mrkp tg.ReplyMarkupClass
-				if module := info.Main.Path; module != "" && strings.HasPrefix(module, "github.com") {
-					commitLink := fmt.Sprintf("https://%s/commit/%s", module, commit)
-					mrkp = markup.InlineRow(markup.URL("Commit", commitLink))
+					var commit string
+					for _, c := range info.Settings {
+						switch c.Key {
+						case "vcs.revision":
+							commit = c.Value[:7]
+						}
+					}
+
+					var options []message.StyledTextOption
+					options = append(options,
+						styling.Plain("🚀 Started "),
+						styling.Italic(fmt.Sprintf("(%s, gotd %s, layer: %d) ",
+							info.GoVersion, app.GetGotdVersion(), tg.Layer),
+						),
+						styling.Code(commit),
+					)
+
+					var mrkp tg.ReplyMarkupClass
+					if module := info.Main.Path; module != "" && strings.HasPrefix(module, "github.com") {
+						commitLink := fmt.Sprintf("https://%s/commit/%s", module, commit)
+						mrkp = markup.InlineRow(markup.URL("Commit", commitLink))
+					}
+
+					if _, err := a.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
+						return errors.Wrap(err, "send")
+					}
 				}
-
-				if _, err := a.sender.To(p).Markup(mrkp).StyledText(ctx, options...); err != nil {
-					return errors.Wrap(err, "send")
-				}
-			}
-
-			<-ctx.Done()
-			return ctx.Err()
+				return nil
+			})
+			return g.Wait()
 		})
 	})
 	return g.Wait()

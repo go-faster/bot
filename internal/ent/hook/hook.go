@@ -57,6 +57,18 @@ func (f PRNotificationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PRNotificationMutation", m)
 }
 
+// The TelegramChannelStateFunc type is an adapter to allow the use of ordinary
+// function as TelegramChannelState mutator.
+type TelegramChannelStateFunc func(context.Context, *ent.TelegramChannelStateMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TelegramChannelStateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TelegramChannelStateMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TelegramChannelStateMutation", m)
+}
+
 // The TelegramSessionFunc type is an adapter to allow the use of ordinary
 // function as TelegramSession mutator.
 type TelegramSessionFunc func(context.Context, *ent.TelegramSessionMutation) (ent.Value, error)
@@ -67,6 +79,18 @@ func (f TelegramSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TelegramSessionMutation", m)
+}
+
+// The TelegramUserStateFunc type is an adapter to allow the use of ordinary
+// function as TelegramUserState mutator.
+type TelegramUserStateFunc func(context.Context, *ent.TelegramUserStateMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TelegramUserStateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TelegramUserStateMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TelegramUserStateMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary
