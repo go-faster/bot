@@ -14,11 +14,14 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
+	"github.com/go-faster/bot/internal/ent/telegramuserstate"
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
@@ -35,8 +38,12 @@ type Client struct {
 	LastChannelMessage *LastChannelMessageClient
 	// PRNotification is the client for interacting with the PRNotification builders.
 	PRNotification *PRNotificationClient
+	// TelegramChannelState is the client for interacting with the TelegramChannelState builders.
+	TelegramChannelState *TelegramChannelStateClient
 	// TelegramSession is the client for interacting with the TelegramSession builders.
 	TelegramSession *TelegramSessionClient
+	// TelegramUserState is the client for interacting with the TelegramUserState builders.
+	TelegramUserState *TelegramUserStateClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -56,7 +63,9 @@ func (c *Client) init() {
 	c.GPTDialog = NewGPTDialogClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
+	c.TelegramChannelState = NewTelegramChannelStateClient(c.config)
 	c.TelegramSession = NewTelegramSessionClient(c.config)
+	c.TelegramUserState = NewTelegramUserStateClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -138,14 +147,16 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Check:              NewCheckClient(cfg),
-		GPTDialog:          NewGPTDialogClient(cfg),
-		LastChannelMessage: NewLastChannelMessageClient(cfg),
-		PRNotification:     NewPRNotificationClient(cfg),
-		TelegramSession:    NewTelegramSessionClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                  ctx,
+		config:               cfg,
+		Check:                NewCheckClient(cfg),
+		GPTDialog:            NewGPTDialogClient(cfg),
+		LastChannelMessage:   NewLastChannelMessageClient(cfg),
+		PRNotification:       NewPRNotificationClient(cfg),
+		TelegramChannelState: NewTelegramChannelStateClient(cfg),
+		TelegramSession:      NewTelegramSessionClient(cfg),
+		TelegramUserState:    NewTelegramUserStateClient(cfg),
+		User:                 NewUserClient(cfg),
 	}, nil
 }
 
@@ -163,14 +174,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Check:              NewCheckClient(cfg),
-		GPTDialog:          NewGPTDialogClient(cfg),
-		LastChannelMessage: NewLastChannelMessageClient(cfg),
-		PRNotification:     NewPRNotificationClient(cfg),
-		TelegramSession:    NewTelegramSessionClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                  ctx,
+		config:               cfg,
+		Check:                NewCheckClient(cfg),
+		GPTDialog:            NewGPTDialogClient(cfg),
+		LastChannelMessage:   NewLastChannelMessageClient(cfg),
+		PRNotification:       NewPRNotificationClient(cfg),
+		TelegramChannelState: NewTelegramChannelStateClient(cfg),
+		TelegramSession:      NewTelegramSessionClient(cfg),
+		TelegramUserState:    NewTelegramUserStateClient(cfg),
+		User:                 NewUserClient(cfg),
 	}, nil
 }
 
@@ -200,8 +213,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.TelegramSession,
-		c.User,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification,
+		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -211,8 +224,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.TelegramSession,
-		c.User,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification,
+		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -229,8 +242,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.LastChannelMessage.mutate(ctx, m)
 	case *PRNotificationMutation:
 		return c.PRNotification.mutate(ctx, m)
+	case *TelegramChannelStateMutation:
+		return c.TelegramChannelState.mutate(ctx, m)
 	case *TelegramSessionMutation:
 		return c.TelegramSession.mutate(ctx, m)
+	case *TelegramUserStateMutation:
+		return c.TelegramUserState.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -710,6 +727,140 @@ func (c *PRNotificationClient) mutate(ctx context.Context, m *PRNotificationMuta
 	}
 }
 
+// TelegramChannelStateClient is a client for the TelegramChannelState schema.
+type TelegramChannelStateClient struct {
+	config
+}
+
+// NewTelegramChannelStateClient returns a client for the TelegramChannelState from the given config.
+func NewTelegramChannelStateClient(c config) *TelegramChannelStateClient {
+	return &TelegramChannelStateClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `telegramchannelstate.Hooks(f(g(h())))`.
+func (c *TelegramChannelStateClient) Use(hooks ...Hook) {
+	c.hooks.TelegramChannelState = append(c.hooks.TelegramChannelState, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `telegramchannelstate.Intercept(f(g(h())))`.
+func (c *TelegramChannelStateClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TelegramChannelState = append(c.inters.TelegramChannelState, interceptors...)
+}
+
+// Create returns a builder for creating a TelegramChannelState entity.
+func (c *TelegramChannelStateClient) Create() *TelegramChannelStateCreate {
+	mutation := newTelegramChannelStateMutation(c.config, OpCreate)
+	return &TelegramChannelStateCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TelegramChannelState entities.
+func (c *TelegramChannelStateClient) CreateBulk(builders ...*TelegramChannelStateCreate) *TelegramChannelStateCreateBulk {
+	return &TelegramChannelStateCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TelegramChannelState.
+func (c *TelegramChannelStateClient) Update() *TelegramChannelStateUpdate {
+	mutation := newTelegramChannelStateMutation(c.config, OpUpdate)
+	return &TelegramChannelStateUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TelegramChannelStateClient) UpdateOne(tcs *TelegramChannelState) *TelegramChannelStateUpdateOne {
+	mutation := newTelegramChannelStateMutation(c.config, OpUpdateOne, withTelegramChannelState(tcs))
+	return &TelegramChannelStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TelegramChannelStateClient) UpdateOneID(id int) *TelegramChannelStateUpdateOne {
+	mutation := newTelegramChannelStateMutation(c.config, OpUpdateOne, withTelegramChannelStateID(id))
+	return &TelegramChannelStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TelegramChannelState.
+func (c *TelegramChannelStateClient) Delete() *TelegramChannelStateDelete {
+	mutation := newTelegramChannelStateMutation(c.config, OpDelete)
+	return &TelegramChannelStateDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TelegramChannelStateClient) DeleteOne(tcs *TelegramChannelState) *TelegramChannelStateDeleteOne {
+	return c.DeleteOneID(tcs.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TelegramChannelStateClient) DeleteOneID(id int) *TelegramChannelStateDeleteOne {
+	builder := c.Delete().Where(telegramchannelstate.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TelegramChannelStateDeleteOne{builder}
+}
+
+// Query returns a query builder for TelegramChannelState.
+func (c *TelegramChannelStateClient) Query() *TelegramChannelStateQuery {
+	return &TelegramChannelStateQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTelegramChannelState},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TelegramChannelState entity by its id.
+func (c *TelegramChannelStateClient) Get(ctx context.Context, id int) (*TelegramChannelState, error) {
+	return c.Query().Where(telegramchannelstate.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TelegramChannelStateClient) GetX(ctx context.Context, id int) *TelegramChannelState {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a TelegramChannelState.
+func (c *TelegramChannelStateClient) QueryUser(tcs *TelegramChannelState) *TelegramUserStateQuery {
+	query := (&TelegramUserStateClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := tcs.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(telegramchannelstate.Table, telegramchannelstate.FieldID, id),
+			sqlgraph.To(telegramuserstate.Table, telegramuserstate.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, telegramchannelstate.UserTable, telegramchannelstate.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(tcs.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *TelegramChannelStateClient) Hooks() []Hook {
+	return c.hooks.TelegramChannelState
+}
+
+// Interceptors returns the client interceptors.
+func (c *TelegramChannelStateClient) Interceptors() []Interceptor {
+	return c.inters.TelegramChannelState
+}
+
+func (c *TelegramChannelStateClient) mutate(ctx context.Context, m *TelegramChannelStateMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TelegramChannelStateCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TelegramChannelStateUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TelegramChannelStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TelegramChannelStateDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TelegramChannelState mutation op: %q", m.Op())
+	}
+}
+
 // TelegramSessionClient is a client for the TelegramSession schema.
 type TelegramSessionClient struct {
 	config
@@ -825,6 +976,140 @@ func (c *TelegramSessionClient) mutate(ctx context.Context, m *TelegramSessionMu
 		return (&TelegramSessionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown TelegramSession mutation op: %q", m.Op())
+	}
+}
+
+// TelegramUserStateClient is a client for the TelegramUserState schema.
+type TelegramUserStateClient struct {
+	config
+}
+
+// NewTelegramUserStateClient returns a client for the TelegramUserState from the given config.
+func NewTelegramUserStateClient(c config) *TelegramUserStateClient {
+	return &TelegramUserStateClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `telegramuserstate.Hooks(f(g(h())))`.
+func (c *TelegramUserStateClient) Use(hooks ...Hook) {
+	c.hooks.TelegramUserState = append(c.hooks.TelegramUserState, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `telegramuserstate.Intercept(f(g(h())))`.
+func (c *TelegramUserStateClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TelegramUserState = append(c.inters.TelegramUserState, interceptors...)
+}
+
+// Create returns a builder for creating a TelegramUserState entity.
+func (c *TelegramUserStateClient) Create() *TelegramUserStateCreate {
+	mutation := newTelegramUserStateMutation(c.config, OpCreate)
+	return &TelegramUserStateCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TelegramUserState entities.
+func (c *TelegramUserStateClient) CreateBulk(builders ...*TelegramUserStateCreate) *TelegramUserStateCreateBulk {
+	return &TelegramUserStateCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TelegramUserState.
+func (c *TelegramUserStateClient) Update() *TelegramUserStateUpdate {
+	mutation := newTelegramUserStateMutation(c.config, OpUpdate)
+	return &TelegramUserStateUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TelegramUserStateClient) UpdateOne(tus *TelegramUserState) *TelegramUserStateUpdateOne {
+	mutation := newTelegramUserStateMutation(c.config, OpUpdateOne, withTelegramUserState(tus))
+	return &TelegramUserStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TelegramUserStateClient) UpdateOneID(id int64) *TelegramUserStateUpdateOne {
+	mutation := newTelegramUserStateMutation(c.config, OpUpdateOne, withTelegramUserStateID(id))
+	return &TelegramUserStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TelegramUserState.
+func (c *TelegramUserStateClient) Delete() *TelegramUserStateDelete {
+	mutation := newTelegramUserStateMutation(c.config, OpDelete)
+	return &TelegramUserStateDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TelegramUserStateClient) DeleteOne(tus *TelegramUserState) *TelegramUserStateDeleteOne {
+	return c.DeleteOneID(tus.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TelegramUserStateClient) DeleteOneID(id int64) *TelegramUserStateDeleteOne {
+	builder := c.Delete().Where(telegramuserstate.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TelegramUserStateDeleteOne{builder}
+}
+
+// Query returns a query builder for TelegramUserState.
+func (c *TelegramUserStateClient) Query() *TelegramUserStateQuery {
+	return &TelegramUserStateQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTelegramUserState},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TelegramUserState entity by its id.
+func (c *TelegramUserStateClient) Get(ctx context.Context, id int64) (*TelegramUserState, error) {
+	return c.Query().Where(telegramuserstate.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TelegramUserStateClient) GetX(ctx context.Context, id int64) *TelegramUserState {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryChannels queries the channels edge of a TelegramUserState.
+func (c *TelegramUserStateClient) QueryChannels(tus *TelegramUserState) *TelegramChannelStateQuery {
+	query := (&TelegramChannelStateClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := tus.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(telegramuserstate.Table, telegramuserstate.FieldID, id),
+			sqlgraph.To(telegramchannelstate.Table, telegramchannelstate.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, telegramuserstate.ChannelsTable, telegramuserstate.ChannelsColumn),
+		)
+		fromV = sqlgraph.Neighbors(tus.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *TelegramUserStateClient) Hooks() []Hook {
+	return c.hooks.TelegramUserState
+}
+
+// Interceptors returns the client interceptors.
+func (c *TelegramUserStateClient) Interceptors() []Interceptor {
+	return c.inters.TelegramUserState
+}
+
+func (c *TelegramUserStateClient) mutate(ctx context.Context, m *TelegramUserStateMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TelegramUserStateCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TelegramUserStateUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TelegramUserStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TelegramUserStateDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TelegramUserState mutation op: %q", m.Op())
 	}
 }
 
@@ -949,11 +1234,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
-		User []ent.Hook
+		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramChannelState,
+		TelegramSession, TelegramUserState, User []ent.Hook
 	}
 	inters struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramSession,
-		User []ent.Interceptor
+		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramChannelState,
+		TelegramSession, TelegramUserState, User []ent.Interceptor
 	}
 )

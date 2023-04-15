@@ -85,6 +85,34 @@ var (
 			},
 		},
 	}
+	// TelegramChannelStatesColumns holds the columns for the "telegram_channel_states" table.
+	TelegramChannelStatesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "channel_id", Type: field.TypeInt64},
+		{Name: "pts", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt64},
+	}
+	// TelegramChannelStatesTable holds the schema information for the "telegram_channel_states" table.
+	TelegramChannelStatesTable = &schema.Table{
+		Name:       "telegram_channel_states",
+		Columns:    TelegramChannelStatesColumns,
+		PrimaryKey: []*schema.Column{TelegramChannelStatesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "telegram_channel_states_telegram_user_states_channels",
+				Columns:    []*schema.Column{TelegramChannelStatesColumns[3]},
+				RefColumns: []*schema.Column{TelegramUserStatesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "telegramchannelstate_user_id_channel_id",
+				Unique:  true,
+				Columns: []*schema.Column{TelegramChannelStatesColumns[3], TelegramChannelStatesColumns[1]},
+			},
+		},
+	}
 	// TelegramSessionsColumns holds the columns for the "telegram_sessions" table.
 	TelegramSessionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
@@ -95,6 +123,20 @@ var (
 		Name:       "telegram_sessions",
 		Columns:    TelegramSessionsColumns,
 		PrimaryKey: []*schema.Column{TelegramSessionsColumns[0]},
+	}
+	// TelegramUserStatesColumns holds the columns for the "telegram_user_states" table.
+	TelegramUserStatesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "qts", Type: field.TypeInt},
+		{Name: "pts", Type: field.TypeInt},
+		{Name: "date", Type: field.TypeInt},
+		{Name: "seq", Type: field.TypeInt},
+	}
+	// TelegramUserStatesTable holds the schema information for the "telegram_user_states" table.
+	TelegramUserStatesTable = &schema.Table{
+		Name:       "telegram_user_states",
+		Columns:    TelegramUserStatesColumns,
+		PrimaryKey: []*schema.Column{TelegramUserStatesColumns[0]},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
@@ -116,10 +158,13 @@ var (
 		GptDialogsTable,
 		LastChannelMessagesTable,
 		PrNotificationsTable,
+		TelegramChannelStatesTable,
 		TelegramSessionsTable,
+		TelegramUserStatesTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	TelegramChannelStatesTable.ForeignKeys[0].RefTable = TelegramUserStatesTable
 }

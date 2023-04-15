@@ -13,7 +13,9 @@ import (
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
+	"github.com/go-faster/bot/internal/ent/telegramuserstate"
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
@@ -181,6 +183,33 @@ func (f TraversePRNotification) Traverse(ctx context.Context, q ent.Query) error
 	return fmt.Errorf("unexpected query type %T. expect *ent.PRNotificationQuery", q)
 }
 
+// The TelegramChannelStateFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TelegramChannelStateFunc func(context.Context, *ent.TelegramChannelStateQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f TelegramChannelStateFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TelegramChannelStateQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TelegramChannelStateQuery", q)
+}
+
+// The TraverseTelegramChannelState type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTelegramChannelState func(context.Context, *ent.TelegramChannelStateQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseTelegramChannelState) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseTelegramChannelState) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TelegramChannelStateQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.TelegramChannelStateQuery", q)
+}
+
 // The TelegramSessionFunc type is an adapter to allow the use of ordinary function as a Querier.
 type TelegramSessionFunc func(context.Context, *ent.TelegramSessionQuery) (ent.Value, error)
 
@@ -206,6 +235,33 @@ func (f TraverseTelegramSession) Traverse(ctx context.Context, q ent.Query) erro
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.TelegramSessionQuery", q)
+}
+
+// The TelegramUserStateFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TelegramUserStateFunc func(context.Context, *ent.TelegramUserStateQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f TelegramUserStateFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TelegramUserStateQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TelegramUserStateQuery", q)
+}
+
+// The TraverseTelegramUserState type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTelegramUserState func(context.Context, *ent.TelegramUserStateQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseTelegramUserState) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseTelegramUserState) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TelegramUserStateQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.TelegramUserStateQuery", q)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -246,8 +302,12 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.Order]{typ: ent.TypeLastChannelMessage, tq: q}, nil
 	case *ent.PRNotificationQuery:
 		return &query[*ent.PRNotificationQuery, predicate.PRNotification, prnotification.Order]{typ: ent.TypePRNotification, tq: q}, nil
+	case *ent.TelegramChannelStateQuery:
+		return &query[*ent.TelegramChannelStateQuery, predicate.TelegramChannelState, telegramchannelstate.Order]{typ: ent.TypeTelegramChannelState, tq: q}, nil
 	case *ent.TelegramSessionQuery:
 		return &query[*ent.TelegramSessionQuery, predicate.TelegramSession, telegramsession.Order]{typ: ent.TypeTelegramSession, tq: q}, nil
+	case *ent.TelegramUserStateQuery:
+		return &query[*ent.TelegramUserStateQuery, predicate.TelegramUserState, telegramuserstate.Order]{typ: ent.TypeTelegramUserState, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.Order]{typ: ent.TypeUser, tq: q}, nil
 	default:
