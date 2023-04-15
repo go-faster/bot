@@ -14,10 +14,10 @@ type TelegramUserState struct {
 func (TelegramUserState) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Unique().Comment("User ID"),
-		field.Int("qts"),
-		field.Int("pts"),
-		field.Int("date"),
-		field.Int("seq"),
+		field.Int("qts").Default(0),
+		field.Int("pts").Default(0),
+		field.Int("date").Default(0),
+		field.Int("seq").Default(0),
 	}
 }
 
@@ -35,7 +35,7 @@ func (TelegramChannelState) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("channel_id").Comment("Channel id"),
 		field.Int64("user_id").Comment("User id"),
-		field.Int("pts"),
+		field.Int("pts").Default(0),
 	}
 }
 
