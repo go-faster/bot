@@ -1,11 +1,11 @@
 name: atlas
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    paths:
-      - 'migrations/*'
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+#    paths:
+#      - 'migrations/*'
   workflow_dispatch:
 jobs:
   lint:
