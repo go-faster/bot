@@ -8,53 +8,58 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Check {
+func ID(id int64) predicate.Check {
 	return predicate.Check(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Check {
+func IDEQ(id int64) predicate.Check {
 	return predicate.Check(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Check {
+func IDNEQ(id int64) predicate.Check {
 	return predicate.Check(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Check {
+func IDIn(ids ...int64) predicate.Check {
 	return predicate.Check(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Check {
+func IDNotIn(ids ...int64) predicate.Check {
 	return predicate.Check(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Check {
+func IDGT(id int64) predicate.Check {
 	return predicate.Check(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Check {
+func IDGTE(id int64) predicate.Check {
 	return predicate.Check(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Check {
+func IDLT(id int64) predicate.Check {
 	return predicate.Check(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Check {
+func IDLTE(id int64) predicate.Check {
 	return predicate.Check(sql.FieldLTE(FieldID, id))
 }
 
 // RepoID applies equality check predicate on the "repo_id" field. It's identical to RepoIDEQ.
-func RepoID(v int) predicate.Check {
+func RepoID(v int64) predicate.Check {
 	return predicate.Check(sql.FieldEQ(FieldRepoID, v))
+}
+
+// PullRequestID applies equality check predicate on the "pull_request_id" field. It's identical to PullRequestIDEQ.
+func PullRequestID(v int) predicate.Check {
+	return predicate.Check(sql.FieldEQ(FieldPullRequestID, v))
 }
 
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
@@ -73,43 +78,83 @@ func Conclusion(v string) predicate.Check {
 }
 
 // RepoIDEQ applies the EQ predicate on the "repo_id" field.
-func RepoIDEQ(v int) predicate.Check {
+func RepoIDEQ(v int64) predicate.Check {
 	return predicate.Check(sql.FieldEQ(FieldRepoID, v))
 }
 
 // RepoIDNEQ applies the NEQ predicate on the "repo_id" field.
-func RepoIDNEQ(v int) predicate.Check {
+func RepoIDNEQ(v int64) predicate.Check {
 	return predicate.Check(sql.FieldNEQ(FieldRepoID, v))
 }
 
 // RepoIDIn applies the In predicate on the "repo_id" field.
-func RepoIDIn(vs ...int) predicate.Check {
+func RepoIDIn(vs ...int64) predicate.Check {
 	return predicate.Check(sql.FieldIn(FieldRepoID, vs...))
 }
 
 // RepoIDNotIn applies the NotIn predicate on the "repo_id" field.
-func RepoIDNotIn(vs ...int) predicate.Check {
+func RepoIDNotIn(vs ...int64) predicate.Check {
 	return predicate.Check(sql.FieldNotIn(FieldRepoID, vs...))
 }
 
 // RepoIDGT applies the GT predicate on the "repo_id" field.
-func RepoIDGT(v int) predicate.Check {
+func RepoIDGT(v int64) predicate.Check {
 	return predicate.Check(sql.FieldGT(FieldRepoID, v))
 }
 
 // RepoIDGTE applies the GTE predicate on the "repo_id" field.
-func RepoIDGTE(v int) predicate.Check {
+func RepoIDGTE(v int64) predicate.Check {
 	return predicate.Check(sql.FieldGTE(FieldRepoID, v))
 }
 
 // RepoIDLT applies the LT predicate on the "repo_id" field.
-func RepoIDLT(v int) predicate.Check {
+func RepoIDLT(v int64) predicate.Check {
 	return predicate.Check(sql.FieldLT(FieldRepoID, v))
 }
 
 // RepoIDLTE applies the LTE predicate on the "repo_id" field.
-func RepoIDLTE(v int) predicate.Check {
+func RepoIDLTE(v int64) predicate.Check {
 	return predicate.Check(sql.FieldLTE(FieldRepoID, v))
+}
+
+// PullRequestIDEQ applies the EQ predicate on the "pull_request_id" field.
+func PullRequestIDEQ(v int) predicate.Check {
+	return predicate.Check(sql.FieldEQ(FieldPullRequestID, v))
+}
+
+// PullRequestIDNEQ applies the NEQ predicate on the "pull_request_id" field.
+func PullRequestIDNEQ(v int) predicate.Check {
+	return predicate.Check(sql.FieldNEQ(FieldPullRequestID, v))
+}
+
+// PullRequestIDIn applies the In predicate on the "pull_request_id" field.
+func PullRequestIDIn(vs ...int) predicate.Check {
+	return predicate.Check(sql.FieldIn(FieldPullRequestID, vs...))
+}
+
+// PullRequestIDNotIn applies the NotIn predicate on the "pull_request_id" field.
+func PullRequestIDNotIn(vs ...int) predicate.Check {
+	return predicate.Check(sql.FieldNotIn(FieldPullRequestID, vs...))
+}
+
+// PullRequestIDGT applies the GT predicate on the "pull_request_id" field.
+func PullRequestIDGT(v int) predicate.Check {
+	return predicate.Check(sql.FieldGT(FieldPullRequestID, v))
+}
+
+// PullRequestIDGTE applies the GTE predicate on the "pull_request_id" field.
+func PullRequestIDGTE(v int) predicate.Check {
+	return predicate.Check(sql.FieldGTE(FieldPullRequestID, v))
+}
+
+// PullRequestIDLT applies the LT predicate on the "pull_request_id" field.
+func PullRequestIDLT(v int) predicate.Check {
+	return predicate.Check(sql.FieldLT(FieldPullRequestID, v))
+}
+
+// PullRequestIDLTE applies the LTE predicate on the "pull_request_id" field.
+func PullRequestIDLTE(v int) predicate.Check {
+	return predicate.Check(sql.FieldLTE(FieldPullRequestID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

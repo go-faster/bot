@@ -22,8 +22,14 @@ type CheckCreate struct {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (cc *CheckCreate) SetRepoID(i int) *CheckCreate {
+func (cc *CheckCreate) SetRepoID(i int64) *CheckCreate {
 	cc.mutation.SetRepoID(i)
+	return cc
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (cc *CheckCreate) SetPullRequestID(i int) *CheckCreate {
+	cc.mutation.SetPullRequestID(i)
 	return cc
 }
 
@@ -54,7 +60,7 @@ func (cc *CheckCreate) SetNillableConclusion(s *string) *CheckCreate {
 }
 
 // SetID sets the "id" field.
-func (cc *CheckCreate) SetID(i int) *CheckCreate {
+func (cc *CheckCreate) SetID(i int64) *CheckCreate {
 	cc.mutation.SetID(i)
 	return cc
 }
@@ -96,6 +102,9 @@ func (cc *CheckCreate) check() error {
 	if _, ok := cc.mutation.RepoID(); !ok {
 		return &ValidationError{Name: "repo_id", err: errors.New(`ent: missing required field "Check.repo_id"`)}
 	}
+	if _, ok := cc.mutation.PullRequestID(); !ok {
+		return &ValidationError{Name: "pull_request_id", err: errors.New(`ent: missing required field "Check.pull_request_id"`)}
+	}
 	if _, ok := cc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Check.name"`)}
 	}
@@ -118,7 +127,7 @@ func (cc *CheckCreate) sqlSave(ctx context.Context) (*Check, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int(id)
+		_node.ID = int64(id)
 	}
 	cc.mutation.id = &_node.ID
 	cc.mutation.done = true
@@ -128,7 +137,7 @@ func (cc *CheckCreate) sqlSave(ctx context.Context) (*Check, error) {
 func (cc *CheckCreate) createSpec() (*Check, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Check{config: cc.config}
-		_spec = sqlgraph.NewCreateSpec(check.Table, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(check.Table, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = cc.conflict
 	if id, ok := cc.mutation.ID(); ok {
@@ -136,8 +145,12 @@ func (cc *CheckCreate) createSpec() (*Check, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := cc.mutation.RepoID(); ok {
-		_spec.SetField(check.FieldRepoID, field.TypeInt, value)
+		_spec.SetField(check.FieldRepoID, field.TypeInt64, value)
 		_node.RepoID = value
+	}
+	if value, ok := cc.mutation.PullRequestID(); ok {
+		_spec.SetField(check.FieldPullRequestID, field.TypeInt, value)
+		_node.PullRequestID = value
 	}
 	if value, ok := cc.mutation.Name(); ok {
 		_spec.SetField(check.FieldName, field.TypeString, value)
@@ -204,7 +217,7 @@ type (
 )
 
 // SetRepoID sets the "repo_id" field.
-func (u *CheckUpsert) SetRepoID(v int) *CheckUpsert {
+func (u *CheckUpsert) SetRepoID(v int64) *CheckUpsert {
 	u.Set(check.FieldRepoID, v)
 	return u
 }
@@ -216,8 +229,26 @@ func (u *CheckUpsert) UpdateRepoID() *CheckUpsert {
 }
 
 // AddRepoID adds v to the "repo_id" field.
-func (u *CheckUpsert) AddRepoID(v int) *CheckUpsert {
+func (u *CheckUpsert) AddRepoID(v int64) *CheckUpsert {
 	u.Add(check.FieldRepoID, v)
+	return u
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (u *CheckUpsert) SetPullRequestID(v int) *CheckUpsert {
+	u.Set(check.FieldPullRequestID, v)
+	return u
+}
+
+// UpdatePullRequestID sets the "pull_request_id" field to the value that was provided on create.
+func (u *CheckUpsert) UpdatePullRequestID() *CheckUpsert {
+	u.SetExcluded(check.FieldPullRequestID)
+	return u
+}
+
+// AddPullRequestID adds v to the "pull_request_id" field.
+func (u *CheckUpsert) AddPullRequestID(v int) *CheckUpsert {
+	u.Add(check.FieldPullRequestID, v)
 	return u
 }
 
@@ -312,14 +343,14 @@ func (u *CheckUpsertOne) Update(set func(*CheckUpsert)) *CheckUpsertOne {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (u *CheckUpsertOne) SetRepoID(v int) *CheckUpsertOne {
+func (u *CheckUpsertOne) SetRepoID(v int64) *CheckUpsertOne {
 	return u.Update(func(s *CheckUpsert) {
 		s.SetRepoID(v)
 	})
 }
 
 // AddRepoID adds v to the "repo_id" field.
-func (u *CheckUpsertOne) AddRepoID(v int) *CheckUpsertOne {
+func (u *CheckUpsertOne) AddRepoID(v int64) *CheckUpsertOne {
 	return u.Update(func(s *CheckUpsert) {
 		s.AddRepoID(v)
 	})
@@ -329,6 +360,27 @@ func (u *CheckUpsertOne) AddRepoID(v int) *CheckUpsertOne {
 func (u *CheckUpsertOne) UpdateRepoID() *CheckUpsertOne {
 	return u.Update(func(s *CheckUpsert) {
 		s.UpdateRepoID()
+	})
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (u *CheckUpsertOne) SetPullRequestID(v int) *CheckUpsertOne {
+	return u.Update(func(s *CheckUpsert) {
+		s.SetPullRequestID(v)
+	})
+}
+
+// AddPullRequestID adds v to the "pull_request_id" field.
+func (u *CheckUpsertOne) AddPullRequestID(v int) *CheckUpsertOne {
+	return u.Update(func(s *CheckUpsert) {
+		s.AddPullRequestID(v)
+	})
+}
+
+// UpdatePullRequestID sets the "pull_request_id" field to the value that was provided on create.
+func (u *CheckUpsertOne) UpdatePullRequestID() *CheckUpsertOne {
+	return u.Update(func(s *CheckUpsert) {
+		s.UpdatePullRequestID()
 	})
 }
 
@@ -397,7 +449,7 @@ func (u *CheckUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *CheckUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *CheckUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -406,7 +458,7 @@ func (u *CheckUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *CheckUpsertOne) IDX(ctx context.Context) int {
+func (u *CheckUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -458,7 +510,7 @@ func (ccb *CheckCreateBulk) Save(ctx context.Context) ([]*Check, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -591,14 +643,14 @@ func (u *CheckUpsertBulk) Update(set func(*CheckUpsert)) *CheckUpsertBulk {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (u *CheckUpsertBulk) SetRepoID(v int) *CheckUpsertBulk {
+func (u *CheckUpsertBulk) SetRepoID(v int64) *CheckUpsertBulk {
 	return u.Update(func(s *CheckUpsert) {
 		s.SetRepoID(v)
 	})
 }
 
 // AddRepoID adds v to the "repo_id" field.
-func (u *CheckUpsertBulk) AddRepoID(v int) *CheckUpsertBulk {
+func (u *CheckUpsertBulk) AddRepoID(v int64) *CheckUpsertBulk {
 	return u.Update(func(s *CheckUpsert) {
 		s.AddRepoID(v)
 	})
@@ -608,6 +660,27 @@ func (u *CheckUpsertBulk) AddRepoID(v int) *CheckUpsertBulk {
 func (u *CheckUpsertBulk) UpdateRepoID() *CheckUpsertBulk {
 	return u.Update(func(s *CheckUpsert) {
 		s.UpdateRepoID()
+	})
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (u *CheckUpsertBulk) SetPullRequestID(v int) *CheckUpsertBulk {
+	return u.Update(func(s *CheckUpsert) {
+		s.SetPullRequestID(v)
+	})
+}
+
+// AddPullRequestID adds v to the "pull_request_id" field.
+func (u *CheckUpsertBulk) AddPullRequestID(v int) *CheckUpsertBulk {
+	return u.Update(func(s *CheckUpsert) {
+		s.AddPullRequestID(v)
+	})
+}
+
+// UpdatePullRequestID sets the "pull_request_id" field to the value that was provided on create.
+func (u *CheckUpsertBulk) UpdatePullRequestID() *CheckUpsertBulk {
+	return u.Update(func(s *CheckUpsert) {
+		s.UpdatePullRequestID()
 	})
 }
 

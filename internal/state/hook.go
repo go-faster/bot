@@ -3,7 +3,6 @@ package state
 import (
 	"context"
 
-	"github.com/google/go-github/v50/github"
 	"go.uber.org/multierr"
 
 	"github.com/go-faster/bot/internal/dispatch"
@@ -13,12 +12,6 @@ import (
 type Hook struct {
 	next    dispatch.MessageHandler
 	storage Storage
-}
-
-type Storage interface {
-	UpdateLastMsgID(ctx context.Context, channelID int64, msgID int) error
-	SetPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error
-	FindPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error)
 }
 
 // NewHook creates new hook.

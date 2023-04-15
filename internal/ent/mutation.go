@@ -41,18 +41,20 @@ const (
 // CheckMutation represents an operation that mutates the Check nodes in the graph.
 type CheckMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	repo_id       *int
-	addrepo_id    *int
-	name          *string
-	status        *string
-	conclusion    *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Check, error)
-	predicates    []predicate.Check
+	op                 Op
+	typ                string
+	id                 *int64
+	repo_id            *int64
+	addrepo_id         *int64
+	pull_request_id    *int
+	addpull_request_id *int
+	name               *string
+	status             *string
+	conclusion         *string
+	clearedFields      map[string]struct{}
+	done               bool
+	oldValue           func(context.Context) (*Check, error)
+	predicates         []predicate.Check
 }
 
 var _ ent.Mutation = (*CheckMutation)(nil)
@@ -75,7 +77,7 @@ func newCheckMutation(c config, op Op, opts ...checkOption) *CheckMutation {
 }
 
 // withCheckID sets the ID field of the mutation.
-func withCheckID(id int) checkOption {
+func withCheckID(id int64) checkOption {
 	return func(m *CheckMutation) {
 		var (
 			err   error
@@ -127,13 +129,13 @@ func (m CheckMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Check entities.
-func (m *CheckMutation) SetID(id int) {
+func (m *CheckMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *CheckMutation) ID() (id int, exists bool) {
+func (m *CheckMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -144,12 +146,12 @@ func (m *CheckMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *CheckMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *CheckMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -160,13 +162,13 @@ func (m *CheckMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (m *CheckMutation) SetRepoID(i int) {
+func (m *CheckMutation) SetRepoID(i int64) {
 	m.repo_id = &i
 	m.addrepo_id = nil
 }
 
 // RepoID returns the value of the "repo_id" field in the mutation.
-func (m *CheckMutation) RepoID() (r int, exists bool) {
+func (m *CheckMutation) RepoID() (r int64, exists bool) {
 	v := m.repo_id
 	if v == nil {
 		return
@@ -177,7 +179,7 @@ func (m *CheckMutation) RepoID() (r int, exists bool) {
 // OldRepoID returns the old "repo_id" field's value of the Check entity.
 // If the Check object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CheckMutation) OldRepoID(ctx context.Context) (v int, err error) {
+func (m *CheckMutation) OldRepoID(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRepoID is only allowed on UpdateOne operations")
 	}
@@ -192,7 +194,7 @@ func (m *CheckMutation) OldRepoID(ctx context.Context) (v int, err error) {
 }
 
 // AddRepoID adds i to the "repo_id" field.
-func (m *CheckMutation) AddRepoID(i int) {
+func (m *CheckMutation) AddRepoID(i int64) {
 	if m.addrepo_id != nil {
 		*m.addrepo_id += i
 	} else {
@@ -201,7 +203,7 @@ func (m *CheckMutation) AddRepoID(i int) {
 }
 
 // AddedRepoID returns the value that was added to the "repo_id" field in this mutation.
-func (m *CheckMutation) AddedRepoID() (r int, exists bool) {
+func (m *CheckMutation) AddedRepoID() (r int64, exists bool) {
 	v := m.addrepo_id
 	if v == nil {
 		return
@@ -213,6 +215,62 @@ func (m *CheckMutation) AddedRepoID() (r int, exists bool) {
 func (m *CheckMutation) ResetRepoID() {
 	m.repo_id = nil
 	m.addrepo_id = nil
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (m *CheckMutation) SetPullRequestID(i int) {
+	m.pull_request_id = &i
+	m.addpull_request_id = nil
+}
+
+// PullRequestID returns the value of the "pull_request_id" field in the mutation.
+func (m *CheckMutation) PullRequestID() (r int, exists bool) {
+	v := m.pull_request_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPullRequestID returns the old "pull_request_id" field's value of the Check entity.
+// If the Check object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CheckMutation) OldPullRequestID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPullRequestID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPullRequestID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPullRequestID: %w", err)
+	}
+	return oldValue.PullRequestID, nil
+}
+
+// AddPullRequestID adds i to the "pull_request_id" field.
+func (m *CheckMutation) AddPullRequestID(i int) {
+	if m.addpull_request_id != nil {
+		*m.addpull_request_id += i
+	} else {
+		m.addpull_request_id = &i
+	}
+}
+
+// AddedPullRequestID returns the value that was added to the "pull_request_id" field in this mutation.
+func (m *CheckMutation) AddedPullRequestID() (r int, exists bool) {
+	v := m.addpull_request_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPullRequestID resets all changes to the "pull_request_id" field.
+func (m *CheckMutation) ResetPullRequestID() {
+	m.pull_request_id = nil
+	m.addpull_request_id = nil
 }
 
 // SetName sets the "name" field.
@@ -370,9 +428,12 @@ func (m *CheckMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CheckMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.repo_id != nil {
 		fields = append(fields, check.FieldRepoID)
+	}
+	if m.pull_request_id != nil {
+		fields = append(fields, check.FieldPullRequestID)
 	}
 	if m.name != nil {
 		fields = append(fields, check.FieldName)
@@ -393,6 +454,8 @@ func (m *CheckMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case check.FieldRepoID:
 		return m.RepoID()
+	case check.FieldPullRequestID:
+		return m.PullRequestID()
 	case check.FieldName:
 		return m.Name()
 	case check.FieldStatus:
@@ -410,6 +473,8 @@ func (m *CheckMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case check.FieldRepoID:
 		return m.OldRepoID(ctx)
+	case check.FieldPullRequestID:
+		return m.OldPullRequestID(ctx)
 	case check.FieldName:
 		return m.OldName(ctx)
 	case check.FieldStatus:
@@ -426,11 +491,18 @@ func (m *CheckMutation) OldField(ctx context.Context, name string) (ent.Value, e
 func (m *CheckMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case check.FieldRepoID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRepoID(v)
+		return nil
+	case check.FieldPullRequestID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPullRequestID(v)
 		return nil
 	case check.FieldName:
 		v, ok := value.(string)
@@ -464,6 +536,9 @@ func (m *CheckMutation) AddedFields() []string {
 	if m.addrepo_id != nil {
 		fields = append(fields, check.FieldRepoID)
 	}
+	if m.addpull_request_id != nil {
+		fields = append(fields, check.FieldPullRequestID)
+	}
 	return fields
 }
 
@@ -474,6 +549,8 @@ func (m *CheckMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case check.FieldRepoID:
 		return m.AddedRepoID()
+	case check.FieldPullRequestID:
+		return m.AddedPullRequestID()
 	}
 	return nil, false
 }
@@ -484,11 +561,18 @@ func (m *CheckMutation) AddedField(name string) (ent.Value, bool) {
 func (m *CheckMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case check.FieldRepoID:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRepoID(v)
+		return nil
+	case check.FieldPullRequestID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPullRequestID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Check numeric field %s", name)
@@ -528,6 +612,9 @@ func (m *CheckMutation) ResetField(name string) error {
 	switch name {
 	case check.FieldRepoID:
 		m.ResetRepoID()
+		return nil
+	case check.FieldPullRequestID:
+		m.ResetPullRequestID()
 		return nil
 	case check.FieldName:
 		m.ResetName()

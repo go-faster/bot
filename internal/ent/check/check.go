@@ -13,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldRepoID holds the string denoting the repo_id field in the database.
 	FieldRepoID = "repo_id"
+	// FieldPullRequestID holds the string denoting the pull_request_id field in the database.
+	FieldPullRequestID = "pull_request_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -27,6 +29,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldRepoID,
+	FieldPullRequestID,
 	FieldName,
 	FieldStatus,
 	FieldConclusion,
@@ -53,6 +56,11 @@ func ByID(opts ...sql.OrderTermOption) Order {
 // ByRepoID orders the results by the repo_id field.
 func ByRepoID(opts ...sql.OrderTermOption) Order {
 	return sql.OrderByField(FieldRepoID, opts...).ToFunc()
+}
+
+// ByPullRequestID orders the results by the pull_request_id field.
+func ByPullRequestID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldPullRequestID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

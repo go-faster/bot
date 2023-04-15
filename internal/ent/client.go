@@ -284,7 +284,7 @@ func (c *CheckClient) UpdateOne(ch *Check) *CheckUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *CheckClient) UpdateOneID(id int) *CheckUpdateOne {
+func (c *CheckClient) UpdateOneID(id int64) *CheckUpdateOne {
 	mutation := newCheckMutation(c.config, OpUpdateOne, withCheckID(id))
 	return &CheckUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -301,7 +301,7 @@ func (c *CheckClient) DeleteOne(ch *Check) *CheckDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *CheckClient) DeleteOneID(id int) *CheckDeleteOne {
+func (c *CheckClient) DeleteOneID(id int64) *CheckDeleteOne {
 	builder := c.Delete().Where(check.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -318,12 +318,12 @@ func (c *CheckClient) Query() *CheckQuery {
 }
 
 // Get returns a Check entity by its id.
-func (c *CheckClient) Get(ctx context.Context, id int) (*Check, error) {
+func (c *CheckClient) Get(ctx context.Context, id int64) (*Check, error) {
 	return c.Query().Where(check.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *CheckClient) GetX(ctx context.Context, id int) *Check {
+func (c *CheckClient) GetX(ctx context.Context, id int64) *Check {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

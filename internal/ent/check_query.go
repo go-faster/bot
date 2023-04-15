@@ -81,8 +81,8 @@ func (cq *CheckQuery) FirstX(ctx context.Context) *Check {
 
 // FirstID returns the first Check ID from the query.
 // Returns a *NotFoundError when no Check ID was found.
-func (cq *CheckQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cq *CheckQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cq.Limit(1).IDs(setContextOp(ctx, cq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -94,7 +94,7 @@ func (cq *CheckQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cq *CheckQuery) FirstIDX(ctx context.Context) int {
+func (cq *CheckQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := cq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -132,8 +132,8 @@ func (cq *CheckQuery) OnlyX(ctx context.Context) *Check {
 // OnlyID is like Only, but returns the only Check ID in the query.
 // Returns a *NotSingularError when more than one Check ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cq *CheckQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (cq *CheckQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = cq.Limit(2).IDs(setContextOp(ctx, cq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -149,7 +149,7 @@ func (cq *CheckQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cq *CheckQuery) OnlyIDX(ctx context.Context) int {
+func (cq *CheckQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := cq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,7 +177,7 @@ func (cq *CheckQuery) AllX(ctx context.Context) []*Check {
 }
 
 // IDs executes the query and returns a list of Check IDs.
-func (cq *CheckQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (cq *CheckQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if cq.ctx.Unique == nil && cq.path != nil {
 		cq.Unique(true)
 	}
@@ -189,7 +189,7 @@ func (cq *CheckQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cq *CheckQuery) IDsX(ctx context.Context) []int {
+func (cq *CheckQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := cq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -261,7 +261,7 @@ func (cq *CheckQuery) Clone() *CheckQuery {
 // Example:
 //
 //	var v []struct {
-//		RepoID int `json:"repo_id,omitempty"`
+//		RepoID int64 `json:"repo_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -284,7 +284,7 @@ func (cq *CheckQuery) GroupBy(field string, fields ...string) *CheckGroupBy {
 // Example:
 //
 //	var v []struct {
-//		RepoID int `json:"repo_id,omitempty"`
+//		RepoID int64 `json:"repo_id,omitempty"`
 //	}
 //
 //	client.Check.Query().
@@ -364,7 +364,7 @@ func (cq *CheckQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (cq *CheckQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt64))
 	_spec.From = cq.sql
 	if unique := cq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
