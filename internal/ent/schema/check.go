@@ -15,8 +15,9 @@ type Check struct {
 
 func (Check) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("id").Comment("Value of check_run.id"),
-		field.Int("repo_id").Comment("Repository id"),
+		field.Int64("id").Comment("Value of check_run.id"),
+		field.Int64("repo_id").Comment("Repository id"),
+		field.Int("pull_request_id").Comment("Pull request id"),
 		field.String("name").Comment("Name of check_run"),
 		field.String("status").Comment(`The phase of the lifecycle that the check is currently in. Can be one of: queued, in_progress, completed, pending`),
 		field.String("conclusion").Optional().Comment(`The final conclusion of the check. Can be one of: waiting, pending, startup_failure, stale, success, failure, neutral, cancelled, skipped, timed_out, action_required, null`),
@@ -25,7 +26,7 @@ func (Check) Fields() []ent.Field {
 
 func (Check) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("repo_id", "id").
+		index.Fields("repo_id", "pull_request_id", "id").
 			Unique(),
 	}
 }

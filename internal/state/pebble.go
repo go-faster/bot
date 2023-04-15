@@ -27,6 +27,11 @@ type Pebble struct {
 	db *pebble.DB
 }
 
+func (m Pebble) UpsertCheck(ctx context.Context, check *github.CheckRunEvent) ([]Check, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // NewPebble creates new Pebble.
 func NewPebble(db *pebble.DB) Pebble {
 	return Pebble{db: db}

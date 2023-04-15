@@ -16,9 +16,11 @@ type Check struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Value of check_run.id
-	ID int `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Repository id
-	RepoID int `json:"repo_id,omitempty"`
+	RepoID int64 `json:"repo_id,omitempty"`
+	// Pull request id
+	PullRequestID int `json:"pull_request_id,omitempty"`
 	// Name of check_run
 	Name string `json:"name,omitempty"`
 	// The phase of the lifecycle that the check is currently in. Can be one of: queued, in_progress, completed, pending
@@ -33,7 +35,7 @@ func (*Check) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case check.FieldID, check.FieldRepoID:
+		case check.FieldID, check.FieldRepoID, check.FieldPullRequestID:
 			values[i] = new(sql.NullInt64)
 		case check.FieldName, check.FieldStatus, check.FieldConclusion:
 			values[i] = new(sql.NullString)
@@ -57,12 +59,18 @@ func (c *Check) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = int(value.Int64)
+			c.ID = int64(value.Int64)
 		case check.FieldRepoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field repo_id", values[i])
 			} else if value.Valid {
-				c.RepoID = int(value.Int64)
+				c.RepoID = value.Int64
+			}
+		case check.FieldPullRequestID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field pull_request_id", values[i])
+			} else if value.Valid {
+				c.PullRequestID = int(value.Int64)
 			}
 		case check.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -120,6 +128,9 @@ func (c *Check) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("repo_id=")
 	builder.WriteString(fmt.Sprintf("%v", c.RepoID))
+	builder.WriteString(", ")
+	builder.WriteString("pull_request_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.PullRequestID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(c.Name)

@@ -3,6 +3,7 @@ package gh
 import (
 	"context"
 
+	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -29,6 +30,9 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 			attribute.Int64("repository.id", e.GetRepo().GetID()),
 		),
 	)
+	if _, err := h.storage.UpsertCheck(ctx, e); err != nil {
+		return errors.Wrap(err, "upsert check")
+	}
 
 	return nil
 }

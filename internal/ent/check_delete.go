@@ -40,7 +40,7 @@ func (cd *CheckDelete) ExecX(ctx context.Context) int {
 }
 
 func (cd *CheckDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(check.Table, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(check.Table, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt64))
 	if ps := cd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

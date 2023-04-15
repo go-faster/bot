@@ -28,15 +28,28 @@ func (cu *CheckUpdate) Where(ps ...predicate.Check) *CheckUpdate {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (cu *CheckUpdate) SetRepoID(i int) *CheckUpdate {
+func (cu *CheckUpdate) SetRepoID(i int64) *CheckUpdate {
 	cu.mutation.ResetRepoID()
 	cu.mutation.SetRepoID(i)
 	return cu
 }
 
 // AddRepoID adds i to the "repo_id" field.
-func (cu *CheckUpdate) AddRepoID(i int) *CheckUpdate {
+func (cu *CheckUpdate) AddRepoID(i int64) *CheckUpdate {
 	cu.mutation.AddRepoID(i)
+	return cu
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (cu *CheckUpdate) SetPullRequestID(i int) *CheckUpdate {
+	cu.mutation.ResetPullRequestID()
+	cu.mutation.SetPullRequestID(i)
+	return cu
+}
+
+// AddPullRequestID adds i to the "pull_request_id" field.
+func (cu *CheckUpdate) AddPullRequestID(i int) *CheckUpdate {
+	cu.mutation.AddPullRequestID(i)
 	return cu
 }
 
@@ -105,7 +118,7 @@ func (cu *CheckUpdate) ExecX(ctx context.Context) {
 }
 
 func (cu *CheckUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt64))
 	if ps := cu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -114,10 +127,16 @@ func (cu *CheckUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := cu.mutation.RepoID(); ok {
-		_spec.SetField(check.FieldRepoID, field.TypeInt, value)
+		_spec.SetField(check.FieldRepoID, field.TypeInt64, value)
 	}
 	if value, ok := cu.mutation.AddedRepoID(); ok {
-		_spec.AddField(check.FieldRepoID, field.TypeInt, value)
+		_spec.AddField(check.FieldRepoID, field.TypeInt64, value)
+	}
+	if value, ok := cu.mutation.PullRequestID(); ok {
+		_spec.SetField(check.FieldPullRequestID, field.TypeInt, value)
+	}
+	if value, ok := cu.mutation.AddedPullRequestID(); ok {
+		_spec.AddField(check.FieldPullRequestID, field.TypeInt, value)
 	}
 	if value, ok := cu.mutation.Name(); ok {
 		_spec.SetField(check.FieldName, field.TypeString, value)
@@ -152,15 +171,28 @@ type CheckUpdateOne struct {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (cuo *CheckUpdateOne) SetRepoID(i int) *CheckUpdateOne {
+func (cuo *CheckUpdateOne) SetRepoID(i int64) *CheckUpdateOne {
 	cuo.mutation.ResetRepoID()
 	cuo.mutation.SetRepoID(i)
 	return cuo
 }
 
 // AddRepoID adds i to the "repo_id" field.
-func (cuo *CheckUpdateOne) AddRepoID(i int) *CheckUpdateOne {
+func (cuo *CheckUpdateOne) AddRepoID(i int64) *CheckUpdateOne {
 	cuo.mutation.AddRepoID(i)
+	return cuo
+}
+
+// SetPullRequestID sets the "pull_request_id" field.
+func (cuo *CheckUpdateOne) SetPullRequestID(i int) *CheckUpdateOne {
+	cuo.mutation.ResetPullRequestID()
+	cuo.mutation.SetPullRequestID(i)
+	return cuo
+}
+
+// AddPullRequestID adds i to the "pull_request_id" field.
+func (cuo *CheckUpdateOne) AddPullRequestID(i int) *CheckUpdateOne {
+	cuo.mutation.AddPullRequestID(i)
 	return cuo
 }
 
@@ -242,7 +274,7 @@ func (cuo *CheckUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (cuo *CheckUpdateOne) sqlSave(ctx context.Context) (_node *Check, err error) {
-	_spec := sqlgraph.NewUpdateSpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(check.Table, check.Columns, sqlgraph.NewFieldSpec(check.FieldID, field.TypeInt64))
 	id, ok := cuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Check.id" for update`)}
@@ -268,10 +300,16 @@ func (cuo *CheckUpdateOne) sqlSave(ctx context.Context) (_node *Check, err error
 		}
 	}
 	if value, ok := cuo.mutation.RepoID(); ok {
-		_spec.SetField(check.FieldRepoID, field.TypeInt, value)
+		_spec.SetField(check.FieldRepoID, field.TypeInt64, value)
 	}
 	if value, ok := cuo.mutation.AddedRepoID(); ok {
-		_spec.AddField(check.FieldRepoID, field.TypeInt, value)
+		_spec.AddField(check.FieldRepoID, field.TypeInt64, value)
+	}
+	if value, ok := cuo.mutation.PullRequestID(); ok {
+		_spec.SetField(check.FieldPullRequestID, field.TypeInt, value)
+	}
+	if value, ok := cuo.mutation.AddedPullRequestID(); ok {
+		_spec.AddField(check.FieldPullRequestID, field.TypeInt, value)
 	}
 	if value, ok := cuo.mutation.Name(); ok {
 		_spec.SetField(check.FieldName, field.TypeString, value)

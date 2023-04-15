@@ -10,8 +10,9 @@ import (
 var (
 	// ChecksColumns holds the columns for the "checks" table.
 	ChecksColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "repo_id", Type: field.TypeInt},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "repo_id", Type: field.TypeInt64},
+		{Name: "pull_request_id", Type: field.TypeInt},
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeString},
 		{Name: "conclusion", Type: field.TypeString, Nullable: true},
@@ -23,9 +24,9 @@ var (
 		PrimaryKey: []*schema.Column{ChecksColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "check_repo_id_id",
+				Name:    "check_repo_id_pull_request_id_id",
 				Unique:  true,
-				Columns: []*schema.Column{ChecksColumns[1], ChecksColumns[0]},
+				Columns: []*schema.Column{ChecksColumns[1], ChecksColumns[2], ChecksColumns[0]},
 			},
 		},
 	}
