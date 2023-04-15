@@ -47,7 +47,6 @@ import (
 	"github.com/go-faster/bot/internal/entsession"
 	"github.com/go-faster/bot/internal/gh"
 	"github.com/go-faster/bot/internal/otelredis"
-	"github.com/go-faster/bot/internal/state"
 )
 
 type App struct {
@@ -89,7 +88,6 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "open database")
 	}
-	msgIDStore := state.NewEnt(db, m.TracerProvider())
 	gapsStore := entgaps.New(db, m.TracerProvider())
 	dispatcher := tg.NewUpdateDispatcher()
 	updatesHandler := updates.New(updates.Config{
@@ -138,7 +136,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 
 	mux := dispatch.NewMessageMux().
 		WithTracerProvider(m.TracerProvider())
-	webhook := gh.NewWebhook(msgIDStore, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
+	webhook := gh.NewWebhook(db, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
 	}
@@ -183,7 +181,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		WithSender(sender).
 		WithTracerProvider(m.TracerProvider()).
 		Register(dispatcher).
-		OnMessage(state.NewHook(h, msgIDStore)).
+		OnMessage(gh.NewHook(h, db.LastChannelMessage)).
 		OnButton(a)
 
 	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {

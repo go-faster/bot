@@ -4,8 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/cockroachdb/pebble"
-	"github.com/cockroachdb/pebble/vfs"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
@@ -14,12 +12,15 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap/zaptest"
 
+	"entgo.io/ent/dialect"
+	_ "github.com/mattn/go-sqlite3"
+
 	"github.com/gotd/td/bin"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
 	"github.com/gotd/td/tgerr"
 
-	"github.com/go-faster/bot/internal/state"
+	"github.com/go-faster/bot/internal/ent/enttest"
 )
 
 type mockResolver map[string]tg.InputPeerClass
@@ -67,6 +68,8 @@ func (m *mockInvoker) Invoke(ctx context.Context, input bin.Encoder, output bin.
 }
 
 func TestWebhook(t *testing.T) {
+	lg := zaptest.NewLogger(t)
+
 	ctx := context.Background()
 	a := require.New(t)
 
@@ -78,28 +81,26 @@ func TestWebhook(t *testing.T) {
 	}
 	event := prEvent(prID, orgID)
 
-	lg := zaptest.NewLogger(t)
-	db, err := pebble.Open("golovach_lena.db", &pebble.Options{FS: vfs.NewMem()})
-	a.NoError(err)
-	store := state.NewPebble(db)
-
-	a.NoError(store.UpdateLastMsgID(ctx, channel.ChannelID, lastMsgID))
-	a.NoError(store.SetPRNotification(ctx, event, msgID))
-
 	invoker := &mockInvoker{}
 	raw := tg.NewClient(invoker)
 	sender := message.NewSender(raw).WithResolver(mockResolver{
 		"test": channel,
 	})
+
+	db := enttest.Open(t, dialect.SQLite, "file:ent?mode=memory&_fk=1")
+	defer db.Close()
+
 	hook := NewWebhook(
-		state.NewPebble(db), sender,
-		metric.NewNoopMeterProvider(), trace.NewNoopTracerProvider(),
-	).
-		WithNotifyGroup("test")
+		db,
+		sender,
+		metric.NewNoopMeterProvider(),
+		trace.NewNoopTracerProvider(),
+	).WithNotifyGroup("test")
 
-	err = hook.handlePRClosed(zctx.With(ctx, lg), event)
-	a.NoError(err)
+	a.NoError(hook.updateLastMsgID(ctx, channel.ChannelID, lastMsgID))
+	a.NoError(hook.setPRNotification(ctx, event, msgID))
 
+	a.NoError(hook.handlePRClosed(zctx.With(ctx, lg), event))
 	a.NotNil(invoker.lastReq)
 	a.Contains(invoker.lastReq.Message, "opened")
 }

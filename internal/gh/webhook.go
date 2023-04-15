@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
@@ -21,13 +22,11 @@ import (
 	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
-
-	"github.com/go-faster/bot/internal/state"
 )
 
 // Webhook is a Github events web hook handler.
 type Webhook struct {
-	storage state.Storage
+	db *ent.Client
 
 	sender       *message.Sender
 	notifyGroup  string
@@ -40,7 +39,7 @@ type Webhook struct {
 
 // NewWebhook creates new web hook handler.
 func NewWebhook(
-	msgID state.Storage,
+	db *ent.Client,
 	sender *message.Sender,
 	meterProvider metric.MeterProvider,
 	tracerProvider trace.TracerProvider,
@@ -53,10 +52,10 @@ func NewWebhook(
 		panic(err)
 	}
 	return &Webhook{
-		events:  eventCount,
-		storage: msgID,
-		sender:  sender,
-		tracer:  tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
+		events: eventCount,
+		db:     db,
+		sender: sender,
+		tracer: tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
 }
 
