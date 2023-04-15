@@ -16,11 +16,11 @@ type PRNotification struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// RepoID holds the value of the "repo_id" field.
+	// Github repository ID.
 	RepoID int64 `json:"repo_id,omitempty"`
-	// PullRequestID holds the value of the "pull_request_id" field.
+	// Pull request number.
 	PullRequestID int `json:"pull_request_id,omitempty"`
-	// MessageID holds the value of the "message_id" field.
+	// Telegram message ID. Belongs to notify channel.
 	MessageID    int `json:"message_id,omitempty"`
 	selectValues sql.SelectValues
 }
