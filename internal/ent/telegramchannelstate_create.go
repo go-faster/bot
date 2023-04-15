@@ -40,6 +40,14 @@ func (tcsc *TelegramChannelStateCreate) SetPts(i int) *TelegramChannelStateCreat
 	return tcsc
 }
 
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tcsc *TelegramChannelStateCreate) SetNillablePts(i *int) *TelegramChannelStateCreate {
+	if i != nil {
+		tcsc.SetPts(*i)
+	}
+	return tcsc
+}
+
 // SetUser sets the "user" edge to the TelegramUserState entity.
 func (tcsc *TelegramChannelStateCreate) SetUser(t *TelegramUserState) *TelegramChannelStateCreate {
 	return tcsc.SetUserID(t.ID)
@@ -52,6 +60,7 @@ func (tcsc *TelegramChannelStateCreate) Mutation() *TelegramChannelStateMutation
 
 // Save creates the TelegramChannelState in the database.
 func (tcsc *TelegramChannelStateCreate) Save(ctx context.Context) (*TelegramChannelState, error) {
+	tcsc.defaults()
 	return withHooks[*TelegramChannelState, TelegramChannelStateMutation](ctx, tcsc.sqlSave, tcsc.mutation, tcsc.hooks)
 }
 
@@ -74,6 +83,14 @@ func (tcsc *TelegramChannelStateCreate) Exec(ctx context.Context) error {
 func (tcsc *TelegramChannelStateCreate) ExecX(ctx context.Context) {
 	if err := tcsc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (tcsc *TelegramChannelStateCreate) defaults() {
+	if _, ok := tcsc.mutation.Pts(); !ok {
+		v := telegramchannelstate.DefaultPts
+		tcsc.mutation.SetPts(v)
 	}
 }
 
@@ -387,6 +404,7 @@ func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*Teleg
 	for i := range tcscb.builders {
 		func(i int, root context.Context) {
 			builder := tcscb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TelegramChannelStateMutation)
 				if !ok {

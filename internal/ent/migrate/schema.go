@@ -89,7 +89,7 @@ var (
 	TelegramChannelStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "channel_id", Type: field.TypeInt64},
-		{Name: "pts", Type: field.TypeInt},
+		{Name: "pts", Type: field.TypeInt, Default: 0},
 		{Name: "user_id", Type: field.TypeInt64},
 	}
 	// TelegramChannelStatesTable holds the schema information for the "telegram_channel_states" table.
@@ -127,10 +127,10 @@ var (
 	// TelegramUserStatesColumns holds the columns for the "telegram_user_states" table.
 	TelegramUserStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "qts", Type: field.TypeInt},
-		{Name: "pts", Type: field.TypeInt},
-		{Name: "date", Type: field.TypeInt},
-		{Name: "seq", Type: field.TypeInt},
+		{Name: "qts", Type: field.TypeInt, Default: 0},
+		{Name: "pts", Type: field.TypeInt, Default: 0},
+		{Name: "date", Type: field.TypeInt, Default: 0},
+		{Name: "seq", Type: field.TypeInt, Default: 0},
 	}
 	// TelegramUserStatesTable holds the schema information for the "telegram_user_states" table.
 	TelegramUserStatesTable = &schema.Table{

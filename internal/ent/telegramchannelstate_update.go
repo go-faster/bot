@@ -54,6 +54,14 @@ func (tcsu *TelegramChannelStateUpdate) SetPts(i int) *TelegramChannelStateUpdat
 	return tcsu
 }
 
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tcsu *TelegramChannelStateUpdate) SetNillablePts(i *int) *TelegramChannelStateUpdate {
+	if i != nil {
+		tcsu.SetPts(*i)
+	}
+	return tcsu
+}
+
 // AddPts adds i to the "pts" field.
 func (tcsu *TelegramChannelStateUpdate) AddPts(i int) *TelegramChannelStateUpdate {
 	tcsu.mutation.AddPts(i)
@@ -207,6 +215,14 @@ func (tcsuo *TelegramChannelStateUpdateOne) SetUserID(i int64) *TelegramChannelS
 func (tcsuo *TelegramChannelStateUpdateOne) SetPts(i int) *TelegramChannelStateUpdateOne {
 	tcsuo.mutation.ResetPts()
 	tcsuo.mutation.SetPts(i)
+	return tcsuo
+}
+
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tcsuo *TelegramChannelStateUpdateOne) SetNillablePts(i *int) *TelegramChannelStateUpdateOne {
+	if i != nil {
+		tcsuo.SetPts(*i)
+	}
 	return tcsuo
 }
 

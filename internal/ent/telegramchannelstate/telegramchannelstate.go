@@ -49,6 +49,11 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// DefaultPts holds the default value on creation for the "pts" field.
+	DefaultPts int
+)
+
 // Order defines the ordering method for the TelegramChannelState queries.
 type Order func(*sql.Selector)
 

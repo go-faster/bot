@@ -52,6 +52,17 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// DefaultQts holds the default value on creation for the "qts" field.
+	DefaultQts int
+	// DefaultPts holds the default value on creation for the "pts" field.
+	DefaultPts int
+	// DefaultDate holds the default value on creation for the "date" field.
+	DefaultDate int
+	// DefaultSeq holds the default value on creation for the "seq" field.
+	DefaultSeq int
+)
+
 // Order defines the ordering method for the TelegramUserState queries.
 type Order func(*sql.Selector)
 

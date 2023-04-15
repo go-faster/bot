@@ -35,6 +35,14 @@ func (tusu *TelegramUserStateUpdate) SetQts(i int) *TelegramUserStateUpdate {
 	return tusu
 }
 
+// SetNillableQts sets the "qts" field if the given value is not nil.
+func (tusu *TelegramUserStateUpdate) SetNillableQts(i *int) *TelegramUserStateUpdate {
+	if i != nil {
+		tusu.SetQts(*i)
+	}
+	return tusu
+}
+
 // AddQts adds i to the "qts" field.
 func (tusu *TelegramUserStateUpdate) AddQts(i int) *TelegramUserStateUpdate {
 	tusu.mutation.AddQts(i)
@@ -45,6 +53,14 @@ func (tusu *TelegramUserStateUpdate) AddQts(i int) *TelegramUserStateUpdate {
 func (tusu *TelegramUserStateUpdate) SetPts(i int) *TelegramUserStateUpdate {
 	tusu.mutation.ResetPts()
 	tusu.mutation.SetPts(i)
+	return tusu
+}
+
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tusu *TelegramUserStateUpdate) SetNillablePts(i *int) *TelegramUserStateUpdate {
+	if i != nil {
+		tusu.SetPts(*i)
+	}
 	return tusu
 }
 
@@ -61,6 +77,14 @@ func (tusu *TelegramUserStateUpdate) SetDate(i int) *TelegramUserStateUpdate {
 	return tusu
 }
 
+// SetNillableDate sets the "date" field if the given value is not nil.
+func (tusu *TelegramUserStateUpdate) SetNillableDate(i *int) *TelegramUserStateUpdate {
+	if i != nil {
+		tusu.SetDate(*i)
+	}
+	return tusu
+}
+
 // AddDate adds i to the "date" field.
 func (tusu *TelegramUserStateUpdate) AddDate(i int) *TelegramUserStateUpdate {
 	tusu.mutation.AddDate(i)
@@ -71,6 +95,14 @@ func (tusu *TelegramUserStateUpdate) AddDate(i int) *TelegramUserStateUpdate {
 func (tusu *TelegramUserStateUpdate) SetSeq(i int) *TelegramUserStateUpdate {
 	tusu.mutation.ResetSeq()
 	tusu.mutation.SetSeq(i)
+	return tusu
+}
+
+// SetNillableSeq sets the "seq" field if the given value is not nil.
+func (tusu *TelegramUserStateUpdate) SetNillableSeq(i *int) *TelegramUserStateUpdate {
+	if i != nil {
+		tusu.SetSeq(*i)
+	}
 	return tusu
 }
 
@@ -253,6 +285,14 @@ func (tusuo *TelegramUserStateUpdateOne) SetQts(i int) *TelegramUserStateUpdateO
 	return tusuo
 }
 
+// SetNillableQts sets the "qts" field if the given value is not nil.
+func (tusuo *TelegramUserStateUpdateOne) SetNillableQts(i *int) *TelegramUserStateUpdateOne {
+	if i != nil {
+		tusuo.SetQts(*i)
+	}
+	return tusuo
+}
+
 // AddQts adds i to the "qts" field.
 func (tusuo *TelegramUserStateUpdateOne) AddQts(i int) *TelegramUserStateUpdateOne {
 	tusuo.mutation.AddQts(i)
@@ -263,6 +303,14 @@ func (tusuo *TelegramUserStateUpdateOne) AddQts(i int) *TelegramUserStateUpdateO
 func (tusuo *TelegramUserStateUpdateOne) SetPts(i int) *TelegramUserStateUpdateOne {
 	tusuo.mutation.ResetPts()
 	tusuo.mutation.SetPts(i)
+	return tusuo
+}
+
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tusuo *TelegramUserStateUpdateOne) SetNillablePts(i *int) *TelegramUserStateUpdateOne {
+	if i != nil {
+		tusuo.SetPts(*i)
+	}
 	return tusuo
 }
 
@@ -279,6 +327,14 @@ func (tusuo *TelegramUserStateUpdateOne) SetDate(i int) *TelegramUserStateUpdate
 	return tusuo
 }
 
+// SetNillableDate sets the "date" field if the given value is not nil.
+func (tusuo *TelegramUserStateUpdateOne) SetNillableDate(i *int) *TelegramUserStateUpdateOne {
+	if i != nil {
+		tusuo.SetDate(*i)
+	}
+	return tusuo
+}
+
 // AddDate adds i to the "date" field.
 func (tusuo *TelegramUserStateUpdateOne) AddDate(i int) *TelegramUserStateUpdateOne {
 	tusuo.mutation.AddDate(i)
@@ -289,6 +345,14 @@ func (tusuo *TelegramUserStateUpdateOne) AddDate(i int) *TelegramUserStateUpdate
 func (tusuo *TelegramUserStateUpdateOne) SetSeq(i int) *TelegramUserStateUpdateOne {
 	tusuo.mutation.ResetSeq()
 	tusuo.mutation.SetSeq(i)
+	return tusuo
+}
+
+// SetNillableSeq sets the "seq" field if the given value is not nil.
+func (tusuo *TelegramUserStateUpdateOne) SetNillableSeq(i *int) *TelegramUserStateUpdateOne {
+	if i != nil {
+		tusuo.SetSeq(*i)
+	}
 	return tusuo
 }
 

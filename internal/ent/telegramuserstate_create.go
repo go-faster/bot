@@ -28,9 +28,25 @@ func (tusc *TelegramUserStateCreate) SetQts(i int) *TelegramUserStateCreate {
 	return tusc
 }
 
+// SetNillableQts sets the "qts" field if the given value is not nil.
+func (tusc *TelegramUserStateCreate) SetNillableQts(i *int) *TelegramUserStateCreate {
+	if i != nil {
+		tusc.SetQts(*i)
+	}
+	return tusc
+}
+
 // SetPts sets the "pts" field.
 func (tusc *TelegramUserStateCreate) SetPts(i int) *TelegramUserStateCreate {
 	tusc.mutation.SetPts(i)
+	return tusc
+}
+
+// SetNillablePts sets the "pts" field if the given value is not nil.
+func (tusc *TelegramUserStateCreate) SetNillablePts(i *int) *TelegramUserStateCreate {
+	if i != nil {
+		tusc.SetPts(*i)
+	}
 	return tusc
 }
 
@@ -40,9 +56,25 @@ func (tusc *TelegramUserStateCreate) SetDate(i int) *TelegramUserStateCreate {
 	return tusc
 }
 
+// SetNillableDate sets the "date" field if the given value is not nil.
+func (tusc *TelegramUserStateCreate) SetNillableDate(i *int) *TelegramUserStateCreate {
+	if i != nil {
+		tusc.SetDate(*i)
+	}
+	return tusc
+}
+
 // SetSeq sets the "seq" field.
 func (tusc *TelegramUserStateCreate) SetSeq(i int) *TelegramUserStateCreate {
 	tusc.mutation.SetSeq(i)
+	return tusc
+}
+
+// SetNillableSeq sets the "seq" field if the given value is not nil.
+func (tusc *TelegramUserStateCreate) SetNillableSeq(i *int) *TelegramUserStateCreate {
+	if i != nil {
+		tusc.SetSeq(*i)
+	}
 	return tusc
 }
 
@@ -74,6 +106,7 @@ func (tusc *TelegramUserStateCreate) Mutation() *TelegramUserStateMutation {
 
 // Save creates the TelegramUserState in the database.
 func (tusc *TelegramUserStateCreate) Save(ctx context.Context) (*TelegramUserState, error) {
+	tusc.defaults()
 	return withHooks[*TelegramUserState, TelegramUserStateMutation](ctx, tusc.sqlSave, tusc.mutation, tusc.hooks)
 }
 
@@ -96,6 +129,26 @@ func (tusc *TelegramUserStateCreate) Exec(ctx context.Context) error {
 func (tusc *TelegramUserStateCreate) ExecX(ctx context.Context) {
 	if err := tusc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (tusc *TelegramUserStateCreate) defaults() {
+	if _, ok := tusc.mutation.Qts(); !ok {
+		v := telegramuserstate.DefaultQts
+		tusc.mutation.SetQts(v)
+	}
+	if _, ok := tusc.mutation.Pts(); !ok {
+		v := telegramuserstate.DefaultPts
+		tusc.mutation.SetPts(v)
+	}
+	if _, ok := tusc.mutation.Date(); !ok {
+		v := telegramuserstate.DefaultDate
+		tusc.mutation.SetDate(v)
+	}
+	if _, ok := tusc.mutation.Seq(); !ok {
+		v := telegramuserstate.DefaultSeq
+		tusc.mutation.SetSeq(v)
 	}
 }
 
@@ -482,6 +535,7 @@ func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*Telegram
 	for i := range tuscb.builders {
 		func(i int, root context.Context) {
 			builder := tuscb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TelegramUserStateMutation)
 				if !ok {
