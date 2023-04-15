@@ -41,6 +41,9 @@ func (s *State) GetState(ctx context.Context, userID int64) (state updates.State
 	if ent.IsNotFound(err) {
 		return updates.State{}, false, nil
 	}
+	if v.Pts == 0 || v.Qts == 0 {
+		return updates.State{}, false, nil
+	}
 	return updates.State{
 		Pts:  v.Pts,
 		Qts:  v.Qts,
