@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_TAG: ghcr.io/${{ github.repository }}
+  KUBECTL_VERSION: v1.26.3
 
 jobs:
   deploy:
@@ -89,7 +90,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/kubectl
-          key: kubectl-v1.26.3
+          key: kubectl-${{ env.KUBECTL_VERSION }}
 
       - name: Check kubectl
         id: "kubectl"
@@ -100,7 +101,7 @@ jobs:
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
         run: |
-          wget -O /tmp/kubectl "https://dl.k8s.io/release/v1.26.3/bin/linux/amd64/kubectl"
+          wget -O /tmp/kubectl "https://dl.k8s.io/release/v${{ env.KUBECTL_VERSION }}/bin/linux/amd64/kubectl"
           chmod +x /tmp/kubectl
 
       - name: Setup kubeconfig
@@ -111,4 +112,4 @@ jobs:
       - name: Deploy
         run: |
           /tmp/kubectl apply -f .k8s/deployment.release.yml
-          /tmp/kubectl -n faster rollout status deployment/bot
+          /tmp/kubectl -n faster rollout status deployment/bot --timeout=1m
