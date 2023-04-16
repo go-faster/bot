@@ -30,9 +30,17 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 			attribute.Int64("repository.id", e.GetRepo().GetID()),
 		),
 	)
-	if _, err := h.upsertCheck(ctx, e); err != nil {
+
+	pr, checks, err := h.upsertCheck(ctx, e)
+	if err != nil {
 		return errors.Wrap(err, "upsert check")
 	}
 
-	return nil
+	return h.updatePR(ctx, PullRequestUpdate{
+		Event:  "check_run",
+		Action: "",
+		Repo:   e.GetRepo(),
+		PR:     pr,
+		Checks: checks,
+	})
 }

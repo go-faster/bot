@@ -2,25 +2,23 @@ package gh
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
+	"entgo.io/ent/dialect"
+	"github.com/go-faster/bot/internal/ent/enttest"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
-	"github.com/stretchr/testify/require"
-	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/trace"
-	"go.uber.org/zap/zaptest"
-
-	"entgo.io/ent/dialect"
-	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/gotd/td/bin"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
 	"github.com/gotd/td/tgerr"
-
-	"github.com/go-faster/bot/internal/ent/enttest"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap/zaptest"
 )
 
 type mockResolver map[string]tg.InputPeerClass
@@ -98,9 +96,52 @@ func TestWebhook(t *testing.T) {
 	).WithNotifyGroup("test")
 
 	a.NoError(hook.updateLastMsgID(ctx, channel.ChannelID, lastMsgID))
-	a.NoError(hook.setPRNotification(ctx, event, msgID))
+	a.NoError(hook.setPRNotification(ctx, event.GetRepo(), event.GetPullRequest(), msgID))
 
 	a.NoError(hook.handlePRClosed(zctx.With(ctx, lg), event))
 	a.NotNil(invoker.lastReq)
 	a.Contains(invoker.lastReq.Message, "opened")
+}
+
+func Test_generateChecksStatus(t *testing.T) {
+	tests := []struct {
+		checks []Check
+		want   string
+	}{
+		{nil, ""},
+		{[]Check{}, ""},
+
+		{
+			[]Check{
+				{Status: "created"},
+				{Status: "created"},
+				{Status: "created"},
+				{Status: "completed", Conclusion: "success"},
+			},
+			"3🟡,1🟢/4",
+		},
+		{
+			[]Check{
+				{Status: "completed", Conclusion: "failure"},
+				{Status: "completed", Conclusion: "timed_out"},
+				{Status: "completed", Conclusion: "cancelled"},
+				{Status: "completed", Conclusion: "success"},
+			},
+			"3🔴,1🟢/4",
+		},
+		{
+			[]Check{
+				{Status: "completed", Conclusion: "success"},
+				{Status: "completed", Conclusion: "success"},
+				{Status: "completed", Conclusion: "success"},
+			},
+			"3🟢/3",
+		},
+	}
+	for i, tt := range tests {
+		tt := tt
+		t.Run(fmt.Sprintf("Test%d", i+1), func(t *testing.T) {
+			require.Equal(t, tt.want, generateChecksStatus(tt.checks))
+		})
+	}
 }

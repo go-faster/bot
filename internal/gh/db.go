@@ -60,7 +60,12 @@ func (h *Webhook) updateLastMsgID(ctx context.Context, channelID int64, msgID in
 	return updateLastMsgID(ctx, h.db.LastChannelMessage, channelID, msgID)
 }
 
-func (h *Webhook) findPRNotification(ctx context.Context, channelID int64, pr *github.PullRequestEvent) (msgID, lastMsgID int, rerr error) {
+func (h *Webhook) findPRNotification(
+	ctx context.Context,
+	repo *github.Repository,
+	pr *github.PullRequest,
+	channelID int64,
+) (existingMsgID, lastMsgID int, _ error) {
 	ctx, span := h.tracer.Start(ctx, "FindPRNotification",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
@@ -76,15 +81,15 @@ func (h *Webhook) findPRNotification(ctx context.Context, channelID int64, pr *g
 
 	switch n, err := tx.PRNotification.Query().
 		Where(
-			prnotification.PullRequestIDEQ(pr.GetPullRequest().GetNumber()),
-			prnotification.RepoIDEQ(pr.GetRepo().GetID()),
+			prnotification.PullRequestIDEQ(pr.GetNumber()),
+			prnotification.RepoIDEQ(repo.GetID()),
 		).
 		First(ctx); {
 	case err == nil:
-		msgID = n.MessageID
+		existingMsgID = n.MessageID
 	case ent.IsNotFound(err):
 	default:
-		return 0, 0, errors.Wrap(err, "query last message")
+		return 0, 0, errors.Wrap(err, "query pr notification")
 	}
 
 	switch m, err := tx.LastChannelMessage.Query().
@@ -101,18 +106,18 @@ func (h *Webhook) findPRNotification(ctx context.Context, channelID int64, pr *g
 		return 0, 0, errors.Wrap(err, "commit")
 	}
 
-	return msgID, lastMsgID, nil
+	return existingMsgID, lastMsgID, nil
 }
 
-func (h *Webhook) setPRNotification(ctx context.Context, pr *github.PullRequestEvent, msgID int) error {
+func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository, pr *github.PullRequest, msgID int) error {
 	ctx, span := h.tracer.Start(ctx, "SetPRNotification",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
 
 	if err := h.db.PRNotification.Create().
-		SetRepoID(pr.GetRepo().GetID()).
-		SetPullRequestID(pr.GetPullRequest().GetNumber()).
+		SetRepoID(repo.GetID()).
+		SetPullRequestID(pr.GetNumber()).
 		SetMessageID(msgID).
 		OnConflict(
 			sql.ConflictColumns(
@@ -136,26 +141,51 @@ type Check struct {
 	Status     string // completed
 }
 
-func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) ([]Check, error) {
+func queryChecks(ctx context.Context, tx *ent.CheckClient, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
+	list, err := tx.Query().
+		Where(
+			check.RepoID(repo.GetID()),
+			check.PullRequestIDEQ(pr.GetNumber()),
+		).
+		All(ctx)
+	if err != nil {
+		return checks, err
+	}
+
+	for _, v := range list {
+		checks = append(checks, Check{
+			ID:         v.ID,
+			Name:       v.Name,
+			Status:     v.Status,
+			Conclusion: v.Conclusion,
+		})
+	}
+
+	return checks, nil
+}
+
+func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
+	return queryChecks(ctx, h.db.Check, repo, pr)
+}
+
+func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ []Check, _ error) {
 	ctx, span := h.tracer.Start(ctx, "UpsertCheck",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
 
 	run := c.GetCheckRun()
-	var pullRequestID int
-	for _, pr := range run.PullRequests {
-		pullRequestID = pr.GetNumber()
+	for _, pr = range run.PullRequests {
 		break
 	}
-	if pullRequestID == 0 {
+	if pr == nil {
 		span.AddEvent("NoPullRequestID")
-		return nil, nil
+		return nil, nil, nil
 	}
 
 	tx, err := h.db.Tx(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "begin tx")
+		return nil, nil, errors.Wrap(err, "begin tx")
 	}
 	defer func() {
 		_ = tx.Rollback()
@@ -167,37 +197,24 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) ([]C
 		SetStatus(run.GetStatus()).
 		SetConclusion(run.GetConclusion()).
 		SetRepoID(c.GetRepo().GetID()).
-		SetPullRequestID(pullRequestID).
+		SetPullRequestID(pr.GetNumber()).
 		OnConflict(
 			sql.ConflictColumns(check.FieldID),
 			sql.ResolveWithNewValues(),
 		).
 		UpdateNewValues().
 		Exec(ctx); err != nil {
-		return nil, errors.Wrap(err, "upsert check")
+		return nil, nil, errors.Wrap(err, "upsert check")
 	}
 
-	var out []Check
-	list, err := tx.Check.Query().Where(
-		check.ID(run.GetID()),
-		check.RepoID(c.GetRepo().GetID()),
-		check.PullRequestIDEQ(pullRequestID),
-	).All(ctx)
+	checks, err := queryChecks(ctx, h.db.Check, c.GetRepo(), pr)
 	if err != nil {
-		return nil, errors.Wrap(err, "query checks")
-	}
-
-	for _, v := range list {
-		out = append(out, Check{
-			ID:         v.ID,
-			Name:       v.Name,
-			Status:     v.Status,
-			Conclusion: v.Conclusion,
-		})
+		return nil, nil, errors.Wrap(err, "query checks")
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, errors.Wrap(err, "commit")
+		return nil, nil, errors.Wrap(err, "commit")
 	}
-	return out, nil
+
+	return pr, checks, nil
 }
