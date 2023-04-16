@@ -59,11 +59,15 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 512M
+              memory: 256M
             limits:
               cpu: "3"
-              memory: 1024M
+              memory: 512M
           env:
+            - name: GOMEMLIMIT
+              value: "512MiB"
+            - name: GOMAXPROCS
+              value: "2"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             - name: OTEL_METRICS_EXPORTER
