@@ -101,7 +101,7 @@ jobs:
       - name: Download kubectl
         if: steps.kubectl.outputs.files_exists != 'true'
         run: |
-          wget -O /tmp/kubectl "https://dl.k8s.io/release/v${{ env.KUBECTL_VERSION }}/bin/linux/amd64/kubectl"
+          wget -O /tmp/kubectl "https://dl.k8s.io/release/${{ env.KUBECTL_VERSION }}/bin/linux/amd64/kubectl"
           chmod +x /tmp/kubectl
 
       - name: Setup kubeconfig
