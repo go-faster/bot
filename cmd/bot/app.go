@@ -8,6 +8,7 @@ import (
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -65,6 +66,7 @@ type App struct {
 	db         *ent.Client
 	cache      *redis.Client
 	gaps       *updates.Manager
+	rdy        *Readiness
 }
 
 func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -165,6 +167,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		lg:         lg,
 		wh:         webhook,
 		openai:     openai.NewClientWithConfig(openaiConfig),
+		rdy:        new(Readiness),
 
 		tracer: m.TracerProvider().Tracer(""),
 	}
@@ -200,6 +203,26 @@ func (a *App) Close() error {
 	return a.db.Close()
 }
 
+// Readiness is a simple readiness check aggregator.
+type Readiness struct {
+	registry []*atomic.Bool
+}
+
+func (r *Readiness) Ready() bool {
+	for _, v := range r.registry {
+		if !v.Load() {
+			return false
+		}
+	}
+	return true
+}
+
+func (r *Readiness) Register() *atomic.Bool {
+	v := new(atomic.Bool)
+	r.registry = append(r.registry, v)
+	return v
+}
+
 func (a *App) Run(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
 
@@ -219,7 +242,13 @@ func (a *App) Run(ctx context.Context) error {
 				otelecho.WithTracerProvider(a.m.TracerProvider()),
 			),
 		)
-		e.GET("/status", func(c echo.Context) error {
+		e.GET("/probe/startup", func(c echo.Context) error {
+			return c.String(http.StatusOK, "ok")
+		})
+		e.GET("/probe/ready", func(c echo.Context) error {
+			if !a.rdy.Ready() {
+				return c.String(http.StatusServiceUnavailable, "not ready")
+			}
 			return c.String(http.StatusOK, "ok")
 		})
 		a.wh.RegisterRoutes(e)
@@ -257,6 +286,7 @@ func (a *App) Run(ctx context.Context) error {
 			}
 		}
 	})
+	readyRedis := a.rdy.Register()
 	g.Go(func() error {
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 		defer cancel()
@@ -265,9 +295,11 @@ func (a *App) Run(ctx context.Context) error {
 			return errors.Wrap(err, "ping redis")
 		}
 
+		readyRedis.Store(true)
 		a.lg.Info("Redis connection established")
 		return nil
 	})
+	readyClickhouse := a.rdy.Register()
 	g.Go(func() error {
 		db, err := ch.Dial(ctx, ch.Options{
 			Address:        os.Getenv("CLICKHOUSE_ADDR"),
@@ -290,11 +322,13 @@ func (a *App) Run(ctx context.Context) error {
 		if err := db.Ping(ctx); err != nil {
 			return errors.Wrap(err, "ping clickhouse")
 		}
+		readyClickhouse.Store(true)
 		if err := db.Close(); err != nil {
 			return errors.Wrap(err, "close clickhouse")
 		}
 		return nil
 	})
+	readyTelegram := a.rdy.Register()
 	g.Go(func() error {
 		return a.client.Run(ctx, func(ctx context.Context) error {
 			a.lg.Debug("Client initialized")
@@ -388,6 +422,7 @@ func (a *App) Run(ctx context.Context) error {
 						return errors.Wrap(err, "send")
 					}
 				}
+				readyTelegram.Store(true)
 				return nil
 			})
 			return g.Wait()

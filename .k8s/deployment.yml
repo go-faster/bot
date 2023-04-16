@@ -49,6 +49,18 @@ spec:
       containers:
         - name: bot
           image: ghcr.io/go-faster/bot:main
+          startupProbe:
+            httpGet:
+              path: /probe/startup
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /probe/ready
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
           ports:
             - containerPort: 8090
               protocol: TCP
