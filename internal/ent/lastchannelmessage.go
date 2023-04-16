@@ -15,9 +15,9 @@ import (
 type LastChannelMessage struct {
 	config `json:"-"`
 	// ID of the ent.
-	// Channel ID
+	// Telegram channel ID.
 	ID int64 `json:"id,omitempty"`
-	// MessageID holds the value of the "message_id" field.
+	// Telegram message ID of last observed message in channel.
 	MessageID    int `json:"message_id,omitempty"`
 	selectValues sql.SelectValues
 }

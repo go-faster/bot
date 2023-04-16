@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/cockroachdb/pebble"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
@@ -22,6 +21,7 @@ import (
 	"github.com/gotd/td/tg"
 
 	"github.com/go-faster/bot/internal/action"
+	"github.com/go-faster/bot/internal/ent"
 )
 
 func getPullRequestURL(e *github.PullRequestEvent) styling.StyledTextOption {
@@ -107,13 +107,13 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 		return fallback(ctx)
 	}
 
-	msgID, lastMsgID, err := h.storage.FindPRNotification(ctx, ch.ChannelID, e)
+	msgID, lastMsgID, err := h.findPRNotification(ctx, ch.ChannelID, e)
 	if msgID != 0 {
 		log.Debug("Found PR notification ID", zap.Int("msg_id", msgID))
 		replyID = msgID
 	}
 	if err != nil {
-		if errors.Is(err, pebble.ErrNotFound) {
+		if ent.IsNotFound(err) {
 			return fallback(ctx)
 		}
 		return errors.Wrap(err, "find notification")
@@ -180,12 +180,12 @@ func (h *Webhook) handlePROpened(ctx context.Context, event *github.PullRequestE
 
 	ch, ok := p.(*tg.InputPeerChannel)
 	if !ok {
-		return h.storage.SetPRNotification(ctx, event, msgID)
+		return h.setPRNotification(ctx, event, msgID)
 	}
 
 	return multierr.Append(
-		h.storage.UpdateLastMsgID(ctx, ch.ChannelID, msgID),
-		h.storage.SetPRNotification(ctx, event, msgID),
+		h.updateLastMsgID(ctx, ch.ChannelID, msgID),
+		h.setPRNotification(ctx, event, msgID),
 	)
 }
 

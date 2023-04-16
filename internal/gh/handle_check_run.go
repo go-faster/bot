@@ -30,7 +30,7 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 			attribute.Int64("repository.id", e.GetRepo().GetID()),
 		),
 	)
-	if _, err := h.storage.UpsertCheck(ctx, e); err != nil {
+	if _, err := h.upsertCheck(ctx, e); err != nil {
 		return errors.Wrap(err, "upsert check")
 	}
 
