@@ -50,6 +50,8 @@ func Run(f func(ctx context.Context, lg *zap.Logger, m *Metrics) error) {
 		panic(err)
 	}
 
+	lg.Info("Starting")
+
 	defer func() { _ = lg.Sync() }()
 
 	// Add logger to root context.
