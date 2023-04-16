@@ -63,6 +63,8 @@ jobs:
           echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Go build
+        env:
+          CGO_ENABLED: 0
         run: go build -v ./cmd/bot
 
       - name: Application image
