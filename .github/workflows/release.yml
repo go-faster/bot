@@ -67,6 +67,12 @@ jobs:
           GO_STATICTAGS: 'osusergo netgo static_build'
         run: go build -ldflags "${GO_LDFLAGS}" -buildmode pie -tags "${GO_STATICTAGS}" -v ./cmd/bot
 
+      - name: Go build
+        env:
+          GO_LDFLAGS: '-linkmode=external -extldflags "-fno-PIC -static -Wl,-z,stack-size=8388608" -buildid='
+          GO_STATICTAGS: 'osusergo netgo static_build'
+        run: go build -ldflags "${GO_LDFLAGS}" -buildmode pie -tags "${GO_STATICTAGS}" -v ./cmd/wrapper
+
       - name: Application image
         uses: docker/build-push-action@v4
         with:
