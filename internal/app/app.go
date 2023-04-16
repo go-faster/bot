@@ -109,16 +109,12 @@ func Run(f func(ctx context.Context, lg *zap.Logger, m *Metrics) error) {
 			lg.Error("Panic",
 				zap.String("panic", fmt.Sprintf("%v", ec)),
 			)
-			// Allow logs to persist.
-			time.Sleep(time.Second * 3)
 			os.Exit(exitCodeApplicationErr)
 		}
 	}()
 
 	if err := g.Wait(); err != nil {
 		lg.Error("Failed", zap.Error(err))
-		// Allow logs to persist.
-		time.Sleep(time.Second * 3)
 		os.Exit(exitCodeApplicationErr)
 	}
 

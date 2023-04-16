@@ -91,9 +91,10 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	gapsStore := entgaps.New(db, m.TracerProvider())
 	dispatcher := tg.NewUpdateDispatcher()
 	updatesHandler := updates.New(updates.Config{
-		Handler: dispatcher,
-		Storage: gapsStore,
-		Logger:  lg.Named("gaps"),
+		Handler:        dispatcher,
+		Storage:        gapsStore,
+		Logger:         lg.Named("gaps"),
+		TracerProvider: m.TracerProvider(),
 	})
 
 	otg, err := oteltg.New(m.MeterProvider(), m.TracerProvider())
