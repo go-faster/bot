@@ -1,0 +1,322 @@
+# HELP github_event_count_total GitHub event counts
+# TYPE github_event_count_total counter
+github_event_count_total{event="check_run",org_id="93744681",org_name="go-faster",otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version="",repo="go-faster/bot",repo_id="500520116",repo_name="bot",status="ok"} 1
+github_event_count_total{event="check_suite",org_id="93744681",org_name="go-faster",otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version="",repo="go-faster/bot",repo_id="500520116",repo_name="bot",status="ok"} 1
+github_event_count_total{event="deployment_status",org_id="93744681",org_name="go-faster",otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version="",repo="go-faster/bot",repo_id="500520116",repo_name="bot",status="ok"} 1
+github_event_count_total{event="workflow_job",org_id="93744681",org_name="go-faster",otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version="",repo="go-faster/bot",repo_id="500520116",repo_name="bot",status="ok"} 1
+github_event_count_total{event="workflow_run",org_id="93744681",org_name="go-faster",otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version="",repo="go-faster/bot",repo_id="500520116",repo_name="bot",status="ok"} 1
+# HELP go_build_info Build information about the main Go module.
+# TYPE go_build_info gauge
+go_build_info{checksum="",path="github.com/go-faster/bot",version="(devel)"} 1
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 3.1321e-05
+go_gc_duration_seconds{quantile="0.25"} 5.2466e-05
+go_gc_duration_seconds{quantile="0.5"} 5.7871e-05
+go_gc_duration_seconds{quantile="0.75"} 6.8502e-05
+go_gc_duration_seconds{quantile="1"} 0.00057408
+go_gc_duration_seconds_sum 0.006310758
+go_gc_duration_seconds_count 85
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 38
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.20.3"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 8.6921088e+07
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 2.595402256e+09
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.505607e+06
+# HELP go_memstats_frees_total Total number of frees.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 3.392086e+06
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 1.1057728e+07
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and still in use.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 8.6921088e+07
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 5.726208e+07
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use.
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 8.8817664e+07
+# HELP go_memstats_heap_objects Number of allocated objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 148015
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 3.2915456e+07
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 1.46079744e+08
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.6816289148691854e+09
+# HELP go_memstats_lookups_total Total number of pointer lookups.
+# TYPE go_memstats_lookups_total counter
+go_memstats_lookups_total 0
+# HELP go_memstats_mallocs_total Total number of mallocs.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 3.540101e+06
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 2400
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 15600
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 226240
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 326400
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 1.0288632e+08
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 500145
+# HELP go_memstats_stack_inuse_bytes Number of bytes in use by the stack allocator.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 720896
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 720896
+# HELP go_memstats_sys_bytes Number of bytes obtained from system.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 1.6020612e+08
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 8
+# HELP otel_scope_info Instrumentation Scope metadata
+# TYPE otel_scope_info gauge
+otel_scope_info{otel_scope_name="github.com/go-faster/bot/internal/gh/webhook",otel_scope_version=""} 1
+otel_scope_info{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version=""} 1
+otel_scope_info{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 1
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 7.96
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1.048576e+06
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 17
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 1.57036544e+08
+# HELP process_runtime_go_cgo_calls Number of cgo calls made by the current process
+# TYPE process_runtime_go_cgo_calls gauge
+process_runtime_go_cgo_calls{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 0
+# HELP process_runtime_go_gc_count_total Number of completed garbage collection cycles
+# TYPE process_runtime_go_gc_count_total counter
+process_runtime_go_gc_count_total{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 85
+# HELP process_runtime_go_gc_pause_ns Amount of nanoseconds in GC stop-the-world pauses
+# TYPE process_runtime_go_gc_pause_ns histogram
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="0"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="5"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="10"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="25"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="50"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="75"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="100"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="250"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="500"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="750"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="1000"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="2500"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="5000"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="7500"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="10000"} 0
+process_runtime_go_gc_pause_ns_bucket{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0",le="+Inf"} 85
+process_runtime_go_gc_pause_ns_sum{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 6.310758e+06
+process_runtime_go_gc_pause_ns_count{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 85
+# HELP process_runtime_go_gc_pause_total_ns_total Cumulative nanoseconds in GC stop-the-world pauses since the program started
+# TYPE process_runtime_go_gc_pause_total_ns_total counter
+process_runtime_go_gc_pause_total_ns_total{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 6.310758e+06
+# HELP process_runtime_go_goroutines Number of goroutines that currently exist
+# TYPE process_runtime_go_goroutines gauge
+process_runtime_go_goroutines{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 37
+# HELP process_runtime_go_mem_heap_alloc_bytes Bytes of allocated heap objects
+# TYPE process_runtime_go_mem_heap_alloc_bytes gauge
+process_runtime_go_mem_heap_alloc_bytes{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 8.692048e+07
+# HELP process_runtime_go_mem_heap_idle_bytes Bytes in idle (unused) spans
+# TYPE process_runtime_go_mem_heap_idle_bytes gauge
+process_runtime_go_mem_heap_idle_bytes{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 5.7294848e+07
+# HELP process_runtime_go_mem_heap_inuse_bytes Bytes in in-use spans
+# TYPE process_runtime_go_mem_heap_inuse_bytes gauge
+process_runtime_go_mem_heap_inuse_bytes{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 8.8784896e+07
+# HELP process_runtime_go_mem_heap_objects Number of allocated heap objects
+# TYPE process_runtime_go_mem_heap_objects gauge
+process_runtime_go_mem_heap_objects{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 148009
+# HELP process_runtime_go_mem_heap_released_bytes Bytes of idle spans whose physical memory has been returned to the OS
+# TYPE process_runtime_go_mem_heap_released_bytes gauge
+process_runtime_go_mem_heap_released_bytes{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 3.2948224e+07
+# HELP process_runtime_go_mem_heap_sys_bytes Bytes of heap memory obtained from the OS
+# TYPE process_runtime_go_mem_heap_sys_bytes gauge
+process_runtime_go_mem_heap_sys_bytes{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 1.46079744e+08
+# HELP process_runtime_go_mem_live_objects Number of live objects is the number of cumulative Mallocs - Frees
+# TYPE process_runtime_go_mem_live_objects gauge
+process_runtime_go_mem_live_objects{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 148009
+# HELP process_runtime_go_mem_lookups_total Number of pointer lookups performed by the runtime
+# TYPE process_runtime_go_mem_lookups_total counter
+process_runtime_go_mem_lookups_total{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 0
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.68162579342e+09
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 9.24270592e+08
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+# HELP runtime_uptime_milliseconds_total Milliseconds since application was initialized
+# TYPE runtime_uptime_milliseconds_total counter
+runtime_uptime_milliseconds_total{otel_scope_name="go.opentelemetry.io/contrib/instrumentation/runtime",otel_scope_version="semver:0.40.0"} 3.190378e+06
+# HELP target_info Target metadata
+# TYPE target_info gauge
+target_info{process_runtime_description="go version go1.20.3 linux/amd64",process_runtime_name="go",process_runtime_version="go1.20.3",service_name="go-faster.bot",telemetry_sdk_language="go",telemetry_sdk_name="opentelemetry",telemetry_sdk_version="1.14.0"} 1
+# HELP tg_rpc_count_total 
+# TYPE tg_rpc_count_total counter
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands"} 1
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername"} 1
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage"} 1
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference"} 4
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference"} 4
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState"} 1
+tg_rpc_count_total{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers"} 3
+# HELP tg_rpc_duration 
+# TYPE tg_rpc_duration histogram
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="5"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="10"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="25"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="50"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="75"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="100"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="250"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="750"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="1000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="2500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="5000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="7500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="10000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands",le="+Inf"} 1
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands"} 0.21196026
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="bots.setBotCommands"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="5"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="10"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="25"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="50"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="75"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="100"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="250"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="750"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="1000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="2500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="5000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="7500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="10000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername",le="+Inf"} 1
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername"} 0.184222113
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="contacts.resolveUsername"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="5"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="10"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="25"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="50"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="75"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="100"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="250"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="750"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="1000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="2500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="5000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="7500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="10000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage",le="+Inf"} 1
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage"} 0.199496521
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="messages.sendMessage"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="5"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="10"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="25"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="50"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="75"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="100"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="250"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="750"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="1000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="2500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="5000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="7500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="10000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference",le="+Inf"} 4
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference"} 0.293887326
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getChannelDifference"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="5"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="10"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="25"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="50"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="75"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="100"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="250"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="750"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="1000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="2500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="5000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="7500"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="10000"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference",le="+Inf"} 4
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference"} 0.492028425
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getDifference"} 4
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="5"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="10"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="25"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="50"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="75"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="100"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="250"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="750"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="1000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="2500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="5000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="7500"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="10000"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState",le="+Inf"} 1
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState"} 0.115680863
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="updates.getState"} 1
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="0"} 0
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="5"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="10"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="25"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="50"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="75"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="100"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="250"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="500"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="750"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="1000"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="2500"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="5000"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="7500"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="10000"} 3
+tg_rpc_duration_bucket{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers",le="+Inf"} 3
+tg_rpc_duration_sum{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers"} 0.286666297
+tg_rpc_duration_count{otel_scope_name="github.com/gotd/contrib/oteltg",otel_scope_version="",tg_method="users.getUsers"} 3
