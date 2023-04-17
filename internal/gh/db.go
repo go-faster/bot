@@ -179,7 +179,7 @@ func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *
 	return queryChecks(ctx, h.gh, repo, pr)
 }
 
-func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ []Check, _ error) {
+func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ error) {
 	ctx, span := h.tracer.Start(ctx, "UpsertCheck",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
@@ -191,12 +191,12 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 	}
 	if pr == nil {
 		span.AddEvent("NoPullRequestID")
-		return nil, nil, nil
+		return nil, nil
 	}
 
 	tx, err := h.db.Tx(ctx)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "begin tx")
+		return nil, errors.Wrap(err, "begin tx")
 	}
 	defer func() {
 		_ = tx.Rollback()
@@ -215,17 +215,12 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		).
 		UpdateNewValues().
 		Exec(ctx); err != nil {
-		return nil, nil, errors.Wrap(err, "upsert check")
-	}
-
-	checks, err := queryChecks(ctx, h.gh, c.GetRepo(), pr)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "query checks")
+		return nil, errors.Wrap(err, "upsert check")
 	}
 
 	if err := tx.Commit(); err != nil {
-		return nil, nil, errors.Wrap(err, "commit")
+		return nil, errors.Wrap(err, "commit")
 	}
 
-	return pr, checks, nil
+	return pr, nil
 }

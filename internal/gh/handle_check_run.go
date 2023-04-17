@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) error {
@@ -31,9 +33,20 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		),
 	)
 
-	pr, checks, err := h.upsertCheck(ctx, e)
+	pr, err := h.upsertCheck(ctx, e)
 	if err != nil {
 		return errors.Wrap(err, "upsert check")
+	}
+	if pr == nil {
+		// No PR - no update.
+		return nil
+	}
+
+	checks, err := h.queryChecks(ctx, e.GetRepo(), pr)
+	if err != nil {
+		// No checks - no update.
+		zctx.From(ctx).Error("Query checks", zap.Error(err))
+		return nil
 	}
 
 	return h.updatePR(ctx, PullRequestUpdate{
