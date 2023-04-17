@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"path"
-	"strings"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
@@ -35,13 +34,9 @@ type PullRequestUpdate struct {
 }
 
 func generateChecksStatus(checks []Check) string {
-	if len(checks) < 1 {
-		return ""
-	}
-
 	var (
-		pending int
 		failed  int
+		pending int
 		success int
 	)
 	for _, check := range checks {
@@ -62,19 +57,16 @@ func generateChecksStatus(checks []Check) string {
 		}
 	}
 
-	var sb strings.Builder
-	addNonZero := func(emoji string, val int) {
-		if val < 1 {
-			return
-		}
-		fmt.Fprintf(&sb, "%d%s,", val, emoji)
+	switch {
+	case failed > 0:
+		return "Checks❌"
+	case pending > 0:
+		return "Checks⏳"
+	case success > 0:
+		return "Checks✅"
+	default:
+		return "Checks▶"
 	}
-
-	addNonZero("🟡", pending)
-	addNonZero("🔴", failed)
-	fmt.Fprintf(&sb, "%d🟢/%d", success, len(checks))
-
-	return sb.String()
 }
 
 func getPullRequestURL(repo *github.Repository, pr *github.PullRequest) styling.StyledTextOption {
@@ -144,14 +136,9 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			Entity:       action.PullRequest,
 		}
 
-		checksTitle := generateChecksStatus(state.Checks)
-		if checksTitle == "" {
-			checksTitle = "Checks▶"
-		}
-
 		r = r.Row(
 			markup.URL("Diff🔀", files.String()),
-			markup.URL(checksTitle, checks.String()),
+			markup.URL(generateChecksStatus(state.Checks), checks.String()),
 			markup.Callback("Test button", action.Marshal(mergeAction)),
 		)
 	}
