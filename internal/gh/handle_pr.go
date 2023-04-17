@@ -12,6 +12,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
+	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/markup"
@@ -244,7 +245,8 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 
 	checks, err := h.queryChecks(ctx, repo, pr)
 	if err != nil {
-		return errors.Wrap(err, "query checks")
+		zctx.From(ctx).Error("Query checks", zap.Error(err))
+		checks = nil
 	}
 
 	return h.updatePR(ctx, PullRequestUpdate{

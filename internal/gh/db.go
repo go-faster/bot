@@ -2,6 +2,7 @@ package gh
 
 import (
 	"context"
+	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/bot/internal/dispatch"
@@ -141,23 +142,33 @@ type Check struct {
 	Status     string // completed
 }
 
-func queryChecks(ctx context.Context, tx *ent.CheckClient, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
-	list, err := tx.Query().
-		Where(
-			check.RepoID(repo.GetID()),
-			check.PullRequestIDEQ(pr.GetNumber()),
-		).
-		All(ctx)
+func queryChecks(
+	ctx context.Context,
+	gh *github.Client,
+	repo *github.Repository,
+	pr *github.PullRequest,
+) (checks []Check, _ error) {
+	// TODO(tdakkota): paginate
+	list, _, err := gh.Checks.ListCheckRunsForRef(ctx,
+		repo.GetOwner().GetLogin(),
+		repo.GetName(),
+		fmt.Sprintf("pull/%d/head", pr.GetNumber()),
+		&github.ListCheckRunsOptions{
+			ListOptions: github.ListOptions{
+				PerPage: 100,
+			},
+		},
+	)
 	if err != nil {
-		return checks, err
+		return nil, err
 	}
 
-	for _, v := range list {
+	for _, v := range list.CheckRuns {
 		checks = append(checks, Check{
-			ID:         v.ID,
-			Name:       v.Name,
-			Status:     v.Status,
-			Conclusion: v.Conclusion,
+			ID:         v.GetID(),
+			Name:       v.GetName(),
+			Status:     v.GetStatus(),
+			Conclusion: v.GetConclusion(),
 		})
 	}
 
@@ -165,7 +176,7 @@ func queryChecks(ctx context.Context, tx *ent.CheckClient, repo *github.Reposito
 }
 
 func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
-	return queryChecks(ctx, h.db.Check, repo, pr)
+	return queryChecks(ctx, h.gh, repo, pr)
 }
 
 func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ []Check, _ error) {
@@ -207,7 +218,7 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		return nil, nil, errors.Wrap(err, "upsert check")
 	}
 
-	checks, err := queryChecks(ctx, h.db.Check, c.GetRepo(), pr)
+	checks, err := queryChecks(ctx, h.gh, c.GetRepo(), pr)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "query checks")
 	}
