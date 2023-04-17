@@ -90,5 +90,13 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) (rerr error) {
 		return errors.Wrap(err, "merge")
 	}
 
+	answer := &tg.MessagesSetBotCallbackAnswerRequest{
+		QueryID: e.QueryID,
+		Message: "Merged repo",
+	}
+	if _, err := rpc.MessagesSetBotCallbackAnswer(ctx, answer); err != nil {
+		return errors.Wrap(err, "answer")
+	}
+
 	return nil
 }
