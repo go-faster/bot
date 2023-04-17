@@ -193,7 +193,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	)
 
 	if !gonnaSendNewMessage {
-		if _, err := r.Edit(existingMsgID).StyledText(ctx, text...); err != nil {
+		if _, err := r.Edit(existingMsgID).StyledText(ctx, text...); err != nil && !tg.IsMessageNotModified(err) {
 			return errors.Wrap(err, "edit message")
 		}
 		return nil
