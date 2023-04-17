@@ -3,7 +3,7 @@ module github.com/go-faster/bot
 go 1.20
 
 require (
-	entgo.io/ent v0.12.0
+	entgo.io/ent v0.12.1
 	github.com/ClickHouse/ch-go v0.54.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.3.0
 	github.com/brpaz/echozap v1.1.3
@@ -15,14 +15,14 @@ require (
 	github.com/go-logr/zapr v1.2.3
 	github.com/google/go-github/v50 v50.2.0
 	github.com/google/uuid v1.3.0
-	github.com/gotd/contrib v0.15.0
-	github.com/gotd/td v0.80.0-alpha.0
+	github.com/gotd/contrib v0.16.0
+	github.com/gotd/td v0.80.0-alpha.1
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/prometheus/client_golang v1.15.0
 	github.com/redis/go-redis/v9 v9.0.3
-	github.com/sashabaranov/go-openai v1.7.0
+	github.com/sashabaranov/go-openai v1.8.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tiktoken-go/tokenizer v0.1.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
