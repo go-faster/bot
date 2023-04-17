@@ -19,7 +19,6 @@ require (
 	github.com/gotd/td v0.80.0-alpha.1
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/labstack/echo/v4 v4.10.2
-	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/prometheus/client_golang v1.15.0
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/sashabaranov/go-openai v1.8.0

@@ -137,9 +137,15 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	})
 	r.AddHook(otelredis.NewHook(m.TracerProvider()))
 
+	ghClient, err := setupGithub(httpTransport)
+	if err != nil {
+		return nil, errors.Wrap(err, "setup github")
+	}
+
 	mux := dispatch.NewMessageMux().
 		WithTracerProvider(m.TracerProvider())
-	webhook := gh.NewWebhook(db, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
+
+	webhook := gh.NewWebhook(db, ghClient, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
 	}
@@ -167,6 +173,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		lg:         lg,
 		wh:         webhook,
 		openai:     openai.NewClientWithConfig(openaiConfig),
+		github:     ghClient,
 		rdy:        new(Readiness),
 
 		tracer: m.TracerProvider().Tracer(""),
@@ -187,14 +194,6 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		Register(dispatcher).
 		OnMessage(gh.NewHook(h, db.LastChannelMessage)).
 		OnButton(a)
-
-	if v, ok := os.LookupEnv("GITHUB_APP_ID"); ok {
-		ghClient, err := setupGithub(v, httpTransport)
-		if err != nil {
-			return nil, errors.Wrap(err, "setup github")
-		}
-		a.github = ghClient
-	}
 
 	return a, nil
 }
