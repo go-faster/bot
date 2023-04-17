@@ -20,6 +20,9 @@ jobs:
     env:
       KUBECONFIG: /tmp/kubeconfig
 
+    # Skip deploy commit message contains #skip
+    if: ${{ !contains(github.event.head_commit.message, '#skip') }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3

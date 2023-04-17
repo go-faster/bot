@@ -2,6 +2,10 @@
 
 Bot for go-faster chats and channels, based on [gotd/td](https://github.com/gotd/td).
 
+## Skip deploy
+
+Add `#skip` to commit message.
+
 ## Migrations
 
 ### Add migration
@@ -9,5 +13,5 @@ Bot for go-faster chats and channels, based on [gotd/td](https://github.com/gotd
 To add migration named `some-migration-name`:
 
 ```console
-atlas migrate --env dev diff --to ent://internal/ent/schema some-migration-name
+atlas migrate --env dev diff some-migration-name
 ```

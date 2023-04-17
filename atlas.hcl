@@ -4,7 +4,6 @@ env "dev" {
   // See: https://atlasgo.io/concepts/dev-database
   dev = "docker://postgres/15/test?search_path=public"
 
-  # atlas migrate --env dev diff --to ent://internal/ent/schema name
-  # https://github.com/ariga/atlas/pull/1582
-  # src = "ent://internal/ent/schema"
+  # use at least atlas version v0.10.2-7425aae-canary
+  src = "ent://internal/ent/schema"
 }
