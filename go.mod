@@ -15,7 +15,7 @@ require (
 	github.com/go-logr/zapr v1.2.3
 	github.com/google/go-github/v50 v50.2.0
 	github.com/google/uuid v1.3.0
-	github.com/gotd/contrib v0.15.0
+	github.com/gotd/contrib v0.16.0
 	github.com/gotd/td v0.80.0-alpha.0
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/labstack/echo/v4 v4.10.2
