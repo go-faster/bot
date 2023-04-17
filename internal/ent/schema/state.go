@@ -36,6 +36,9 @@ func (PRNotification) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("repo_id").Comment("Github repository ID."),
 		field.Int("pull_request_id").Comment("Pull request number."),
+		field.String("pull_request_title").Default("").Comment("Pull request title."),
+		field.String("pull_request_body").Default("").Comment("Pull request body."),
+		field.String("pull_request_author_login").Default("").Comment("Pull request author's login."),
 		// TODO(tdakkota): store notify peer_id.
 		field.Int("message_id").Comment("Telegram message ID. Belongs to notify channel."),
 	}
