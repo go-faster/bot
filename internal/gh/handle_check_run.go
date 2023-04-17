@@ -33,6 +33,11 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		),
 	)
 
+	_ = map[bool]struct{}{
+		true:                   {},
+		"amongus" == "amongus": {},
+	}
+
 	lg := zctx.From(ctx)
 
 	pr, err := h.upsertCheck(ctx, e)
