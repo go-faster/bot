@@ -11,7 +11,7 @@ import (
 	"github.com/google/go-github/v50/github"
 )
 
-func setupGithub(httpTransport http.RoundTripper) (*github.Client, error) {
+func setupGithubInstallation(httpTransport http.RoundTripper) (*github.Client, error) {
 	ghAppID, err := strconv.ParseInt(os.Getenv("GITHUB_APP_ID"), 10, 64)
 	if err != nil {
 		return nil, errors.Wrap(err, "GITHUB_APP_ID is invalid")

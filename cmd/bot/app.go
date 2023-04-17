@@ -137,7 +137,7 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	})
 	r.AddHook(otelredis.NewHook(m.TracerProvider()))
 
-	ghClient, err := setupGithub(httpTransport)
+	ghClient, err := setupGithubInstallation(httpTransport)
 	if err != nil {
 		return nil, errors.Wrap(err, "setup github")
 	}
