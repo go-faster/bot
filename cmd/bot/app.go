@@ -240,6 +240,17 @@ func (a *App) Run(ctx context.Context) error {
 			otelecho.Middleware("bot",
 				otelecho.WithTracerProvider(a.m.TracerProvider()),
 			),
+
+			// Pass logger.
+			func(next echo.HandlerFunc) echo.HandlerFunc {
+				return func(c echo.Context) error {
+					req := c.Request()
+					logCtx := zctx.With(req.Context(), lg.Named("handler"))
+					req = req.WithContext(logCtx)
+					c.SetRequest(req)
+					return next(c)
+				}
+			},
 		)
 		e.GET("/probe/startup", func(c echo.Context) error {
 			return c.String(http.StatusOK, "ok")
