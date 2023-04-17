@@ -4,7 +4,7 @@ Bot for go-faster chats and channels, based on [gotd/td](https://github.com/gotd
 
 ## Skip deploy
 
-Add `#skip` to commit message.
+Add `!skip` to commit message.
 
 ## Migrations
 
