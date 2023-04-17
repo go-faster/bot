@@ -33,7 +33,11 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		),
 	)
 
-	lg := zctx.From(ctx)
+	lg := zctx.From(ctx).With(
+		zap.String("action", e.GetAction()),
+		zap.String("head_sha", e.GetCheckRun().GetHeadSHA()),
+	)
+	ctx = zctx.With(ctx, lg)
 
 	pr, err := h.upsertCheck(ctx, e)
 	if err != nil {
