@@ -18,7 +18,7 @@ import (
 type PRNotificationQuery struct {
 	config
 	ctx        *QueryContext
-	order      []prnotification.Order
+	order      []prnotification.OrderOption
 	inters     []Interceptor
 	predicates []predicate.PRNotification
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (pnq *PRNotificationQuery) Unique(unique bool) *PRNotificationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pnq *PRNotificationQuery) Order(o ...prnotification.Order) *PRNotificationQuery {
+func (pnq *PRNotificationQuery) Order(o ...prnotification.OrderOption) *PRNotificationQuery {
 	pnq.order = append(pnq.order, o...)
 	return pnq
 }
@@ -246,7 +246,7 @@ func (pnq *PRNotificationQuery) Clone() *PRNotificationQuery {
 	return &PRNotificationQuery{
 		config:     pnq.config,
 		ctx:        pnq.ctx.Clone(),
-		order:      append([]prnotification.Order{}, pnq.order...),
+		order:      append([]prnotification.OrderOption{}, pnq.order...),
 		inters:     append([]Interceptor{}, pnq.inters...),
 		predicates: append([]predicate.PRNotification{}, pnq.predicates...),
 		// clone intermediate query.

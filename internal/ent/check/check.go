@@ -45,35 +45,35 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the Check queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Check queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByRepoID orders the results by the repo_id field.
-func ByRepoID(opts ...sql.OrderTermOption) Order {
+func ByRepoID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRepoID, opts...).ToFunc()
 }
 
 // ByPullRequestID orders the results by the pull_request_id field.
-func ByPullRequestID(opts ...sql.OrderTermOption) Order {
+func ByPullRequestID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPullRequestID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
-func ByStatus(opts ...sql.OrderTermOption) Order {
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByConclusion orders the results by the conclusion field.
-func ByConclusion(opts ...sql.OrderTermOption) Order {
+func ByConclusion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConclusion, opts...).ToFunc()
 }

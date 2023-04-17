@@ -18,7 +18,7 @@ import (
 type LastChannelMessageQuery struct {
 	config
 	ctx        *QueryContext
-	order      []lastchannelmessage.Order
+	order      []lastchannelmessage.OrderOption
 	inters     []Interceptor
 	predicates []predicate.LastChannelMessage
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (lcmq *LastChannelMessageQuery) Unique(unique bool) *LastChannelMessageQuer
 }
 
 // Order specifies how the records should be ordered.
-func (lcmq *LastChannelMessageQuery) Order(o ...lastchannelmessage.Order) *LastChannelMessageQuery {
+func (lcmq *LastChannelMessageQuery) Order(o ...lastchannelmessage.OrderOption) *LastChannelMessageQuery {
 	lcmq.order = append(lcmq.order, o...)
 	return lcmq
 }
@@ -246,7 +246,7 @@ func (lcmq *LastChannelMessageQuery) Clone() *LastChannelMessageQuery {
 	return &LastChannelMessageQuery{
 		config:     lcmq.config,
 		ctx:        lcmq.ctx.Clone(),
-		order:      append([]lastchannelmessage.Order{}, lcmq.order...),
+		order:      append([]lastchannelmessage.OrderOption{}, lcmq.order...),
 		inters:     append([]Interceptor{}, lcmq.inters...),
 		predicates: append([]predicate.LastChannelMessage{}, lcmq.predicates...),
 		// clone intermediate query.

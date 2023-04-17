@@ -19,7 +19,7 @@ import (
 type TelegramChannelStateQuery struct {
 	config
 	ctx        *QueryContext
-	order      []telegramchannelstate.Order
+	order      []telegramchannelstate.OrderOption
 	inters     []Interceptor
 	predicates []predicate.TelegramChannelState
 	withUser   *TelegramUserStateQuery
@@ -54,7 +54,7 @@ func (tcsq *TelegramChannelStateQuery) Unique(unique bool) *TelegramChannelState
 }
 
 // Order specifies how the records should be ordered.
-func (tcsq *TelegramChannelStateQuery) Order(o ...telegramchannelstate.Order) *TelegramChannelStateQuery {
+func (tcsq *TelegramChannelStateQuery) Order(o ...telegramchannelstate.OrderOption) *TelegramChannelStateQuery {
 	tcsq.order = append(tcsq.order, o...)
 	return tcsq
 }
@@ -270,7 +270,7 @@ func (tcsq *TelegramChannelStateQuery) Clone() *TelegramChannelStateQuery {
 	return &TelegramChannelStateQuery{
 		config:     tcsq.config,
 		ctx:        tcsq.ctx.Clone(),
-		order:      append([]telegramchannelstate.Order{}, tcsq.order...),
+		order:      append([]telegramchannelstate.OrderOption{}, tcsq.order...),
 		inters:     append([]Interceptor{}, tcsq.inters...),
 		predicates: append([]predicate.TelegramChannelState{}, tcsq.predicates...),
 		withUser:   tcsq.withUser.Clone(),

@@ -20,7 +20,7 @@ import (
 type TelegramUserStateQuery struct {
 	config
 	ctx               *QueryContext
-	order             []telegramuserstate.Order
+	order             []telegramuserstate.OrderOption
 	inters            []Interceptor
 	predicates        []predicate.TelegramUserState
 	withChannels      *TelegramChannelStateQuery
@@ -56,7 +56,7 @@ func (tusq *TelegramUserStateQuery) Unique(unique bool) *TelegramUserStateQuery 
 }
 
 // Order specifies how the records should be ordered.
-func (tusq *TelegramUserStateQuery) Order(o ...telegramuserstate.Order) *TelegramUserStateQuery {
+func (tusq *TelegramUserStateQuery) Order(o ...telegramuserstate.OrderOption) *TelegramUserStateQuery {
 	tusq.order = append(tusq.order, o...)
 	return tusq
 }
@@ -272,7 +272,7 @@ func (tusq *TelegramUserStateQuery) Clone() *TelegramUserStateQuery {
 	return &TelegramUserStateQuery{
 		config:       tusq.config,
 		ctx:          tusq.ctx.Clone(),
-		order:        append([]telegramuserstate.Order{}, tusq.order...),
+		order:        append([]telegramuserstate.OrderOption{}, tusq.order...),
 		inters:       append([]Interceptor{}, tusq.inters...),
 		predicates:   append([]predicate.TelegramUserState{}, tusq.predicates...),
 		withChannels: tusq.withChannels.Clone(),
@@ -421,7 +421,7 @@ func (tusq *TelegramUserStateQuery) loadChannels(ctx context.Context, query *Tel
 		}
 	}
 	query.Where(predicate.TelegramChannelState(func(s *sql.Selector) {
-		s.Where(sql.InValues(telegramuserstate.ChannelsColumn, fks...))
+		s.Where(sql.InValues(s.C(telegramuserstate.ChannelsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

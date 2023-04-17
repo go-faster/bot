@@ -19,7 +19,7 @@ import (
 type TelegramSessionQuery struct {
 	config
 	ctx        *QueryContext
-	order      []telegramsession.Order
+	order      []telegramsession.OrderOption
 	inters     []Interceptor
 	predicates []predicate.TelegramSession
 	// intermediate query (i.e. traversal path).
@@ -53,7 +53,7 @@ func (tsq *TelegramSessionQuery) Unique(unique bool) *TelegramSessionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (tsq *TelegramSessionQuery) Order(o ...telegramsession.Order) *TelegramSessionQuery {
+func (tsq *TelegramSessionQuery) Order(o ...telegramsession.OrderOption) *TelegramSessionQuery {
 	tsq.order = append(tsq.order, o...)
 	return tsq
 }
@@ -247,7 +247,7 @@ func (tsq *TelegramSessionQuery) Clone() *TelegramSessionQuery {
 	return &TelegramSessionQuery{
 		config:     tsq.config,
 		ctx:        tsq.ctx.Clone(),
-		order:      append([]telegramsession.Order{}, tsq.order...),
+		order:      append([]telegramsession.OrderOption{}, tsq.order...),
 		inters:     append([]Interceptor{}, tsq.inters...),
 		predicates: append([]predicate.TelegramSession{}, tsq.predicates...),
 		// clone intermediate query.

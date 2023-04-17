@@ -39,25 +39,25 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the PRNotification queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the PRNotification queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByRepoID orders the results by the repo_id field.
-func ByRepoID(opts ...sql.OrderTermOption) Order {
+func ByRepoID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRepoID, opts...).ToFunc()
 }
 
 // ByPullRequestID orders the results by the pull_request_id field.
-func ByPullRequestID(opts ...sql.OrderTermOption) Order {
+func ByPullRequestID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPullRequestID, opts...).ToFunc()
 }
 
 // ByMessageID orders the results by the message_id field.
-func ByMessageID(opts ...sql.OrderTermOption) Order {
+func ByMessageID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMessageID, opts...).ToFunc()
 }

@@ -18,7 +18,7 @@ import (
 type CheckQuery struct {
 	config
 	ctx        *QueryContext
-	order      []check.Order
+	order      []check.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Check
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (cq *CheckQuery) Unique(unique bool) *CheckQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (cq *CheckQuery) Order(o ...check.Order) *CheckQuery {
+func (cq *CheckQuery) Order(o ...check.OrderOption) *CheckQuery {
 	cq.order = append(cq.order, o...)
 	return cq
 }
@@ -246,7 +246,7 @@ func (cq *CheckQuery) Clone() *CheckQuery {
 	return &CheckQuery{
 		config:     cq.config,
 		ctx:        cq.ctx.Clone(),
-		order:      append([]check.Order{}, cq.order...),
+		order:      append([]check.OrderOption{}, cq.order...),
 		inters:     append([]Interceptor{}, cq.inters...),
 		predicates: append([]predicate.Check{}, cq.predicates...),
 		// clone intermediate query.

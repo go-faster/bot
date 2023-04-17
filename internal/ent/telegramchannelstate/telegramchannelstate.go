@@ -54,31 +54,31 @@ var (
 	DefaultPts int
 )
 
-// Order defines the ordering method for the TelegramChannelState queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the TelegramChannelState queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByChannelID orders the results by the channel_id field.
-func ByChannelID(opts ...sql.OrderTermOption) Order {
+func ByChannelID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldChannelID, opts...).ToFunc()
 }
 
 // ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) Order {
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByPts orders the results by the pts field.
-func ByPts(opts ...sql.OrderTermOption) Order {
+func ByPts(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPts, opts...).ToFunc()
 }
 
 // ByUserField orders the results by user field.
-func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}

@@ -58,45 +58,45 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
-// Order defines the ordering method for the GPTDialog queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the GPTDialog queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByPeerID orders the results by the peer_id field.
-func ByPeerID(opts ...sql.OrderTermOption) Order {
+func ByPeerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPeerID, opts...).ToFunc()
 }
 
 // ByPromptMsgID orders the results by the prompt_msg_id field.
-func ByPromptMsgID(opts ...sql.OrderTermOption) Order {
+func ByPromptMsgID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPromptMsgID, opts...).ToFunc()
 }
 
 // ByPromptMsg orders the results by the prompt_msg field.
-func ByPromptMsg(opts ...sql.OrderTermOption) Order {
+func ByPromptMsg(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPromptMsg, opts...).ToFunc()
 }
 
 // ByGptMsgID orders the results by the gpt_msg_id field.
-func ByGptMsgID(opts ...sql.OrderTermOption) Order {
+func ByGptMsgID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGptMsgID, opts...).ToFunc()
 }
 
 // ByGptMsg orders the results by the gpt_msg field.
-func ByGptMsg(opts ...sql.OrderTermOption) Order {
+func ByGptMsg(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGptMsg, opts...).ToFunc()
 }
 
 // ByThreadTopMsgID orders the results by the thread_top_msg_id field.
-func ByThreadTopMsgID(opts ...sql.OrderTermOption) Order {
+func ByThreadTopMsgID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldThreadTopMsgID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }

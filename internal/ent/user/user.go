@@ -42,30 +42,30 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Order defines the ordering method for the User queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the User queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByUsername orders the results by the username field.
-func ByUsername(opts ...sql.OrderTermOption) Order {
+func ByUsername(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUsername, opts...).ToFunc()
 }
 
 // ByFirstName orders the results by the first_name field.
-func ByFirstName(opts ...sql.OrderTermOption) Order {
+func ByFirstName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFirstName, opts...).ToFunc()
 }
 
 // ByLastName orders the results by the last_name field.
-func ByLastName(opts ...sql.OrderTermOption) Order {
+func ByLastName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastName, opts...).ToFunc()
 }
 
 // ByGithubToken orders the results by the github_token field.
-func ByGithubToken(opts ...sql.OrderTermOption) Order {
+func ByGithubToken(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGithubToken, opts...).ToFunc()
 }

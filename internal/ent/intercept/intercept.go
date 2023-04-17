@@ -295,21 +295,21 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.CheckQuery:
-		return &query[*ent.CheckQuery, predicate.Check, check.Order]{typ: ent.TypeCheck, tq: q}, nil
+		return &query[*ent.CheckQuery, predicate.Check, check.OrderOption]{typ: ent.TypeCheck, tq: q}, nil
 	case *ent.GPTDialogQuery:
-		return &query[*ent.GPTDialogQuery, predicate.GPTDialog, gptdialog.Order]{typ: ent.TypeGPTDialog, tq: q}, nil
+		return &query[*ent.GPTDialogQuery, predicate.GPTDialog, gptdialog.OrderOption]{typ: ent.TypeGPTDialog, tq: q}, nil
 	case *ent.LastChannelMessageQuery:
-		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.Order]{typ: ent.TypeLastChannelMessage, tq: q}, nil
+		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.OrderOption]{typ: ent.TypeLastChannelMessage, tq: q}, nil
 	case *ent.PRNotificationQuery:
-		return &query[*ent.PRNotificationQuery, predicate.PRNotification, prnotification.Order]{typ: ent.TypePRNotification, tq: q}, nil
+		return &query[*ent.PRNotificationQuery, predicate.PRNotification, prnotification.OrderOption]{typ: ent.TypePRNotification, tq: q}, nil
 	case *ent.TelegramChannelStateQuery:
-		return &query[*ent.TelegramChannelStateQuery, predicate.TelegramChannelState, telegramchannelstate.Order]{typ: ent.TypeTelegramChannelState, tq: q}, nil
+		return &query[*ent.TelegramChannelStateQuery, predicate.TelegramChannelState, telegramchannelstate.OrderOption]{typ: ent.TypeTelegramChannelState, tq: q}, nil
 	case *ent.TelegramSessionQuery:
-		return &query[*ent.TelegramSessionQuery, predicate.TelegramSession, telegramsession.Order]{typ: ent.TypeTelegramSession, tq: q}, nil
+		return &query[*ent.TelegramSessionQuery, predicate.TelegramSession, telegramsession.OrderOption]{typ: ent.TypeTelegramSession, tq: q}, nil
 	case *ent.TelegramUserStateQuery:
-		return &query[*ent.TelegramUserStateQuery, predicate.TelegramUserState, telegramuserstate.Order]{typ: ent.TypeTelegramUserState, tq: q}, nil
+		return &query[*ent.TelegramUserStateQuery, predicate.TelegramUserState, telegramuserstate.OrderOption]{typ: ent.TypeTelegramUserState, tq: q}, nil
 	case *ent.UserQuery:
-		return &query[*ent.UserQuery, predicate.User, user.Order]{typ: ent.TypeUser, tq: q}, nil
+		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

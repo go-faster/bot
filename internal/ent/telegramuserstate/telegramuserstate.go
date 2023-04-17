@@ -63,43 +63,43 @@ var (
 	DefaultSeq int
 )
 
-// Order defines the ordering method for the TelegramUserState queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the TelegramUserState queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByQts orders the results by the qts field.
-func ByQts(opts ...sql.OrderTermOption) Order {
+func ByQts(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldQts, opts...).ToFunc()
 }
 
 // ByPts orders the results by the pts field.
-func ByPts(opts ...sql.OrderTermOption) Order {
+func ByPts(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPts, opts...).ToFunc()
 }
 
 // ByDate orders the results by the date field.
-func ByDate(opts ...sql.OrderTermOption) Order {
+func ByDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDate, opts...).ToFunc()
 }
 
 // BySeq orders the results by the seq field.
-func BySeq(opts ...sql.OrderTermOption) Order {
+func BySeq(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSeq, opts...).ToFunc()
 }
 
 // ByChannelsCount orders the results by channels count.
-func ByChannelsCount(opts ...sql.OrderTermOption) Order {
+func ByChannelsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newChannelsStep(), opts...)
 	}
 }
 
 // ByChannels orders the results by channels terms.
-func ByChannels(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByChannels(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newChannelsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

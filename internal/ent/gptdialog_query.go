@@ -18,7 +18,7 @@ import (
 type GPTDialogQuery struct {
 	config
 	ctx        *QueryContext
-	order      []gptdialog.Order
+	order      []gptdialog.OrderOption
 	inters     []Interceptor
 	predicates []predicate.GPTDialog
 	// intermediate query (i.e. traversal path).
@@ -52,7 +52,7 @@ func (gdq *GPTDialogQuery) Unique(unique bool) *GPTDialogQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (gdq *GPTDialogQuery) Order(o ...gptdialog.Order) *GPTDialogQuery {
+func (gdq *GPTDialogQuery) Order(o ...gptdialog.OrderOption) *GPTDialogQuery {
 	gdq.order = append(gdq.order, o...)
 	return gdq
 }
@@ -246,7 +246,7 @@ func (gdq *GPTDialogQuery) Clone() *GPTDialogQuery {
 	return &GPTDialogQuery{
 		config:     gdq.config,
 		ctx:        gdq.ctx.Clone(),
-		order:      append([]gptdialog.Order{}, gdq.order...),
+		order:      append([]gptdialog.OrderOption{}, gdq.order...),
 		inters:     append([]Interceptor{}, gdq.inters...),
 		predicates: append([]predicate.GPTDialog{}, gdq.predicates...),
 		// clone intermediate query.
