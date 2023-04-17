@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 
+	"github.com/go-faster/errors"
+
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/gpt"
-	"github.com/go-faster/errors"
 )
 
 func setupBot(a *App) error {
@@ -16,6 +17,7 @@ func setupBot(a *App) error {
 	a.mux.Handle("/stat", "Metrics and version", a.m.NewHandler())
 	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
 	a.mux.HandleFunc("/gh_pat", "Set GitHub personal token", a.HandleGitHubPersonalToken)
+	a.mux.HandleFunc("/gh_test", "GitHub test", a.HandleGitHubTest)
 	{
 		var limitCfg gpt.LimitConfig
 		if err := limitCfg.ParseEnv(); err != nil {
