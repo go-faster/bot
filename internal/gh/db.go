@@ -117,9 +117,13 @@ func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository
 	)
 	defer span.End()
 
+	u := pr.GetUser()
 	if err := h.db.PRNotification.Create().
 		SetRepoID(repo.GetID()).
 		SetPullRequestID(pr.GetNumber()).
+		SetPullRequestTitle(pr.GetTitle()).
+		SetPullRequestBody(pr.GetBody()).
+		SetPullRequestAuthorLogin(u.GetLogin()).
 		SetMessageID(msgID).
 		OnConflict(
 			sql.ConflictColumns(
@@ -131,6 +135,47 @@ func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository
 		UpdateNewValues().
 		Exec(ctx); err != nil {
 		return errors.Wrap(err, "upsert PR notification")
+	}
+
+	return nil
+}
+
+// fillPRState queries misisng data from database if needed.
+func fillPRState(ctx context.Context, tx *ent.PRNotificationClient, repo *github.Repository, pr *github.PullRequest) error {
+	if pr.GetHTMLURL() == "" {
+		u := fmt.Sprintf("https://github.com/%s/%s/pull/%d",
+			repo.GetOwner().GetLogin(), repo.GetName(),
+			pr.GetNumber(),
+		)
+		pr.HTMLURL = &u
+	}
+
+	author := pr.GetUser()
+	needQuery := pr.GetTitle() == "" ||
+		author.GetLogin() == ""
+
+	if !needQuery {
+		return nil
+	}
+
+	cached, err := tx.Query().
+		Where(
+			prnotification.RepoID(repo.GetID()),
+			prnotification.PullRequestID(pr.GetNumber()),
+		).First(ctx)
+	if err != nil {
+		return err
+	}
+
+	if pr.GetTitle() == "" {
+		pr.Title = &cached.PullRequestTitle
+	}
+
+	if author.GetLogin() == "" {
+		if pr.User == nil {
+			pr.User = new(github.User)
+		}
+		pr.User.Login = &cached.PullRequestAuthorLogin
 	}
 
 	return nil
@@ -221,6 +266,10 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		UpdateNewValues().
 		Exec(ctx); err != nil {
 		return nil, errors.Wrap(err, "upsert check")
+	}
+
+	if err := fillPRState(ctx, tx.PRNotification, c.GetRepo(), pr); err != nil && !ent.IsNotFound(err) {
+		return nil, errors.Wrap(err, "get PR state")
 	}
 
 	if err := tx.Commit(); err != nil {
