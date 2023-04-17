@@ -32,8 +32,11 @@ func (w Webhook) Client(ctx context.Context) (*github.Client, error) {
 	}
 
 	tok, _, err := w.ghClient.Apps.CreateInstallationToken(ctx, w.ghID, &github.InstallationTokenOptions{})
+	if err != nil {
+		return nil, errors.Wrap(err, "create token")
+	}
 
-	expiration := tok.GetExpiresAt().Sub(time.Now())
+	expiration := time.Until(tok.GetExpiresAt().Time)
 	zctx.From(ctx).Info("Token expires in",
 		zap.Duration("d", expiration),
 	)
