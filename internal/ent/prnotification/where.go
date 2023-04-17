@@ -62,6 +62,21 @@ func PullRequestID(v int) predicate.PRNotification {
 	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestID, v))
 }
 
+// PullRequestTitle applies equality check predicate on the "pull_request_title" field. It's identical to PullRequestTitleEQ.
+func PullRequestTitle(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestTitle, v))
+}
+
+// PullRequestBody applies equality check predicate on the "pull_request_body" field. It's identical to PullRequestBodyEQ.
+func PullRequestBody(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestBody, v))
+}
+
+// PullRequestAuthorLogin applies equality check predicate on the "pull_request_author_login" field. It's identical to PullRequestAuthorLoginEQ.
+func PullRequestAuthorLogin(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestAuthorLogin, v))
+}
+
 // MessageID applies equality check predicate on the "message_id" field. It's identical to MessageIDEQ.
 func MessageID(v int) predicate.PRNotification {
 	return predicate.PRNotification(sql.FieldEQ(FieldMessageID, v))
@@ -145,6 +160,201 @@ func PullRequestIDLT(v int) predicate.PRNotification {
 // PullRequestIDLTE applies the LTE predicate on the "pull_request_id" field.
 func PullRequestIDLTE(v int) predicate.PRNotification {
 	return predicate.PRNotification(sql.FieldLTE(FieldPullRequestID, v))
+}
+
+// PullRequestTitleEQ applies the EQ predicate on the "pull_request_title" field.
+func PullRequestTitleEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleNEQ applies the NEQ predicate on the "pull_request_title" field.
+func PullRequestTitleNEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNEQ(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleIn applies the In predicate on the "pull_request_title" field.
+func PullRequestTitleIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldIn(FieldPullRequestTitle, vs...))
+}
+
+// PullRequestTitleNotIn applies the NotIn predicate on the "pull_request_title" field.
+func PullRequestTitleNotIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNotIn(FieldPullRequestTitle, vs...))
+}
+
+// PullRequestTitleGT applies the GT predicate on the "pull_request_title" field.
+func PullRequestTitleGT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGT(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleGTE applies the GTE predicate on the "pull_request_title" field.
+func PullRequestTitleGTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGTE(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleLT applies the LT predicate on the "pull_request_title" field.
+func PullRequestTitleLT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLT(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleLTE applies the LTE predicate on the "pull_request_title" field.
+func PullRequestTitleLTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLTE(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleContains applies the Contains predicate on the "pull_request_title" field.
+func PullRequestTitleContains(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContains(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleHasPrefix applies the HasPrefix predicate on the "pull_request_title" field.
+func PullRequestTitleHasPrefix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasPrefix(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleHasSuffix applies the HasSuffix predicate on the "pull_request_title" field.
+func PullRequestTitleHasSuffix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasSuffix(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleEqualFold applies the EqualFold predicate on the "pull_request_title" field.
+func PullRequestTitleEqualFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEqualFold(FieldPullRequestTitle, v))
+}
+
+// PullRequestTitleContainsFold applies the ContainsFold predicate on the "pull_request_title" field.
+func PullRequestTitleContainsFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContainsFold(FieldPullRequestTitle, v))
+}
+
+// PullRequestBodyEQ applies the EQ predicate on the "pull_request_body" field.
+func PullRequestBodyEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyNEQ applies the NEQ predicate on the "pull_request_body" field.
+func PullRequestBodyNEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNEQ(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyIn applies the In predicate on the "pull_request_body" field.
+func PullRequestBodyIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldIn(FieldPullRequestBody, vs...))
+}
+
+// PullRequestBodyNotIn applies the NotIn predicate on the "pull_request_body" field.
+func PullRequestBodyNotIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNotIn(FieldPullRequestBody, vs...))
+}
+
+// PullRequestBodyGT applies the GT predicate on the "pull_request_body" field.
+func PullRequestBodyGT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGT(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyGTE applies the GTE predicate on the "pull_request_body" field.
+func PullRequestBodyGTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGTE(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyLT applies the LT predicate on the "pull_request_body" field.
+func PullRequestBodyLT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLT(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyLTE applies the LTE predicate on the "pull_request_body" field.
+func PullRequestBodyLTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLTE(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyContains applies the Contains predicate on the "pull_request_body" field.
+func PullRequestBodyContains(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContains(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyHasPrefix applies the HasPrefix predicate on the "pull_request_body" field.
+func PullRequestBodyHasPrefix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasPrefix(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyHasSuffix applies the HasSuffix predicate on the "pull_request_body" field.
+func PullRequestBodyHasSuffix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasSuffix(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyEqualFold applies the EqualFold predicate on the "pull_request_body" field.
+func PullRequestBodyEqualFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEqualFold(FieldPullRequestBody, v))
+}
+
+// PullRequestBodyContainsFold applies the ContainsFold predicate on the "pull_request_body" field.
+func PullRequestBodyContainsFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContainsFold(FieldPullRequestBody, v))
+}
+
+// PullRequestAuthorLoginEQ applies the EQ predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEQ(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginNEQ applies the NEQ predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginNEQ(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNEQ(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginIn applies the In predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldIn(FieldPullRequestAuthorLogin, vs...))
+}
+
+// PullRequestAuthorLoginNotIn applies the NotIn predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginNotIn(vs ...string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldNotIn(FieldPullRequestAuthorLogin, vs...))
+}
+
+// PullRequestAuthorLoginGT applies the GT predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginGT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGT(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginGTE applies the GTE predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginGTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldGTE(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginLT applies the LT predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginLT(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLT(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginLTE applies the LTE predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginLTE(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldLTE(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginContains applies the Contains predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginContains(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContains(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginHasPrefix applies the HasPrefix predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginHasPrefix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasPrefix(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginHasSuffix applies the HasSuffix predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginHasSuffix(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldHasSuffix(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginEqualFold applies the EqualFold predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginEqualFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldEqualFold(FieldPullRequestAuthorLogin, v))
+}
+
+// PullRequestAuthorLoginContainsFold applies the ContainsFold predicate on the "pull_request_author_login" field.
+func PullRequestAuthorLoginContainsFold(v string) predicate.PRNotification {
+	return predicate.PRNotification(sql.FieldContainsFold(FieldPullRequestAuthorLogin, v))
 }
 
 // MessageIDEQ applies the EQ predicate on the "message_id" field.

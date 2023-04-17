@@ -15,6 +15,12 @@ const (
 	FieldRepoID = "repo_id"
 	// FieldPullRequestID holds the string denoting the pull_request_id field in the database.
 	FieldPullRequestID = "pull_request_id"
+	// FieldPullRequestTitle holds the string denoting the pull_request_title field in the database.
+	FieldPullRequestTitle = "pull_request_title"
+	// FieldPullRequestBody holds the string denoting the pull_request_body field in the database.
+	FieldPullRequestBody = "pull_request_body"
+	// FieldPullRequestAuthorLogin holds the string denoting the pull_request_author_login field in the database.
+	FieldPullRequestAuthorLogin = "pull_request_author_login"
 	// FieldMessageID holds the string denoting the message_id field in the database.
 	FieldMessageID = "message_id"
 	// Table holds the table name of the prnotification in the database.
@@ -26,6 +32,9 @@ var Columns = []string{
 	FieldID,
 	FieldRepoID,
 	FieldPullRequestID,
+	FieldPullRequestTitle,
+	FieldPullRequestBody,
+	FieldPullRequestAuthorLogin,
 	FieldMessageID,
 }
 
@@ -38,6 +47,15 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultPullRequestTitle holds the default value on creation for the "pull_request_title" field.
+	DefaultPullRequestTitle string
+	// DefaultPullRequestBody holds the default value on creation for the "pull_request_body" field.
+	DefaultPullRequestBody string
+	// DefaultPullRequestAuthorLogin holds the default value on creation for the "pull_request_author_login" field.
+	DefaultPullRequestAuthorLogin string
+)
 
 // OrderOption defines the ordering options for the PRNotification queries.
 type OrderOption func(*sql.Selector)
@@ -55,6 +73,21 @@ func ByRepoID(opts ...sql.OrderTermOption) OrderOption {
 // ByPullRequestID orders the results by the pull_request_id field.
 func ByPullRequestID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPullRequestID, opts...).ToFunc()
+}
+
+// ByPullRequestTitle orders the results by the pull_request_title field.
+func ByPullRequestTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPullRequestTitle, opts...).ToFunc()
+}
+
+// ByPullRequestBody orders the results by the pull_request_body field.
+func ByPullRequestBody(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPullRequestBody, opts...).ToFunc()
+}
+
+// ByPullRequestAuthorLogin orders the results by the pull_request_author_login field.
+func ByPullRequestAuthorLogin(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPullRequestAuthorLogin, opts...).ToFunc()
 }
 
 // ByMessageID orders the results by the message_id field.

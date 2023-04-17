@@ -1827,19 +1827,22 @@ func (m *LastChannelMessageMutation) ResetEdge(name string) error {
 // PRNotificationMutation represents an operation that mutates the PRNotification nodes in the graph.
 type PRNotificationMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *int
-	repo_id            *int64
-	addrepo_id         *int64
-	pull_request_id    *int
-	addpull_request_id *int
-	message_id         *int
-	addmessage_id      *int
-	clearedFields      map[string]struct{}
-	done               bool
-	oldValue           func(context.Context) (*PRNotification, error)
-	predicates         []predicate.PRNotification
+	op                        Op
+	typ                       string
+	id                        *int
+	repo_id                   *int64
+	addrepo_id                *int64
+	pull_request_id           *int
+	addpull_request_id        *int
+	pull_request_title        *string
+	pull_request_body         *string
+	pull_request_author_login *string
+	message_id                *int
+	addmessage_id             *int
+	clearedFields             map[string]struct{}
+	done                      bool
+	oldValue                  func(context.Context) (*PRNotification, error)
+	predicates                []predicate.PRNotification
 }
 
 var _ ent.Mutation = (*PRNotificationMutation)(nil)
@@ -2052,6 +2055,114 @@ func (m *PRNotificationMutation) ResetPullRequestID() {
 	m.addpull_request_id = nil
 }
 
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (m *PRNotificationMutation) SetPullRequestTitle(s string) {
+	m.pull_request_title = &s
+}
+
+// PullRequestTitle returns the value of the "pull_request_title" field in the mutation.
+func (m *PRNotificationMutation) PullRequestTitle() (r string, exists bool) {
+	v := m.pull_request_title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPullRequestTitle returns the old "pull_request_title" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldPullRequestTitle(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPullRequestTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPullRequestTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPullRequestTitle: %w", err)
+	}
+	return oldValue.PullRequestTitle, nil
+}
+
+// ResetPullRequestTitle resets all changes to the "pull_request_title" field.
+func (m *PRNotificationMutation) ResetPullRequestTitle() {
+	m.pull_request_title = nil
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (m *PRNotificationMutation) SetPullRequestBody(s string) {
+	m.pull_request_body = &s
+}
+
+// PullRequestBody returns the value of the "pull_request_body" field in the mutation.
+func (m *PRNotificationMutation) PullRequestBody() (r string, exists bool) {
+	v := m.pull_request_body
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPullRequestBody returns the old "pull_request_body" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldPullRequestBody(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPullRequestBody is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPullRequestBody requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPullRequestBody: %w", err)
+	}
+	return oldValue.PullRequestBody, nil
+}
+
+// ResetPullRequestBody resets all changes to the "pull_request_body" field.
+func (m *PRNotificationMutation) ResetPullRequestBody() {
+	m.pull_request_body = nil
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (m *PRNotificationMutation) SetPullRequestAuthorLogin(s string) {
+	m.pull_request_author_login = &s
+}
+
+// PullRequestAuthorLogin returns the value of the "pull_request_author_login" field in the mutation.
+func (m *PRNotificationMutation) PullRequestAuthorLogin() (r string, exists bool) {
+	v := m.pull_request_author_login
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPullRequestAuthorLogin returns the old "pull_request_author_login" field's value of the PRNotification entity.
+// If the PRNotification object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PRNotificationMutation) OldPullRequestAuthorLogin(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPullRequestAuthorLogin is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPullRequestAuthorLogin requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPullRequestAuthorLogin: %w", err)
+	}
+	return oldValue.PullRequestAuthorLogin, nil
+}
+
+// ResetPullRequestAuthorLogin resets all changes to the "pull_request_author_login" field.
+func (m *PRNotificationMutation) ResetPullRequestAuthorLogin() {
+	m.pull_request_author_login = nil
+}
+
 // SetMessageID sets the "message_id" field.
 func (m *PRNotificationMutation) SetMessageID(i int) {
 	m.message_id = &i
@@ -2142,12 +2253,21 @@ func (m *PRNotificationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PRNotificationMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 6)
 	if m.repo_id != nil {
 		fields = append(fields, prnotification.FieldRepoID)
 	}
 	if m.pull_request_id != nil {
 		fields = append(fields, prnotification.FieldPullRequestID)
+	}
+	if m.pull_request_title != nil {
+		fields = append(fields, prnotification.FieldPullRequestTitle)
+	}
+	if m.pull_request_body != nil {
+		fields = append(fields, prnotification.FieldPullRequestBody)
+	}
+	if m.pull_request_author_login != nil {
+		fields = append(fields, prnotification.FieldPullRequestAuthorLogin)
 	}
 	if m.message_id != nil {
 		fields = append(fields, prnotification.FieldMessageID)
@@ -2164,6 +2284,12 @@ func (m *PRNotificationMutation) Field(name string) (ent.Value, bool) {
 		return m.RepoID()
 	case prnotification.FieldPullRequestID:
 		return m.PullRequestID()
+	case prnotification.FieldPullRequestTitle:
+		return m.PullRequestTitle()
+	case prnotification.FieldPullRequestBody:
+		return m.PullRequestBody()
+	case prnotification.FieldPullRequestAuthorLogin:
+		return m.PullRequestAuthorLogin()
 	case prnotification.FieldMessageID:
 		return m.MessageID()
 	}
@@ -2179,6 +2305,12 @@ func (m *PRNotificationMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldRepoID(ctx)
 	case prnotification.FieldPullRequestID:
 		return m.OldPullRequestID(ctx)
+	case prnotification.FieldPullRequestTitle:
+		return m.OldPullRequestTitle(ctx)
+	case prnotification.FieldPullRequestBody:
+		return m.OldPullRequestBody(ctx)
+	case prnotification.FieldPullRequestAuthorLogin:
+		return m.OldPullRequestAuthorLogin(ctx)
 	case prnotification.FieldMessageID:
 		return m.OldMessageID(ctx)
 	}
@@ -2203,6 +2335,27 @@ func (m *PRNotificationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPullRequestID(v)
+		return nil
+	case prnotification.FieldPullRequestTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPullRequestTitle(v)
+		return nil
+	case prnotification.FieldPullRequestBody:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPullRequestBody(v)
+		return nil
+	case prnotification.FieldPullRequestAuthorLogin:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPullRequestAuthorLogin(v)
 		return nil
 	case prnotification.FieldMessageID:
 		v, ok := value.(int)
@@ -2304,6 +2457,15 @@ func (m *PRNotificationMutation) ResetField(name string) error {
 		return nil
 	case prnotification.FieldPullRequestID:
 		m.ResetPullRequestID()
+		return nil
+	case prnotification.FieldPullRequestTitle:
+		m.ResetPullRequestTitle()
+		return nil
+	case prnotification.FieldPullRequestBody:
+		m.ResetPullRequestBody()
+		return nil
+	case prnotification.FieldPullRequestAuthorLogin:
+		m.ResetPullRequestAuthorLogin()
 		return nil
 	case prnotification.FieldMessageID:
 		m.ResetMessageID()

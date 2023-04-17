@@ -33,6 +33,48 @@ func (pnc *PRNotificationCreate) SetPullRequestID(i int) *PRNotificationCreate {
 	return pnc
 }
 
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (pnc *PRNotificationCreate) SetPullRequestTitle(s string) *PRNotificationCreate {
+	pnc.mutation.SetPullRequestTitle(s)
+	return pnc
+}
+
+// SetNillablePullRequestTitle sets the "pull_request_title" field if the given value is not nil.
+func (pnc *PRNotificationCreate) SetNillablePullRequestTitle(s *string) *PRNotificationCreate {
+	if s != nil {
+		pnc.SetPullRequestTitle(*s)
+	}
+	return pnc
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (pnc *PRNotificationCreate) SetPullRequestBody(s string) *PRNotificationCreate {
+	pnc.mutation.SetPullRequestBody(s)
+	return pnc
+}
+
+// SetNillablePullRequestBody sets the "pull_request_body" field if the given value is not nil.
+func (pnc *PRNotificationCreate) SetNillablePullRequestBody(s *string) *PRNotificationCreate {
+	if s != nil {
+		pnc.SetPullRequestBody(*s)
+	}
+	return pnc
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (pnc *PRNotificationCreate) SetPullRequestAuthorLogin(s string) *PRNotificationCreate {
+	pnc.mutation.SetPullRequestAuthorLogin(s)
+	return pnc
+}
+
+// SetNillablePullRequestAuthorLogin sets the "pull_request_author_login" field if the given value is not nil.
+func (pnc *PRNotificationCreate) SetNillablePullRequestAuthorLogin(s *string) *PRNotificationCreate {
+	if s != nil {
+		pnc.SetPullRequestAuthorLogin(*s)
+	}
+	return pnc
+}
+
 // SetMessageID sets the "message_id" field.
 func (pnc *PRNotificationCreate) SetMessageID(i int) *PRNotificationCreate {
 	pnc.mutation.SetMessageID(i)
@@ -46,6 +88,7 @@ func (pnc *PRNotificationCreate) Mutation() *PRNotificationMutation {
 
 // Save creates the PRNotification in the database.
 func (pnc *PRNotificationCreate) Save(ctx context.Context) (*PRNotification, error) {
+	pnc.defaults()
 	return withHooks[*PRNotification, PRNotificationMutation](ctx, pnc.sqlSave, pnc.mutation, pnc.hooks)
 }
 
@@ -71,6 +114,22 @@ func (pnc *PRNotificationCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pnc *PRNotificationCreate) defaults() {
+	if _, ok := pnc.mutation.PullRequestTitle(); !ok {
+		v := prnotification.DefaultPullRequestTitle
+		pnc.mutation.SetPullRequestTitle(v)
+	}
+	if _, ok := pnc.mutation.PullRequestBody(); !ok {
+		v := prnotification.DefaultPullRequestBody
+		pnc.mutation.SetPullRequestBody(v)
+	}
+	if _, ok := pnc.mutation.PullRequestAuthorLogin(); !ok {
+		v := prnotification.DefaultPullRequestAuthorLogin
+		pnc.mutation.SetPullRequestAuthorLogin(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pnc *PRNotificationCreate) check() error {
 	if _, ok := pnc.mutation.RepoID(); !ok {
@@ -78,6 +137,15 @@ func (pnc *PRNotificationCreate) check() error {
 	}
 	if _, ok := pnc.mutation.PullRequestID(); !ok {
 		return &ValidationError{Name: "pull_request_id", err: errors.New(`ent: missing required field "PRNotification.pull_request_id"`)}
+	}
+	if _, ok := pnc.mutation.PullRequestTitle(); !ok {
+		return &ValidationError{Name: "pull_request_title", err: errors.New(`ent: missing required field "PRNotification.pull_request_title"`)}
+	}
+	if _, ok := pnc.mutation.PullRequestBody(); !ok {
+		return &ValidationError{Name: "pull_request_body", err: errors.New(`ent: missing required field "PRNotification.pull_request_body"`)}
+	}
+	if _, ok := pnc.mutation.PullRequestAuthorLogin(); !ok {
+		return &ValidationError{Name: "pull_request_author_login", err: errors.New(`ent: missing required field "PRNotification.pull_request_author_login"`)}
 	}
 	if _, ok := pnc.mutation.MessageID(); !ok {
 		return &ValidationError{Name: "message_id", err: errors.New(`ent: missing required field "PRNotification.message_id"`)}
@@ -116,6 +184,18 @@ func (pnc *PRNotificationCreate) createSpec() (*PRNotification, *sqlgraph.Create
 	if value, ok := pnc.mutation.PullRequestID(); ok {
 		_spec.SetField(prnotification.FieldPullRequestID, field.TypeInt, value)
 		_node.PullRequestID = value
+	}
+	if value, ok := pnc.mutation.PullRequestTitle(); ok {
+		_spec.SetField(prnotification.FieldPullRequestTitle, field.TypeString, value)
+		_node.PullRequestTitle = value
+	}
+	if value, ok := pnc.mutation.PullRequestBody(); ok {
+		_spec.SetField(prnotification.FieldPullRequestBody, field.TypeString, value)
+		_node.PullRequestBody = value
+	}
+	if value, ok := pnc.mutation.PullRequestAuthorLogin(); ok {
+		_spec.SetField(prnotification.FieldPullRequestAuthorLogin, field.TypeString, value)
+		_node.PullRequestAuthorLogin = value
 	}
 	if value, ok := pnc.mutation.MessageID(); ok {
 		_spec.SetField(prnotification.FieldMessageID, field.TypeInt, value)
@@ -206,6 +286,42 @@ func (u *PRNotificationUpsert) UpdatePullRequestID() *PRNotificationUpsert {
 // AddPullRequestID adds v to the "pull_request_id" field.
 func (u *PRNotificationUpsert) AddPullRequestID(v int) *PRNotificationUpsert {
 	u.Add(prnotification.FieldPullRequestID, v)
+	return u
+}
+
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (u *PRNotificationUpsert) SetPullRequestTitle(v string) *PRNotificationUpsert {
+	u.Set(prnotification.FieldPullRequestTitle, v)
+	return u
+}
+
+// UpdatePullRequestTitle sets the "pull_request_title" field to the value that was provided on create.
+func (u *PRNotificationUpsert) UpdatePullRequestTitle() *PRNotificationUpsert {
+	u.SetExcluded(prnotification.FieldPullRequestTitle)
+	return u
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (u *PRNotificationUpsert) SetPullRequestBody(v string) *PRNotificationUpsert {
+	u.Set(prnotification.FieldPullRequestBody, v)
+	return u
+}
+
+// UpdatePullRequestBody sets the "pull_request_body" field to the value that was provided on create.
+func (u *PRNotificationUpsert) UpdatePullRequestBody() *PRNotificationUpsert {
+	u.SetExcluded(prnotification.FieldPullRequestBody)
+	return u
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (u *PRNotificationUpsert) SetPullRequestAuthorLogin(v string) *PRNotificationUpsert {
+	u.Set(prnotification.FieldPullRequestAuthorLogin, v)
+	return u
+}
+
+// UpdatePullRequestAuthorLogin sets the "pull_request_author_login" field to the value that was provided on create.
+func (u *PRNotificationUpsert) UpdatePullRequestAuthorLogin() *PRNotificationUpsert {
+	u.SetExcluded(prnotification.FieldPullRequestAuthorLogin)
 	return u
 }
 
@@ -309,6 +425,48 @@ func (u *PRNotificationUpsertOne) UpdatePullRequestID() *PRNotificationUpsertOne
 	})
 }
 
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (u *PRNotificationUpsertOne) SetPullRequestTitle(v string) *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestTitle(v)
+	})
+}
+
+// UpdatePullRequestTitle sets the "pull_request_title" field to the value that was provided on create.
+func (u *PRNotificationUpsertOne) UpdatePullRequestTitle() *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestTitle()
+	})
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (u *PRNotificationUpsertOne) SetPullRequestBody(v string) *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestBody(v)
+	})
+}
+
+// UpdatePullRequestBody sets the "pull_request_body" field to the value that was provided on create.
+func (u *PRNotificationUpsertOne) UpdatePullRequestBody() *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestBody()
+	})
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (u *PRNotificationUpsertOne) SetPullRequestAuthorLogin(v string) *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestAuthorLogin(v)
+	})
+}
+
+// UpdatePullRequestAuthorLogin sets the "pull_request_author_login" field to the value that was provided on create.
+func (u *PRNotificationUpsertOne) UpdatePullRequestAuthorLogin() *PRNotificationUpsertOne {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestAuthorLogin()
+	})
+}
+
 // SetMessageID sets the "message_id" field.
 func (u *PRNotificationUpsertOne) SetMessageID(v int) *PRNotificationUpsertOne {
 	return u.Update(func(s *PRNotificationUpsert) {
@@ -378,6 +536,7 @@ func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotificati
 	for i := range pncb.builders {
 		func(i int, root context.Context) {
 			builder := pncb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PRNotificationMutation)
 				if !ok {
@@ -568,6 +727,48 @@ func (u *PRNotificationUpsertBulk) AddPullRequestID(v int) *PRNotificationUpsert
 func (u *PRNotificationUpsertBulk) UpdatePullRequestID() *PRNotificationUpsertBulk {
 	return u.Update(func(s *PRNotificationUpsert) {
 		s.UpdatePullRequestID()
+	})
+}
+
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (u *PRNotificationUpsertBulk) SetPullRequestTitle(v string) *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestTitle(v)
+	})
+}
+
+// UpdatePullRequestTitle sets the "pull_request_title" field to the value that was provided on create.
+func (u *PRNotificationUpsertBulk) UpdatePullRequestTitle() *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestTitle()
+	})
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (u *PRNotificationUpsertBulk) SetPullRequestBody(v string) *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestBody(v)
+	})
+}
+
+// UpdatePullRequestBody sets the "pull_request_body" field to the value that was provided on create.
+func (u *PRNotificationUpsertBulk) UpdatePullRequestBody() *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestBody()
+	})
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (u *PRNotificationUpsertBulk) SetPullRequestAuthorLogin(v string) *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.SetPullRequestAuthorLogin(v)
+	})
+}
+
+// UpdatePullRequestAuthorLogin sets the "pull_request_author_login" field to the value that was provided on create.
+func (u *PRNotificationUpsertBulk) UpdatePullRequestAuthorLogin() *PRNotificationUpsertBulk {
+	return u.Update(func(s *PRNotificationUpsert) {
+		s.UpdatePullRequestAuthorLogin()
 	})
 }
 

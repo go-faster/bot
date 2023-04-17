@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-faster/bot/internal/ent/gptdialog"
+	"github.com/go-faster/bot/internal/ent/prnotification"
 	"github.com/go-faster/bot/internal/ent/schema"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramuserstate"
@@ -21,6 +22,20 @@ func init() {
 	gptdialogDescCreatedAt := gptdialogFields[6].Descriptor()
 	// gptdialog.DefaultCreatedAt holds the default value on creation for the created_at field.
 	gptdialog.DefaultCreatedAt = gptdialogDescCreatedAt.Default.(func() time.Time)
+	prnotificationFields := schema.PRNotification{}.Fields()
+	_ = prnotificationFields
+	// prnotificationDescPullRequestTitle is the schema descriptor for pull_request_title field.
+	prnotificationDescPullRequestTitle := prnotificationFields[2].Descriptor()
+	// prnotification.DefaultPullRequestTitle holds the default value on creation for the pull_request_title field.
+	prnotification.DefaultPullRequestTitle = prnotificationDescPullRequestTitle.Default.(string)
+	// prnotificationDescPullRequestBody is the schema descriptor for pull_request_body field.
+	prnotificationDescPullRequestBody := prnotificationFields[3].Descriptor()
+	// prnotification.DefaultPullRequestBody holds the default value on creation for the pull_request_body field.
+	prnotification.DefaultPullRequestBody = prnotificationDescPullRequestBody.Default.(string)
+	// prnotificationDescPullRequestAuthorLogin is the schema descriptor for pull_request_author_login field.
+	prnotificationDescPullRequestAuthorLogin := prnotificationFields[4].Descriptor()
+	// prnotification.DefaultPullRequestAuthorLogin holds the default value on creation for the pull_request_author_login field.
+	prnotification.DefaultPullRequestAuthorLogin = prnotificationDescPullRequestAuthorLogin.Default.(string)
 	telegramchannelstateFields := schema.TelegramChannelState{}.Fields()
 	_ = telegramchannelstateFields
 	// telegramchannelstateDescPts is the schema descriptor for pts field.

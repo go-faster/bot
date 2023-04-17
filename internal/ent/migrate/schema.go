@@ -70,6 +70,9 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "repo_id", Type: field.TypeInt64},
 		{Name: "pull_request_id", Type: field.TypeInt},
+		{Name: "pull_request_title", Type: field.TypeString, Default: ""},
+		{Name: "pull_request_body", Type: field.TypeString, Default: ""},
+		{Name: "pull_request_author_login", Type: field.TypeString, Default: ""},
 		{Name: "message_id", Type: field.TypeInt},
 	}
 	// PrNotificationsTable holds the schema information for the "pr_notifications" table.
