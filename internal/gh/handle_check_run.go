@@ -2,6 +2,7 @@ package gh
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
@@ -49,18 +50,24 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		return nil
 	}
 
-	checks, err := h.queryChecks(ctx, e.GetRepo(), pr)
-	if err != nil {
-		// No checks - no update.
-		lg.Error("Query checks", zap.Error(err))
-		return nil
-	}
+	// We gonna update all checks anyway, so do not include check id in key.
+	key := fmt.Sprintf("%s#%d",
+		e.GetRepo().GetFullName(),
+		pr.GetNumber(),
+	)
+	_, err, _ = h.checksSema.Do(key, func() (any, error) {
+		checks, err := h.queryChecks(ctx, e.GetRepo(), pr)
+		if err != nil {
+			return 0, errors.Wrap(err, "query checks")
+		}
 
-	return h.updatePR(ctx, PullRequestUpdate{
-		Event:  "check_run",
-		Action: "",
-		Repo:   e.GetRepo(),
-		PR:     pr,
-		Checks: checks,
+		return 0, h.updatePR(ctx, PullRequestUpdate{
+			Event:  "check_run",
+			Action: "",
+			Repo:   e.GetRepo(),
+			PR:     pr,
+			Checks: checks,
+		})
 	})
+	return err
 }
