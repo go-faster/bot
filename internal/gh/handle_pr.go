@@ -132,7 +132,18 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 
 	r := h.sender.To(p).NoWebpage()
 	// Setup buttons.
-	if u, _ := url.Parse(pr.GetHTMLURL()); u != nil {
+	for _, htmlURL := range []string{
+		pr.GetHTMLURL(),
+		fmt.Sprintf("https://github.com/%s/%s/pull/%d",
+			repo.GetOwner().GetLogin(), repo.GetName(),
+			pr.GetNumber(),
+		),
+	} {
+		u, _ := url.ParseRequestURI(htmlURL)
+		if htmlURL == "" || u == nil {
+			continue
+		}
+
 		files, checks := *u, *u
 		files.Path = path.Join(files.Path, "files")
 		checks.Path = path.Join(checks.Path, "checks")
@@ -154,6 +165,8 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			markup.URL(checksTitle, checks.String()),
 			markup.Callback("Test button", action.Marshal(mergeAction)),
 		)
+
+		break
 	}
 
 	var text []styling.StyledTextOption
