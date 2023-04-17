@@ -124,7 +124,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 
 	r := h.sender.To(p).NoWebpage()
 	// Setup buttons.
-	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil {
+	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil && state.Action != "merged" {
 		files, checks := *u, *u
 		files.Path = path.Join(files.Path, "files")
 		checks.Path = path.Join(checks.Path, "checks")
