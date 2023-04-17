@@ -135,11 +135,9 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			RepositoryID: repo.GetID(),
 			Entity:       action.PullRequest,
 		}
-
 		r = r.Row(
-			markup.URL("Diff🔀", files.String()),
 			markup.URL(generateChecksStatus(state.Checks), checks.String()),
-			markup.Callback("Test button", action.Marshal(mergeAction)),
+			markup.Callback("Merge", action.Marshal(mergeAction)),
 		)
 	}
 

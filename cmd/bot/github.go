@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"net/http"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"golang.org/x/oauth2"
 )
 
 func setupGithubInstallation(httpTransport http.RoundTripper) (*github.Client, error) {
@@ -27,4 +29,12 @@ func setupGithubInstallation(httpTransport http.RoundTripper) (*github.Client, e
 	return github.NewClient(&http.Client{
 		Transport: ghTransport,
 	}), nil
+}
+
+func (a *App) clientWithToken(ctx context.Context, token string) *github.Client {
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	return github.NewClient(tc)
 }

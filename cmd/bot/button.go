@@ -6,9 +6,11 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/action"
@@ -16,7 +18,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/user"
 )
 
-func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
+func (a *App) OnButton(ctx context.Context, e dispatch.Button) (rerr error) {
 	ctx, span := a.tracer.Start(ctx, "OnBotCallbackQuery")
 	defer span.End()
 	if e.Input == nil {
@@ -27,22 +29,32 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 	zctx.From(ctx).Info("OnButton",
 		zap.String("user", e.Input.String()),
 	)
+	rpc := e.RPC()
+	defer func() {
+		if rerr != nil {
+			span.SetStatus(codes.Error, rerr.Error())
+			answer := &tg.MessagesSetBotCallbackAnswerRequest{
+				QueryID: e.QueryID,
+				Message: fmt.Sprintf("Error: %s", rerr),
+				Alert:   true,
+			}
+			if _, err := rpc.MessagesSetBotCallbackAnswer(ctx, answer); err != nil {
+				rerr = multierr.Append(rerr, err)
+			}
+		}
+	}()
 
 	var act action.Action
 	if err := act.UnmarshalText(e.Data); err != nil {
-		answer := &tg.MessagesSetBotCallbackAnswerRequest{
-			QueryID: e.QueryID,
-			Message: fmt.Sprintf("Error: %s", err),
-			Alert:   true,
-		}
-		if _, err := e.RPC().MessagesSetBotCallbackAnswer(ctx, answer); err != nil {
-			return err
-		}
-		span.SetStatus(codes.Error, err.Error())
-		return nil
+		return errors.Wrap(err, "unmarshal")
 	}
+	span.SetAttributes(
+		attribute.Int("action.id", act.ID),
+		attribute.Stringer("action.entity", act.Entity),
+		attribute.Stringer("action.type", act.Type),
+	)
 
-	var hasToken bool
+	var token string
 	{
 		users, err := a.db.User.Query().Where(
 			user.ID(e.User.ID),
@@ -52,25 +64,30 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) error {
 		}
 		for _, u := range users {
 			if u.GithubToken != "" {
-				hasToken = true
+				token = u.GithubToken
 				break
 			}
 		}
 	}
-
-	span.SetAttributes(
-		attribute.Int("action.id", act.ID),
-		attribute.Stringer("action.entity", act.Entity),
-		attribute.Stringer("action.type", act.Type),
-	)
-
-	answer := &tg.MessagesSetBotCallbackAnswerRequest{
-		QueryID:   e.QueryID,
-		Message:   fmt.Sprintf("%s(t=%v): %s", e.User.Username, hasToken, act),
-		CacheTime: 30,
+	if token == "" {
+		return errors.New("no PAT token found for user")
 	}
-	if _, err := e.RPC().MessagesSetBotCallbackAnswer(ctx, answer); err != nil {
-		return err
+
+	api := a.clientWithToken(ctx, token)
+	repo, _, err := api.Repositories.GetByID(ctx, act.RepositoryID)
+	if err != nil {
+		return errors.Wrap(err, "get repo")
+	}
+	var (
+		owner    = repo.GetOwner().GetLogin()
+		repoName = repo.GetName()
+		message  = ""
+		options  = &github.PullRequestOptions{
+			MergeMethod: "merge",
+		}
+	)
+	if _, _, err := api.PullRequests.Merge(ctx, owner, repoName, act.ID, message, options); err != nil {
+		return errors.Wrap(err, "merge")
 	}
 
 	return nil
