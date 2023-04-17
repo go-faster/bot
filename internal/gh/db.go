@@ -5,15 +5,16 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/errors"
+	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/multierr"
+
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
-	"github.com/go-faster/errors"
-	"github.com/google/go-github/v50/github"
-	"go.opentelemetry.io/otel/trace"
-	"go.uber.org/multierr"
 )
 
 // Hook is event handler which saves last message ID of dialog to the storage.
@@ -176,7 +177,11 @@ func queryChecks(
 }
 
 func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
-	return queryChecks(ctx, h.gh, repo, pr)
+	client, err := h.Client(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return queryChecks(ctx, client, repo, pr)
 }
 
 func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ error) {

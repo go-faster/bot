@@ -15,7 +15,6 @@ import (
 	"github.com/brpaz/echozap"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
-	"github.com/google/go-github/v50/github"
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/bin"
@@ -59,7 +58,6 @@ type App struct {
 	mux        *dispatch.MessageMux
 	tracer     trace.Tracer
 	openai     *openai.Client
-	github     *github.Client
 	m          *app.Metrics
 	lg         *zap.Logger
 	wh         *gh.Webhook
@@ -69,7 +67,7 @@ type App struct {
 	rdy        *Readiness
 }
 
-func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
+func initApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -137,15 +135,25 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	})
 	r.AddHook(otelredis.NewHook(m.TracerProvider()))
 
-	ghClient, err := setupGithubInstallation(httpTransport)
+	ghInstallationClient, err := setupGithubInstallation(httpTransport)
 	if err != nil {
-		return nil, errors.Wrap(err, "setup github")
+		return nil, errors.Wrap(err, "setup github installation")
 	}
-
+	ghInstallationID, err := strconv.ParseInt(os.Getenv("GITHUB_INSTALLATION_ID"), 10, 64)
+	if err != nil {
+		return nil, errors.Wrap(err, "GITHUB_INSTALLATION_ID")
+	}
 	mux := dispatch.NewMessageMux().
 		WithTracerProvider(m.TracerProvider())
 
-	webhook := gh.NewWebhook(db, ghClient, sender, m.MeterProvider(), m.TracerProvider()).WithCache(r)
+	webhook := gh.NewWebhook(
+		db,
+		ghInstallationClient,
+		ghInstallationID,
+		sender,
+		m.MeterProvider(),
+		m.TracerProvider(),
+	).WithCache(r)
 	if notifyGroup, ok := os.LookupEnv("TG_NOTIFY_GROUP"); ok {
 		webhook = webhook.WithNotifyGroup(notifyGroup)
 	}
@@ -173,10 +181,8 @@ func initApp(m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		lg:         lg,
 		wh:         webhook,
 		openai:     openai.NewClientWithConfig(openaiConfig),
-		github:     ghClient,
 		rdy:        new(Readiness),
-
-		tracer: m.TracerProvider().Tracer(""),
+		tracer:     m.TracerProvider().Tracer(""),
 	}
 
 	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
@@ -423,7 +429,7 @@ func (a *App) Run(ctx context.Context) error {
 					)
 
 					var mrkp tg.ReplyMarkupClass
-					if module := info.Main.Path; module != "" && strings.HasPrefix(module, "github.com") {
+					if module := info.Main.Path; module != "" && strings.HasPrefix(module, "ghInstallation.com") {
 						commitLink := fmt.Sprintf("https://%s/commit/%s", module, commit)
 						mrkp = markup.InlineRow(markup.URL("Commit", commitLink))
 					}
@@ -442,7 +448,7 @@ func (a *App) Run(ctx context.Context) error {
 }
 
 func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
-	a, err := initApp(m, lg)
+	a, err := initApp(ctx, m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}

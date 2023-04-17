@@ -22,7 +22,7 @@ func setupGithubInstallation(httpTransport http.RoundTripper) (*github.Client, e
 	}
 	ghTransport, err := ghinstallation.NewAppsTransport(httpTransport, ghAppID, key)
 	if err != nil {
-		return nil, errors.Wrap(err, "create github transport")
+		return nil, errors.Wrap(err, "create ghInstallation transport")
 	}
 	return github.NewClient(&http.Client{
 		Transport: ghTransport,

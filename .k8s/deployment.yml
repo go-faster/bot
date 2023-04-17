@@ -139,6 +139,8 @@ spec:
                 secretKeyRef:
                   name: bot
                   key: GITHUB_CLIENT_ID
+            - name: GITHUB_INSTALLATION_ID
+              value: "26766968"
             - name: OPENAI_TOKEN
               valueFrom:
                 secretKeyRef:

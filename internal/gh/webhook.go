@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/simon/sdk/zctx"
 	"github.com/google/go-github/v50/github"
@@ -22,6 +21,8 @@ import (
 	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
+
+	"github.com/go-faster/bot/internal/ent"
 )
 
 // Webhook is a Github events web hook handler.
@@ -31,8 +32,9 @@ type Webhook struct {
 	sender      *message.Sender
 	notifyGroup string
 
-	githubSecret string
-	gh           *github.Client
+	ghSecret string
+	ghClient *github.Client
+	ghID     int64
 
 	events instrument.Int64Counter
 	tracer trace.Tracer
@@ -43,6 +45,7 @@ type Webhook struct {
 func NewWebhook(
 	db *ent.Client,
 	gh *github.Client,
+	ghID int64,
 	sender *message.Sender,
 	meterProvider metric.MeterProvider,
 	tracerProvider trace.TracerProvider,
@@ -55,20 +58,21 @@ func NewWebhook(
 		panic(err)
 	}
 	return &Webhook{
-		db:     db,
-		sender: sender,
-		gh:     gh,
-		events: eventCount,
-		tracer: tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
+		db:       db,
+		sender:   sender,
+		ghClient: gh,
+		ghID:     ghID,
+		events:   eventCount,
+		tracer:   tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
 }
 
 func (h *Webhook) HasSecret() bool {
-	return h.githubSecret != ""
+	return h.ghSecret != ""
 }
 
 func (h *Webhook) WithSecret(v string) *Webhook {
-	h.githubSecret = v
+	h.ghSecret = v
 	return h
 }
 
@@ -269,7 +273,7 @@ func (h *Webhook) handleHook(e echo.Context) error {
 		}
 	}
 
-	payload, err := github.ValidatePayload(r, []byte(h.githubSecret))
+	payload, err := github.ValidatePayload(r, []byte(h.ghSecret))
 	if err != nil {
 		zctx.From(ctx).Debug("Failed to validate payload")
 		span.SetStatus(codes.Error, err.Error())
