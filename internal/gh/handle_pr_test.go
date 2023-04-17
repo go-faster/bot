@@ -12,8 +12,8 @@ func Test_generateChecksStatus(t *testing.T) {
 		checks []Check
 		want   string
 	}{
-		{nil, ""},
-		{[]Check{}, ""},
+		{nil, "Checks▶"},
+		{[]Check{}, "Checks▶"},
 
 		{
 			[]Check{
@@ -22,7 +22,7 @@ func Test_generateChecksStatus(t *testing.T) {
 				{Status: "created"},
 				{Status: "completed", Conclusion: "success"},
 			},
-			"3🟡,1🟢/4",
+			"Checks⏳",
 		},
 		{
 			[]Check{
@@ -31,7 +31,7 @@ func Test_generateChecksStatus(t *testing.T) {
 				{Status: "completed", Conclusion: "cancelled"},
 				{Status: "completed", Conclusion: "success"},
 			},
-			"3🔴,1🟢/4",
+			"Checks❌",
 		},
 		{
 			[]Check{
@@ -39,7 +39,7 @@ func Test_generateChecksStatus(t *testing.T) {
 				{Status: "completed", Conclusion: "success"},
 				{Status: "completed", Conclusion: "success"},
 			},
-			"3🟢/3",
+			"Checks✅",
 		},
 	}
 	for i, tt := range tests {
