@@ -49,6 +49,9 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		lg.Debug("Ignore event: no PR info")
 		return nil
 	}
+	lg.Debug("Update check",
+		zap.String("pr_head_sha", pr.GetHead().GetSHA()),
+	)
 
 	// We gonna update all checks anyway, so do not include check id in key.
 	key := fmt.Sprintf("%s#%d",
