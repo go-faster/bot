@@ -53,6 +53,48 @@ func (pnu *PRNotificationUpdate) AddPullRequestID(i int) *PRNotificationUpdate {
 	return pnu
 }
 
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (pnu *PRNotificationUpdate) SetPullRequestTitle(s string) *PRNotificationUpdate {
+	pnu.mutation.SetPullRequestTitle(s)
+	return pnu
+}
+
+// SetNillablePullRequestTitle sets the "pull_request_title" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillablePullRequestTitle(s *string) *PRNotificationUpdate {
+	if s != nil {
+		pnu.SetPullRequestTitle(*s)
+	}
+	return pnu
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (pnu *PRNotificationUpdate) SetPullRequestBody(s string) *PRNotificationUpdate {
+	pnu.mutation.SetPullRequestBody(s)
+	return pnu
+}
+
+// SetNillablePullRequestBody sets the "pull_request_body" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillablePullRequestBody(s *string) *PRNotificationUpdate {
+	if s != nil {
+		pnu.SetPullRequestBody(*s)
+	}
+	return pnu
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (pnu *PRNotificationUpdate) SetPullRequestAuthorLogin(s string) *PRNotificationUpdate {
+	pnu.mutation.SetPullRequestAuthorLogin(s)
+	return pnu
+}
+
+// SetNillablePullRequestAuthorLogin sets the "pull_request_author_login" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillablePullRequestAuthorLogin(s *string) *PRNotificationUpdate {
+	if s != nil {
+		pnu.SetPullRequestAuthorLogin(*s)
+	}
+	return pnu
+}
+
 // SetMessageID sets the "message_id" field.
 func (pnu *PRNotificationUpdate) SetMessageID(i int) *PRNotificationUpdate {
 	pnu.mutation.ResetMessageID()
@@ -119,6 +161,15 @@ func (pnu *PRNotificationUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if value, ok := pnu.mutation.AddedPullRequestID(); ok {
 		_spec.AddField(prnotification.FieldPullRequestID, field.TypeInt, value)
 	}
+	if value, ok := pnu.mutation.PullRequestTitle(); ok {
+		_spec.SetField(prnotification.FieldPullRequestTitle, field.TypeString, value)
+	}
+	if value, ok := pnu.mutation.PullRequestBody(); ok {
+		_spec.SetField(prnotification.FieldPullRequestBody, field.TypeString, value)
+	}
+	if value, ok := pnu.mutation.PullRequestAuthorLogin(); ok {
+		_spec.SetField(prnotification.FieldPullRequestAuthorLogin, field.TypeString, value)
+	}
 	if value, ok := pnu.mutation.MessageID(); ok {
 		_spec.SetField(prnotification.FieldMessageID, field.TypeInt, value)
 	}
@@ -168,6 +219,48 @@ func (pnuo *PRNotificationUpdateOne) SetPullRequestID(i int) *PRNotificationUpda
 // AddPullRequestID adds i to the "pull_request_id" field.
 func (pnuo *PRNotificationUpdateOne) AddPullRequestID(i int) *PRNotificationUpdateOne {
 	pnuo.mutation.AddPullRequestID(i)
+	return pnuo
+}
+
+// SetPullRequestTitle sets the "pull_request_title" field.
+func (pnuo *PRNotificationUpdateOne) SetPullRequestTitle(s string) *PRNotificationUpdateOne {
+	pnuo.mutation.SetPullRequestTitle(s)
+	return pnuo
+}
+
+// SetNillablePullRequestTitle sets the "pull_request_title" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillablePullRequestTitle(s *string) *PRNotificationUpdateOne {
+	if s != nil {
+		pnuo.SetPullRequestTitle(*s)
+	}
+	return pnuo
+}
+
+// SetPullRequestBody sets the "pull_request_body" field.
+func (pnuo *PRNotificationUpdateOne) SetPullRequestBody(s string) *PRNotificationUpdateOne {
+	pnuo.mutation.SetPullRequestBody(s)
+	return pnuo
+}
+
+// SetNillablePullRequestBody sets the "pull_request_body" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillablePullRequestBody(s *string) *PRNotificationUpdateOne {
+	if s != nil {
+		pnuo.SetPullRequestBody(*s)
+	}
+	return pnuo
+}
+
+// SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
+func (pnuo *PRNotificationUpdateOne) SetPullRequestAuthorLogin(s string) *PRNotificationUpdateOne {
+	pnuo.mutation.SetPullRequestAuthorLogin(s)
+	return pnuo
+}
+
+// SetNillablePullRequestAuthorLogin sets the "pull_request_author_login" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillablePullRequestAuthorLogin(s *string) *PRNotificationUpdateOne {
+	if s != nil {
+		pnuo.SetPullRequestAuthorLogin(*s)
+	}
 	return pnuo
 }
 
@@ -266,6 +359,15 @@ func (pnuo *PRNotificationUpdateOne) sqlSave(ctx context.Context) (_node *PRNoti
 	}
 	if value, ok := pnuo.mutation.AddedPullRequestID(); ok {
 		_spec.AddField(prnotification.FieldPullRequestID, field.TypeInt, value)
+	}
+	if value, ok := pnuo.mutation.PullRequestTitle(); ok {
+		_spec.SetField(prnotification.FieldPullRequestTitle, field.TypeString, value)
+	}
+	if value, ok := pnuo.mutation.PullRequestBody(); ok {
+		_spec.SetField(prnotification.FieldPullRequestBody, field.TypeString, value)
+	}
+	if value, ok := pnuo.mutation.PullRequestAuthorLogin(); ok {
+		_spec.SetField(prnotification.FieldPullRequestAuthorLogin, field.TypeString, value)
 	}
 	if value, ok := pnuo.mutation.MessageID(); ok {
 		_spec.SetField(prnotification.FieldMessageID, field.TypeInt, value)

@@ -20,6 +20,12 @@ type PRNotification struct {
 	RepoID int64 `json:"repo_id,omitempty"`
 	// Pull request number.
 	PullRequestID int `json:"pull_request_id,omitempty"`
+	// Pull request title.
+	PullRequestTitle string `json:"pull_request_title,omitempty"`
+	// Pull request body.
+	PullRequestBody string `json:"pull_request_body,omitempty"`
+	// Pull request author's login.
+	PullRequestAuthorLogin string `json:"pull_request_author_login,omitempty"`
 	// Telegram message ID. Belongs to notify channel.
 	MessageID    int `json:"message_id,omitempty"`
 	selectValues sql.SelectValues
@@ -32,6 +38,8 @@ func (*PRNotification) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case prnotification.FieldID, prnotification.FieldRepoID, prnotification.FieldPullRequestID, prnotification.FieldMessageID:
 			values[i] = new(sql.NullInt64)
+		case prnotification.FieldPullRequestTitle, prnotification.FieldPullRequestBody, prnotification.FieldPullRequestAuthorLogin:
+			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -64,6 +72,24 @@ func (pn *PRNotification) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pull_request_id", values[i])
 			} else if value.Valid {
 				pn.PullRequestID = int(value.Int64)
+			}
+		case prnotification.FieldPullRequestTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pull_request_title", values[i])
+			} else if value.Valid {
+				pn.PullRequestTitle = value.String
+			}
+		case prnotification.FieldPullRequestBody:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pull_request_body", values[i])
+			} else if value.Valid {
+				pn.PullRequestBody = value.String
+			}
+		case prnotification.FieldPullRequestAuthorLogin:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pull_request_author_login", values[i])
+			} else if value.Valid {
+				pn.PullRequestAuthorLogin = value.String
 			}
 		case prnotification.FieldMessageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -112,6 +138,15 @@ func (pn *PRNotification) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pull_request_id=")
 	builder.WriteString(fmt.Sprintf("%v", pn.PullRequestID))
+	builder.WriteString(", ")
+	builder.WriteString("pull_request_title=")
+	builder.WriteString(pn.PullRequestTitle)
+	builder.WriteString(", ")
+	builder.WriteString("pull_request_body=")
+	builder.WriteString(pn.PullRequestBody)
+	builder.WriteString(", ")
+	builder.WriteString("pull_request_author_login=")
+	builder.WriteString(pn.PullRequestAuthorLogin)
 	builder.WriteString(", ")
 	builder.WriteString("message_id=")
 	builder.WriteString(fmt.Sprintf("%v", pn.MessageID))
