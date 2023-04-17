@@ -12,7 +12,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func (w Webhook) clientWithToken(ctx context.Context, token string) *github.Client {
+func (w *Webhook) clientWithToken(ctx context.Context, token string) *github.Client {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
@@ -21,7 +21,7 @@ func (w Webhook) clientWithToken(ctx context.Context, token string) *github.Clie
 }
 
 // Client returns GitHub client for installation.
-func (w Webhook) Client(ctx context.Context) (*github.Client, error) {
+func (w *Webhook) Client(ctx context.Context) (*github.Client, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

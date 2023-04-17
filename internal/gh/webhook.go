@@ -21,6 +21,7 @@ import (
 	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
+	"golang.org/x/sync/singleflight"
 
 	"github.com/go-faster/bot/internal/ent"
 )
@@ -35,6 +36,8 @@ type Webhook struct {
 	ghSecret string
 	ghClient *github.Client
 	ghID     int64
+
+	checksSema singleflight.Group
 
 	events instrument.Int64Counter
 	tracer trace.Tracer
