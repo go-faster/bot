@@ -159,7 +159,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	var text []styling.StyledTextOption
 	// TODO: handle more states?
 	switch state.Action {
-	case "opened":
+	case "", "opened":
 		readiness := " opened"
 		if pr.GetDraft() {
 			readiness = " drafted"
