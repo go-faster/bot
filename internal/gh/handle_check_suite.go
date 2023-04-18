@@ -3,6 +3,7 @@ package gh
 import (
 	"context"
 
+	"github.com/go-faster/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -29,5 +30,23 @@ func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEven
 		),
 	)
 
+	lg := zctx.From(ctx)
+	var pr *github.PullRequest
+	for _, pr = range e.GetCheckSuite().PullRequests {
+		break
+	}
+	if pr == nil {
+		// No PR - no update.
+		lg.Debug("Ignore event: no PR info")
+		return nil
+	}
+
+	h.updater.Emit(PullRequestUpdate{
+		Event:  "check_update",
+		Action: "",
+		Repo:   e.GetRepo(),
+		PR:     pr,
+		Checks: nil,
+	})
 	return nil
 }

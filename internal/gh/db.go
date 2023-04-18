@@ -188,14 +188,13 @@ type Check struct {
 	Status     string // completed
 }
 
-func queryChecks(
-	ctx context.Context,
-	gh *github.Client,
-	repo *github.Repository,
-	pr *github.PullRequest,
-) (checks []Check, _ error) {
-	// TODO(tdakkota): paginate
-	list, _, err := gh.Checks.ListCheckRunsForRef(ctx,
+func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
+	client, err := h.Client(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	list, _, err := client.Checks.ListCheckRunsForRef(ctx,
 		repo.GetOwner().GetLogin(),
 		repo.GetName(),
 		fmt.Sprintf("pull/%d/head", pr.GetNumber()),
@@ -219,14 +218,6 @@ func queryChecks(
 	}
 
 	return checks, nil
-}
-
-func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
-	client, err := h.Client(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return queryChecks(ctx, client, repo, pr)
 }
 
 func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ error) {

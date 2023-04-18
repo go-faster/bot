@@ -21,7 +21,6 @@ import (
 	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
-	"golang.org/x/sync/singleflight"
 
 	"github.com/go-faster/bot/internal/ent"
 )
@@ -37,7 +36,7 @@ type Webhook struct {
 	ghClient *github.Client
 	ghID     int64
 
-	checksSema singleflight.Group
+	updater *updater
 
 	events instrument.Int64Counter
 	tracer trace.Tracer
@@ -60,7 +59,7 @@ func NewWebhook(
 	if err != nil {
 		panic(err)
 	}
-	return &Webhook{
+	w := &Webhook{
 		db:       db,
 		sender:   sender,
 		ghClient: gh,
@@ -68,6 +67,16 @@ func NewWebhook(
 		events:   eventCount,
 		tracer:   tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
 	}
+	w.updater = newUpdater(w, 5*time.Second)
+	return w
+}
+
+// Run runs some background tasks of Webhook.
+func (h *Webhook) Run(ctx context.Context) error {
+	if err := h.updater.Run(ctx); err != nil {
+		return errors.Wrap(err, "PR updater")
+	}
+	return nil
 }
 
 func (h *Webhook) HasSecret() bool {
