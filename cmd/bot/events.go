@@ -11,7 +11,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 

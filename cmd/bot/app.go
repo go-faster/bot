@@ -14,7 +14,7 @@ import (
 	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/bin"
@@ -114,7 +114,7 @@ func initApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr 
 		Middlewares: []telegram.Middleware{
 			telegram.MiddlewareFunc(func(next tg.Invoker) telegram.InvokeFunc {
 				return func(ctx context.Context, input bin.Encoder, output bin.Decoder) error {
-					return next.Invoke(zctx.With(ctx, lg), input, output)
+					return next.Invoke(zctx.Base(ctx, lg), input, output)
 				}
 			}),
 			// NB: This is critical for updates handler to work.
@@ -251,7 +251,7 @@ func (a *App) Run(ctx context.Context) error {
 			func(next echo.HandlerFunc) echo.HandlerFunc {
 				return func(c echo.Context) error {
 					req := c.Request()
-					logCtx := zctx.With(req.Context(), lg.Named("handler"))
+					logCtx := zctx.Base(req.Context(), lg.Named("handler"))
 					req = req.WithContext(logCtx)
 					c.SetRequest(req)
 					return next(c)

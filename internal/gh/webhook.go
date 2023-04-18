@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/peer"
@@ -203,8 +203,8 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		zap.String("type", t),
 	}
 	fields = append(fields, meta.Fields()...)
-	lg := zctx.From(ctx).With(fields...)
-	ctx = zctx.With(ctx, lg)
+	ctx = zctx.With(ctx, fields...)
+	lg := zctx.From(ctx)
 
 	defer func() {
 		if rerr != nil {

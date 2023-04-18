@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message"

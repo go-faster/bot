@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"
 )

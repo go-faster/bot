@@ -11,7 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/gotd/td/telegram/message/styling"
 	"github.com/gotd/td/telegram/message/unpack"
 	"github.com/gotd/td/tg"
@@ -155,12 +155,12 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 		return nil
 	}
 
-	lg := zctx.From(ctx).With(
+	ctx = zctx.With(ctx,
 		zap.String("reply", reply.Message),
 		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
 		zap.Int("top_thread_id", replyHdr.ReplyToTopID),
 	)
-	ctx = zctx.With(ctx, lg)
+	lg := zctx.From(ctx)
 
 	tx, err := h.db.Tx(ctx)
 	if err != nil {

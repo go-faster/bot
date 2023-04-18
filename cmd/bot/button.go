@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/attribute"

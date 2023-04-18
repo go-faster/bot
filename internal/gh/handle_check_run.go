@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -34,11 +34,11 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		),
 	)
 
-	lg := zctx.From(ctx).With(
+	ctx = zctx.With(ctx,
 		zap.String("action", e.GetAction()),
 		zap.String("head_sha", e.GetCheckRun().GetHeadSHA()),
 	)
-	ctx = zctx.With(ctx, lg)
+	lg := zctx.From(ctx)
 
 	pr, err := h.upsertCheck(ctx, e)
 	if err != nil {

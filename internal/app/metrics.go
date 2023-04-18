@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/autometer"
-	"github.com/go-faster/simon/sdk/autotracer"
+	"github.com/go-faster/sdk/autometer"
+	"github.com/go-faster/sdk/autotracer"
 	"github.com/go-logr/zapr"
 	promClient "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/simon/sdk/zctx"
+	"github.com/go-faster/sdk/zctx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
@@ -76,8 +76,9 @@ func (b *Bot) handleMessage(ctx context.Context, e tg.Entities, msg tg.MessageCl
 
 		var sender *tg.User
 		if p, ok := m.GetFromID(); ok {
-			lg := zctx.From(ctx).With(zap.String("from_peer", fmt.Sprintf("%#v", p)))
-			zctx.With(ctx, lg)
+			lg := zctx.From(ctx).With(
+				zap.String("from_peer", fmt.Sprintf("%#v", p)),
+			)
 
 			pu, ok := p.(*tg.PeerUser)
 			if !ok {
