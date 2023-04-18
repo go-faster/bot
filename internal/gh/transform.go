@@ -30,10 +30,10 @@ func htmlURL(s string) string {
 
 func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 	var (
-		repoID   int64
-		repoName string
-		repoURL  string
-		evType   string
+		repoID       int64
+		fullRepoName string
+		repoURL      string
+		evType       string
 	)
 	e.ObjStart()
 	if err := d.ObjBytes(func(d *jx.Decoder, key []byte) error {
@@ -96,7 +96,7 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 					}
 					return nil
 				case "name":
-					if repoName, err = d.Str(); err != nil {
+					if fullRepoName, err = d.Str(); err != nil {
 						return errors.Wrap(err, "name")
 					}
 					return nil
@@ -121,11 +121,15 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 				e.Int64(repoID)
 			})
 			e.Field("name", func(e *jx.Encoder) {
-				// Strip first part of repo name?
-				e.Str(repoName)
+				// Strip first part of repo name
+				_, name, ok := strings.Cut(fullRepoName, "/")
+				if !ok {
+					name = fullRepoName
+				}
+				e.Str(name)
 			})
 			e.Field("full_name", func(e *jx.Encoder) {
-				e.Str(repoName)
+				e.Str(fullRepoName)
 			})
 			e.Field("url", func(e *jx.Encoder) {
 				e.Str(repoURL)
@@ -140,7 +144,7 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 
 	return &Event{
 		Type:     evType,
-		RepoName: repoName,
+		RepoName: fullRepoName,
 		RepoID:   repoID,
 	}, nil
 }
