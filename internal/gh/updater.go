@@ -42,6 +42,12 @@ func newUpdater(w *Webhook, tick time.Duration) *updater {
 }
 
 func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error {
+	if update.Event == "check_update" {
+		if err := fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
+			return errors.Wrap(err, "query cached pr fields")
+		}
+	}
+
 	// Do not query checks if PR was merged: we won't send status anyway.
 	if update.Action != "merged" && update.Checks == nil {
 		checks, err := u.w.queryChecks(ctx, update.Repo, update.PR)
@@ -50,6 +56,7 @@ func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error
 		}
 		update.Checks = checks
 	}
+
 	return u.w.updatePR(ctx, update)
 }
 
