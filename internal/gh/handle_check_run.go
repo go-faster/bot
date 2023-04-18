@@ -36,6 +36,7 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 
 	ctx = zctx.With(ctx,
 		zap.String("action", e.GetAction()),
+		zap.Int64("run_id", e.GetCheckRun().GetID()),
 		zap.String("head_sha", e.GetCheckRun().GetHeadSHA()),
 	)
 	lg := zctx.From(ctx)
