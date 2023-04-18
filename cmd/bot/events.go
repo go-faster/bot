@@ -189,6 +189,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 					zap.String("repo_name", ev.RepoName),
 				)
 
+				ctx = zctx.With(ctx, zap.Bool("from_ch_fetcher", true))
 				// Handle as event was received from webhook.
 				if err := a.wh.Handle(ctx, ev.Type, e.Bytes()); err != nil {
 					return errors.Wrap(err, "handle")
