@@ -294,6 +294,13 @@ func (h *Handler) generateCompletion(
 		}
 	}()
 
+	prompt := strings.TrimSpace(reply.GetMessage())
+	if prompt == "" {
+		// Do not bother with empty messages.
+		// Probably, some stickers/gifs were sent.
+		return nil
+	}
+
 	if fromUser, ok := e.MessageFrom(); ok {
 		if delay, ok := h.userLimiter.Allow(fromUser.ID); !ok {
 			if _, err := e.Reply().Textf(ctx, "Per-user rate limit exceeded. Try again later (%s).", delay); err != nil {
@@ -315,7 +322,6 @@ func (h *Handler) generateCompletion(
 		return nil
 	}
 
-	prompt := reply.GetMessage()
 	if msgLimit := h.limitCfg.MessageSizeLimit; msgLimit > 0 && utf8.RuneCountInString(prompt) > msgLimit {
 		if _, err := e.Reply().Text(ctx, "Too many characters."); err != nil {
 			return errors.Wrap(err, "send message limit error")
