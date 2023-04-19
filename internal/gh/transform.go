@@ -120,14 +120,7 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 			e.Field("id", func(e *jx.Encoder) {
 				e.Int64(repoID)
 			})
-			e.Field("name", func(e *jx.Encoder) {
-				// Strip first part of repo name
-				_, name, ok := strings.Cut(fullRepoName, "/")
-				if !ok {
-					name = fullRepoName
-				}
-				e.Str(name)
-			})
+
 			e.Field("full_name", func(e *jx.Encoder) {
 				e.Str(fullRepoName)
 			})
@@ -137,6 +130,20 @@ func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 			e.Field("html_url", func(e *jx.Encoder) {
 				e.Str(htmlURL(repoURL))
 			})
+			owner, name, ok := strings.Cut(fullRepoName, "/")
+			if ok {
+				e.Field("name", func(e *jx.Encoder) {
+					e.Str(name)
+				})
+
+				e.Field("owner", func(e *jx.Encoder) {
+					e.Obj(func(e *jx.Encoder) {
+						e.Field("login", func(e *jx.Encoder) {
+							e.Str(owner)
+						})
+					})
+				})
+			}
 		})
 	})
 	e.ObjEnd()
