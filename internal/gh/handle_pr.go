@@ -11,7 +11,6 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
-	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/markup"
@@ -23,7 +22,7 @@ import (
 )
 
 type PullRequestUpdate struct {
-	// Possible values: update, check_run
+	// Possible values: pr_update, check_update
 	Event string
 	// Possible values for Event == "update": opened, merged
 	Action string
@@ -108,7 +107,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 		return errors.Wrap(err, "query message state")
 	}
 
-	if existingMsgID == 0 && state.Event == "check_run" {
+	if existingMsgID == 0 && state.Event == "check_update" {
 		// Prevent a possible race between handlers: pr event handler is only who sends.
 		lg.Warn("Update pull request check status: there is no notification yet")
 		return nil
@@ -120,7 +119,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	// 2) There is less than 10 messages between this notification and last messsge.
 	// 3) State update is a PR state update, not a check run or something like that.
 	//
-	gonnaSendNewMessage := (existingMsgID == 0 || lastMsgID-existingMsgID > 10) && state.Event == "update"
+	gonnaSendNewMessage := (existingMsgID == 0 || lastMsgID-existingMsgID > 10) && state.Event == "pr_update"
 
 	r := h.sender.To(p).NoWebpage()
 	// Setup buttons.
@@ -181,9 +180,18 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			)
 		}
 
+		action := " merged by "
+		merger := pr.GetMergedBy()
+		if am := pr.AutoMerge; am != nil {
+			action = " auto-merged by "
+			if u := am.EnabledBy; u != nil {
+				merger = u
+			}
+		}
+
 		text = append(text,
-			styling.Plain(" merged by "),
-			githubUserLink(pr.GetMergedBy()),
+			styling.Plain(action),
+			githubUserLink(merger),
 		)
 	}
 
@@ -214,11 +222,6 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 }
 
 func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handlePRClosed",
-		trace.WithSpanKind(trace.SpanKindServer),
-	)
-	defer span.End()
-
 	var (
 		repo = e.GetRepo()
 		pr   = e.GetPullRequest()
@@ -228,34 +231,25 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 		return nil
 	}
 
-	checks, err := h.queryChecks(ctx, repo, pr)
-	if err != nil {
-		zctx.From(ctx).Error("Query checks", zap.Error(err))
-		checks = nil
-	}
-
-	return h.updatePR(ctx, PullRequestUpdate{
-		Event:  "update",
+	h.updater.Emit(PullRequestUpdate{
+		Event:  "pr_update",
 		Action: "merged",
 		Repo:   repo,
 		PR:     pr,
-		Checks: checks,
+		Checks: nil,
 	})
+	return nil
 }
 
 func (h *Webhook) handlePROpened(ctx context.Context, e *github.PullRequestEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handlePROpened",
-		trace.WithSpanKind(trace.SpanKindServer),
-	)
-	defer span.End()
-
-	return h.updatePR(ctx, PullRequestUpdate{
-		Event:  "update",
+	h.updater.Emit(PullRequestUpdate{
+		Event:  "pr_update",
 		Action: "opened",
 		Repo:   e.GetRepo(),
 		PR:     e.GetPullRequest(),
 		Checks: nil,
 	})
+	return nil
 }
 
 func (h *Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {

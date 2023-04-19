@@ -273,6 +273,12 @@ func (a *App) Run(ctx context.Context) error {
 			Handler: e,
 		}
 		g.Go(func() error {
+			if err := a.wh.Run(ctx); err != nil {
+				return errors.Wrap(err, "webhook task")
+			}
+			return nil
+		})
+		g.Go(func() error {
 			lg.Info("ListenAndServe", zap.String("addr", server.Addr))
 			return server.ListenAndServe()
 		})
