@@ -25,11 +25,16 @@ func (k prKey) MarshalLogObject(e zapcore.ObjectEncoder) error {
 	return nil
 }
 
+type queuedUpdate struct {
+	Update PullRequestUpdate
+	Tries  int
+}
+
 type updater struct {
 	w *Webhook
 
 	tick       time.Duration
-	updates    map[prKey]PullRequestUpdate
+	updates    map[prKey]*queuedUpdate
 	updatesMux sync.Mutex
 }
 
@@ -38,7 +43,7 @@ func newUpdater(w *Webhook, tick time.Duration) *updater {
 		w:    w,
 		tick: tick,
 		// TODO(tdakkota): store queue in DB?
-		updates: map[prKey]PullRequestUpdate{},
+		updates: map[prKey]*queuedUpdate{},
 	}
 }
 
@@ -72,10 +77,13 @@ func (u *updater) doUpdate(ctx context.Context) {
 
 	lg := zctx.From(ctx)
 
-	for key, update := range u.updates {
-		if err := u.updateOne(ctx, update); err != nil {
+	for key, qu := range u.updates {
+		if err := u.updateOne(ctx, qu.Update); err != nil {
 			lg.Error("PR Update failed", zap.Inline(key), zap.Error(err))
-			continue
+			if qu.Tries < 5 {
+				qu.Tries++
+				continue
+			}
 		}
 		delete(u.updates, key)
 	}
@@ -90,7 +98,9 @@ func (u *updater) Emit(update PullRequestUpdate) {
 		update.Repo.GetFullName(),
 		update.PR.GetNumber(),
 	}
-	u.updates[key] = update
+	u.updates[key] = &queuedUpdate{
+		Update: update,
+	}
 }
 
 // Run setups update worker.
