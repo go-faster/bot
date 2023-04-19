@@ -51,8 +51,9 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		lg.Debug("Ignore event: no PR info")
 		return nil
 	}
-	lg.Debug("Emit check update",
-		zap.String("pr_head_sha", pr.GetHead().GetSHA()),
+	lg.Debug("Emit check_update",
+		zap.Int("pr.number", pr.GetNumber()),
+		zap.String("pr.head_sha", pr.GetHead().GetSHA()),
 	)
 
 	h.updater.Emit(PullRequestUpdate{

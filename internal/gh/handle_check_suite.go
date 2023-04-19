@@ -48,6 +48,10 @@ func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEven
 		lg.Debug("Ignore event: no PR info")
 		return nil
 	}
+	lg.Debug("Emit check_update",
+		zap.Int("pr.number", pr.GetNumber()),
+		zap.String("pr.head_sha", pr.GetHead().GetSHA()),
+	)
 
 	h.updater.Emit(PullRequestUpdate{
 		Event:  "check_update",
