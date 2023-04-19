@@ -17,14 +17,15 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 	)
 	defer span.End()
 
+	run := e.GetCheckRun()
 	span.AddEvent("CheckRunEvent",
 		trace.WithStackTrace(true),
 		trace.WithAttributes(
 			attribute.String("action", e.GetAction()),
-			attribute.String("check_run.name", e.GetCheckRun().GetName()),
-			attribute.String("check_run.status", e.GetCheckRun().GetStatus()),
-			attribute.String("check_run.conclusion", e.GetCheckRun().GetConclusion()),
-			attribute.String("check_run.head_sha", e.GetCheckRun().GetHeadSHA()),
+			attribute.String("check_run.name", run.GetName()),
+			attribute.String("check_run.status", run.GetStatus()),
+			attribute.String("check_run.conclusion", run.GetConclusion()),
+			attribute.String("check_run.head_sha", run.GetHeadSHA()),
 
 			attribute.Int64("organization.id", e.GetOrg().GetID()),
 			attribute.String("organization.login", e.GetOrg().GetLogin()),
@@ -35,8 +36,9 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 
 	ctx = zctx.With(ctx,
 		zap.String("action", e.GetAction()),
-		zap.Int64("run_id", e.GetCheckRun().GetID()),
-		zap.String("head_sha", e.GetCheckRun().GetHeadSHA()),
+		zap.Int64("check_run.id", run.GetID()),
+		zap.String("check_run.name", run.GetName()),
+		zap.String("head_sha", run.GetHeadSHA()),
 	)
 	lg := zctx.From(ctx)
 

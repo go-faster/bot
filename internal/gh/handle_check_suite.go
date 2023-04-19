@@ -7,6 +7,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
@@ -15,13 +16,14 @@ func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEven
 	)
 	defer span.End()
 
+	suite := e.GetCheckSuite()
 	span.AddEvent("CheckSuiteEvent",
 		trace.WithStackTrace(true),
 		trace.WithAttributes(
 			attribute.String("action", e.GetAction()),
-			attribute.String("check_suite.status", e.GetCheckSuite().GetStatus()),
-			attribute.String("check_suite.conclusion", e.GetCheckSuite().GetConclusion()),
-			attribute.String("check_suite.head_sha", e.GetCheckSuite().GetHeadSHA()),
+			attribute.String("check_suite.status", suite.GetStatus()),
+			attribute.String("check_suite.conclusion", suite.GetConclusion()),
+			attribute.String("check_suite.head_sha", suite.GetHeadSHA()),
 
 			attribute.Int64("organization.id", e.GetOrg().GetID()),
 			attribute.String("organization.login", e.GetOrg().GetLogin()),
@@ -30,9 +32,15 @@ func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEven
 		),
 	)
 
+	ctx = zctx.With(ctx,
+		zap.String("action", e.GetAction()),
+		zap.Int64("check_suite.id", suite.GetID()),
+		zap.String("head_sha", suite.GetHeadSHA()),
+	)
 	lg := zctx.From(ctx)
+
 	var pr *github.PullRequest
-	for _, pr = range e.GetCheckSuite().PullRequests {
+	for _, pr = range suite.PullRequests {
 		break
 	}
 	if pr == nil {

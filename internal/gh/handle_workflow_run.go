@@ -7,6 +7,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 func (h *Webhook) handleWorkflowRun(ctx context.Context, e *github.WorkflowRunEvent) error {
@@ -32,7 +33,14 @@ func (h *Webhook) handleWorkflowRun(ctx context.Context, e *github.WorkflowRunEv
 		),
 	)
 
+	ctx = zctx.With(ctx,
+		zap.String("action", e.GetAction()),
+		zap.Int64("workflow_run.id", run.GetID()),
+		zap.String("workflow_run.name", run.GetName()),
+		zap.String("head_sha", run.GetHeadSHA()),
+	)
 	lg := zctx.From(ctx)
+
 	var pr *github.PullRequest
 	for _, pr = range e.GetWorkflowRun().PullRequests {
 		break
