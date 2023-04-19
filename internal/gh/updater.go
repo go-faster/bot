@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"
@@ -36,14 +37,19 @@ func newUpdater(w *Webhook, tick time.Duration) *updater {
 	return &updater{
 		w:    w,
 		tick: tick,
-		// TODO(tdakkoa): store queue in DB?
+		// TODO(tdakkota): store queue in DB?
 		updates: map[prKey]PullRequestUpdate{},
 	}
 }
 
 func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error {
 	if update.Event == "check_update" {
-		if err := fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
+		switch err := fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
+		case err == nil:
+		case ent.IsNotFound(err):
+			// No message sent yet.
+			return nil
+		default:
 			return errors.Wrap(err, "query cached pr fields")
 		}
 	}
