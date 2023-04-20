@@ -21,7 +21,7 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/prometheus/client_golang v1.15.0
 	github.com/redis/go-redis/v9 v9.0.3
-	github.com/sashabaranov/go-openai v1.8.0
+	github.com/sashabaranov/go-openai v1.9.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tiktoken-go/tokenizer v0.1.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.40.0
