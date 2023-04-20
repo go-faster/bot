@@ -1,58 +1,17 @@
-name: CI
+name: x
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
+# Common Go workflows from go faster
+# See https://github.com/go-faster/x
 jobs:
   test:
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - amd64
-        runner:
-          - ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.20"
-          cache: false
-
-      - name: Get Go environment
-        id: go-env
-        shell: bash
-        run: |
-          echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
-          echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
-
-        # Build cache key prefix, using runner OS and arch.
-      - name: Compute cache prefix
-        id: cache-prefix
-        shell: bash
-        env:
-          RUNNER_PREFIX: ${{ runner.os }}-${{ runner.arch }}-go
-        run: echo "cache_prefix=$RUNNER_PREFIX$ARCH_PREFIX$RACE_PREFIX" >> $GITHUB_ENV
-
-      - name: Set up cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ env.cache }}
-            ${{ env.modcache }}
-          key: ${{ env.cache_prefix }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ env.cache_prefix }}-
-
-      - name: Run tests
-        env:
-          GOARCH: ${{ matrix.arch }}
-          GOFLAGS: ${{ matrix.flags }}
-        run: go test --timeout 15m ./...
+    uses: go-faster/x/.github/workflows/test.yml@main
+  lint:
+    uses: go-faster/x/.github/workflows/lint.yml@main
+  commit:
+    uses: go-faster/x/.github/workflows/commit.yml@main

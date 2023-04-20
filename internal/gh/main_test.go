@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-faster/bot/internal/gold"
+	"github.com/go-faster/sdk/gold"
 )
 
 func TestMain(m *testing.M) {
