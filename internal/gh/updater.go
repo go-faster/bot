@@ -75,11 +75,11 @@ func (u *updater) doUpdate(ctx context.Context) {
 	u.updatesMux.Lock()
 	defer u.updatesMux.Unlock()
 
-	lg := zctx.From(ctx)
-
 	for key, qu := range u.updates {
+		ctx := zctx.With(ctx, zap.Inline(key))
+
 		if err := u.updateOne(ctx, qu.Update); err != nil {
-			lg.Error("PR Update failed", zap.Inline(key), zap.Error(err))
+			zctx.From(ctx).Error("PR Update failed", zap.Error(err))
 			if qu.Tries < 5 {
 				qu.Tries++
 				continue

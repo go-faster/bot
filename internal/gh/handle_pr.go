@@ -11,6 +11,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
+	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/markup"
@@ -123,6 +124,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 
 	r := h.sender.To(p).NoWebpage()
 	// Setup buttons.
+	checksStatus := generateChecksStatus(state.Checks)
 	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil && state.Action != "merged" {
 		files, checks := *u, *u
 		files.Path = path.Join(files.Path, "files")
@@ -135,7 +137,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			Entity:       action.PullRequest,
 		}
 		r = r.Row(
-			markup.URL(generateChecksStatus(state.Checks), checks.String()),
+			markup.URL(checksStatus, checks.String()),
 			markup.Callback("Merge", action.Marshal(mergeAction)),
 		)
 	}
@@ -200,6 +202,12 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 		styling.Italic(pr.GetTitle()),
 	)
 
+	lg.Debug("Updating PR",
+		zap.String("updater.event", state.Event),
+		zap.String("updater.action", state.Action),
+		zap.Bool("new_message", gonnaSendNewMessage),
+		zap.String("checks", checksStatus),
+	)
 	if !gonnaSendNewMessage {
 		if _, err := r.Edit(existingMsgID).StyledText(ctx, text...); err != nil && !tg.IsMessageNotModified(err) {
 			return errors.Wrap(err, "edit message")
