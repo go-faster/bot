@@ -420,6 +420,9 @@ func (tusq *TelegramUserStateQuery) loadChannels(ctx context.Context, query *Tel
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(telegramchannelstate.FieldUserID)
+	}
 	query.Where(predicate.TelegramChannelState(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(telegramuserstate.ChannelsColumn), fks...))
 	}))
@@ -431,7 +434,7 @@ func (tusq *TelegramUserStateQuery) loadChannels(ctx context.Context, query *Tel
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
