@@ -105,9 +105,30 @@ func (u *updater) Emit(update PullRequestUpdate) {
 		update.Repo.GetFullName(),
 		update.PR.GetNumber(),
 	}
-	u.updates[key] = &queuedUpdate{
+	emit := &queuedUpdate{
 		Update: update,
 	}
+
+	queued, ok := u.updates[key]
+	if !ok {
+		u.updates[key] = emit
+		return
+	}
+	existing := queued.Update
+
+	// Choose newer.
+	if existing.Event == update.Event {
+		u.updates[key] = emit
+		return
+	}
+
+	// Give pr_update precedence.
+	if update.Event == "pr_update" {
+		u.updates[key] = emit
+		return
+	}
+
+	// Do not override existing PR.
 }
 
 // Run setups update worker.
