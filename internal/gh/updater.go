@@ -47,13 +47,14 @@ func newUpdater(w *Webhook, tick time.Duration) *updater {
 	}
 }
 
+var errNoNotificationYet = errors.New("no PR notification message yet")
+
 func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error {
 	if update.Event == "check_update" {
-		switch err := u.w.fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
+		switch err := u.w.fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); {
 		case err == nil:
 		case ent.IsNotFound(err):
-			// No message sent yet.
-			return nil
+			return errNoNotificationYet
 		default:
 			return errors.Wrap(err, "query cached pr fields")
 		}
@@ -79,7 +80,13 @@ func (u *updater) doUpdate(ctx context.Context) {
 		ctx := zctx.With(ctx, zap.Inline(key))
 
 		if err := u.updateOne(ctx, qu.Update); err != nil {
-			zctx.From(ctx).Error("PR Update failed", zap.Error(err))
+			lg := zctx.From(ctx)
+			if !errors.Is(err, errNoNotificationYet) {
+				lg.Error("PR Update failed", zap.Error(err))
+			} else {
+				lg.Debug("Update checks later: no PR yet")
+			}
+
 			if qu.Tries < 5 {
 				qu.Tries++
 				continue
