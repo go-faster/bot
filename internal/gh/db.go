@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/google/go-github/v50/github"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
 
@@ -141,7 +142,7 @@ func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository
 }
 
 // fillPRState queries misisng data from database if needed.
-func fillPRState(ctx context.Context, tx *ent.PRNotificationClient, repo *github.Repository, pr *github.PullRequest) error {
+func (h *Webhook) fillPRState(ctx context.Context, tx *ent.PRNotificationClient, repo *github.Repository, pr *github.PullRequest) error {
 	if pr.GetHTMLURL() == "" {
 		u := fmt.Sprintf("https://github.com/%s/%s/pull/%d",
 			repo.GetOwner().GetLogin(), repo.GetName(),
@@ -189,6 +190,17 @@ type Check struct {
 }
 
 func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
+	ctx, span := h.tracer.Start(ctx, "QueryChecks",
+		trace.WithSpanKind(trace.SpanKindClient),
+		trace.WithAttributes(
+			attribute.String("repository.full_name", repo.GetFullName()),
+			attribute.Int64("repository.id", repo.GetID()),
+			attribute.Int("pull_request.number", pr.GetNumber()),
+			attribute.String("pull_request.head_sha", pr.GetHead().GetSHA()),
+		),
+	)
+	defer span.End()
+
 	client, err := h.Client(ctx)
 	if err != nil {
 		return nil, err
@@ -216,6 +228,11 @@ func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *
 			Conclusion: v.GetConclusion(),
 		})
 	}
+
+	status := generateChecksStatus(checks)
+	span.AddEvent("Got checks", trace.WithAttributes(
+		attribute.String("checks.status", status),
+	))
 
 	return checks, nil
 }
@@ -259,7 +276,7 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		return nil, errors.Wrap(err, "upsert check")
 	}
 
-	if err := fillPRState(ctx, tx.PRNotification, c.GetRepo(), pr); err != nil && !ent.IsNotFound(err) {
+	if err := h.fillPRState(ctx, tx.PRNotification, c.GetRepo(), pr); err != nil && !ent.IsNotFound(err) {
 		return nil, errors.Wrap(err, "get PR state")
 	}
 

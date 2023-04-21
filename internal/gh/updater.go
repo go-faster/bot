@@ -49,7 +49,7 @@ func newUpdater(w *Webhook, tick time.Duration) *updater {
 
 func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error {
 	if update.Event == "check_update" {
-		switch err := fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
+		switch err := u.w.fillPRState(ctx, u.w.db.PRNotification, update.Repo, update.PR); err != nil {
 		case err == nil:
 		case ent.IsNotFound(err):
 			// No message sent yet.
