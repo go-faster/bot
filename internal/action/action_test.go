@@ -13,6 +13,7 @@ func TestAction(t *testing.T) {
 		RepositoryID: 2,
 		Type:         Merge,
 	}
+
 	data, err := a.MarshalText()
 	require.NoError(t, err)
 	require.Less(t, len(data), 50)
@@ -25,5 +26,7 @@ func TestAction(t *testing.T) {
 		var out Action
 		require.NoError(t, out.UnmarshalText(buf))
 		require.Equal(t, a, out)
+		require.True(t, out.Is(Merge, PullRequest))
+		require.True(t, out.Is(a.Type, a.Entity))
 	}
 }

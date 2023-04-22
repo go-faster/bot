@@ -50,6 +50,7 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) (rerr error) {
 	}
 	span.SetAttributes(
 		attribute.Int("action.id", act.ID),
+		attribute.Int64("action.repository_id", act.RepositoryID),
 		attribute.Stringer("action.entity", act.Entity),
 		attribute.Stringer("action.type", act.Type),
 	)
@@ -73,30 +74,32 @@ func (a *App) OnButton(ctx context.Context, e dispatch.Button) (rerr error) {
 		return errors.New("no PAT token found for user")
 	}
 
-	api := a.clientWithToken(ctx, token)
-	repo, _, err := api.Repositories.GetByID(ctx, act.RepositoryID)
-	if err != nil {
-		return errors.Wrap(err, "get repo")
-	}
-	var (
-		owner    = repo.GetOwner().GetLogin()
-		repoName = repo.GetName()
-		message  = ""
-		options  = &github.PullRequestOptions{
-			MergeMethod: "merge",
+	switch {
+	case act.Is(action.Merge, action.PullRequest):
+		api := a.clientWithToken(ctx, token)
+		repo, _, err := api.Repositories.GetByID(ctx, act.RepositoryID)
+		if err != nil {
+			return errors.Wrap(err, "get repo")
 		}
-	)
-	if _, _, err := api.PullRequests.Merge(ctx, owner, repoName, act.ID, message, options); err != nil {
-		return errors.Wrap(err, "merge")
+		var (
+			owner    = repo.GetOwner().GetLogin()
+			repoName = repo.GetName()
+			message  = "" // use default message
+			options  = &github.PullRequestOptions{
+				MergeMethod: "merge",
+			}
+		)
+		if _, _, err := api.PullRequests.Merge(ctx, owner, repoName, act.ID, message, options); err != nil {
+			return errors.Wrap(err, "merge")
+		}
+		if _, err := rpc.MessagesSetBotCallbackAnswer(ctx, &tg.MessagesSetBotCallbackAnswerRequest{
+			QueryID: e.QueryID,
+			Message: "Pull request merged",
+		}); err != nil {
+			return errors.Wrap(err, "answer")
+		}
+		return nil
+	default:
+		return errors.Errorf("unknown action %q(%q)", act.Type, act.Entity)
 	}
-
-	answer := &tg.MessagesSetBotCallbackAnswerRequest{
-		QueryID: e.QueryID,
-		Message: "Merged repo",
-	}
-	if _, err := rpc.MessagesSetBotCallbackAnswer(ctx, answer); err != nil {
-		return errors.Wrap(err, "answer")
-	}
-
-	return nil
 }

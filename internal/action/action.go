@@ -29,6 +29,10 @@ const (
 	Close
 )
 
+func (a Action) Is(t Type, e Entity) bool {
+	return a.Type == t && a.Entity == e
+}
+
 type Action struct {
 	Entity       Entity
 	Type         Type
