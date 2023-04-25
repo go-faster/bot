@@ -56,12 +56,11 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		zap.String("pr.head_sha", pr.GetHead().GetSHA()),
 	)
 
-	h.updater.Emit(PullRequestUpdate{
+	return h.updater.Emit(PullRequestUpdate{
 		Event:  "check_update",
 		Action: "",
 		Repo:   e.GetRepo(),
 		PR:     pr,
 		Checks: nil,
 	})
-	return nil
 }

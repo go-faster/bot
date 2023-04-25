@@ -239,25 +239,23 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 		return nil
 	}
 
-	h.updater.Emit(PullRequestUpdate{
+	return h.updater.Emit(PullRequestUpdate{
 		Event:  "pr_update",
 		Action: "merged",
 		Repo:   repo,
 		PR:     pr,
 		Checks: nil,
 	})
-	return nil
 }
 
 func (h *Webhook) handlePROpened(ctx context.Context, e *github.PullRequestEvent) error {
-	h.updater.Emit(PullRequestUpdate{
+	return h.updater.Emit(PullRequestUpdate{
 		Event:  "pr_update",
 		Action: "opened",
 		Repo:   e.GetRepo(),
 		PR:     e.GetPullRequest(),
 		Checks: nil,
 	})
-	return nil
 }
 
 func (h *Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
