@@ -50,6 +50,8 @@ spec:
       containers:
         - name: bot
           image: ghcr.io/go-faster/bot:main
+          args:
+            - server
           startupProbe:
             httpGet:
               path: /probe/startup
