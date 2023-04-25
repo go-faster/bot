@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -163,3 +164,25 @@ spec:
                 secretKeyRef:
                   name: bot
                   key: DATABASE_URL
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: faster
+  name: job-commits
+  labels:
+    app: bot
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: job
+            image: ghcr.io/go-faster/bot:main
+            imagePullPolicy: IfNotPresent
+            args:
+              - job
+              - commits
+          restartPolicy: OnFailure
