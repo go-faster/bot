@@ -5,7 +5,7 @@ go 1.20
 require (
 	entgo.io/ent v0.12.2
 	github.com/ClickHouse/ch-go v0.54.0
-	github.com/bradleyfalzon/ghinstallation/v2 v2.3.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.4.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.8
 	github.com/dustin/go-humanize v1.0.1
@@ -66,6 +66,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/go-github/v52 v52.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
