@@ -17,6 +17,6 @@ check_generated: generate
 	git diff --exit-code
 
 forward_psql:
-	kubectl -n faster port-forward svc/psql-postgresql 15432:5432
+	kubectl -n faster port-forward svc/postgresql 15432:5432
 
 .PHONY: check_generated coverage test generate build forward_psql
