@@ -175,7 +175,7 @@ metadata:
   labels:
     app: bot
 spec:
-  schedule: "* * * * *"
+  schedule: "*/15 * * * *"
   jobTemplate:
     spec:
       template:
