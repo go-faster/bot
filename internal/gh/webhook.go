@@ -205,7 +205,7 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		} else {
 			attrs = append(attrs, attribute.String("status", "ok"))
 		}
-		h.events.Add(ctx, 1, attrs...)
+		h.events.Add(ctx, 1, metric.WithAttributes(attrs...))
 	}()
 
 	fields := []zap.Field{

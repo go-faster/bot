@@ -130,7 +130,7 @@ func (m *Metrics) registerPrometheus() {
 
 func (m *Metrics) MeterProvider() metric.MeterProvider {
 	if m.meterProvider == nil {
-		return metric.NewNoopMeterProvider()
+		return global.MeterProvider()
 	}
 	return m.meterProvider
 }
