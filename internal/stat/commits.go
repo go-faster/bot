@@ -19,6 +19,7 @@ import (
 
 func NewCommit(
 	db *ent.Client,
+	cache *redis.Client,
 	gh *github.Client,
 	ghID int64,
 	meterProvider metric.MeterProvider,
@@ -27,6 +28,7 @@ func NewCommit(
 	const prefix = "github.com/go-faster/bot/internal/stat.Commit"
 	meter := meterProvider.Meter(prefix)
 	return &Commit{
+		cache:    cache,
 		db:       db,
 		ghClient: gh,
 		ghID:     ghID,

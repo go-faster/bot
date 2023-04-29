@@ -68,7 +68,7 @@ func Root() *cobra.Command {
 					return errors.Wrap(err, "open database")
 				}
 
-				c := stat.NewCommit(db, ghInstallationClient, ghInstallationID, m.MeterProvider(), m.TracerProvider())
+				c := stat.NewCommit(db, r, ghInstallationClient, ghInstallationID, m.MeterProvider(), m.TracerProvider())
 				if err := c.Update(ctx); err != nil {
 					return errors.Wrap(err, "update commits")
 				}
