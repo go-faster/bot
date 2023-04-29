@@ -18,7 +18,6 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/metric/instrument"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
@@ -38,7 +37,7 @@ type Webhook struct {
 
 	updater *updater
 
-	events instrument.Int64Counter
+	events metric.Int64Counter
 	tracer trace.Tracer
 	cache  *redis.Client
 }
@@ -54,7 +53,7 @@ func NewWebhook(
 ) *Webhook {
 	meter := meterProvider.Meter("github.com/go-faster/bot/internal/gh/webhook")
 	eventCount, err := meter.Int64Counter("github_event_count",
-		instrument.WithDescription("GitHub event counts"),
+		metric.WithDescription("GitHub event counts"),
 	)
 	if err != nil {
 		panic(err)
