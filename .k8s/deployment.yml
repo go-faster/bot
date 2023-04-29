@@ -184,7 +184,80 @@ spec:
           - name: job
             image: ghcr.io/go-faster/bot:main
             imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                cpu: 500m
+                memory: 128M
+              limits:
+                cpu: "2"
+                memory: 256M
             args:
               - job
               - commits
+            env:
+              - name: GOMEMLIMIT
+                value: "128MiB"
+              - name: GOMAXPROCS
+                value: "2"
+              - name: OTEL_EXPORTER_OTLP_PROTOCOL
+                value: "grpc"
+              - name: OTEL_METRICS_EXPORTER
+                value: "none"
+              - name: OTEL_RESOURCE_ATTRIBUTES
+                value: "service.name=go-faster.bot"
+              - name: OTEL_LOG_LEVEL
+                value: "DEBUG"
+              - name: OTEL_TRACES_EXPORTER
+                value: "otlp"
+              - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                value: "http://tempo-distributor.monitoring.svc.cluster.local:4317"
+              - name: HOME
+                value: /cache
+              - name: HTTP_ADDR
+                value: 0.0.0.0:8080
+              - name: GITHUB_PRIVATE_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: GITHUB_PRIVATE_KEY
+              - name: GITHUB_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: GITHUB_SECRET
+              - name: GITHUB_APP_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: GITHUB_APP_ID
+              - name: GITHUB_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: GITHUB_CLIENT_ID
+              - name: GITHUB_INSTALLATION_ID
+                value: "26766968"
+              - name: OPENAI_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: OPENAI_TOKEN
+              - name: CLICKHOUSE_ADDR
+                value: chendpoint-db.clickhouse.svc.cluster.local:9000
+              - name: CLICKHOUSE_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: CLICKHOUSE_USER
+              - name: CLICKHOUSE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: CLICKHOUSE_PASSWORD
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: bot
+                    key: DATABASE_URL
+
           restartPolicy: OnFailure

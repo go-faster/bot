@@ -353,7 +353,7 @@ func (a *App) Run(ctx context.Context) error {
 	readyTelegram := a.rdy.Register()
 	g.Go(func() error {
 		return a.client.Run(ctx, func(ctx context.Context) error {
-			a.lg.Debug("Client initialized")
+			a.lg.Debug("client initialized")
 
 			au := a.client.Auth()
 			status, err := au.Status(ctx)
