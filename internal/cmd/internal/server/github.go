@@ -9,7 +9,7 @@ import (
 
 	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v52/github"
 	"golang.org/x/oauth2"
 )
 

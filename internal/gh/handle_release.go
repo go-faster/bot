@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-faster/errors"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v52/github"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/gotd/td/telegram/message/styling"

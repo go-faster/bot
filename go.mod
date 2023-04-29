@@ -13,7 +13,7 @@ require (
 	github.com/go-faster/jx v1.0.0
 	github.com/go-faster/sdk v0.4.0
 	github.com/go-logr/zapr v1.2.3
-	github.com/google/go-github/v50 v50.2.0
+	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.3.0
 	github.com/gotd/contrib v0.17.0
 	github.com/gotd/td v0.81.0
@@ -66,7 +66,6 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/go-github/v52 v52.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect

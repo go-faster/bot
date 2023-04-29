@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v52/github"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/styling"

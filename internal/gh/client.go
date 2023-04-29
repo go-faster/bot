@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v52/github"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 )
