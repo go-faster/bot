@@ -18,6 +18,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/prnotification"
 	"github.com/go-faster/bot/internal/ent/repository"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
@@ -37,6 +38,8 @@ type Client struct {
 	GPTDialog *GPTDialogClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
 	LastChannelMessage *LastChannelMessageClient
+	// Organization is the client for interacting with the Organization builders.
+	Organization *OrganizationClient
 	// PRNotification is the client for interacting with the PRNotification builders.
 	PRNotification *PRNotificationClient
 	// Repository is the client for interacting with the Repository builders.
@@ -65,6 +68,7 @@ func (c *Client) init() {
 	c.Check = NewCheckClient(c.config)
 	c.GPTDialog = NewGPTDialogClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
+	c.Organization = NewOrganizationClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
 	c.Repository = NewRepositoryClient(c.config)
 	c.TelegramChannelState = NewTelegramChannelStateClient(c.config)
@@ -156,6 +160,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Check:                NewCheckClient(cfg),
 		GPTDialog:            NewGPTDialogClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
+		Organization:         NewOrganizationClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
 		Repository:           NewRepositoryClient(cfg),
 		TelegramChannelState: NewTelegramChannelStateClient(cfg),
@@ -184,6 +189,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Check:                NewCheckClient(cfg),
 		GPTDialog:            NewGPTDialogClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
+		Organization:         NewOrganizationClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
 		Repository:           NewRepositoryClient(cfg),
 		TelegramChannelState: NewTelegramChannelStateClient(cfg),
@@ -219,8 +225,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.Repository,
-		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.Organization, c.PRNotification,
+		c.Repository, c.TelegramChannelState, c.TelegramSession, c.TelegramUserState,
+		c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -230,8 +237,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.Repository,
-		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.Organization, c.PRNotification,
+		c.Repository, c.TelegramChannelState, c.TelegramSession, c.TelegramUserState,
+		c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -246,6 +254,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.GPTDialog.mutate(ctx, m)
 	case *LastChannelMessageMutation:
 		return c.LastChannelMessage.mutate(ctx, m)
+	case *OrganizationMutation:
+		return c.Organization.mutate(ctx, m)
 	case *PRNotificationMutation:
 		return c.PRNotification.mutate(ctx, m)
 	case *RepositoryMutation:
@@ -617,6 +627,140 @@ func (c *LastChannelMessageClient) mutate(ctx context.Context, m *LastChannelMes
 	}
 }
 
+// OrganizationClient is a client for the Organization schema.
+type OrganizationClient struct {
+	config
+}
+
+// NewOrganizationClient returns a client for the Organization from the given config.
+func NewOrganizationClient(c config) *OrganizationClient {
+	return &OrganizationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `organization.Hooks(f(g(h())))`.
+func (c *OrganizationClient) Use(hooks ...Hook) {
+	c.hooks.Organization = append(c.hooks.Organization, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `organization.Intercept(f(g(h())))`.
+func (c *OrganizationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Organization = append(c.inters.Organization, interceptors...)
+}
+
+// Create returns a builder for creating a Organization entity.
+func (c *OrganizationClient) Create() *OrganizationCreate {
+	mutation := newOrganizationMutation(c.config, OpCreate)
+	return &OrganizationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Organization entities.
+func (c *OrganizationClient) CreateBulk(builders ...*OrganizationCreate) *OrganizationCreateBulk {
+	return &OrganizationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Organization.
+func (c *OrganizationClient) Update() *OrganizationUpdate {
+	mutation := newOrganizationMutation(c.config, OpUpdate)
+	return &OrganizationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrganizationClient) UpdateOne(o *Organization) *OrganizationUpdateOne {
+	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganization(o))
+	return &OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrganizationClient) UpdateOneID(id int64) *OrganizationUpdateOne {
+	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganizationID(id))
+	return &OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Organization.
+func (c *OrganizationClient) Delete() *OrganizationDelete {
+	mutation := newOrganizationMutation(c.config, OpDelete)
+	return &OrganizationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrganizationClient) DeleteOne(o *Organization) *OrganizationDeleteOne {
+	return c.DeleteOneID(o.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrganizationClient) DeleteOneID(id int64) *OrganizationDeleteOne {
+	builder := c.Delete().Where(organization.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrganizationDeleteOne{builder}
+}
+
+// Query returns a query builder for Organization.
+func (c *OrganizationClient) Query() *OrganizationQuery {
+	return &OrganizationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOrganization},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Organization entity by its id.
+func (c *OrganizationClient) Get(ctx context.Context, id int64) (*Organization, error) {
+	return c.Query().Where(organization.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrganizationClient) GetX(ctx context.Context, id int64) *Organization {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRepositories queries the repositories edge of a Organization.
+func (c *OrganizationClient) QueryRepositories(o *Organization) *RepositoryQuery {
+	query := (&RepositoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(organization.Table, organization.FieldID, id),
+			sqlgraph.To(repository.Table, repository.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, organization.RepositoriesTable, organization.RepositoriesColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrganizationClient) Hooks() []Hook {
+	return c.hooks.Organization
+}
+
+// Interceptors returns the client interceptors.
+func (c *OrganizationClient) Interceptors() []Interceptor {
+	return c.inters.Organization
+}
+
+func (c *OrganizationClient) mutate(ctx context.Context, m *OrganizationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrganizationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrganizationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrganizationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Organization mutation op: %q", m.Op())
+	}
+}
+
 // PRNotificationClient is a client for the PRNotification schema.
 type PRNotificationClient struct {
 	config
@@ -826,6 +970,22 @@ func (c *RepositoryClient) GetX(ctx context.Context, id int64) *Repository {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryOrganization queries the organization edge of a Repository.
+func (c *RepositoryClient) QueryOrganization(r *Repository) *OrganizationQuery {
+	query := (&OrganizationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(repository.Table, repository.FieldID, id),
+			sqlgraph.To(organization.Table, organization.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, repository.OrganizationTable, repository.OrganizationColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -1360,11 +1520,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, Repository,
+		Check, GPTDialog, LastChannelMessage, Organization, PRNotification, Repository,
 		TelegramChannelState, TelegramSession, TelegramUserState, User []ent.Hook
 	}
 	inters struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, Repository,
+		Check, GPTDialog, LastChannelMessage, Organization, PRNotification, Repository,
 		TelegramChannelState, TelegramSession, TelegramUserState,
 		User []ent.Interceptor
 	}

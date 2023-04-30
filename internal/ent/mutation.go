@@ -14,6 +14,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/check"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/prnotification"
 	"github.com/go-faster/bot/internal/ent/repository"
@@ -36,6 +37,7 @@ const (
 	TypeCheck                = "Check"
 	TypeGPTDialog            = "GPTDialog"
 	TypeLastChannelMessage   = "LastChannelMessage"
+	TypeOrganization         = "Organization"
 	TypePRNotification       = "PRNotification"
 	TypeRepository           = "Repository"
 	TypeTelegramChannelState = "TelegramChannelState"
@@ -1826,6 +1828,507 @@ func (m *LastChannelMessageMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown LastChannelMessage edge %s", name)
 }
 
+// OrganizationMutation represents an operation that mutates the Organization nodes in the graph.
+type OrganizationMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int64
+	name                *string
+	html_url            *string
+	clearedFields       map[string]struct{}
+	repositories        map[int64]struct{}
+	removedrepositories map[int64]struct{}
+	clearedrepositories bool
+	done                bool
+	oldValue            func(context.Context) (*Organization, error)
+	predicates          []predicate.Organization
+}
+
+var _ ent.Mutation = (*OrganizationMutation)(nil)
+
+// organizationOption allows management of the mutation configuration using functional options.
+type organizationOption func(*OrganizationMutation)
+
+// newOrganizationMutation creates new mutation for the Organization entity.
+func newOrganizationMutation(c config, op Op, opts ...organizationOption) *OrganizationMutation {
+	m := &OrganizationMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeOrganization,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withOrganizationID sets the ID field of the mutation.
+func withOrganizationID(id int64) organizationOption {
+	return func(m *OrganizationMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Organization
+		)
+		m.oldValue = func(ctx context.Context) (*Organization, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Organization.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withOrganization sets the old Organization of the mutation.
+func withOrganization(node *Organization) organizationOption {
+	return func(m *OrganizationMutation) {
+		m.oldValue = func(context.Context) (*Organization, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m OrganizationMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m OrganizationMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Organization entities.
+func (m *OrganizationMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *OrganizationMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *OrganizationMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Organization.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *OrganizationMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *OrganizationMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Organization entity.
+// If the Organization object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *OrganizationMutation) ResetName() {
+	m.name = nil
+}
+
+// SetHTMLURL sets the "html_url" field.
+func (m *OrganizationMutation) SetHTMLURL(s string) {
+	m.html_url = &s
+}
+
+// HTMLURL returns the value of the "html_url" field in the mutation.
+func (m *OrganizationMutation) HTMLURL() (r string, exists bool) {
+	v := m.html_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHTMLURL returns the old "html_url" field's value of the Organization entity.
+// If the Organization object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationMutation) OldHTMLURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHTMLURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHTMLURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHTMLURL: %w", err)
+	}
+	return oldValue.HTMLURL, nil
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (m *OrganizationMutation) ClearHTMLURL() {
+	m.html_url = nil
+	m.clearedFields[organization.FieldHTMLURL] = struct{}{}
+}
+
+// HTMLURLCleared returns if the "html_url" field was cleared in this mutation.
+func (m *OrganizationMutation) HTMLURLCleared() bool {
+	_, ok := m.clearedFields[organization.FieldHTMLURL]
+	return ok
+}
+
+// ResetHTMLURL resets all changes to the "html_url" field.
+func (m *OrganizationMutation) ResetHTMLURL() {
+	m.html_url = nil
+	delete(m.clearedFields, organization.FieldHTMLURL)
+}
+
+// AddRepositoryIDs adds the "repositories" edge to the Repository entity by ids.
+func (m *OrganizationMutation) AddRepositoryIDs(ids ...int64) {
+	if m.repositories == nil {
+		m.repositories = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.repositories[ids[i]] = struct{}{}
+	}
+}
+
+// ClearRepositories clears the "repositories" edge to the Repository entity.
+func (m *OrganizationMutation) ClearRepositories() {
+	m.clearedrepositories = true
+}
+
+// RepositoriesCleared reports if the "repositories" edge to the Repository entity was cleared.
+func (m *OrganizationMutation) RepositoriesCleared() bool {
+	return m.clearedrepositories
+}
+
+// RemoveRepositoryIDs removes the "repositories" edge to the Repository entity by IDs.
+func (m *OrganizationMutation) RemoveRepositoryIDs(ids ...int64) {
+	if m.removedrepositories == nil {
+		m.removedrepositories = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.repositories, ids[i])
+		m.removedrepositories[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedRepositories returns the removed IDs of the "repositories" edge to the Repository entity.
+func (m *OrganizationMutation) RemovedRepositoriesIDs() (ids []int64) {
+	for id := range m.removedrepositories {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// RepositoriesIDs returns the "repositories" edge IDs in the mutation.
+func (m *OrganizationMutation) RepositoriesIDs() (ids []int64) {
+	for id := range m.repositories {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetRepositories resets all changes to the "repositories" edge.
+func (m *OrganizationMutation) ResetRepositories() {
+	m.repositories = nil
+	m.clearedrepositories = false
+	m.removedrepositories = nil
+}
+
+// Where appends a list predicates to the OrganizationMutation builder.
+func (m *OrganizationMutation) Where(ps ...predicate.Organization) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the OrganizationMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *OrganizationMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Organization, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *OrganizationMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *OrganizationMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Organization).
+func (m *OrganizationMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *OrganizationMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.name != nil {
+		fields = append(fields, organization.FieldName)
+	}
+	if m.html_url != nil {
+		fields = append(fields, organization.FieldHTMLURL)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *OrganizationMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case organization.FieldName:
+		return m.Name()
+	case organization.FieldHTMLURL:
+		return m.HTMLURL()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *OrganizationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case organization.FieldName:
+		return m.OldName(ctx)
+	case organization.FieldHTMLURL:
+		return m.OldHTMLURL(ctx)
+	}
+	return nil, fmt.Errorf("unknown Organization field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OrganizationMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case organization.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case organization.FieldHTMLURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHTMLURL(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Organization field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *OrganizationMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *OrganizationMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OrganizationMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Organization numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *OrganizationMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(organization.FieldHTMLURL) {
+		fields = append(fields, organization.FieldHTMLURL)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *OrganizationMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *OrganizationMutation) ClearField(name string) error {
+	switch name {
+	case organization.FieldHTMLURL:
+		m.ClearHTMLURL()
+		return nil
+	}
+	return fmt.Errorf("unknown Organization nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *OrganizationMutation) ResetField(name string) error {
+	switch name {
+	case organization.FieldName:
+		m.ResetName()
+		return nil
+	case organization.FieldHTMLURL:
+		m.ResetHTMLURL()
+		return nil
+	}
+	return fmt.Errorf("unknown Organization field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *OrganizationMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.repositories != nil {
+		edges = append(edges, organization.EdgeRepositories)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *OrganizationMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case organization.EdgeRepositories:
+		ids := make([]ent.Value, 0, len(m.repositories))
+		for id := range m.repositories {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *OrganizationMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedrepositories != nil {
+		edges = append(edges, organization.EdgeRepositories)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *OrganizationMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case organization.EdgeRepositories:
+		ids := make([]ent.Value, 0, len(m.removedrepositories))
+		for id := range m.removedrepositories {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *OrganizationMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedrepositories {
+		edges = append(edges, organization.EdgeRepositories)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *OrganizationMutation) EdgeCleared(name string) bool {
+	switch name {
+	case organization.EdgeRepositories:
+		return m.clearedrepositories
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *OrganizationMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Organization unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *OrganizationMutation) ResetEdge(name string) error {
+	switch name {
+	case organization.EdgeRepositories:
+		m.ResetRepositories()
+		return nil
+	}
+	return fmt.Errorf("unknown Organization edge %s", name)
+}
+
 // PRNotificationMutation represents an operation that mutates the PRNotification nodes in the graph.
 type PRNotificationMutation struct {
 	config
@@ -2527,20 +3030,21 @@ func (m *PRNotificationMutation) ResetEdge(name string) error {
 // RepositoryMutation represents an operation that mutates the Repository nodes in the graph.
 type RepositoryMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *int64
-	owner          *string
-	name           *string
-	full_name      *string
-	html_url       *string
-	description    *string
-	last_pushed_at *time.Time
-	last_event_at  *time.Time
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*Repository, error)
-	predicates     []predicate.Repository
+	op                  Op
+	typ                 string
+	id                  *int64
+	name                *string
+	full_name           *string
+	html_url            *string
+	description         *string
+	last_pushed_at      *time.Time
+	last_event_at       *time.Time
+	clearedFields       map[string]struct{}
+	organization        *int64
+	clearedorganization bool
+	done                bool
+	oldValue            func(context.Context) (*Repository, error)
+	predicates          []predicate.Repository
 }
 
 var _ ent.Mutation = (*RepositoryMutation)(nil)
@@ -2647,42 +3151,6 @@ func (m *RepositoryMutation) IDs(ctx context.Context) ([]int64, error) {
 	}
 }
 
-// SetOwner sets the "owner" field.
-func (m *RepositoryMutation) SetOwner(s string) {
-	m.owner = &s
-}
-
-// Owner returns the value of the "owner" field in the mutation.
-func (m *RepositoryMutation) Owner() (r string, exists bool) {
-	v := m.owner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOwner returns the old "owner" field's value of the Repository entity.
-// If the Repository object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RepositoryMutation) OldOwner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOwner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
-	}
-	return oldValue.Owner, nil
-}
-
-// ResetOwner resets all changes to the "owner" field.
-func (m *RepositoryMutation) ResetOwner() {
-	m.owner = nil
-}
-
 // SetName sets the "name" field.
 func (m *RepositoryMutation) SetName(s string) {
 	m.name = &s
@@ -2786,9 +3254,22 @@ func (m *RepositoryMutation) OldHTMLURL(ctx context.Context) (v string, err erro
 	return oldValue.HTMLURL, nil
 }
 
+// ClearHTMLURL clears the value of the "html_url" field.
+func (m *RepositoryMutation) ClearHTMLURL() {
+	m.html_url = nil
+	m.clearedFields[repository.FieldHTMLURL] = struct{}{}
+}
+
+// HTMLURLCleared returns if the "html_url" field was cleared in this mutation.
+func (m *RepositoryMutation) HTMLURLCleared() bool {
+	_, ok := m.clearedFields[repository.FieldHTMLURL]
+	return ok
+}
+
 // ResetHTMLURL resets all changes to the "html_url" field.
 func (m *RepositoryMutation) ResetHTMLURL() {
 	m.html_url = nil
+	delete(m.clearedFields, repository.FieldHTMLURL)
 }
 
 // SetDescription sets the "description" field.
@@ -2925,6 +3406,45 @@ func (m *RepositoryMutation) ResetLastEventAt() {
 	delete(m.clearedFields, repository.FieldLastEventAt)
 }
 
+// SetOrganizationID sets the "organization" edge to the Organization entity by id.
+func (m *RepositoryMutation) SetOrganizationID(id int64) {
+	m.organization = &id
+}
+
+// ClearOrganization clears the "organization" edge to the Organization entity.
+func (m *RepositoryMutation) ClearOrganization() {
+	m.clearedorganization = true
+}
+
+// OrganizationCleared reports if the "organization" edge to the Organization entity was cleared.
+func (m *RepositoryMutation) OrganizationCleared() bool {
+	return m.clearedorganization
+}
+
+// OrganizationID returns the "organization" edge ID in the mutation.
+func (m *RepositoryMutation) OrganizationID() (id int64, exists bool) {
+	if m.organization != nil {
+		return *m.organization, true
+	}
+	return
+}
+
+// OrganizationIDs returns the "organization" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrganizationID instead. It exists only for internal usage by the builders.
+func (m *RepositoryMutation) OrganizationIDs() (ids []int64) {
+	if id := m.organization; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrganization resets all changes to the "organization" edge.
+func (m *RepositoryMutation) ResetOrganization() {
+	m.organization = nil
+	m.clearedorganization = false
+}
+
 // Where appends a list predicates to the RepositoryMutation builder.
 func (m *RepositoryMutation) Where(ps ...predicate.Repository) {
 	m.predicates = append(m.predicates, ps...)
@@ -2959,10 +3479,7 @@ func (m *RepositoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RepositoryMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.owner != nil {
-		fields = append(fields, repository.FieldOwner)
-	}
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, repository.FieldName)
 	}
@@ -2989,8 +3506,6 @@ func (m *RepositoryMutation) Fields() []string {
 // schema.
 func (m *RepositoryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case repository.FieldOwner:
-		return m.Owner()
 	case repository.FieldName:
 		return m.Name()
 	case repository.FieldFullName:
@@ -3012,8 +3527,6 @@ func (m *RepositoryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *RepositoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case repository.FieldOwner:
-		return m.OldOwner(ctx)
 	case repository.FieldName:
 		return m.OldName(ctx)
 	case repository.FieldFullName:
@@ -3035,13 +3548,6 @@ func (m *RepositoryMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *RepositoryMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case repository.FieldOwner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOwner(v)
-		return nil
 	case repository.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -3114,6 +3620,9 @@ func (m *RepositoryMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *RepositoryMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(repository.FieldHTMLURL) {
+		fields = append(fields, repository.FieldHTMLURL)
+	}
 	if m.FieldCleared(repository.FieldLastPushedAt) {
 		fields = append(fields, repository.FieldLastPushedAt)
 	}
@@ -3134,6 +3643,9 @@ func (m *RepositoryMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *RepositoryMutation) ClearField(name string) error {
 	switch name {
+	case repository.FieldHTMLURL:
+		m.ClearHTMLURL()
+		return nil
 	case repository.FieldLastPushedAt:
 		m.ClearLastPushedAt()
 		return nil
@@ -3148,9 +3660,6 @@ func (m *RepositoryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *RepositoryMutation) ResetField(name string) error {
 	switch name {
-	case repository.FieldOwner:
-		m.ResetOwner()
-		return nil
 	case repository.FieldName:
 		m.ResetName()
 		return nil
@@ -3175,19 +3684,28 @@ func (m *RepositoryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *RepositoryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.organization != nil {
+		edges = append(edges, repository.EdgeOrganization)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *RepositoryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case repository.EdgeOrganization:
+		if id := m.organization; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RepositoryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -3199,25 +3717,42 @@ func (m *RepositoryMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *RepositoryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedorganization {
+		edges = append(edges, repository.EdgeOrganization)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *RepositoryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case repository.EdgeOrganization:
+		return m.clearedorganization
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *RepositoryMutation) ClearEdge(name string) error {
+	switch name {
+	case repository.EdgeOrganization:
+		m.ClearOrganization()
+		return nil
+	}
 	return fmt.Errorf("unknown Repository unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *RepositoryMutation) ResetEdge(name string) error {
+	switch name {
+	case repository.EdgeOrganization:
+		m.ResetOrganization()
+		return nil
+	}
 	return fmt.Errorf("unknown Repository edge %s", name)
 }
 

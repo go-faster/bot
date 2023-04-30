@@ -65,6 +65,18 @@ var (
 		Columns:    LastChannelMessagesColumns,
 		PrimaryKey: []*schema.Column{LastChannelMessagesColumns[0]},
 	}
+	// OrganizationsColumns holds the columns for the "organizations" table.
+	OrganizationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "html_url", Type: field.TypeString, Nullable: true},
+	}
+	// OrganizationsTable holds the schema information for the "organizations" table.
+	OrganizationsTable = &schema.Table{
+		Name:       "organizations",
+		Columns:    OrganizationsColumns,
+		PrimaryKey: []*schema.Column{OrganizationsColumns[0]},
+	}
 	// PrNotificationsColumns holds the columns for the "pr_notifications" table.
 	PrNotificationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -91,19 +103,27 @@ var (
 	// RepositoriesColumns holds the columns for the "repositories" table.
 	RepositoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "owner", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
-		{Name: "full_name", Type: field.TypeString},
-		{Name: "html_url", Type: field.TypeString},
+		{Name: "full_name", Type: field.TypeString, Unique: true},
+		{Name: "html_url", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Default: ""},
 		{Name: "last_pushed_at", Type: field.TypeTime, Nullable: true},
 		{Name: "last_event_at", Type: field.TypeTime, Nullable: true},
+		{Name: "organization_repositories", Type: field.TypeInt64, Nullable: true},
 	}
 	// RepositoriesTable holds the schema information for the "repositories" table.
 	RepositoriesTable = &schema.Table{
 		Name:       "repositories",
 		Columns:    RepositoriesColumns,
 		PrimaryKey: []*schema.Column{RepositoriesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "repositories_organizations_repositories",
+				Columns:    []*schema.Column{RepositoriesColumns[7]},
+				RefColumns: []*schema.Column{OrganizationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TelegramChannelStatesColumns holds the columns for the "telegram_channel_states" table.
 	TelegramChannelStatesColumns = []*schema.Column{
@@ -177,6 +197,7 @@ var (
 		ChecksTable,
 		GptDialogsTable,
 		LastChannelMessagesTable,
+		OrganizationsTable,
 		PrNotificationsTable,
 		RepositoriesTable,
 		TelegramChannelStatesTable,
@@ -187,5 +208,6 @@ var (
 )
 
 func init() {
+	RepositoriesTable.ForeignKeys[0].RefTable = OrganizationsTable
 	TelegramChannelStatesTable.ForeignKeys[0].RefTable = TelegramUserStatesTable
 }

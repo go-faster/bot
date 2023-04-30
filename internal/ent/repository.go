@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/repository"
 )
 
@@ -18,8 +19,6 @@ type Repository struct {
 	// ID of the ent.
 	// GitHub repository ID.
 	ID int64 `json:"id,omitempty"`
-	// GitHub repository owner.
-	Owner string `json:"owner,omitempty"`
 	// GitHub repository name.
 	Name string `json:"name,omitempty"`
 	// GitHub repository full name.
@@ -31,8 +30,34 @@ type Repository struct {
 	// LastPushedAt holds the value of the "last_pushed_at" field.
 	LastPushedAt time.Time `json:"last_pushed_at,omitempty"`
 	// LastEventAt holds the value of the "last_event_at" field.
-	LastEventAt  time.Time `json:"last_event_at,omitempty"`
-	selectValues sql.SelectValues
+	LastEventAt time.Time `json:"last_event_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the RepositoryQuery when eager-loading is set.
+	Edges                     RepositoryEdges `json:"edges"`
+	organization_repositories *int64
+	selectValues              sql.SelectValues
+}
+
+// RepositoryEdges holds the relations/edges for other nodes in the graph.
+type RepositoryEdges struct {
+	// GitHub organization.
+	Organization *Organization `json:"organization,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// OrganizationOrErr returns the Organization value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e RepositoryEdges) OrganizationOrErr() (*Organization, error) {
+	if e.loadedTypes[0] {
+		if e.Organization == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: organization.Label}
+		}
+		return e.Organization, nil
+	}
+	return nil, &NotLoadedError{edge: "organization"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -42,10 +67,12 @@ func (*Repository) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case repository.FieldID:
 			values[i] = new(sql.NullInt64)
-		case repository.FieldOwner, repository.FieldName, repository.FieldFullName, repository.FieldHTMLURL, repository.FieldDescription:
+		case repository.FieldName, repository.FieldFullName, repository.FieldHTMLURL, repository.FieldDescription:
 			values[i] = new(sql.NullString)
 		case repository.FieldLastPushedAt, repository.FieldLastEventAt:
 			values[i] = new(sql.NullTime)
+		case repository.ForeignKeys[0]: // organization_repositories
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -67,12 +94,6 @@ func (r *Repository) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			r.ID = int64(value.Int64)
-		case repository.FieldOwner:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field owner", values[i])
-			} else if value.Valid {
-				r.Owner = value.String
-			}
 		case repository.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -109,6 +130,13 @@ func (r *Repository) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.LastEventAt = value.Time
 			}
+		case repository.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field organization_repositories", value)
+			} else if value.Valid {
+				r.organization_repositories = new(int64)
+				*r.organization_repositories = int64(value.Int64)
+			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
 		}
@@ -120,6 +148,11 @@ func (r *Repository) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (r *Repository) Value(name string) (ent.Value, error) {
 	return r.selectValues.Get(name)
+}
+
+// QueryOrganization queries the "organization" edge of the Repository entity.
+func (r *Repository) QueryOrganization() *OrganizationQuery {
+	return NewRepositoryClient(r.config).QueryOrganization(r)
 }
 
 // Update returns a builder for updating this Repository.
@@ -145,9 +178,6 @@ func (r *Repository) String() string {
 	var builder strings.Builder
 	builder.WriteString("Repository(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
-	builder.WriteString("owner=")
-	builder.WriteString(r.Owner)
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(r.Name)
 	builder.WriteString(", ")

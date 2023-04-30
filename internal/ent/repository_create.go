@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/repository"
 )
 
@@ -20,12 +21,6 @@ type RepositoryCreate struct {
 	mutation *RepositoryMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetOwner sets the "owner" field.
-func (rc *RepositoryCreate) SetOwner(s string) *RepositoryCreate {
-	rc.mutation.SetOwner(s)
-	return rc
 }
 
 // SetName sets the "name" field.
@@ -43,6 +38,14 @@ func (rc *RepositoryCreate) SetFullName(s string) *RepositoryCreate {
 // SetHTMLURL sets the "html_url" field.
 func (rc *RepositoryCreate) SetHTMLURL(s string) *RepositoryCreate {
 	rc.mutation.SetHTMLURL(s)
+	return rc
+}
+
+// SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
+func (rc *RepositoryCreate) SetNillableHTMLURL(s *string) *RepositoryCreate {
+	if s != nil {
+		rc.SetHTMLURL(*s)
+	}
 	return rc
 }
 
@@ -94,6 +97,25 @@ func (rc *RepositoryCreate) SetID(i int64) *RepositoryCreate {
 	return rc
 }
 
+// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
+func (rc *RepositoryCreate) SetOrganizationID(id int64) *RepositoryCreate {
+	rc.mutation.SetOrganizationID(id)
+	return rc
+}
+
+// SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
+func (rc *RepositoryCreate) SetNillableOrganizationID(id *int64) *RepositoryCreate {
+	if id != nil {
+		rc = rc.SetOrganizationID(*id)
+	}
+	return rc
+}
+
+// SetOrganization sets the "organization" edge to the Organization entity.
+func (rc *RepositoryCreate) SetOrganization(o *Organization) *RepositoryCreate {
+	return rc.SetOrganizationID(o.ID)
+}
+
 // Mutation returns the RepositoryMutation object of the builder.
 func (rc *RepositoryCreate) Mutation() *RepositoryMutation {
 	return rc.mutation
@@ -137,17 +159,11 @@ func (rc *RepositoryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (rc *RepositoryCreate) check() error {
-	if _, ok := rc.mutation.Owner(); !ok {
-		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required field "Repository.owner"`)}
-	}
 	if _, ok := rc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Repository.name"`)}
 	}
 	if _, ok := rc.mutation.FullName(); !ok {
 		return &ValidationError{Name: "full_name", err: errors.New(`ent: missing required field "Repository.full_name"`)}
-	}
-	if _, ok := rc.mutation.HTMLURL(); !ok {
-		return &ValidationError{Name: "html_url", err: errors.New(`ent: missing required field "Repository.html_url"`)}
 	}
 	if _, ok := rc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Repository.description"`)}
@@ -185,10 +201,6 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := rc.mutation.Owner(); ok {
-		_spec.SetField(repository.FieldOwner, field.TypeString, value)
-		_node.Owner = value
-	}
 	if value, ok := rc.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -213,6 +225,23 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 		_spec.SetField(repository.FieldLastEventAt, field.TypeTime, value)
 		_node.LastEventAt = value
 	}
+	if nodes := rc.mutation.OrganizationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   repository.OrganizationTable,
+			Columns: []string{repository.OrganizationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.organization_repositories = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -220,7 +249,7 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Repository.Create().
-//		SetOwner(v).
+//		SetName(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -229,7 +258,7 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.RepositoryUpsert) {
-//			SetOwner(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (rc *RepositoryCreate) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertOne {
@@ -265,18 +294,6 @@ type (
 	}
 )
 
-// SetOwner sets the "owner" field.
-func (u *RepositoryUpsert) SetOwner(v string) *RepositoryUpsert {
-	u.Set(repository.FieldOwner, v)
-	return u
-}
-
-// UpdateOwner sets the "owner" field to the value that was provided on create.
-func (u *RepositoryUpsert) UpdateOwner() *RepositoryUpsert {
-	u.SetExcluded(repository.FieldOwner)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *RepositoryUpsert) SetName(v string) *RepositoryUpsert {
 	u.Set(repository.FieldName, v)
@@ -310,6 +327,12 @@ func (u *RepositoryUpsert) SetHTMLURL(v string) *RepositoryUpsert {
 // UpdateHTMLURL sets the "html_url" field to the value that was provided on create.
 func (u *RepositoryUpsert) UpdateHTMLURL() *RepositoryUpsert {
 	u.SetExcluded(repository.FieldHTMLURL)
+	return u
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (u *RepositoryUpsert) ClearHTMLURL() *RepositoryUpsert {
+	u.SetNull(repository.FieldHTMLURL)
 	return u
 }
 
@@ -409,20 +432,6 @@ func (u *RepositoryUpsertOne) Update(set func(*RepositoryUpsert)) *RepositoryUps
 	return u
 }
 
-// SetOwner sets the "owner" field.
-func (u *RepositoryUpsertOne) SetOwner(v string) *RepositoryUpsertOne {
-	return u.Update(func(s *RepositoryUpsert) {
-		s.SetOwner(v)
-	})
-}
-
-// UpdateOwner sets the "owner" field to the value that was provided on create.
-func (u *RepositoryUpsertOne) UpdateOwner() *RepositoryUpsertOne {
-	return u.Update(func(s *RepositoryUpsert) {
-		s.UpdateOwner()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *RepositoryUpsertOne) SetName(v string) *RepositoryUpsertOne {
 	return u.Update(func(s *RepositoryUpsert) {
@@ -462,6 +471,13 @@ func (u *RepositoryUpsertOne) SetHTMLURL(v string) *RepositoryUpsertOne {
 func (u *RepositoryUpsertOne) UpdateHTMLURL() *RepositoryUpsertOne {
 	return u.Update(func(s *RepositoryUpsert) {
 		s.UpdateHTMLURL()
+	})
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (u *RepositoryUpsertOne) ClearHTMLURL() *RepositoryUpsertOne {
+	return u.Update(func(s *RepositoryUpsert) {
+		s.ClearHTMLURL()
 	})
 }
 
@@ -652,7 +668,7 @@ func (rcb *RepositoryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.RepositoryUpsert) {
-//			SetOwner(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (rcb *RepositoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertBulk {
@@ -731,20 +747,6 @@ func (u *RepositoryUpsertBulk) Update(set func(*RepositoryUpsert)) *RepositoryUp
 	return u
 }
 
-// SetOwner sets the "owner" field.
-func (u *RepositoryUpsertBulk) SetOwner(v string) *RepositoryUpsertBulk {
-	return u.Update(func(s *RepositoryUpsert) {
-		s.SetOwner(v)
-	})
-}
-
-// UpdateOwner sets the "owner" field to the value that was provided on create.
-func (u *RepositoryUpsertBulk) UpdateOwner() *RepositoryUpsertBulk {
-	return u.Update(func(s *RepositoryUpsert) {
-		s.UpdateOwner()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *RepositoryUpsertBulk) SetName(v string) *RepositoryUpsertBulk {
 	return u.Update(func(s *RepositoryUpsert) {
@@ -784,6 +786,13 @@ func (u *RepositoryUpsertBulk) SetHTMLURL(v string) *RepositoryUpsertBulk {
 func (u *RepositoryUpsertBulk) UpdateHTMLURL() *RepositoryUpsertBulk {
 	return u.Update(func(s *RepositoryUpsert) {
 		s.UpdateHTMLURL()
+	})
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (u *RepositoryUpsertBulk) ClearHTMLURL() *RepositoryUpsertBulk {
+	return u.Update(func(s *RepositoryUpsert) {
+		s.ClearHTMLURL()
 	})
 }
 

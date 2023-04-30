@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/go-faster/bot/internal/ent/predicate"
 )
 
@@ -54,11 +55,6 @@ func IDLTE(id int64) predicate.Repository {
 	return predicate.Repository(sql.FieldLTE(FieldID, id))
 }
 
-// Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
-func Owner(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldEQ(FieldOwner, v))
-}
-
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Repository {
 	return predicate.Repository(sql.FieldEQ(FieldName, v))
@@ -87,71 +83,6 @@ func LastPushedAt(v time.Time) predicate.Repository {
 // LastEventAt applies equality check predicate on the "last_event_at" field. It's identical to LastEventAtEQ.
 func LastEventAt(v time.Time) predicate.Repository {
 	return predicate.Repository(sql.FieldEQ(FieldLastEventAt, v))
-}
-
-// OwnerEQ applies the EQ predicate on the "owner" field.
-func OwnerEQ(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldEQ(FieldOwner, v))
-}
-
-// OwnerNEQ applies the NEQ predicate on the "owner" field.
-func OwnerNEQ(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldNEQ(FieldOwner, v))
-}
-
-// OwnerIn applies the In predicate on the "owner" field.
-func OwnerIn(vs ...string) predicate.Repository {
-	return predicate.Repository(sql.FieldIn(FieldOwner, vs...))
-}
-
-// OwnerNotIn applies the NotIn predicate on the "owner" field.
-func OwnerNotIn(vs ...string) predicate.Repository {
-	return predicate.Repository(sql.FieldNotIn(FieldOwner, vs...))
-}
-
-// OwnerGT applies the GT predicate on the "owner" field.
-func OwnerGT(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldGT(FieldOwner, v))
-}
-
-// OwnerGTE applies the GTE predicate on the "owner" field.
-func OwnerGTE(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldGTE(FieldOwner, v))
-}
-
-// OwnerLT applies the LT predicate on the "owner" field.
-func OwnerLT(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldLT(FieldOwner, v))
-}
-
-// OwnerLTE applies the LTE predicate on the "owner" field.
-func OwnerLTE(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldLTE(FieldOwner, v))
-}
-
-// OwnerContains applies the Contains predicate on the "owner" field.
-func OwnerContains(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldContains(FieldOwner, v))
-}
-
-// OwnerHasPrefix applies the HasPrefix predicate on the "owner" field.
-func OwnerHasPrefix(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldHasPrefix(FieldOwner, v))
-}
-
-// OwnerHasSuffix applies the HasSuffix predicate on the "owner" field.
-func OwnerHasSuffix(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldHasSuffix(FieldOwner, v))
-}
-
-// OwnerEqualFold applies the EqualFold predicate on the "owner" field.
-func OwnerEqualFold(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldEqualFold(FieldOwner, v))
-}
-
-// OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
-func OwnerContainsFold(v string) predicate.Repository {
-	return predicate.Repository(sql.FieldContainsFold(FieldOwner, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -339,6 +270,16 @@ func HTMLURLHasSuffix(v string) predicate.Repository {
 	return predicate.Repository(sql.FieldHasSuffix(FieldHTMLURL, v))
 }
 
+// HTMLURLIsNil applies the IsNil predicate on the "html_url" field.
+func HTMLURLIsNil() predicate.Repository {
+	return predicate.Repository(sql.FieldIsNull(FieldHTMLURL))
+}
+
+// HTMLURLNotNil applies the NotNil predicate on the "html_url" field.
+func HTMLURLNotNil() predicate.Repository {
+	return predicate.Repository(sql.FieldNotNull(FieldHTMLURL))
+}
+
 // HTMLURLEqualFold applies the EqualFold predicate on the "html_url" field.
 func HTMLURLEqualFold(v string) predicate.Repository {
 	return predicate.Repository(sql.FieldEqualFold(FieldHTMLURL, v))
@@ -512,6 +453,29 @@ func LastEventAtIsNil() predicate.Repository {
 // LastEventAtNotNil applies the NotNil predicate on the "last_event_at" field.
 func LastEventAtNotNil() predicate.Repository {
 	return predicate.Repository(sql.FieldNotNull(FieldLastEventAt))
+}
+
+// HasOrganization applies the HasEdge predicate on the "organization" edge.
+func HasOrganization() predicate.Repository {
+	return predicate.Repository(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OrganizationTable, OrganizationColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrganizationWith applies the HasEdge predicate on the "organization" edge with a given conditions (other predicates).
+func HasOrganizationWith(preds ...predicate.Organization) predicate.Repository {
+	return predicate.Repository(func(s *sql.Selector) {
+		step := newOrganizationStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

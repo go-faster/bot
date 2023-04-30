@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/repository"
 )
@@ -17,10 +18,12 @@ import (
 // RepositoryQuery is the builder for querying Repository entities.
 type RepositoryQuery struct {
 	config
-	ctx        *QueryContext
-	order      []repository.OrderOption
-	inters     []Interceptor
-	predicates []predicate.Repository
+	ctx              *QueryContext
+	order            []repository.OrderOption
+	inters           []Interceptor
+	predicates       []predicate.Repository
+	withOrganization *OrganizationQuery
+	withFKs          bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +58,28 @@ func (rq *RepositoryQuery) Unique(unique bool) *RepositoryQuery {
 func (rq *RepositoryQuery) Order(o ...repository.OrderOption) *RepositoryQuery {
 	rq.order = append(rq.order, o...)
 	return rq
+}
+
+// QueryOrganization chains the current query on the "organization" edge.
+func (rq *RepositoryQuery) QueryOrganization() *OrganizationQuery {
+	query := (&OrganizationClient{config: rq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := rq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(repository.Table, repository.FieldID, selector),
+			sqlgraph.To(organization.Table, organization.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, repository.OrganizationTable, repository.OrganizationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Repository entity from the query.
@@ -244,15 +269,27 @@ func (rq *RepositoryQuery) Clone() *RepositoryQuery {
 		return nil
 	}
 	return &RepositoryQuery{
-		config:     rq.config,
-		ctx:        rq.ctx.Clone(),
-		order:      append([]repository.OrderOption{}, rq.order...),
-		inters:     append([]Interceptor{}, rq.inters...),
-		predicates: append([]predicate.Repository{}, rq.predicates...),
+		config:           rq.config,
+		ctx:              rq.ctx.Clone(),
+		order:            append([]repository.OrderOption{}, rq.order...),
+		inters:           append([]Interceptor{}, rq.inters...),
+		predicates:       append([]predicate.Repository{}, rq.predicates...),
+		withOrganization: rq.withOrganization.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
 	}
+}
+
+// WithOrganization tells the query-builder to eager-load the nodes that are connected to
+// the "organization" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RepositoryQuery) WithOrganization(opts ...func(*OrganizationQuery)) *RepositoryQuery {
+	query := (&OrganizationClient{config: rq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withOrganization = query
+	return rq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -261,12 +298,12 @@ func (rq *RepositoryQuery) Clone() *RepositoryQuery {
 // Example:
 //
 //	var v []struct {
-//		Owner string `json:"owner,omitempty"`
+//		Name string `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Repository.Query().
-//		GroupBy(repository.FieldOwner).
+//		GroupBy(repository.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (rq *RepositoryQuery) GroupBy(field string, fields ...string) *RepositoryGroupBy {
@@ -284,11 +321,11 @@ func (rq *RepositoryQuery) GroupBy(field string, fields ...string) *RepositoryGr
 // Example:
 //
 //	var v []struct {
-//		Owner string `json:"owner,omitempty"`
+//		Name string `json:"name,omitempty"`
 //	}
 //
 //	client.Repository.Query().
-//		Select(repository.FieldOwner).
+//		Select(repository.FieldName).
 //		Scan(ctx, &v)
 func (rq *RepositoryQuery) Select(fields ...string) *RepositorySelect {
 	rq.ctx.Fields = append(rq.ctx.Fields, fields...)
@@ -331,15 +368,26 @@ func (rq *RepositoryQuery) prepareQuery(ctx context.Context) error {
 
 func (rq *RepositoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Repository, error) {
 	var (
-		nodes = []*Repository{}
-		_spec = rq.querySpec()
+		nodes       = []*Repository{}
+		withFKs     = rq.withFKs
+		_spec       = rq.querySpec()
+		loadedTypes = [1]bool{
+			rq.withOrganization != nil,
+		}
 	)
+	if rq.withOrganization != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, repository.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Repository).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Repository{config: rq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +399,46 @@ func (rq *RepositoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := rq.withOrganization; query != nil {
+		if err := rq.loadOrganization(ctx, query, nodes, nil,
+			func(n *Repository, e *Organization) { n.Edges.Organization = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (rq *RepositoryQuery) loadOrganization(ctx context.Context, query *OrganizationQuery, nodes []*Repository, init func(*Repository), assign func(*Repository, *Organization)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Repository)
+	for i := range nodes {
+		if nodes[i].organization_repositories == nil {
+			continue
+		}
+		fk := *nodes[i].organization_repositories
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(organization.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "organization_repositories" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (rq *RepositoryQuery) sqlCount(ctx context.Context) (int, error) {

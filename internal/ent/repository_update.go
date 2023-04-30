@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/repository"
 )
@@ -25,12 +26,6 @@ type RepositoryUpdate struct {
 // Where appends a list predicates to the RepositoryUpdate builder.
 func (ru *RepositoryUpdate) Where(ps ...predicate.Repository) *RepositoryUpdate {
 	ru.mutation.Where(ps...)
-	return ru
-}
-
-// SetOwner sets the "owner" field.
-func (ru *RepositoryUpdate) SetOwner(s string) *RepositoryUpdate {
-	ru.mutation.SetOwner(s)
 	return ru
 }
 
@@ -49,6 +44,20 @@ func (ru *RepositoryUpdate) SetFullName(s string) *RepositoryUpdate {
 // SetHTMLURL sets the "html_url" field.
 func (ru *RepositoryUpdate) SetHTMLURL(s string) *RepositoryUpdate {
 	ru.mutation.SetHTMLURL(s)
+	return ru
+}
+
+// SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
+func (ru *RepositoryUpdate) SetNillableHTMLURL(s *string) *RepositoryUpdate {
+	if s != nil {
+		ru.SetHTMLURL(*s)
+	}
+	return ru
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (ru *RepositoryUpdate) ClearHTMLURL() *RepositoryUpdate {
+	ru.mutation.ClearHTMLURL()
 	return ru
 }
 
@@ -106,9 +115,34 @@ func (ru *RepositoryUpdate) ClearLastEventAt() *RepositoryUpdate {
 	return ru
 }
 
+// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
+func (ru *RepositoryUpdate) SetOrganizationID(id int64) *RepositoryUpdate {
+	ru.mutation.SetOrganizationID(id)
+	return ru
+}
+
+// SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
+func (ru *RepositoryUpdate) SetNillableOrganizationID(id *int64) *RepositoryUpdate {
+	if id != nil {
+		ru = ru.SetOrganizationID(*id)
+	}
+	return ru
+}
+
+// SetOrganization sets the "organization" edge to the Organization entity.
+func (ru *RepositoryUpdate) SetOrganization(o *Organization) *RepositoryUpdate {
+	return ru.SetOrganizationID(o.ID)
+}
+
 // Mutation returns the RepositoryMutation object of the builder.
 func (ru *RepositoryUpdate) Mutation() *RepositoryMutation {
 	return ru.mutation
+}
+
+// ClearOrganization clears the "organization" edge to the Organization entity.
+func (ru *RepositoryUpdate) ClearOrganization() *RepositoryUpdate {
+	ru.mutation.ClearOrganization()
+	return ru
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -147,9 +181,6 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ru.mutation.Owner(); ok {
-		_spec.SetField(repository.FieldOwner, field.TypeString, value)
-	}
 	if value, ok := ru.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 	}
@@ -158,6 +189,9 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ru.mutation.HTMLURL(); ok {
 		_spec.SetField(repository.FieldHTMLURL, field.TypeString, value)
+	}
+	if ru.mutation.HTMLURLCleared() {
+		_spec.ClearField(repository.FieldHTMLURL, field.TypeString)
 	}
 	if value, ok := ru.mutation.Description(); ok {
 		_spec.SetField(repository.FieldDescription, field.TypeString, value)
@@ -173,6 +207,35 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ru.mutation.LastEventAtCleared() {
 		_spec.ClearField(repository.FieldLastEventAt, field.TypeTime)
+	}
+	if ru.mutation.OrganizationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   repository.OrganizationTable,
+			Columns: []string{repository.OrganizationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.OrganizationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   repository.OrganizationTable,
+			Columns: []string{repository.OrganizationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -194,12 +257,6 @@ type RepositoryUpdateOne struct {
 	mutation *RepositoryMutation
 }
 
-// SetOwner sets the "owner" field.
-func (ruo *RepositoryUpdateOne) SetOwner(s string) *RepositoryUpdateOne {
-	ruo.mutation.SetOwner(s)
-	return ruo
-}
-
 // SetName sets the "name" field.
 func (ruo *RepositoryUpdateOne) SetName(s string) *RepositoryUpdateOne {
 	ruo.mutation.SetName(s)
@@ -215,6 +272,20 @@ func (ruo *RepositoryUpdateOne) SetFullName(s string) *RepositoryUpdateOne {
 // SetHTMLURL sets the "html_url" field.
 func (ruo *RepositoryUpdateOne) SetHTMLURL(s string) *RepositoryUpdateOne {
 	ruo.mutation.SetHTMLURL(s)
+	return ruo
+}
+
+// SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
+func (ruo *RepositoryUpdateOne) SetNillableHTMLURL(s *string) *RepositoryUpdateOne {
+	if s != nil {
+		ruo.SetHTMLURL(*s)
+	}
+	return ruo
+}
+
+// ClearHTMLURL clears the value of the "html_url" field.
+func (ruo *RepositoryUpdateOne) ClearHTMLURL() *RepositoryUpdateOne {
+	ruo.mutation.ClearHTMLURL()
 	return ruo
 }
 
@@ -272,9 +343,34 @@ func (ruo *RepositoryUpdateOne) ClearLastEventAt() *RepositoryUpdateOne {
 	return ruo
 }
 
+// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
+func (ruo *RepositoryUpdateOne) SetOrganizationID(id int64) *RepositoryUpdateOne {
+	ruo.mutation.SetOrganizationID(id)
+	return ruo
+}
+
+// SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
+func (ruo *RepositoryUpdateOne) SetNillableOrganizationID(id *int64) *RepositoryUpdateOne {
+	if id != nil {
+		ruo = ruo.SetOrganizationID(*id)
+	}
+	return ruo
+}
+
+// SetOrganization sets the "organization" edge to the Organization entity.
+func (ruo *RepositoryUpdateOne) SetOrganization(o *Organization) *RepositoryUpdateOne {
+	return ruo.SetOrganizationID(o.ID)
+}
+
 // Mutation returns the RepositoryMutation object of the builder.
 func (ruo *RepositoryUpdateOne) Mutation() *RepositoryMutation {
 	return ruo.mutation
+}
+
+// ClearOrganization clears the "organization" edge to the Organization entity.
+func (ruo *RepositoryUpdateOne) ClearOrganization() *RepositoryUpdateOne {
+	ruo.mutation.ClearOrganization()
+	return ruo
 }
 
 // Where appends a list predicates to the RepositoryUpdate builder.
@@ -343,9 +439,6 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 			}
 		}
 	}
-	if value, ok := ruo.mutation.Owner(); ok {
-		_spec.SetField(repository.FieldOwner, field.TypeString, value)
-	}
 	if value, ok := ruo.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 	}
@@ -354,6 +447,9 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 	}
 	if value, ok := ruo.mutation.HTMLURL(); ok {
 		_spec.SetField(repository.FieldHTMLURL, field.TypeString, value)
+	}
+	if ruo.mutation.HTMLURLCleared() {
+		_spec.ClearField(repository.FieldHTMLURL, field.TypeString)
 	}
 	if value, ok := ruo.mutation.Description(); ok {
 		_spec.SetField(repository.FieldDescription, field.TypeString, value)
@@ -369,6 +465,35 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 	}
 	if ruo.mutation.LastEventAtCleared() {
 		_spec.ClearField(repository.FieldLastEventAt, field.TypeTime)
+	}
+	if ruo.mutation.OrganizationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   repository.OrganizationTable,
+			Columns: []string{repository.OrganizationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.OrganizationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   repository.OrganizationTable,
+			Columns: []string{repository.OrganizationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Repository{config: ruo.config}
 	_spec.Assign = _node.assignValues

@@ -4,6 +4,7 @@ package repository
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -11,8 +12,6 @@ const (
 	Label = "repository"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldOwner holds the string denoting the owner field in the database.
-	FieldOwner = "owner"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldFullName holds the string denoting the full_name field in the database.
@@ -25,14 +24,22 @@ const (
 	FieldLastPushedAt = "last_pushed_at"
 	// FieldLastEventAt holds the string denoting the last_event_at field in the database.
 	FieldLastEventAt = "last_event_at"
+	// EdgeOrganization holds the string denoting the organization edge name in mutations.
+	EdgeOrganization = "organization"
 	// Table holds the table name of the repository in the database.
 	Table = "repositories"
+	// OrganizationTable is the table that holds the organization relation/edge.
+	OrganizationTable = "repositories"
+	// OrganizationInverseTable is the table name for the Organization entity.
+	// It exists in this package in order to avoid circular dependency with the "organization" package.
+	OrganizationInverseTable = "organizations"
+	// OrganizationColumn is the table column denoting the organization relation/edge.
+	OrganizationColumn = "organization_repositories"
 )
 
 // Columns holds all SQL columns for repository fields.
 var Columns = []string{
 	FieldID,
-	FieldOwner,
 	FieldName,
 	FieldFullName,
 	FieldHTMLURL,
@@ -41,10 +48,21 @@ var Columns = []string{
 	FieldLastEventAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "repositories"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"organization_repositories",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -62,11 +80,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByOwner orders the results by the owner field.
-func ByOwner(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOwner, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
@@ -97,4 +110,18 @@ func ByLastPushedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByLastEventAt orders the results by the last_event_at field.
 func ByLastEventAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastEventAt, opts...).ToFunc()
+}
+
+// ByOrganizationField orders the results by organization field.
+func ByOrganizationField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrganizationStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newOrganizationStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrganizationInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OrganizationTable, OrganizationColumn),
+	)
 }

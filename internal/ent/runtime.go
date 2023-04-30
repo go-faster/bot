@@ -40,7 +40,7 @@ func init() {
 	repositoryFields := schema.Repository{}.Fields()
 	_ = repositoryFields
 	// repositoryDescDescription is the schema descriptor for description field.
-	repositoryDescDescription := repositoryFields[5].Descriptor()
+	repositoryDescDescription := repositoryFields[4].Descriptor()
 	// repository.DefaultDescription holds the default value on creation for the description field.
 	repository.DefaultDescription = repositoryDescDescription.Default.(string)
 	telegramchannelstateFields := schema.TelegramChannelState{}.Fields()
