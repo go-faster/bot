@@ -59,6 +59,9 @@ func (w *Commit) Update(ctx context.Context) error {
 	}
 
 	tx, err := w.db.Tx(ctx)
+	if err != nil {
+		return errors.Wrap(err, "begin tx")
+	}
 
 	all, err := tx.Repository.Query().WithOrganization().All(ctx)
 	if err != nil {
