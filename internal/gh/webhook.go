@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
 	"github.com/google/go-github/v52/github"
@@ -22,6 +23,8 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/ent/check"
+	"github.com/go-faster/bot/internal/ent/repository"
 )
 
 // Webhook is a Github events web hook handler.
@@ -181,6 +184,8 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		t = v
 	}
 
+	now := time.Now()
+
 	ctx, span := h.tracer.Start(ctx, "wh.Handle",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
@@ -245,6 +250,39 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 	)
 	if err := h.processEvent(ctx, event); err != nil {
 		return errors.Wrap(err, "process")
+	}
+
+	{
+		// Update latest event timestamp.
+		tx, err := h.db.BeginTx(ctx, nil)
+		if err != nil {
+			return errors.Wrap(err, "begin tx")
+		}
+		defer func() {
+			_ = tx.Rollback()
+		}()
+		if err := tx.Repository.Create().
+			SetID(meta.RepositoryID).
+			SetName(meta.Repository).
+			SetOwner(meta.Organization).
+			OnConflict(
+				sql.ConflictColumns(check.FieldID),
+				sql.ResolveWithNewValues(),
+			).DoNothing().Exec(ctx); err != nil {
+			return errors.Wrap(err, "upsert repository")
+		}
+		if err := tx.Repository.Update().Where(
+			repository.ID(meta.RepositoryID),
+			repository.Or(
+				repository.LastEventAtIsNil(),
+				repository.LastEventAtLT(now),
+			),
+		).SetLastEventAt(now).Exec(ctx); err != nil {
+			return errors.Wrap(err, "update repository")
+		}
+		if err := tx.Commit(); err != nil {
+			return errors.Wrap(err, "commit")
+		}
 	}
 
 	return nil
