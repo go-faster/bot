@@ -116,5 +116,5 @@ jobs:
 
       - name: Deploy
         run: |
-          /tmp/kubectl apply -f .k8s/deployment.release.yml
+          /tmp/kubectl apply -f .k8s/deployment.release.yml -f .k8s/service.yaml
           /tmp/kubectl -n faster rollout status deployment/bot --timeout=10m
