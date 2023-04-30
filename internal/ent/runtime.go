@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/repository"
 	"github.com/go-faster/bot/internal/ent/schema"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramuserstate"
@@ -36,6 +37,12 @@ func init() {
 	prnotificationDescPullRequestAuthorLogin := prnotificationFields[4].Descriptor()
 	// prnotification.DefaultPullRequestAuthorLogin holds the default value on creation for the pull_request_author_login field.
 	prnotification.DefaultPullRequestAuthorLogin = prnotificationDescPullRequestAuthorLogin.Default.(string)
+	repositoryFields := schema.Repository{}.Fields()
+	_ = repositoryFields
+	// repositoryDescDescription is the schema descriptor for description field.
+	repositoryDescDescription := repositoryFields[5].Descriptor()
+	// repository.DefaultDescription holds the default value on creation for the description field.
+	repository.DefaultDescription = repositoryDescDescription.Default.(string)
 	telegramchannelstateFields := schema.TelegramChannelState{}.Fields()
 	_ = telegramchannelstateFields
 	// telegramchannelstateDescPts is the schema descriptor for pts field.

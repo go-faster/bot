@@ -88,6 +88,23 @@ var (
 			},
 		},
 	}
+	// RepositoriesColumns holds the columns for the "repositories" table.
+	RepositoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "owner", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "full_name", Type: field.TypeString},
+		{Name: "html_url", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "last_pushed_at", Type: field.TypeTime, Nullable: true},
+		{Name: "last_event_at", Type: field.TypeTime, Nullable: true},
+	}
+	// RepositoriesTable holds the schema information for the "repositories" table.
+	RepositoriesTable = &schema.Table{
+		Name:       "repositories",
+		Columns:    RepositoriesColumns,
+		PrimaryKey: []*schema.Column{RepositoriesColumns[0]},
+	}
 	// TelegramChannelStatesColumns holds the columns for the "telegram_channel_states" table.
 	TelegramChannelStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -161,6 +178,7 @@ var (
 		GptDialogsTable,
 		LastChannelMessagesTable,
 		PrNotificationsTable,
+		RepositoriesTable,
 		TelegramChannelStatesTable,
 		TelegramSessionsTable,
 		TelegramUserStatesTable,

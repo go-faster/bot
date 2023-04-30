@@ -13,6 +13,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/repository"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
 	"github.com/go-faster/bot/internal/ent/telegramuserstate"
@@ -183,6 +184,33 @@ func (f TraversePRNotification) Traverse(ctx context.Context, q ent.Query) error
 	return fmt.Errorf("unexpected query type %T. expect *ent.PRNotificationQuery", q)
 }
 
+// The RepositoryFunc type is an adapter to allow the use of ordinary function as a Querier.
+type RepositoryFunc func(context.Context, *ent.RepositoryQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f RepositoryFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.RepositoryQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.RepositoryQuery", q)
+}
+
+// The TraverseRepository type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseRepository func(context.Context, *ent.RepositoryQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseRepository) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseRepository) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.RepositoryQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.RepositoryQuery", q)
+}
+
 // The TelegramChannelStateFunc type is an adapter to allow the use of ordinary function as a Querier.
 type TelegramChannelStateFunc func(context.Context, *ent.TelegramChannelStateQuery) (ent.Value, error)
 
@@ -302,6 +330,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.OrderOption]{typ: ent.TypeLastChannelMessage, tq: q}, nil
 	case *ent.PRNotificationQuery:
 		return &query[*ent.PRNotificationQuery, predicate.PRNotification, prnotification.OrderOption]{typ: ent.TypePRNotification, tq: q}, nil
+	case *ent.RepositoryQuery:
+		return &query[*ent.RepositoryQuery, predicate.Repository, repository.OrderOption]{typ: ent.TypeRepository, tq: q}, nil
 	case *ent.TelegramChannelStateQuery:
 		return &query[*ent.TelegramChannelStateQuery, predicate.TelegramChannelState, telegramchannelstate.OrderOption]{typ: ent.TypeTelegramChannelState, tq: q}, nil
 	case *ent.TelegramSessionQuery:

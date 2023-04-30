@@ -16,6 +16,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/repository"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
 	"github.com/go-faster/bot/internal/ent/telegramuserstate"
@@ -84,6 +85,7 @@ func checkColumn(table, column string) error {
 			gptdialog.Table:            gptdialog.ValidColumn,
 			lastchannelmessage.Table:   lastchannelmessage.ValidColumn,
 			prnotification.Table:       prnotification.ValidColumn,
+			repository.Table:           repository.ValidColumn,
 			telegramchannelstate.Table: telegramchannelstate.ValidColumn,
 			telegramsession.Table:      telegramsession.ValidColumn,
 			telegramuserstate.Table:    telegramuserstate.ValidColumn,

@@ -19,6 +19,7 @@ import (
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/prnotification"
+	"github.com/go-faster/bot/internal/ent/repository"
 	"github.com/go-faster/bot/internal/ent/telegramchannelstate"
 	"github.com/go-faster/bot/internal/ent/telegramsession"
 	"github.com/go-faster/bot/internal/ent/telegramuserstate"
@@ -38,6 +39,8 @@ type Client struct {
 	LastChannelMessage *LastChannelMessageClient
 	// PRNotification is the client for interacting with the PRNotification builders.
 	PRNotification *PRNotificationClient
+	// Repository is the client for interacting with the Repository builders.
+	Repository *RepositoryClient
 	// TelegramChannelState is the client for interacting with the TelegramChannelState builders.
 	TelegramChannelState *TelegramChannelStateClient
 	// TelegramSession is the client for interacting with the TelegramSession builders.
@@ -63,6 +66,7 @@ func (c *Client) init() {
 	c.GPTDialog = NewGPTDialogClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
+	c.Repository = NewRepositoryClient(c.config)
 	c.TelegramChannelState = NewTelegramChannelStateClient(c.config)
 	c.TelegramSession = NewTelegramSessionClient(c.config)
 	c.TelegramUserState = NewTelegramUserStateClient(c.config)
@@ -153,6 +157,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		GPTDialog:            NewGPTDialogClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
+		Repository:           NewRepositoryClient(cfg),
 		TelegramChannelState: NewTelegramChannelStateClient(cfg),
 		TelegramSession:      NewTelegramSessionClient(cfg),
 		TelegramUserState:    NewTelegramUserStateClient(cfg),
@@ -180,6 +185,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		GPTDialog:            NewGPTDialogClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
+		Repository:           NewRepositoryClient(cfg),
 		TelegramChannelState: NewTelegramChannelStateClient(cfg),
 		TelegramSession:      NewTelegramSessionClient(cfg),
 		TelegramUserState:    NewTelegramUserStateClient(cfg),
@@ -213,7 +219,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.Repository,
 		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
 	} {
 		n.Use(hooks...)
@@ -224,7 +230,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification,
+		c.Check, c.GPTDialog, c.LastChannelMessage, c.PRNotification, c.Repository,
 		c.TelegramChannelState, c.TelegramSession, c.TelegramUserState, c.User,
 	} {
 		n.Intercept(interceptors...)
@@ -242,6 +248,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.LastChannelMessage.mutate(ctx, m)
 	case *PRNotificationMutation:
 		return c.PRNotification.mutate(ctx, m)
+	case *RepositoryMutation:
+		return c.Repository.mutate(ctx, m)
 	case *TelegramChannelStateMutation:
 		return c.TelegramChannelState.mutate(ctx, m)
 	case *TelegramSessionMutation:
@@ -724,6 +732,124 @@ func (c *PRNotificationClient) mutate(ctx context.Context, m *PRNotificationMuta
 		return (&PRNotificationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown PRNotification mutation op: %q", m.Op())
+	}
+}
+
+// RepositoryClient is a client for the Repository schema.
+type RepositoryClient struct {
+	config
+}
+
+// NewRepositoryClient returns a client for the Repository from the given config.
+func NewRepositoryClient(c config) *RepositoryClient {
+	return &RepositoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `repository.Hooks(f(g(h())))`.
+func (c *RepositoryClient) Use(hooks ...Hook) {
+	c.hooks.Repository = append(c.hooks.Repository, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `repository.Intercept(f(g(h())))`.
+func (c *RepositoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Repository = append(c.inters.Repository, interceptors...)
+}
+
+// Create returns a builder for creating a Repository entity.
+func (c *RepositoryClient) Create() *RepositoryCreate {
+	mutation := newRepositoryMutation(c.config, OpCreate)
+	return &RepositoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Repository entities.
+func (c *RepositoryClient) CreateBulk(builders ...*RepositoryCreate) *RepositoryCreateBulk {
+	return &RepositoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Repository.
+func (c *RepositoryClient) Update() *RepositoryUpdate {
+	mutation := newRepositoryMutation(c.config, OpUpdate)
+	return &RepositoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RepositoryClient) UpdateOne(r *Repository) *RepositoryUpdateOne {
+	mutation := newRepositoryMutation(c.config, OpUpdateOne, withRepository(r))
+	return &RepositoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RepositoryClient) UpdateOneID(id int64) *RepositoryUpdateOne {
+	mutation := newRepositoryMutation(c.config, OpUpdateOne, withRepositoryID(id))
+	return &RepositoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Repository.
+func (c *RepositoryClient) Delete() *RepositoryDelete {
+	mutation := newRepositoryMutation(c.config, OpDelete)
+	return &RepositoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RepositoryClient) DeleteOne(r *Repository) *RepositoryDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RepositoryClient) DeleteOneID(id int64) *RepositoryDeleteOne {
+	builder := c.Delete().Where(repository.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RepositoryDeleteOne{builder}
+}
+
+// Query returns a query builder for Repository.
+func (c *RepositoryClient) Query() *RepositoryQuery {
+	return &RepositoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRepository},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Repository entity by its id.
+func (c *RepositoryClient) Get(ctx context.Context, id int64) (*Repository, error) {
+	return c.Query().Where(repository.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RepositoryClient) GetX(ctx context.Context, id int64) *Repository {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RepositoryClient) Hooks() []Hook {
+	return c.hooks.Repository
+}
+
+// Interceptors returns the client interceptors.
+func (c *RepositoryClient) Interceptors() []Interceptor {
+	return c.inters.Repository
+}
+
+func (c *RepositoryClient) mutate(ctx context.Context, m *RepositoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RepositoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RepositoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RepositoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RepositoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Repository mutation op: %q", m.Op())
 	}
 }
 
@@ -1234,11 +1360,12 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramChannelState,
-		TelegramSession, TelegramUserState, User []ent.Hook
+		Check, GPTDialog, LastChannelMessage, PRNotification, Repository,
+		TelegramChannelState, TelegramSession, TelegramUserState, User []ent.Hook
 	}
 	inters struct {
-		Check, GPTDialog, LastChannelMessage, PRNotification, TelegramChannelState,
-		TelegramSession, TelegramUserState, User []ent.Interceptor
+		Check, GPTDialog, LastChannelMessage, PRNotification, Repository,
+		TelegramChannelState, TelegramSession, TelegramUserState,
+		User []ent.Interceptor
 	}
 )
