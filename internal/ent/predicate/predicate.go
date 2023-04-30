@@ -15,6 +15,9 @@ type GPTDialog func(*sql.Selector)
 // LastChannelMessage is the predicate function for lastchannelmessage builders.
 type LastChannelMessage func(*sql.Selector)
 
+// Organization is the predicate function for organization builders.
+type Organization func(*sql.Selector)
+
 // PRNotification is the predicate function for prnotification builders.
 type PRNotification func(*sql.Selector)
 

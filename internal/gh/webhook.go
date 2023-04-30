@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"path"
 	"strings"
 	"time"
 
@@ -261,10 +262,19 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		defer func() {
 			_ = tx.Rollback()
 		}()
+		if err := tx.Organization.Create().
+			SetID(meta.OrganizationID).
+			SetName(meta.Organization).
+			OnConflict(
+				sql.ConflictColumns(check.FieldID),
+				sql.ResolveWithNewValues(),
+			).DoNothing().Exec(ctx); err != nil {
+			return errors.Wrap(err, "upsert organization")
+		}
 		if err := tx.Repository.Create().
 			SetID(meta.RepositoryID).
 			SetName(meta.Repository).
-			SetOwner(meta.Organization).
+			SetFullName(path.Join(meta.Organization, meta.Repository)).
 			OnConflict(
 				sql.ConflictColumns(check.FieldID),
 				sql.ResolveWithNewValues(),
