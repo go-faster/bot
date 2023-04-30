@@ -94,11 +94,14 @@ func (m *Metrics) shutdown(ctx context.Context) error {
 
 	// Launch shutdowns in parallel.
 	wg.Add(len(m.shutdowns))
+
+	var shutdowns []string
 	for _, s := range m.shutdowns {
 		var (
 			f = s.fn
 			n = s.name
 		)
+		shutdowns = append(shutdowns, n)
 		go func() {
 			defer wg.Done()
 			if err := f(ctx); err != nil {
@@ -111,6 +114,7 @@ func (m *Metrics) shutdown(ctx context.Context) error {
 	}
 
 	// Wait for all shutdowns to finish.
+	m.lg.Info("Waiting for shutdowns", zap.Strings("shutdowns", shutdowns))
 	wg.Wait()
 
 	// Combine all shutdown errors.
