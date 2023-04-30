@@ -267,7 +267,6 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 			SetName(meta.Organization).
 			OnConflict(
 				sql.ConflictColumns(check.FieldID),
-				sql.ResolveWithNewValues(),
 			).DoNothing().Exec(ctx); err != nil {
 			return errors.Wrap(err, "upsert organization")
 		}
@@ -277,7 +276,6 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 			SetFullName(path.Join(meta.Organization, meta.Repository)).
 			OnConflict(
 				sql.ConflictColumns(check.FieldID),
-				sql.ResolveWithNewValues(),
 			).DoNothing().Exec(ctx); err != nil {
 			return errors.Wrap(err, "upsert repository")
 		}
