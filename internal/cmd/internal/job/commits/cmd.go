@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/go-faster/errors"
@@ -45,6 +46,8 @@ func Root() *cobra.Command {
 		Short: "Gather commit information and save to database",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.Run(func(ctx context.Context, logger *zap.Logger, m *app.Metrics) error {
+				start := time.Now()
+
 				tracer := m.TracerProvider().Tracer("command")
 
 				ctx, span := tracer.Start(ctx, "job.commits")
@@ -77,6 +80,11 @@ func Root() *cobra.Command {
 				if err := c.Update(ctx); err != nil {
 					return errors.Wrap(err, "update commits")
 				}
+
+				logger.Info("Done",
+					zap.Duration("duration", time.Since(start)),
+					zap.Stringer("duration_human", time.Since(start)),
+				)
 
 				return nil
 			})
