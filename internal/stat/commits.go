@@ -86,7 +86,7 @@ func (w *Commit) Update(ctx context.Context) error {
 			if err := tx.GitCommit.Create().
 				SetID(commit.GetSHA()).
 				SetDate(commit.GetCommit().GetAuthor().GetDate().Time).
-				SetAuthorLogin(commit.GetCommit().GetAuthor().GetLogin()).
+				SetAuthorLogin(commit.GetAuthor().GetLogin()).
 				SetAuthorID(commit.GetAuthor().GetID()).
 				SetMessage(commit.GetCommit().GetMessage()).
 				OnConflictColumns(gitcommit.FieldID).Ignore().Exec(ctx); err != nil {
