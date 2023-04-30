@@ -57,20 +57,27 @@ func (w *Commit) Update(ctx context.Context) error {
 		return errors.Wrap(err, "client")
 	}
 
-	commits, _, err := client.Repositories.ListCommits(ctx, "go-faster", "jx", &github.CommitsListOptions{
-		ListOptions: github.ListOptions{
-			PerPage: 10,
-		},
-	})
+	all, err := w.db.Repository.Query().WithOrganization().All(ctx)
 	if err != nil {
-		return errors.Wrap(err, "list commits")
+		return errors.Wrap(err, "query repositories")
 	}
 
-	for _, commit := range commits {
-		zctx.From(ctx).Info("Commit",
-			zap.String("sha", commit.GetSHA()),
-			zap.String("message", commit.GetCommit().GetMessage()),
-		)
+	for _, repo := range all {
+		commits, _, err := client.Repositories.ListCommits(ctx, repo.Edges.Organization.Name, repo.Name, &github.CommitsListOptions{
+			ListOptions: github.ListOptions{
+				PerPage: 10,
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "list commits")
+		}
+		for _, commit := range commits {
+			zctx.From(ctx).Info("Commit",
+				zap.String("sha", commit.GetSHA()),
+				zap.String("message", commit.GetCommit().GetMessage()),
+				zap.String("repo", repo.FullName),
+			)
+		}
 	}
 
 	return nil
