@@ -89,6 +89,7 @@ func (w *Commit) Update(ctx context.Context) error {
 				SetAuthorLogin(commit.GetAuthor().GetLogin()).
 				SetAuthorID(commit.GetAuthor().GetID()).
 				SetMessage(commit.GetCommit().GetMessage()).
+				SetRepositoryID(repo.ID).
 				OnConflictColumns(gitcommit.FieldID).Ignore().Exec(ctx); err != nil {
 				return errors.Wrap(err, "create commit")
 			}
