@@ -45,6 +45,11 @@ func Root() *cobra.Command {
 		Short: "Gather commit information and save to database",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.Run(func(ctx context.Context, logger *zap.Logger, m *app.Metrics) error {
+				tracer := m.TracerProvider().Tracer("command")
+
+				ctx, span := tracer.Start(ctx, "job.commits")
+				defer span.End()
+
 				httpTransport := otelhttp.NewTransport(http.DefaultTransport,
 					otelhttp.WithTracerProvider(m.TracerProvider()),
 					otelhttp.WithMeterProvider(m.MeterProvider()),
