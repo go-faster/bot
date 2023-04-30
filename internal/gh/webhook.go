@@ -291,6 +291,7 @@ func (h *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) 
 		SetID(meta.RepositoryID).
 		SetName(meta.Repository).
 		SetFullName(path.Join(meta.Organization, meta.Repository)).
+		SetOrganizationID(meta.OrganizationID).
 		OnConflict(
 			sql.ConflictColumns(check.FieldID),
 		).Ignore().Exec(ctx); err != nil {
