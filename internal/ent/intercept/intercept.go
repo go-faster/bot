@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/ent/check"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/organization"
@@ -129,6 +130,33 @@ func (f TraverseGPTDialog) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.GPTDialogQuery", q)
+}
+
+// The GitCommitFunc type is an adapter to allow the use of ordinary function as a Querier.
+type GitCommitFunc func(context.Context, *ent.GitCommitQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f GitCommitFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.GitCommitQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.GitCommitQuery", q)
+}
+
+// The TraverseGitCommit type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseGitCommit func(context.Context, *ent.GitCommitQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseGitCommit) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseGitCommit) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.GitCommitQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.GitCommitQuery", q)
 }
 
 // The LastChannelMessageFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -354,6 +382,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.CheckQuery, predicate.Check, check.OrderOption]{typ: ent.TypeCheck, tq: q}, nil
 	case *ent.GPTDialogQuery:
 		return &query[*ent.GPTDialogQuery, predicate.GPTDialog, gptdialog.OrderOption]{typ: ent.TypeGPTDialog, tq: q}, nil
+	case *ent.GitCommitQuery:
+		return &query[*ent.GitCommitQuery, predicate.GitCommit, gitcommit.OrderOption]{typ: ent.TypeGitCommit, tq: q}, nil
 	case *ent.LastChannelMessageQuery:
 		return &query[*ent.LastChannelMessageQuery, predicate.LastChannelMessage, lastchannelmessage.OrderOption]{typ: ent.TypeLastChannelMessage, tq: q}, nil
 	case *ent.OrganizationQuery:

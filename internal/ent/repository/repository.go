@@ -26,6 +26,10 @@ const (
 	FieldLastEventAt = "last_event_at"
 	// EdgeOrganization holds the string denoting the organization edge name in mutations.
 	EdgeOrganization = "organization"
+	// EdgeCommits holds the string denoting the commits edge name in mutations.
+	EdgeCommits = "commits"
+	// GitCommitFieldID holds the string denoting the ID field of the GitCommit.
+	GitCommitFieldID = "sha"
 	// Table holds the table name of the repository in the database.
 	Table = "repositories"
 	// OrganizationTable is the table that holds the organization relation/edge.
@@ -35,6 +39,13 @@ const (
 	OrganizationInverseTable = "organizations"
 	// OrganizationColumn is the table column denoting the organization relation/edge.
 	OrganizationColumn = "organization_repositories"
+	// CommitsTable is the table that holds the commits relation/edge.
+	CommitsTable = "git_commits"
+	// CommitsInverseTable is the table name for the GitCommit entity.
+	// It exists in this package in order to avoid circular dependency with the "gitcommit" package.
+	CommitsInverseTable = "git_commits"
+	// CommitsColumn is the table column denoting the commits relation/edge.
+	CommitsColumn = "repository_commits"
 )
 
 // Columns holds all SQL columns for repository fields.
@@ -118,10 +129,31 @@ func ByOrganizationField(field string, opts ...sql.OrderTermOption) OrderOption 
 		sqlgraph.OrderByNeighborTerms(s, newOrganizationStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByCommitsCount orders the results by commits count.
+func ByCommitsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCommitsStep(), opts...)
+	}
+}
+
+// ByCommits orders the results by commits terms.
+func ByCommits(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCommitsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newOrganizationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OrganizationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, OrganizationTable, OrganizationColumn),
+	)
+}
+func newCommitsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CommitsInverseTable, GitCommitFieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CommitsTable, CommitsColumn),
 	)
 }

@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/repository"
@@ -23,7 +25,9 @@ type RepositoryQuery struct {
 	inters           []Interceptor
 	predicates       []predicate.Repository
 	withOrganization *OrganizationQuery
+	withCommits      *GitCommitQuery
 	withFKs          bool
+	withNamedCommits map[string]*GitCommitQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -75,6 +79,28 @@ func (rq *RepositoryQuery) QueryOrganization() *OrganizationQuery {
 			sqlgraph.From(repository.Table, repository.FieldID, selector),
 			sqlgraph.To(organization.Table, organization.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, repository.OrganizationTable, repository.OrganizationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCommits chains the current query on the "commits" edge.
+func (rq *RepositoryQuery) QueryCommits() *GitCommitQuery {
+	query := (&GitCommitClient{config: rq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := rq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(repository.Table, repository.FieldID, selector),
+			sqlgraph.To(gitcommit.Table, gitcommit.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, repository.CommitsTable, repository.CommitsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -275,6 +301,7 @@ func (rq *RepositoryQuery) Clone() *RepositoryQuery {
 		inters:           append([]Interceptor{}, rq.inters...),
 		predicates:       append([]predicate.Repository{}, rq.predicates...),
 		withOrganization: rq.withOrganization.Clone(),
+		withCommits:      rq.withCommits.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
@@ -289,6 +316,17 @@ func (rq *RepositoryQuery) WithOrganization(opts ...func(*OrganizationQuery)) *R
 		opt(query)
 	}
 	rq.withOrganization = query
+	return rq
+}
+
+// WithCommits tells the query-builder to eager-load the nodes that are connected to
+// the "commits" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RepositoryQuery) WithCommits(opts ...func(*GitCommitQuery)) *RepositoryQuery {
+	query := (&GitCommitClient{config: rq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withCommits = query
 	return rq
 }
 
@@ -371,8 +409,9 @@ func (rq *RepositoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 		nodes       = []*Repository{}
 		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			rq.withOrganization != nil,
+			rq.withCommits != nil,
 		}
 	)
 	if rq.withOrganization != nil {
@@ -402,6 +441,20 @@ func (rq *RepositoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*R
 	if query := rq.withOrganization; query != nil {
 		if err := rq.loadOrganization(ctx, query, nodes, nil,
 			func(n *Repository, e *Organization) { n.Edges.Organization = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := rq.withCommits; query != nil {
+		if err := rq.loadCommits(ctx, query, nodes,
+			func(n *Repository) { n.Edges.Commits = []*GitCommit{} },
+			func(n *Repository, e *GitCommit) { n.Edges.Commits = append(n.Edges.Commits, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range rq.withNamedCommits {
+		if err := rq.loadCommits(ctx, query, nodes,
+			func(n *Repository) { n.appendNamedCommits(name) },
+			func(n *Repository, e *GitCommit) { n.appendNamedCommits(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -437,6 +490,37 @@ func (rq *RepositoryQuery) loadOrganization(ctx context.Context, query *Organiza
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (rq *RepositoryQuery) loadCommits(ctx context.Context, query *GitCommitQuery, nodes []*Repository, init func(*Repository), assign func(*Repository, *GitCommit)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*Repository)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.GitCommit(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(repository.CommitsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.repository_commits
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "repository_commits" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "repository_commits" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -520,6 +604,20 @@ func (rq *RepositoryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedCommits tells the query-builder to eager-load the nodes that are connected to the "commits"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (rq *RepositoryQuery) WithNamedCommits(name string, opts ...func(*GitCommitQuery)) *RepositoryQuery {
+	query := (&GitCommitClient{config: rq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if rq.withNamedCommits == nil {
+		rq.withNamedCommits = make(map[string]*GitCommitQuery)
+	}
+	rq.withNamedCommits[name] = query
+	return rq
 }
 
 // RepositoryGroupBy is the group-by builder for Repository entities.

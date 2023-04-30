@@ -1,0 +1,2 @@
+-- Create "git_commits" table
+CREATE TABLE "git_commits" ("sha" character varying NOT NULL, "message" character varying NOT NULL, "author_login" character varying NOT NULL, "author_id" bigint NOT NULL, "date" timestamptz NOT NULL, "repository_commits" bigint NULL, PRIMARY KEY ("sha"), CONSTRAINT "git_commits_repositories_commits" FOREIGN KEY ("repository_commits") REFERENCES "repositories" ("id") ON UPDATE NO ACTION ON DELETE SET NULL);

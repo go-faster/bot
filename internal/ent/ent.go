@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/go-faster/bot/internal/ent/check"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/organization"
@@ -84,6 +85,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			check.Table:                check.ValidColumn,
 			gptdialog.Table:            gptdialog.ValidColumn,
+			gitcommit.Table:            gitcommit.ValidColumn,
 			lastchannelmessage.Table:   lastchannelmessage.ValidColumn,
 			organization.Table:         organization.ValidColumn,
 			prnotification.Table:       prnotification.ValidColumn,

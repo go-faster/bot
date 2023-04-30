@@ -15,6 +15,7 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/go-faster/bot/internal/ent"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 )
 
 func NewCommit(
@@ -57,7 +58,12 @@ func (w *Commit) Update(ctx context.Context) error {
 		return errors.Wrap(err, "client")
 	}
 
-	all, err := w.db.Repository.Query().WithOrganization().All(ctx)
+	tx, err := w.db.Tx(ctx)
+	if err != nil {
+		return errors.Wrap(err, "begin tx")
+	}
+
+	all, err := tx.Repository.Query().WithOrganization().All(ctx)
 	if err != nil {
 		return errors.Wrap(err, "query repositories")
 	}
@@ -65,7 +71,7 @@ func (w *Commit) Update(ctx context.Context) error {
 	for _, repo := range all {
 		commits, _, err := client.Repositories.ListCommits(ctx, repo.Edges.Organization.Name, repo.Name, &github.CommitsListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: 10,
+				PerPage: 100,
 			},
 		})
 		if err != nil {
@@ -77,7 +83,20 @@ func (w *Commit) Update(ctx context.Context) error {
 				zap.String("message", commit.GetCommit().GetMessage()),
 				zap.String("repo", repo.FullName),
 			)
+			if err := tx.GitCommit.Create().
+				SetID(commit.GetSHA()).
+				SetDate(commit.GetCommit().GetAuthor().GetDate().Time).
+				SetAuthorLogin(commit.GetCommit().GetAuthor().GetLogin()).
+				SetAuthorID(commit.GetAuthor().GetID()).
+				SetMessage(commit.GetCommit().GetMessage()).
+				OnConflictColumns(gitcommit.FieldID).Ignore().Exec(ctx); err != nil {
+				return errors.Wrap(err, "create commit")
+			}
 		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return errors.Wrap(err, "commit")
 	}
 
 	return nil

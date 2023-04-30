@@ -478,6 +478,29 @@ func HasOrganizationWith(preds ...predicate.Organization) predicate.Repository {
 	})
 }
 
+// HasCommits applies the HasEdge predicate on the "commits" edge.
+func HasCommits() predicate.Repository {
+	return predicate.Repository(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CommitsTable, CommitsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCommitsWith applies the HasEdge predicate on the "commits" edge with a given conditions (other predicates).
+func HasCommitsWith(preds ...predicate.GitCommit) predicate.Repository {
+	return predicate.Repository(func(s *sql.Selector) {
+		step := newCommitsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Repository) predicate.Repository {
 	return predicate.Repository(func(s *sql.Selector) {

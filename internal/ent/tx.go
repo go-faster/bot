@@ -16,6 +16,8 @@ type Tx struct {
 	Check *CheckClient
 	// GPTDialog is the client for interacting with the GPTDialog builders.
 	GPTDialog *GPTDialogClient
+	// GitCommit is the client for interacting with the GitCommit builders.
+	GitCommit *GitCommitClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
 	LastChannelMessage *LastChannelMessageClient
 	// Organization is the client for interacting with the Organization builders.
@@ -165,6 +167,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Check = NewCheckClient(tx.config)
 	tx.GPTDialog = NewGPTDialogClient(tx.config)
+	tx.GitCommit = NewGitCommitClient(tx.config)
 	tx.LastChannelMessage = NewLastChannelMessageClient(tx.config)
 	tx.Organization = NewOrganizationClient(tx.config)
 	tx.PRNotification = NewPRNotificationClient(tx.config)

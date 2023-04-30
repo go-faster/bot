@@ -12,6 +12,9 @@ type Check func(*sql.Selector)
 // GPTDialog is the predicate function for gptdialog builders.
 type GPTDialog func(*sql.Selector)
 
+// GitCommit is the predicate function for gitcommit builders.
+type GitCommit func(*sql.Selector)
+
 // LastChannelMessage is the predicate function for lastchannelmessage builders.
 type LastChannelMessage func(*sql.Selector)
 
