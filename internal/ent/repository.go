@@ -42,9 +42,12 @@ type Repository struct {
 type RepositoryEdges struct {
 	// GitHub organization.
 	Organization *Organization `json:"organization,omitempty"`
+	// Commits.
+	Commits []*GitCommit `json:"commits,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes  [2]bool
+	namedCommits map[string][]*GitCommit
 }
 
 // OrganizationOrErr returns the Organization value or an error if the edge
@@ -58,6 +61,15 @@ func (e RepositoryEdges) OrganizationOrErr() (*Organization, error) {
 		return e.Organization, nil
 	}
 	return nil, &NotLoadedError{edge: "organization"}
+}
+
+// CommitsOrErr returns the Commits value or an error if the edge
+// was not loaded in eager-loading.
+func (e RepositoryEdges) CommitsOrErr() ([]*GitCommit, error) {
+	if e.loadedTypes[1] {
+		return e.Commits, nil
+	}
+	return nil, &NotLoadedError{edge: "commits"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -155,6 +167,11 @@ func (r *Repository) QueryOrganization() *OrganizationQuery {
 	return NewRepositoryClient(r.config).QueryOrganization(r)
 }
 
+// QueryCommits queries the "commits" edge of the Repository entity.
+func (r *Repository) QueryCommits() *GitCommitQuery {
+	return NewRepositoryClient(r.config).QueryCommits(r)
+}
+
 // Update returns a builder for updating this Repository.
 // Note that you need to call Repository.Unwrap() before calling this method if this Repository
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -197,6 +214,30 @@ func (r *Repository) String() string {
 	builder.WriteString(r.LastEventAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedCommits returns the Commits named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (r *Repository) NamedCommits(name string) ([]*GitCommit, error) {
+	if r.Edges.namedCommits == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := r.Edges.namedCommits[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (r *Repository) appendNamedCommits(name string, edges ...*GitCommit) {
+	if r.Edges.namedCommits == nil {
+		r.Edges.namedCommits = make(map[string][]*GitCommit)
+	}
+	if len(edges) == 0 {
+		r.Edges.namedCommits[name] = []*GitCommit{}
+	} else {
+		r.Edges.namedCommits[name] = append(r.Edges.namedCommits[name], edges...)
+	}
 }
 
 // Repositories is a parsable slice of Repository.

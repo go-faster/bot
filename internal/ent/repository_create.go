@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/repository"
 )
@@ -114,6 +115,21 @@ func (rc *RepositoryCreate) SetNillableOrganizationID(id *int64) *RepositoryCrea
 // SetOrganization sets the "organization" edge to the Organization entity.
 func (rc *RepositoryCreate) SetOrganization(o *Organization) *RepositoryCreate {
 	return rc.SetOrganizationID(o.ID)
+}
+
+// AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
+func (rc *RepositoryCreate) AddCommitIDs(ids ...string) *RepositoryCreate {
+	rc.mutation.AddCommitIDs(ids...)
+	return rc
+}
+
+// AddCommits adds the "commits" edges to the GitCommit entity.
+func (rc *RepositoryCreate) AddCommits(g ...*GitCommit) *RepositoryCreate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return rc.AddCommitIDs(ids...)
 }
 
 // Mutation returns the RepositoryMutation object of the builder.
@@ -240,6 +256,22 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.organization_repositories = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := rc.mutation.CommitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -29,5 +29,6 @@ func (Repository) Indexes() []ent.Index {
 func (Repository) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("organization", Organization.Type).Ref("repositories").Unique().Comment("GitHub organization."),
+		edge.To("commits", GitCommit.Type).Comment("Commits."),
 	}
 }

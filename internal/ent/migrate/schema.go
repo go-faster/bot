@@ -54,6 +54,29 @@ var (
 			},
 		},
 	}
+	// GitCommitsColumns holds the columns for the "git_commits" table.
+	GitCommitsColumns = []*schema.Column{
+		{Name: "sha", Type: field.TypeString, Unique: true},
+		{Name: "message", Type: field.TypeString},
+		{Name: "author_login", Type: field.TypeString},
+		{Name: "author_id", Type: field.TypeInt64},
+		{Name: "date", Type: field.TypeTime},
+		{Name: "repository_commits", Type: field.TypeInt64, Nullable: true},
+	}
+	// GitCommitsTable holds the schema information for the "git_commits" table.
+	GitCommitsTable = &schema.Table{
+		Name:       "git_commits",
+		Columns:    GitCommitsColumns,
+		PrimaryKey: []*schema.Column{GitCommitsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "git_commits_repositories_commits",
+				Columns:    []*schema.Column{GitCommitsColumns[5]},
+				RefColumns: []*schema.Column{RepositoriesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// LastChannelMessagesColumns holds the columns for the "last_channel_messages" table.
 	LastChannelMessagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -196,6 +219,7 @@ var (
 	Tables = []*schema.Table{
 		ChecksTable,
 		GptDialogsTable,
+		GitCommitsTable,
 		LastChannelMessagesTable,
 		OrganizationsTable,
 		PrNotificationsTable,
@@ -208,6 +232,7 @@ var (
 )
 
 func init() {
+	GitCommitsTable.ForeignKeys[0].RefTable = RepositoriesTable
 	RepositoriesTable.ForeignKeys[0].RefTable = OrganizationsTable
 	TelegramChannelStatesTable.ForeignKeys[0].RefTable = TelegramUserStatesTable
 }

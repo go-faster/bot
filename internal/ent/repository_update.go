@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/organization"
 	"github.com/go-faster/bot/internal/ent/predicate"
 	"github.com/go-faster/bot/internal/ent/repository"
@@ -134,6 +135,21 @@ func (ru *RepositoryUpdate) SetOrganization(o *Organization) *RepositoryUpdate {
 	return ru.SetOrganizationID(o.ID)
 }
 
+// AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
+func (ru *RepositoryUpdate) AddCommitIDs(ids ...string) *RepositoryUpdate {
+	ru.mutation.AddCommitIDs(ids...)
+	return ru
+}
+
+// AddCommits adds the "commits" edges to the GitCommit entity.
+func (ru *RepositoryUpdate) AddCommits(g ...*GitCommit) *RepositoryUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ru.AddCommitIDs(ids...)
+}
+
 // Mutation returns the RepositoryMutation object of the builder.
 func (ru *RepositoryUpdate) Mutation() *RepositoryMutation {
 	return ru.mutation
@@ -143,6 +159,27 @@ func (ru *RepositoryUpdate) Mutation() *RepositoryMutation {
 func (ru *RepositoryUpdate) ClearOrganization() *RepositoryUpdate {
 	ru.mutation.ClearOrganization()
 	return ru
+}
+
+// ClearCommits clears all "commits" edges to the GitCommit entity.
+func (ru *RepositoryUpdate) ClearCommits() *RepositoryUpdate {
+	ru.mutation.ClearCommits()
+	return ru
+}
+
+// RemoveCommitIDs removes the "commits" edge to GitCommit entities by IDs.
+func (ru *RepositoryUpdate) RemoveCommitIDs(ids ...string) *RepositoryUpdate {
+	ru.mutation.RemoveCommitIDs(ids...)
+	return ru
+}
+
+// RemoveCommits removes "commits" edges to GitCommit entities.
+func (ru *RepositoryUpdate) RemoveCommits(g ...*GitCommit) *RepositoryUpdate {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ru.RemoveCommitIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -230,6 +267,51 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ru.mutation.CommitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !ru.mutation.CommitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.CommitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -362,6 +444,21 @@ func (ruo *RepositoryUpdateOne) SetOrganization(o *Organization) *RepositoryUpda
 	return ruo.SetOrganizationID(o.ID)
 }
 
+// AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
+func (ruo *RepositoryUpdateOne) AddCommitIDs(ids ...string) *RepositoryUpdateOne {
+	ruo.mutation.AddCommitIDs(ids...)
+	return ruo
+}
+
+// AddCommits adds the "commits" edges to the GitCommit entity.
+func (ruo *RepositoryUpdateOne) AddCommits(g ...*GitCommit) *RepositoryUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ruo.AddCommitIDs(ids...)
+}
+
 // Mutation returns the RepositoryMutation object of the builder.
 func (ruo *RepositoryUpdateOne) Mutation() *RepositoryMutation {
 	return ruo.mutation
@@ -371,6 +468,27 @@ func (ruo *RepositoryUpdateOne) Mutation() *RepositoryMutation {
 func (ruo *RepositoryUpdateOne) ClearOrganization() *RepositoryUpdateOne {
 	ruo.mutation.ClearOrganization()
 	return ruo
+}
+
+// ClearCommits clears all "commits" edges to the GitCommit entity.
+func (ruo *RepositoryUpdateOne) ClearCommits() *RepositoryUpdateOne {
+	ruo.mutation.ClearCommits()
+	return ruo
+}
+
+// RemoveCommitIDs removes the "commits" edge to GitCommit entities by IDs.
+func (ruo *RepositoryUpdateOne) RemoveCommitIDs(ids ...string) *RepositoryUpdateOne {
+	ruo.mutation.RemoveCommitIDs(ids...)
+	return ruo
+}
+
+// RemoveCommits removes "commits" edges to GitCommit entities.
+func (ruo *RepositoryUpdateOne) RemoveCommits(g ...*GitCommit) *RepositoryUpdateOne {
+	ids := make([]string, len(g))
+	for i := range g {
+		ids[i] = g[i].ID
+	}
+	return ruo.RemoveCommitIDs(ids...)
 }
 
 // Where appends a list predicates to the RepositoryUpdate builder.
@@ -488,6 +606,51 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ruo.mutation.CommitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !ruo.mutation.CommitsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.CommitsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   repository.CommitsTable,
+			Columns: []string{repository.CommitsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

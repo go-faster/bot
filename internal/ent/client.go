@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/go-faster/bot/internal/ent/check"
+	"github.com/go-faster/bot/internal/ent/gitcommit"
 	"github.com/go-faster/bot/internal/ent/gptdialog"
 	"github.com/go-faster/bot/internal/ent/lastchannelmessage"
 	"github.com/go-faster/bot/internal/ent/organization"
@@ -36,6 +37,8 @@ type Client struct {
 	Check *CheckClient
 	// GPTDialog is the client for interacting with the GPTDialog builders.
 	GPTDialog *GPTDialogClient
+	// GitCommit is the client for interacting with the GitCommit builders.
+	GitCommit *GitCommitClient
 	// LastChannelMessage is the client for interacting with the LastChannelMessage builders.
 	LastChannelMessage *LastChannelMessageClient
 	// Organization is the client for interacting with the Organization builders.
@@ -67,6 +70,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Check = NewCheckClient(c.config)
 	c.GPTDialog = NewGPTDialogClient(c.config)
+	c.GitCommit = NewGitCommitClient(c.config)
 	c.LastChannelMessage = NewLastChannelMessageClient(c.config)
 	c.Organization = NewOrganizationClient(c.config)
 	c.PRNotification = NewPRNotificationClient(c.config)
@@ -159,6 +163,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:               cfg,
 		Check:                NewCheckClient(cfg),
 		GPTDialog:            NewGPTDialogClient(cfg),
+		GitCommit:            NewGitCommitClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
 		Organization:         NewOrganizationClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
@@ -188,6 +193,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:               cfg,
 		Check:                NewCheckClient(cfg),
 		GPTDialog:            NewGPTDialogClient(cfg),
+		GitCommit:            NewGitCommitClient(cfg),
 		LastChannelMessage:   NewLastChannelMessageClient(cfg),
 		Organization:         NewOrganizationClient(cfg),
 		PRNotification:       NewPRNotificationClient(cfg),
@@ -225,9 +231,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.Organization, c.PRNotification,
-		c.Repository, c.TelegramChannelState, c.TelegramSession, c.TelegramUserState,
-		c.User,
+		c.Check, c.GPTDialog, c.GitCommit, c.LastChannelMessage, c.Organization,
+		c.PRNotification, c.Repository, c.TelegramChannelState, c.TelegramSession,
+		c.TelegramUserState, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -237,9 +243,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Check, c.GPTDialog, c.LastChannelMessage, c.Organization, c.PRNotification,
-		c.Repository, c.TelegramChannelState, c.TelegramSession, c.TelegramUserState,
-		c.User,
+		c.Check, c.GPTDialog, c.GitCommit, c.LastChannelMessage, c.Organization,
+		c.PRNotification, c.Repository, c.TelegramChannelState, c.TelegramSession,
+		c.TelegramUserState, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -252,6 +258,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Check.mutate(ctx, m)
 	case *GPTDialogMutation:
 		return c.GPTDialog.mutate(ctx, m)
+	case *GitCommitMutation:
+		return c.GitCommit.mutate(ctx, m)
 	case *LastChannelMessageMutation:
 		return c.LastChannelMessage.mutate(ctx, m)
 	case *OrganizationMutation:
@@ -506,6 +514,140 @@ func (c *GPTDialogClient) mutate(ctx context.Context, m *GPTDialogMutation) (Val
 		return (&GPTDialogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown GPTDialog mutation op: %q", m.Op())
+	}
+}
+
+// GitCommitClient is a client for the GitCommit schema.
+type GitCommitClient struct {
+	config
+}
+
+// NewGitCommitClient returns a client for the GitCommit from the given config.
+func NewGitCommitClient(c config) *GitCommitClient {
+	return &GitCommitClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `gitcommit.Hooks(f(g(h())))`.
+func (c *GitCommitClient) Use(hooks ...Hook) {
+	c.hooks.GitCommit = append(c.hooks.GitCommit, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `gitcommit.Intercept(f(g(h())))`.
+func (c *GitCommitClient) Intercept(interceptors ...Interceptor) {
+	c.inters.GitCommit = append(c.inters.GitCommit, interceptors...)
+}
+
+// Create returns a builder for creating a GitCommit entity.
+func (c *GitCommitClient) Create() *GitCommitCreate {
+	mutation := newGitCommitMutation(c.config, OpCreate)
+	return &GitCommitCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GitCommit entities.
+func (c *GitCommitClient) CreateBulk(builders ...*GitCommitCreate) *GitCommitCreateBulk {
+	return &GitCommitCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GitCommit.
+func (c *GitCommitClient) Update() *GitCommitUpdate {
+	mutation := newGitCommitMutation(c.config, OpUpdate)
+	return &GitCommitUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GitCommitClient) UpdateOne(gc *GitCommit) *GitCommitUpdateOne {
+	mutation := newGitCommitMutation(c.config, OpUpdateOne, withGitCommit(gc))
+	return &GitCommitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GitCommitClient) UpdateOneID(id string) *GitCommitUpdateOne {
+	mutation := newGitCommitMutation(c.config, OpUpdateOne, withGitCommitID(id))
+	return &GitCommitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GitCommit.
+func (c *GitCommitClient) Delete() *GitCommitDelete {
+	mutation := newGitCommitMutation(c.config, OpDelete)
+	return &GitCommitDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *GitCommitClient) DeleteOne(gc *GitCommit) *GitCommitDeleteOne {
+	return c.DeleteOneID(gc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *GitCommitClient) DeleteOneID(id string) *GitCommitDeleteOne {
+	builder := c.Delete().Where(gitcommit.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GitCommitDeleteOne{builder}
+}
+
+// Query returns a query builder for GitCommit.
+func (c *GitCommitClient) Query() *GitCommitQuery {
+	return &GitCommitQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeGitCommit},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a GitCommit entity by its id.
+func (c *GitCommitClient) Get(ctx context.Context, id string) (*GitCommit, error) {
+	return c.Query().Where(gitcommit.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GitCommitClient) GetX(ctx context.Context, id string) *GitCommit {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRepository queries the repository edge of a GitCommit.
+func (c *GitCommitClient) QueryRepository(gc *GitCommit) *RepositoryQuery {
+	query := (&RepositoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := gc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(gitcommit.Table, gitcommit.FieldID, id),
+			sqlgraph.To(repository.Table, repository.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, gitcommit.RepositoryTable, gitcommit.RepositoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(gc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *GitCommitClient) Hooks() []Hook {
+	return c.hooks.GitCommit
+}
+
+// Interceptors returns the client interceptors.
+func (c *GitCommitClient) Interceptors() []Interceptor {
+	return c.inters.GitCommit
+}
+
+func (c *GitCommitClient) mutate(ctx context.Context, m *GitCommitMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&GitCommitCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&GitCommitUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&GitCommitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&GitCommitDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown GitCommit mutation op: %q", m.Op())
 	}
 }
 
@@ -981,6 +1123,22 @@ func (c *RepositoryClient) QueryOrganization(r *Repository) *OrganizationQuery {
 			sqlgraph.From(repository.Table, repository.FieldID, id),
 			sqlgraph.To(organization.Table, organization.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, repository.OrganizationTable, repository.OrganizationColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCommits queries the commits edge of a Repository.
+func (c *RepositoryClient) QueryCommits(r *Repository) *GitCommitQuery {
+	query := (&GitCommitClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(repository.Table, repository.FieldID, id),
+			sqlgraph.To(gitcommit.Table, gitcommit.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, repository.CommitsTable, repository.CommitsColumn),
 		)
 		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
 		return fromV, nil
@@ -1520,12 +1678,13 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Check, GPTDialog, LastChannelMessage, Organization, PRNotification, Repository,
-		TelegramChannelState, TelegramSession, TelegramUserState, User []ent.Hook
+		Check, GPTDialog, GitCommit, LastChannelMessage, Organization, PRNotification,
+		Repository, TelegramChannelState, TelegramSession, TelegramUserState,
+		User []ent.Hook
 	}
 	inters struct {
-		Check, GPTDialog, LastChannelMessage, Organization, PRNotification, Repository,
-		TelegramChannelState, TelegramSession, TelegramUserState,
+		Check, GPTDialog, GitCommit, LastChannelMessage, Organization, PRNotification,
+		Repository, TelegramChannelState, TelegramSession, TelegramUserState,
 		User []ent.Interceptor
 	}
 )
