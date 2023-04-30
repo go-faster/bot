@@ -204,15 +204,13 @@ spec:
               - name: OTEL_METRICS_EXPORTER
                 value: "none"
               - name: OTEL_RESOURCE_ATTRIBUTES
-                value: "service.name=go-faster.bot"
+                value: "service.name=go-faster.bot.job.commits"
               - name: OTEL_LOG_LEVEL
                 value: "DEBUG"
               - name: OTEL_TRACES_EXPORTER
                 value: "otlp"
               - name: OTEL_EXPORTER_OTLP_ENDPOINT
                 value: "http://tempo-distributor.monitoring.svc.cluster.local:4317"
-              - name: HOME
-                value: /cache
               - name: HTTP_ADDR
                 value: 0.0.0.0:8080
               - name: GITHUB_PRIVATE_KEY
