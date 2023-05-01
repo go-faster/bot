@@ -159,6 +159,36 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			githubUserLink(pr.GetUser()),
 		)
 
+	case "closed":
+		text = append(text,
+			styling.Plain("Pull request "),
+			getPullRequestURL(repo, pr),
+			styling.Plain(" "),
+		)
+
+		if !gonnaSendNewMessage {
+			text = append(text,
+				styling.Strike("opened by "),
+				styling.Custom(func(eb *entity.Builder) error {
+					u := pr.GetUser()
+					eb.Format(
+						u.GetLogin(),
+						entity.Strike(),
+						entity.TextURL(u.GetHTMLURL()),
+					)
+					return nil
+				}),
+			)
+		}
+
+		msg := " closed by "
+		merger := pr.GetMergedBy()
+
+		text = append(text,
+			styling.Plain(msg),
+			githubUserLink(merger),
+		)
+
 	case "merged":
 		// We can get here only if PR was merged.
 		text = append(text,
@@ -235,8 +265,13 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 		pr   = e.GetPullRequest()
 	)
 	if !pr.GetMerged() {
-		zctx.From(ctx).Info("Ignoring non-merged PR")
-		return nil
+		return h.updater.Emit(PullRequestUpdate{
+			Event:  "pr_update",
+			Action: "closed",
+			Repo:   repo,
+			PR:     pr,
+			Checks: nil,
+		})
 	}
 
 	return h.updater.Emit(PullRequestUpdate{
