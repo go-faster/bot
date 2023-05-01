@@ -71,7 +71,7 @@ func (w *Commit) Update(ctx context.Context) error {
 	for _, repo := range all {
 		commits, _, err := client.Repositories.ListCommits(ctx, repo.Edges.Organization.Name, repo.Name, &github.CommitsListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: 256,
+				PerPage: 1024,
 			},
 		})
 		if err != nil {
