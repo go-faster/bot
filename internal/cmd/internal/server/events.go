@@ -16,7 +16,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/dispatch"
-	"github.com/go-faster/bot/internal/gh"
 )
 
 func formatInt(x int) string {
@@ -155,7 +154,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 				sizeTotal += uint64(len(b))
 				d.ResetBytes(b)
 				e.Reset()
-				ev, err := gh.Transform(&d, &e)
+				ev, err := a.wh.Transform(ctx, &d, &e)
 				if err != nil {
 					return errors.Wrap(err, "transform")
 				}
