@@ -259,6 +259,11 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 }
 
 func (h *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) {
+	if meta.OrganizationID == 0 {
+		zctx.From(ctx).Debug("No organization ID, skipping meta upsert")
+		return nil
+	}
+
 	now := time.Now()
 	ctx, span := h.tracer.Start(ctx, "wh.upsertMeta",
 		trace.WithSpanKind(trace.SpanKindServer),
