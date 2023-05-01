@@ -182,17 +182,17 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			)
 		}
 
-		action := " merged by "
+		msg := " merged by "
 		merger := pr.GetMergedBy()
 		if am := pr.AutoMerge; am != nil {
-			action = " auto-merged by "
+			msg = " auto-merged by "
 			if u := am.EnabledBy; u != nil {
 				merger = u
 			}
 		}
 
 		text = append(text,
-			styling.Plain(action),
+			styling.Plain(msg),
 			githubUserLink(merger),
 		)
 	}
