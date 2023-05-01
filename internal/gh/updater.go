@@ -5,11 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/go-faster/bot/internal/ent"
 )
 
 type prKey struct {
@@ -63,7 +64,7 @@ func (u *updater) updateOne(ctx context.Context, update PullRequestUpdate) error
 	}
 
 	// Do not query checks if PR was merged: we won't send status anyway.
-	if update.Action != "merged" && update.Checks == nil {
+	if !update.ActionIn("merged", "closed") && update.Checks == nil {
 		checks, err := u.w.queryChecks(ctx, update.Repo, update.PR)
 		if err != nil {
 			return errors.Wrap(err, "query checks")

@@ -33,6 +33,15 @@ type PullRequestUpdate struct {
 	Checks []Check
 }
 
+func (u PullRequestUpdate) ActionIn(actions ...string) bool {
+	for _, a := range actions {
+		if u.Action == a {
+			return true
+		}
+	}
+	return false
+}
+
 func generateChecksStatus(checks []Check) string {
 	var (
 		failed  int
@@ -125,7 +134,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	r := h.sender.To(p).NoWebpage()
 	// Setup buttons.
 	checksStatus := generateChecksStatus(state.Checks)
-	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil && state.Action != "merged" {
+	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil && !state.ActionIn("merged", "closed") {
 		files, checks := *u, *u
 		files.Path = path.Join(files.Path, "files")
 		checks.Path = path.Join(checks.Path, "checks")
