@@ -30,7 +30,8 @@ import (
 
 // Webhook is a Github events web hook handler.
 type Webhook struct {
-	db *ent.Client
+	db    *ent.Client
+	cache *redis.Client
 
 	sender      *message.Sender
 	notifyGroup string
@@ -41,9 +42,10 @@ type Webhook struct {
 
 	updater *updater
 
-	events metric.Int64Counter
-	tracer trace.Tracer
-	cache  *redis.Client
+	events         metric.Int64Counter
+	tracer         trace.Tracer
+	meterProvider  metric.MeterProvider
+	tracerProvider trace.TracerProvider
 }
 
 // NewWebhook creates new web hook handler.
@@ -69,6 +71,9 @@ func NewWebhook(
 		ghID:     ghID,
 		events:   eventCount,
 		tracer:   tracerProvider.Tracer("github.com/go-faster/bot/internal/gh/webhook"),
+
+		meterProvider:  meterProvider,
+		tracerProvider: tracerProvider,
 	}
 	w.updater = newUpdater(w, 5*time.Second)
 	return w
