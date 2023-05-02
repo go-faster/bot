@@ -155,7 +155,7 @@ func (tusu *TelegramUserStateUpdate) RemoveChannels(t ...*TelegramChannelState) 
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (tusu *TelegramUserStateUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, TelegramUserStateMutation](ctx, tusu.sqlSave, tusu.mutation, tusu.hooks)
+	return withHooks(ctx, tusu.sqlSave, tusu.mutation, tusu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -418,7 +418,7 @@ func (tusuo *TelegramUserStateUpdateOne) Select(field string, fields ...string) 
 
 // Save executes the query and returns the updated TelegramUserState entity.
 func (tusuo *TelegramUserStateUpdateOne) Save(ctx context.Context) (*TelegramUserState, error) {
-	return withHooks[*TelegramUserState, TelegramUserStateMutation](ctx, tusuo.sqlSave, tusuo.mutation, tusuo.hooks)
+	return withHooks(ctx, tusuo.sqlSave, tusuo.mutation, tusuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

@@ -47,7 +47,7 @@ func (lcmu *LastChannelMessageUpdate) Mutation() *LastChannelMessageMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (lcmu *LastChannelMessageUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, LastChannelMessageMutation](ctx, lcmu.sqlSave, lcmu.mutation, lcmu.hooks)
+	return withHooks(ctx, lcmu.sqlSave, lcmu.mutation, lcmu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -140,7 +140,7 @@ func (lcmuo *LastChannelMessageUpdateOne) Select(field string, fields ...string)
 
 // Save executes the query and returns the updated LastChannelMessage entity.
 func (lcmuo *LastChannelMessageUpdateOne) Save(ctx context.Context) (*LastChannelMessage, error) {
-	return withHooks[*LastChannelMessage, LastChannelMessageMutation](ctx, lcmuo.sqlSave, lcmuo.mutation, lcmuo.hooks)
+	return withHooks(ctx, lcmuo.sqlSave, lcmuo.mutation, lcmuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

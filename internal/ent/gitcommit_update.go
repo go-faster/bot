@@ -92,7 +92,7 @@ func (gcu *GitCommitUpdate) ClearRepository() *GitCommitUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (gcu *GitCommitUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, GitCommitMutation](ctx, gcu.sqlSave, gcu.mutation, gcu.hooks)
+	return withHooks(ctx, gcu.sqlSave, gcu.mutation, gcu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -266,7 +266,7 @@ func (gcuo *GitCommitUpdateOne) Select(field string, fields ...string) *GitCommi
 
 // Save executes the query and returns the updated GitCommit entity.
 func (gcuo *GitCommitUpdateOne) Save(ctx context.Context) (*GitCommit, error) {
-	return withHooks[*GitCommit, GitCommitMutation](ctx, gcuo.sqlSave, gcuo.mutation, gcuo.hooks)
+	return withHooks(ctx, gcuo.sqlSave, gcuo.mutation, gcuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

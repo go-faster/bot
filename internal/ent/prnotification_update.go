@@ -115,7 +115,7 @@ func (pnu *PRNotificationUpdate) Mutation() *PRNotificationMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pnu *PRNotificationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, PRNotificationMutation](ctx, pnu.sqlSave, pnu.mutation, pnu.hooks)
+	return withHooks(ctx, pnu.sqlSave, pnu.mutation, pnu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -297,7 +297,7 @@ func (pnuo *PRNotificationUpdateOne) Select(field string, fields ...string) *PRN
 
 // Save executes the query and returns the updated PRNotification entity.
 func (pnuo *PRNotificationUpdateOne) Save(ctx context.Context) (*PRNotification, error) {
-	return withHooks[*PRNotification, PRNotificationMutation](ctx, pnuo.sqlSave, pnuo.mutation, pnuo.hooks)
+	return withHooks(ctx, pnuo.sqlSave, pnuo.mutation, pnuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

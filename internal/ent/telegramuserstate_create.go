@@ -107,7 +107,7 @@ func (tusc *TelegramUserStateCreate) Mutation() *TelegramUserStateMutation {
 // Save creates the TelegramUserState in the database.
 func (tusc *TelegramUserStateCreate) Save(ctx context.Context) (*TelegramUserState, error) {
 	tusc.defaults()
-	return withHooks[*TelegramUserState, TelegramUserStateMutation](ctx, tusc.sqlSave, tusc.mutation, tusc.hooks)
+	return withHooks(ctx, tusc.sqlSave, tusc.mutation, tusc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -27,7 +27,7 @@ func (tcsd *TelegramChannelStateDelete) Where(ps ...predicate.TelegramChannelSta
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (tcsd *TelegramChannelStateDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, TelegramChannelStateMutation](ctx, tcsd.sqlExec, tcsd.mutation, tcsd.hooks)
+	return withHooks(ctx, tcsd.sqlExec, tcsd.mutation, tcsd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

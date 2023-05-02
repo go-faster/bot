@@ -27,7 +27,7 @@ func (tsd *TelegramSessionDelete) Where(ps ...predicate.TelegramSession) *Telegr
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (tsd *TelegramSessionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, TelegramSessionMutation](ctx, tsd.sqlExec, tsd.mutation, tsd.hooks)
+	return withHooks(ctx, tsd.sqlExec, tsd.mutation, tsd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

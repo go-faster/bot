@@ -40,7 +40,7 @@ func (lcmc *LastChannelMessageCreate) Mutation() *LastChannelMessageMutation {
 
 // Save creates the LastChannelMessage in the database.
 func (lcmc *LastChannelMessageCreate) Save(ctx context.Context) (*LastChannelMessage, error) {
-	return withHooks[*LastChannelMessage, LastChannelMessageMutation](ctx, lcmc.sqlSave, lcmc.mutation, lcmc.hooks)
+	return withHooks(ctx, lcmc.sqlSave, lcmc.mutation, lcmc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -80,7 +80,7 @@ func (gcc *GitCommitCreate) Mutation() *GitCommitMutation {
 
 // Save creates the GitCommit in the database.
 func (gcc *GitCommitCreate) Save(ctx context.Context) (*GitCommit, error) {
-	return withHooks[*GitCommit, GitCommitMutation](ctx, gcc.sqlSave, gcc.mutation, gcc.hooks)
+	return withHooks(ctx, gcc.sqlSave, gcc.mutation, gcc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

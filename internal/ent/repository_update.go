@@ -184,7 +184,7 @@ func (ru *RepositoryUpdate) RemoveCommits(g ...*GitCommit) *RepositoryUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ru *RepositoryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, RepositoryMutation](ctx, ru.sqlSave, ru.mutation, ru.hooks)
+	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -506,7 +506,7 @@ func (ruo *RepositoryUpdateOne) Select(field string, fields ...string) *Reposito
 
 // Save executes the query and returns the updated Repository entity.
 func (ruo *RepositoryUpdateOne) Save(ctx context.Context) (*Repository, error) {
-	return withHooks[*Repository, RepositoryMutation](ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

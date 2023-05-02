@@ -92,7 +92,7 @@ func (cu *CheckUpdate) Mutation() *CheckMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (cu *CheckUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, CheckMutation](ctx, cu.sqlSave, cu.mutation, cu.hooks)
+	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -248,7 +248,7 @@ func (cuo *CheckUpdateOne) Select(field string, fields ...string) *CheckUpdateOn
 
 // Save executes the query and returns the updated Check entity.
 func (cuo *CheckUpdateOne) Save(ctx context.Context) (*Check, error) {
-	return withHooks[*Check, CheckMutation](ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

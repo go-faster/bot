@@ -99,7 +99,7 @@ func (gdu *GPTDialogUpdate) Mutation() *GPTDialogMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (gdu *GPTDialogUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, GPTDialogMutation](ctx, gdu.sqlSave, gdu.mutation, gdu.hooks)
+	return withHooks(ctx, gdu.sqlSave, gdu.mutation, gdu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -265,7 +265,7 @@ func (gduo *GPTDialogUpdateOne) Select(field string, fields ...string) *GPTDialo
 
 // Save executes the query and returns the updated GPTDialog entity.
 func (gduo *GPTDialogUpdateOne) Save(ctx context.Context) (*GPTDialog, error) {
-	return withHooks[*GPTDialog, GPTDialogMutation](ctx, gduo.sqlSave, gduo.mutation, gduo.hooks)
+	return withHooks(ctx, gduo.sqlSave, gduo.mutation, gduo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

@@ -140,7 +140,7 @@ func (rc *RepositoryCreate) Mutation() *RepositoryMutation {
 // Save creates the Repository in the database.
 func (rc *RepositoryCreate) Save(ctx context.Context) (*Repository, error) {
 	rc.defaults()
-	return withHooks[*Repository, RepositoryMutation](ctx, rc.sqlSave, rc.mutation, rc.hooks)
+	return withHooks(ctx, rc.sqlSave, rc.mutation, rc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
