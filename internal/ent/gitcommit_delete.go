@@ -27,7 +27,7 @@ func (gcd *GitCommitDelete) Where(ps ...predicate.GitCommit) *GitCommitDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (gcd *GitCommitDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, GitCommitMutation](ctx, gcd.sqlExec, gcd.mutation, gcd.hooks)
+	return withHooks(ctx, gcd.sqlExec, gcd.mutation, gcd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

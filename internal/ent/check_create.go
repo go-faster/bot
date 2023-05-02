@@ -72,7 +72,7 @@ func (cc *CheckCreate) Mutation() *CheckMutation {
 
 // Save creates the Check in the database.
 func (cc *CheckCreate) Save(ctx context.Context) (*Check, error) {
-	return withHooks[*Check, CheckMutation](ctx, cc.sqlSave, cc.mutation, cc.hooks)
+	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

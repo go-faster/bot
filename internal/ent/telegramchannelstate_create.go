@@ -61,7 +61,7 @@ func (tcsc *TelegramChannelStateCreate) Mutation() *TelegramChannelStateMutation
 // Save creates the TelegramChannelState in the database.
 func (tcsc *TelegramChannelStateCreate) Save(ctx context.Context) (*TelegramChannelState, error) {
 	tcsc.defaults()
-	return withHooks[*TelegramChannelState, TelegramChannelStateMutation](ctx, tcsc.sqlSave, tcsc.mutation, tcsc.hooks)
+	return withHooks(ctx, tcsc.sqlSave, tcsc.mutation, tcsc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

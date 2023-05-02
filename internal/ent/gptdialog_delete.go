@@ -27,7 +27,7 @@ func (gdd *GPTDialogDelete) Where(ps ...predicate.GPTDialog) *GPTDialogDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (gdd *GPTDialogDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, GPTDialogMutation](ctx, gdd.sqlExec, gdd.mutation, gdd.hooks)
+	return withHooks(ctx, gdd.sqlExec, gdd.mutation, gdd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

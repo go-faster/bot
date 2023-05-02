@@ -27,7 +27,7 @@ func (lcmd *LastChannelMessageDelete) Where(ps ...predicate.LastChannelMessage) 
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (lcmd *LastChannelMessageDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, LastChannelMessageMutation](ctx, lcmd.sqlExec, lcmd.mutation, lcmd.hooks)
+	return withHooks(ctx, lcmd.sqlExec, lcmd.mutation, lcmd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

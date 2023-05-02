@@ -42,7 +42,7 @@ func (tsc *TelegramSessionCreate) Mutation() *TelegramSessionMutation {
 
 // Save creates the TelegramSession in the database.
 func (tsc *TelegramSessionCreate) Save(ctx context.Context) (*TelegramSession, error) {
-	return withHooks[*TelegramSession, TelegramSessionMutation](ctx, tsc.sqlSave, tsc.mutation, tsc.hooks)
+	return withHooks(ctx, tsc.sqlSave, tsc.mutation, tsc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

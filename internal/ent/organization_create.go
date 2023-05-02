@@ -70,7 +70,7 @@ func (oc *OrganizationCreate) Mutation() *OrganizationMutation {
 
 // Save creates the Organization in the database.
 func (oc *OrganizationCreate) Save(ctx context.Context) (*Organization, error) {
-	return withHooks[*Organization, OrganizationMutation](ctx, oc.sqlSave, oc.mutation, oc.hooks)
+	return withHooks(ctx, oc.sqlSave, oc.mutation, oc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

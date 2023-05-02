@@ -40,7 +40,7 @@ func (tsu *TelegramSessionUpdate) Mutation() *TelegramSessionMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (tsu *TelegramSessionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, TelegramSessionMutation](ctx, tsu.sqlSave, tsu.mutation, tsu.hooks)
+	return withHooks(ctx, tsu.sqlSave, tsu.mutation, tsu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -123,7 +123,7 @@ func (tsuo *TelegramSessionUpdateOne) Select(field string, fields ...string) *Te
 
 // Save executes the query and returns the updated TelegramSession entity.
 func (tsuo *TelegramSessionUpdateOne) Save(ctx context.Context) (*TelegramSession, error) {
-	return withHooks[*TelegramSession, TelegramSessionMutation](ctx, tsuo.sqlSave, tsuo.mutation, tsuo.hooks)
+	return withHooks(ctx, tsuo.sqlSave, tsuo.mutation, tsuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

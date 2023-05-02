@@ -27,7 +27,7 @@ func (pnd *PRNotificationDelete) Where(ps ...predicate.PRNotification) *PRNotifi
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (pnd *PRNotificationDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, PRNotificationMutation](ctx, pnd.sqlExec, pnd.mutation, pnd.hooks)
+	return withHooks(ctx, pnd.sqlExec, pnd.mutation, pnd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

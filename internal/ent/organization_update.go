@@ -97,7 +97,7 @@ func (ou *OrganizationUpdate) RemoveRepositories(r ...*Repository) *Organization
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ou *OrganizationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrganizationMutation](ctx, ou.sqlSave, ou.mutation, ou.hooks)
+	return withHooks(ctx, ou.sqlSave, ou.mutation, ou.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -287,7 +287,7 @@ func (ouo *OrganizationUpdateOne) Select(field string, fields ...string) *Organi
 
 // Save executes the query and returns the updated Organization entity.
 func (ouo *OrganizationUpdateOne) Save(ctx context.Context) (*Organization, error) {
-	return withHooks[*Organization, OrganizationMutation](ctx, ouo.sqlSave, ouo.mutation, ouo.hooks)
+	return withHooks(ctx, ouo.sqlSave, ouo.mutation, ouo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

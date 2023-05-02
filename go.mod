@@ -3,7 +3,7 @@ module github.com/go-faster/bot
 go 1.20
 
 require (
-	entgo.io/ent v0.12.2
+	entgo.io/ent v0.12.3
 	github.com/ClickHouse/ch-go v0.55.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.4.0
 	github.com/brpaz/echozap v1.1.3
@@ -41,7 +41,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.10.0 // indirect
+	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
@@ -120,7 +120,7 @@ require (
 	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
-	golang.org/x/tools v0.8.0 // indirect
+	golang.org/x/tools v0.8.1-0.20230428195545-5283a0178901 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.54.0 // indirect

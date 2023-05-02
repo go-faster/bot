@@ -86,7 +86,7 @@ func (tcsu *TelegramChannelStateUpdate) ClearUser() *TelegramChannelStateUpdate 
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (tcsu *TelegramChannelStateUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, TelegramChannelStateMutation](ctx, tcsu.sqlSave, tcsu.mutation, tcsu.hooks)
+	return withHooks(ctx, tcsu.sqlSave, tcsu.mutation, tcsu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -263,7 +263,7 @@ func (tcsuo *TelegramChannelStateUpdateOne) Select(field string, fields ...strin
 
 // Save executes the query and returns the updated TelegramChannelState entity.
 func (tcsuo *TelegramChannelStateUpdateOne) Save(ctx context.Context) (*TelegramChannelState, error) {
-	return withHooks[*TelegramChannelState, TelegramChannelStateMutation](ctx, tcsuo.sqlSave, tcsuo.mutation, tcsuo.hooks)
+	return withHooks(ctx, tcsuo.sqlSave, tcsuo.mutation, tcsuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

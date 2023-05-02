@@ -88,7 +88,7 @@ func (gdc *GPTDialogCreate) Mutation() *GPTDialogMutation {
 // Save creates the GPTDialog in the database.
 func (gdc *GPTDialogCreate) Save(ctx context.Context) (*GPTDialog, error) {
 	gdc.defaults()
-	return withHooks[*GPTDialog, GPTDialogMutation](ctx, gdc.sqlSave, gdc.mutation, gdc.hooks)
+	return withHooks(ctx, gdc.sqlSave, gdc.mutation, gdc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

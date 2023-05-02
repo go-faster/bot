@@ -89,7 +89,7 @@ func (pnc *PRNotificationCreate) Mutation() *PRNotificationMutation {
 // Save creates the PRNotification in the database.
 func (pnc *PRNotificationCreate) Save(ctx context.Context) (*PRNotification, error) {
 	pnc.defaults()
-	return withHooks[*PRNotification, PRNotificationMutation](ctx, pnc.sqlSave, pnc.mutation, pnc.hooks)
+	return withHooks(ctx, pnc.sqlSave, pnc.mutation, pnc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
