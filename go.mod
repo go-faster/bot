@@ -25,7 +25,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tiktoken-go/tokenizer v0.1.0
-	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.41.0
+	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.0
 	go.opentelemetry.io/contrib/propagators/autoprop v0.41.0
@@ -97,7 +97,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.opentelemetry.io/contrib/propagators/aws v1.16.0 // indirect
-	go.opentelemetry.io/contrib/propagators/b3 v1.16.0 // indirect
+	go.opentelemetry.io/contrib/propagators/b3 v1.16.1 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.16.0 // indirect
 	go.opentelemetry.io/contrib/propagators/ot v1.16.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.15.1 // indirect
