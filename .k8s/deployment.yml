@@ -70,10 +70,10 @@ spec:
               name: metrics
             - containerPort: 8080
               protocol: TCP
-              name: http_bot
+              name: http-bot
             - containerPort: 8081
               protocol: TCP
-              name: http_api
+              name: http-api
           resources:
             requests:
               cpu: 500m

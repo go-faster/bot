@@ -12,11 +12,11 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 8080
-      name: http_bot
+      name: http-bot
     - port: 80
       protocol: TCP
       targetPort: 8081
-      name: http_api
+      name: http-api
     - port: 8080
       protocol: TCP
       targetPort: 8090
@@ -44,7 +44,7 @@ spec:
           service:
             name: bot
             port:
-              name: http_bot
+              name: http-bot
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -65,4 +65,4 @@ spec:
               service:
                 name: bot
                 port:
-                  name: http_api
+                  name: http-api
