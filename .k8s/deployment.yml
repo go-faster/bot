@@ -70,7 +70,10 @@ spec:
               name: metrics
             - containerPort: 8080
               protocol: TCP
-              name: http
+              name: http_bot
+            - containerPort: 8081
+              protocol: TCP
+              name: http_api
           resources:
             requests:
               cpu: 500m
@@ -101,8 +104,10 @@ spec:
               value: "http://tempo-distributor.monitoring.svc.cluster.local:4317"
             - name: HOME
               value: /cache
-            - name: HTTP_ADDR
+            - name: HTTP_BOT_ADDR
               value: 0.0.0.0:8080
+            - name: HTTP_API_ADDR
+              value: 0.0.0.0:8081
             - name: TG_NOTIFY_GROUP
               value: go_faster_news
             - name: TG_DEPLOY_NOTIFY_GROUP
@@ -211,8 +216,6 @@ spec:
                 value: "otlp"
               - name: OTEL_EXPORTER_OTLP_ENDPOINT
                 value: "http://tempo-distributor.monitoring.svc.cluster.local:4317"
-              - name: HTTP_ADDR
-                value: 0.0.0.0:8080
               - name: GITHUB_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
