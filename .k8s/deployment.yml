@@ -55,13 +55,13 @@ spec:
           startupProbe:
             httpGet:
               path: /probe/startup
-              port: http
+              port: http-bot
             initialDelaySeconds: 3
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /probe/ready
-              port: http
+              port: http-bot
             initialDelaySeconds: 3
             periodSeconds: 5
           ports:
