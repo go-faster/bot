@@ -9,15 +9,15 @@ metadata:
     prometheus: "true"
 spec:
   ports:
-    - port: 80
+    - port: 8080
       protocol: TCP
       targetPort: 8080
       name: http-bot
-    - port: 80
+    - port: 8081
       protocol: TCP
       targetPort: 8081
       name: http-api
-    - port: 8080
+    - port: 8090
       protocol: TCP
       targetPort: 8090
       name: metrics
