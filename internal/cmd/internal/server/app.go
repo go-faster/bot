@@ -46,6 +46,7 @@ import (
 	"github.com/go-faster/bot/internal/entgaps"
 	"github.com/go-faster/bot/internal/entsession"
 	"github.com/go-faster/bot/internal/gh"
+	"github.com/go-faster/bot/internal/oas"
 	"github.com/go-faster/bot/internal/otelredis"
 )
 
@@ -234,7 +235,7 @@ func (a *App) Run(ctx context.Context) error {
 	if a.wh.HasSecret() {
 		lg := a.lg.Named("webhook")
 
-		httpAddr := os.Getenv("HTTP_ADDR")
+		httpAddr := os.Getenv("HTTP_BOT_ADDR")
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
@@ -278,6 +279,50 @@ func (a *App) Run(ctx context.Context) error {
 			}
 			return nil
 		})
+		g.Go(func() error {
+			lg.Info("ListenAndServe", zap.String("addr", server.Addr))
+			return server.ListenAndServe()
+		})
+		g.Go(func() error {
+			<-ctx.Done()
+			shutCtx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+			defer cancel()
+
+			lg.Info("Shutdown", zap.String("addr", server.Addr))
+			if err := server.Shutdown(shutCtx); err != nil {
+				return multierr.Append(err, server.Close())
+			}
+			return nil
+		})
+	}
+	{
+		// API Server.
+		lg := a.lg.Named("api")
+		httpAddr := os.Getenv("HTTP_API_ADDR")
+		if httpAddr == "" {
+			httpAddr = "localhost:8080"
+		}
+		h, err := oas.NewServer(oas.UnimplementedHandler{},
+			oas.WithMeterProvider(a.m.MeterProvider()),
+			oas.WithTracerProvider(a.m.TracerProvider()),
+		)
+		if err != nil {
+			return errors.Wrap(err, "oas server")
+		}
+		server := http.Server{
+			Addr: httpAddr,
+			Handler: otelhttp.NewHandler(h, "",
+				otelhttp.WithMeterProvider(a.m.MeterProvider()),
+				otelhttp.WithTracerProvider(a.m.TracerProvider()),
+				otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
+					op, ok := h.FindRoute(r.Method, r.URL.Path)
+					if ok {
+						return "http." + op.OperationID()
+					}
+					return operation
+				}),
+			),
+		}
 		g.Go(func() error {
 			lg.Info("ListenAndServe", zap.String("addr", server.Addr))
 			return server.ListenAndServe()
