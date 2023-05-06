@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  title: Go Faster Status API
+  description: Statistical insights for thr Go Faster system
+  version: 0.1.0
+  license:
+    name: Apache 2.0
+    url: https://github.com/go-faster/bot/blob/main/LICENSE
+servers:
+  - url: 'https://localhost:8080'
+paths:
+  /status:
+    get:
+      operationId: "status"
+      description: "get status"
+      responses:
+        200:
+          description: Coordinator status
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Status"
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  responses:
+    Error:
+      description: "Error while processing request"
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    Error:
+      type: object
+      description: "error description"
+      properties:
+        message:
+          type: string
+      required: [ message ]
+    Status:
+      type: object
+      description: Status
+      required: [ status ]
+      properties:
+        status:
+          type: string
+          description: Status
+          enum: [ "ok", "error" ]
+        message:
+          type: string
+          description: Message
