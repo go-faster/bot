@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"runtime/debug"
@@ -33,6 +34,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -266,6 +268,18 @@ func (a *App) Run(ctx context.Context) error {
 			if !a.rdy.Ready() {
 				return c.String(http.StatusServiceUnavailable, "not ready")
 			}
+			return c.String(http.StatusOK, "ok")
+		})
+		e.POST("/github/status", func(c echo.Context) error {
+			ctx := c.Request().Context()
+			ctx, span := a.tracer.Start(ctx, "github.status")
+			defer span.End()
+			data, err := io.ReadAll(c.Request().Body)
+			if err != nil {
+				return errors.Wrap(err, "read body")
+			}
+			span.SetAttributes(attribute.String("body", string(data)))
+			zctx.From(ctx).Debug("github.status", zap.String("body", string(data)))
 			return c.String(http.StatusOK, "ok")
 		})
 		a.wh.RegisterRoutes(e)
