@@ -199,7 +199,6 @@ spec:
             args:
               - job
               - commits
-            restartPolicy: OnFailure
             env:
               - name: GOMEMLIMIT
                 value: "128MiB"
@@ -244,3 +243,4 @@ spec:
                   secretKeyRef:
                     name: bot
                     key: DATABASE_URL
+          restartPolicy: OnFailure
