@@ -111,6 +111,7 @@ func (h *Webhook) WithNotifyGroup(domain string) *Webhook {
 // RegisterRoutes registers hook using given Echo router.
 func (h *Webhook) RegisterRoutes(e *echo.Echo) {
 	e.POST("/hook", h.handleHook)
+	e.POST("/github/status", h.handleStatus)
 }
 
 func eventMapping() map[string]string {
