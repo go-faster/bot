@@ -64,6 +64,7 @@ func (h *Webhook) handleStatus(c echo.Context) error {
 	// Handle Atlassian status webhook.
 	//
 	// See https://support.atlassian.com/statuspage/docs/enable-webhook-notifications/
+	// GitHub status page: https://www.githubstatus.com
 
 	ctx := c.Request().Context()
 	ctx, span := h.tracer.Start(ctx, "github.status")
