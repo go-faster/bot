@@ -199,6 +199,7 @@ spec:
             args:
               - job
               - commits
+            restartPolicy: OnFailure
             env:
               - name: GOMEMLIMIT
                 value: "128MiB"
@@ -238,27 +239,8 @@ spec:
                     key: GITHUB_CLIENT_ID
               - name: GITHUB_INSTALLATION_ID
                 value: "26766968"
-              - name: OPENAI_TOKEN
-                valueFrom:
-                  secretKeyRef:
-                    name: bot
-                    key: OPENAI_TOKEN
-              - name: CLICKHOUSE_ADDR
-                value: chendpoint-db.clickhouse.svc.cluster.local:9000
-              - name: CLICKHOUSE_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: bot
-                    key: CLICKHOUSE_USER
-              - name: CLICKHOUSE_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: bot
-                    key: CLICKHOUSE_PASSWORD
               - name: DATABASE_URL
                 valueFrom:
                   secretKeyRef:
                     name: bot
                     key: DATABASE_URL
-
-          restartPolicy: OnFailure
