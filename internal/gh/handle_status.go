@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/telegram/message/entity"
 	"github.com/gotd/td/telegram/message/styling"
@@ -69,6 +70,12 @@ func (h *Webhook) handleStatus(c echo.Context) error {
 		span.SetStatus(codes.Error, err.Error())
 		span.RecordError(err)
 		return errors.Wrap(err, "bind")
+	}
+
+	if s.Component.Name == "" {
+		// Incident update, ignoring.
+		zctx.From(ctx).Debug("Ignoring incident update")
+		return c.String(http.StatusOK, "ok")
 	}
 
 	span.AddEvent("StatusWebhook",
