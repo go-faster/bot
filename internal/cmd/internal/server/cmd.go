@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
-	"github.com/go-faster/bot/internal/app"
+	"github.com/go-faster/sdk/app"
 )
 
 func Root() *cobra.Command {

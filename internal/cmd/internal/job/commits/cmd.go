@@ -16,7 +16,8 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.uber.org/zap"
 
-	"github.com/go-faster/bot/internal/app"
+	"github.com/go-faster/sdk/app"
+
 	"github.com/go-faster/bot/internal/entdb"
 	"github.com/go-faster/bot/internal/otelredis"
 	"github.com/go-faster/bot/internal/stat"

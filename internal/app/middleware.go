@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/sdk/app"
 	"github.com/gotd/td/fileid"
 	"go.uber.org/zap"
 
@@ -21,7 +22,7 @@ type Middleware struct {
 	next       dispatch.MessageHandler
 	downloader *downloader.Downloader
 	client     *botapi.Client
-	metrics    *Metrics
+	metrics    *app.Metrics
 
 	logger *zap.Logger
 }
@@ -30,7 +31,7 @@ type Middleware struct {
 func NewMiddleware(
 	next dispatch.MessageHandler,
 	d *downloader.Downloader,
-	metrics *Metrics,
+	metrics *app.Metrics,
 	opts MiddlewareOptions,
 ) Middleware {
 	opts.setDefaults()

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/go-faster/sdk/app"
 	"github.com/gotd/contrib/oteltg"
 	"github.com/gotd/td/tg"
 
@@ -15,10 +16,10 @@ import (
 type Handler struct {
 	Middleware *oteltg.Middleware
 
-	m *Metrics
+	m *app.Metrics
 }
 
-func (m *Metrics) NewHandler() Handler {
+func NewHandler(m *app.Metrics) Handler {
 	return Handler{m: m}
 }
 

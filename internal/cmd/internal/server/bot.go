@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-faster/errors"
 
+	"github.com/go-faster/bot/internal/app"
 	"github.com/go-faster/bot/internal/dispatch"
 	"github.com/go-faster/bot/internal/gpt"
 )
@@ -14,7 +15,7 @@ func setupBot(a *App) error {
 		_, err := e.Reply().Text(ctx, "What?")
 		return err
 	})
-	a.mux.Handle("/stat", "Metrics and version", a.m.NewHandler())
+	a.mux.Handle("/stat", "Metrics and version", app.NewHandler(a.m))
 	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
 	a.mux.HandleFunc("/gh_pat", "Set GitHub personal token", a.HandleGitHubPersonalToken)
 	a.mux.HandleFunc("/gh_test", "GitHub test", a.HandleGitHubTest)

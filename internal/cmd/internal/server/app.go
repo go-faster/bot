@@ -14,6 +14,7 @@ import (
 	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
 	"github.com/go-faster/errors"
+	sdkapp "github.com/go-faster/sdk/app"
 	"github.com/go-faster/sdk/zctx"
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
@@ -59,7 +60,7 @@ type App struct {
 	mux        *dispatch.MessageMux
 	tracer     trace.Tracer
 	openai     *openai.Client
-	m          *app.Metrics
+	m          *sdkapp.Metrics
 	lg         *zap.Logger
 	wh         *gh.Webhook
 	db         *ent.Client
@@ -68,7 +69,7 @@ type App struct {
 	rdy        *Readiness
 }
 
-func initApp(ctx context.Context, m *app.Metrics, lg *zap.Logger) (_ *App, rerr error) {
+func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
@@ -498,8 +499,8 @@ func (a *App) Run(ctx context.Context) error {
 	return g.Wait()
 }
 
-func runBot(ctx context.Context, m *app.Metrics, lg *zap.Logger) (rerr error) {
-	a, err := initApp(ctx, m, lg)
+func runBot(ctx context.Context, m *sdkapp.Metrics, lg *zap.Logger) (rerr error) {
+	a, err := initApp(m, lg)
 	if err != nil {
 		return errors.Wrap(err, "initialize")
 	}
