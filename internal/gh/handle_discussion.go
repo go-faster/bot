@@ -47,8 +47,8 @@ func formatDiscussion(e *github.DiscussionEvent) message.StyledTextOption {
 	return styling.Custom(formatter)
 }
 
-func (h *Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handleDiscussion",
+func (w *Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEvent) error {
+	ctx, span := w.tracer.Start(ctx, "handleDiscussion",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -57,12 +57,12 @@ func (h *Webhook) handleDiscussion(ctx context.Context, e *github.DiscussionEven
 		return nil
 	}
 
-	p, err := h.notifyPeer(ctx)
+	p, err := w.notifyPeer(ctx)
 	if err != nil {
 		return errors.Wrap(err, "peer")
 	}
 
-	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx, formatDiscussion(e)); err != nil {
+	if _, err := w.sender.To(p).NoWebpage().StyledText(ctx, formatDiscussion(e)); err != nil {
 		return errors.Wrap(err, "send")
 	}
 	return nil

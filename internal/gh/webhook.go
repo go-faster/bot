@@ -80,38 +80,38 @@ func NewWebhook(
 }
 
 // Run runs some background tasks of Webhook.
-func (h *Webhook) Run(ctx context.Context) error {
-	if err := h.updater.Run(ctx); err != nil {
+func (w *Webhook) Run(ctx context.Context) error {
+	if err := w.updater.Run(ctx); err != nil {
 		return errors.Wrap(err, "PR updater")
 	}
 	return nil
 }
 
-func (h *Webhook) HasSecret() bool {
-	return h.ghSecret != ""
+func (w *Webhook) HasSecret() bool {
+	return w.ghSecret != ""
 }
 
-func (h *Webhook) WithSecret(v string) *Webhook {
-	h.ghSecret = v
-	return h
+func (w *Webhook) WithSecret(v string) *Webhook {
+	w.ghSecret = v
+	return w
 }
 
 // WithSender sets message sender to use.
-func (h *Webhook) WithSender(sender *message.Sender) *Webhook {
-	h.sender = sender
-	return h
+func (w *Webhook) WithSender(sender *message.Sender) *Webhook {
+	w.sender = sender
+	return w
 }
 
 // WithNotifyGroup sets channel name to send notifications.
-func (h *Webhook) WithNotifyGroup(domain string) *Webhook {
-	h.notifyGroup = domain
-	return h
+func (w *Webhook) WithNotifyGroup(domain string) *Webhook {
+	w.notifyGroup = domain
+	return w
 }
 
 // RegisterRoutes registers hook using given Echo router.
-func (h *Webhook) RegisterRoutes(e *echo.Echo) {
-	e.POST("/hook", h.handleHook)
-	e.POST("/github/status", h.handleStatus)
+func (w *Webhook) RegisterRoutes(e *echo.Echo) {
+	e.POST("/hook", w.handleHook)
+	e.POST("/github/status", w.handleStatus)
 }
 
 func eventMapping() map[string]string {
@@ -185,13 +185,13 @@ func reverseMapping(m map[string]string) map[string]string {
 
 var _eventTypeToWebhookType = reverseMapping(eventMapping())
 
-func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error) {
+func (w *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error) {
 	// Normalize event type to match X-Github-Event value.
 	if v, ok := _eventTypeToWebhookType[t]; ok {
 		t = v
 	}
 
-	ctx, span := h.tracer.Start(ctx, "wh.Handle",
+	ctx, span := w.tracer.Start(ctx, "wh.Handle",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -214,7 +214,7 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 		} else {
 			attrs = append(attrs, attribute.String("status", "ok"))
 		}
-		h.events.Add(ctx, 1, metric.WithAttributes(attrs...))
+		w.events.Add(ctx, 1, metric.WithAttributes(attrs...))
 	}()
 
 	fields := []zap.Field{
@@ -253,25 +253,25 @@ func (h *Webhook) Handle(ctx context.Context, t string, data []byte) (rerr error
 	span.SetAttributes(
 		attribute.String("event.go.type", fmt.Sprintf("%T", event)),
 	)
-	if err := h.processEvent(ctx, event); err != nil {
+	if err := w.processEvent(ctx, event); err != nil {
 		return errors.Wrap(err, "process")
 	}
 
-	if err := h.upsertMeta(ctx, meta); err != nil {
+	if err := w.upsertMeta(ctx, meta); err != nil {
 		lg.Warn("Failed to upsert meta", zap.Error(err))
 	}
 
 	return nil
 }
 
-func (h *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) {
+func (w *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) {
 	if meta.OrganizationID == 0 {
 		zctx.From(ctx).Debug("No organization ID, skipping meta upsert")
 		return nil
 	}
 
 	now := time.Now()
-	ctx, span := h.tracer.Start(ctx, "wh.upsertMeta",
+	ctx, span := w.tracer.Start(ctx, "wh.upsertMeta",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -283,7 +283,7 @@ func (h *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) 
 		}
 	}()
 
-	tx, err := h.db.BeginTx(ctx, nil)
+	tx, err := w.db.BeginTx(ctx, nil)
 	if err != nil {
 		return errors.Wrap(err, "begin tx")
 	}
@@ -323,8 +323,8 @@ func (h *Webhook) upsertMeta(ctx context.Context, meta *eventMeta) (rerr error) 
 	return nil
 }
 
-func (h *Webhook) handleHook(e echo.Context) error {
-	ctx, span := h.tracer.Start(e.Request().Context(), "wh.handleHook",
+func (w *Webhook) handleHook(e echo.Context) error {
+	ctx, span := w.tracer.Start(e.Request().Context(), "wh.handleHook",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	r := e.Request().WithContext(ctx)
@@ -339,10 +339,10 @@ func (h *Webhook) handleHook(e echo.Context) error {
 	span.SetAttributes(attribute.String("delivery_id", id))
 	cacheKey := fmt.Sprintf("gh:delivery:%s", id)
 
-	if h.cache != nil {
+	if w.cache != nil {
 		// Check if we already processed this event.
 		// Don't fail entire request if cache is failing.
-		exists, err := h.cache.Exists(ctx, cacheKey).Result()
+		exists, err := w.cache.Exists(ctx, cacheKey).Result()
 		if err != nil {
 			zctx.From(ctx).Error("Failed to check cache",
 				zap.Error(err),
@@ -357,13 +357,13 @@ func (h *Webhook) handleHook(e echo.Context) error {
 		}
 	}
 
-	payload, err := github.ValidatePayload(r, []byte(h.ghSecret))
+	payload, err := github.ValidatePayload(r, []byte(w.ghSecret))
 	if err != nil {
 		zctx.From(ctx).Debug("Failed to validate payload")
 		span.SetStatus(codes.Error, err.Error())
 		return echo.ErrNotFound
 	}
-	if err := h.Handle(ctx, github.WebHookType(r), payload); err != nil {
+	if err := w.Handle(ctx, github.WebHookType(r), payload); err != nil {
 		zctx.From(ctx).Error("Failed to handle",
 			zap.Error(err),
 		)
@@ -371,8 +371,8 @@ func (h *Webhook) handleHook(e echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	if h.cache != nil {
-		if err := h.cache.Set(ctx, cacheKey, 1, time.Hour).Err(); err != nil {
+	if w.cache != nil {
+		if err := w.cache.Set(ctx, cacheKey, 1, time.Hour).Err(); err != nil {
 			zctx.From(ctx).Error("Failed to set cache",
 				zap.Error(err),
 			)
@@ -383,12 +383,12 @@ func (h *Webhook) handleHook(e echo.Context) error {
 	return e.String(http.StatusOK, "done")
 }
 
-func (h *Webhook) processEvent(ctx context.Context, event interface{}) (rerr error) {
+func (w *Webhook) processEvent(ctx context.Context, event interface{}) (rerr error) {
 	lg := zctx.From(ctx)
 
 	evType := fmt.Sprintf("%T", event)
 	evType = strings.TrimPrefix(evType, "*github.")
-	ctx, span := h.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
+	ctx, span := w.tracer.Start(ctx, fmt.Sprintf("wh.processEvent: %s", evType),
 		trace.WithSpanKind(trace.SpanKindServer),
 		trace.WithAttributes(attribute.String("e", evType)),
 	)
@@ -405,40 +405,40 @@ func (h *Webhook) processEvent(ctx context.Context, event interface{}) (rerr err
 
 	switch e := event.(type) {
 	case *github.PullRequestEvent:
-		return h.handlePR(ctx, e)
+		return w.handlePR(ctx, e)
 	case *github.ReleaseEvent:
-		return h.handleRelease(ctx, e)
+		return w.handleRelease(ctx, e)
 	case *github.RepositoryEvent:
-		return h.handleRepo(ctx, e)
+		return w.handleRepo(ctx, e)
 	case *github.IssuesEvent:
-		return h.handleIssue(ctx, e)
+		return w.handleIssue(ctx, e)
 	case *github.DiscussionEvent:
-		return h.handleDiscussion(ctx, e)
+		return w.handleDiscussion(ctx, e)
 	case *github.StarEvent:
-		return h.handleStar(ctx, e)
+		return w.handleStar(ctx, e)
 	case *github.CheckRunEvent:
-		return h.handleCheckRun(ctx, e)
+		return w.handleCheckRun(ctx, e)
 	case *github.CheckSuiteEvent:
-		return h.handleCheckSuite(ctx, e)
+		return w.handleCheckSuite(ctx, e)
 	case *github.WorkflowRunEvent:
-		return h.handleWorkflowRun(ctx, e)
+		return w.handleWorkflowRun(ctx, e)
 	case *github.WorkflowJobEvent:
-		return h.handleWorkflowJob(ctx, e)
+		return w.handleWorkflowJob(ctx, e)
 	default:
 		lg.Info("No handler")
 		return nil
 	}
 }
 
-func (h *Webhook) notifyPeer(ctx context.Context) (tg.InputPeerClass, error) {
-	p, err := h.sender.ResolveDomain(h.notifyGroup, peer.OnlyChannel).AsInputPeer(ctx)
+func (w *Webhook) notifyPeer(ctx context.Context) (tg.InputPeerClass, error) {
+	p, err := w.sender.ResolveDomain(w.notifyGroup, peer.OnlyChannel).AsInputPeer(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "resolve")
 	}
 	return p, nil
 }
 
-func (h *Webhook) WithCache(c *redis.Client) *Webhook {
-	h.cache = c
-	return h
+func (w *Webhook) WithCache(c *redis.Client) *Webhook {
+	w.cache = c
+	return w
 }

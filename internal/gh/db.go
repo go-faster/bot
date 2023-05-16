@@ -59,22 +59,22 @@ func updateLastMsgID(ctx context.Context, db *ent.LastChannelMessageClient, chan
 	return nil
 }
 
-func (h *Webhook) updateLastMsgID(ctx context.Context, channelID int64, msgID int) error {
-	return updateLastMsgID(ctx, h.db.LastChannelMessage, channelID, msgID)
+func (w *Webhook) updateLastMsgID(ctx context.Context, channelID int64, msgID int) error {
+	return updateLastMsgID(ctx, w.db.LastChannelMessage, channelID, msgID)
 }
 
-func (h *Webhook) findPRNotification(
+func (w *Webhook) findPRNotification(
 	ctx context.Context,
 	repo *github.Repository,
 	pr *github.PullRequest,
 	channelID int64,
 ) (existingMsgID, lastMsgID int, _ error) {
-	ctx, span := h.tracer.Start(ctx, "FindPRNotification",
+	ctx, span := w.tracer.Start(ctx, "FindPRNotification",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
 
-	tx, err := h.db.Tx(ctx)
+	tx, err := w.db.Tx(ctx)
 	if err != nil {
 		return 0, 0, errors.Wrap(err, "begin tx")
 	}
@@ -112,14 +112,14 @@ func (h *Webhook) findPRNotification(
 	return existingMsgID, lastMsgID, nil
 }
 
-func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository, pr *github.PullRequest, msgID int) error {
-	ctx, span := h.tracer.Start(ctx, "SetPRNotification",
+func (w *Webhook) setPRNotification(ctx context.Context, repo *github.Repository, pr *github.PullRequest, msgID int) error {
+	ctx, span := w.tracer.Start(ctx, "SetPRNotification",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
 
 	u := pr.GetUser()
-	if err := h.db.PRNotification.Create().
+	if err := w.db.PRNotification.Create().
 		SetRepoID(repo.GetID()).
 		SetPullRequestID(pr.GetNumber()).
 		SetPullRequestTitle(pr.GetTitle()).
@@ -142,7 +142,7 @@ func (h *Webhook) setPRNotification(ctx context.Context, repo *github.Repository
 }
 
 // fillPRState queries misisng data from database if needed.
-func (h *Webhook) fillPRState(ctx context.Context, tx *ent.PRNotificationClient, repo *github.Repository, pr *github.PullRequest) error {
+func (w *Webhook) fillPRState(ctx context.Context, tx *ent.PRNotificationClient, repo *github.Repository, pr *github.PullRequest) error {
 	if pr.GetHTMLURL() == "" {
 		u := fmt.Sprintf("https://github.com/%s/%s/pull/%d",
 			repo.GetOwner().GetLogin(), repo.GetName(),
@@ -189,8 +189,8 @@ type Check struct {
 	Status     string // completed
 }
 
-func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
-	ctx, span := h.tracer.Start(ctx, "QueryChecks",
+func (w *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *github.PullRequest) (checks []Check, _ error) {
+	ctx, span := w.tracer.Start(ctx, "QueryChecks",
 		trace.WithSpanKind(trace.SpanKindClient),
 		trace.WithAttributes(
 			attribute.String("repository.full_name", repo.GetFullName()),
@@ -201,7 +201,7 @@ func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *
 	)
 	defer span.End()
 
-	client, err := h.Client(ctx)
+	client, err := w.Client(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -237,8 +237,8 @@ func (h *Webhook) queryChecks(ctx context.Context, repo *github.Repository, pr *
 	return checks, nil
 }
 
-func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ error) {
-	ctx, span := h.tracer.Start(ctx, "UpsertCheck",
+func (w *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr *github.PullRequest, _ error) {
+	ctx, span := w.tracer.Start(ctx, "UpsertCheck",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
@@ -252,7 +252,7 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		return nil, nil
 	}
 
-	tx, err := h.db.Tx(ctx)
+	tx, err := w.db.Tx(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "begin tx")
 	}
@@ -276,7 +276,7 @@ func (h *Webhook) upsertCheck(ctx context.Context, c *github.CheckRunEvent) (pr 
 		return nil, errors.Wrap(err, "upsert check")
 	}
 
-	if err := h.fillPRState(ctx, tx.PRNotification, c.GetRepo(), pr); err != nil && !ent.IsNotFound(err) {
+	if err := w.fillPRState(ctx, tx.PRNotification, c.GetRepo(), pr); err != nil && !ent.IsNotFound(err) {
 		return nil, errors.Wrap(err, "get PR state")
 	}
 

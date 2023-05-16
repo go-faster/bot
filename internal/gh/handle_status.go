@@ -60,14 +60,14 @@ func formatStatus(s StatusWebhook) message.StyledTextOption {
 	return styling.Custom(formatter)
 }
 
-func (h *Webhook) handleStatus(c echo.Context) error {
+func (w *Webhook) handleStatus(c echo.Context) error {
 	// Handle Atlassian status webhook.
 	//
 	// See https://support.atlassian.com/statuspage/docs/enable-webhook-notifications/
 	// GitHub status page: https://www.githubstatus.com
 
 	ctx := c.Request().Context()
-	ctx, span := h.tracer.Start(ctx, "github.status")
+	ctx, span := w.tracer.Start(ctx, "github.status")
 	defer span.End()
 
 	var s StatusWebhook
@@ -91,11 +91,11 @@ func (h *Webhook) handleStatus(c echo.Context) error {
 	)
 
 	// Notify telegram group.
-	p, err := h.notifyPeer(ctx)
+	p, err := w.notifyPeer(ctx)
 	if err != nil {
 		return errors.Wrap(err, "peer")
 	}
-	if _, err := h.sender.To(p).
+	if _, err := w.sender.To(p).
 		NoWebpage().
 		StyledText(ctx, formatStatus(s)); err != nil {
 		return errors.Wrap(err, "send")

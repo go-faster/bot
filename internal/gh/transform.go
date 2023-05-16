@@ -34,19 +34,19 @@ func htmlURL(s string) string {
 	return u.String()
 }
 
-func (h *Webhook) GetRepoByID(ctx context.Context, id int64) (*github.Repository, error) {
-	ctx, span := h.tracer.Start(ctx, "wh.GetRepoByID",
+func (w *Webhook) GetRepoByID(ctx context.Context, id int64) (*github.Repository, error) {
+	ctx, span := w.tracer.Start(ctx, "wh.GetRepoByID",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
 
-	client, err := h.Client(ctx)
+	client, err := w.Client(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "client")
 	}
 
 	key := fmt.Sprintf("github:repo:%d", id)
-	if raw, err := h.cache.Get(ctx, key).Result(); err == nil {
+	if raw, err := w.cache.Get(ctx, key).Result(); err == nil {
 		var repo github.Repository
 		if err := json.Unmarshal([]byte(raw), &repo); err != nil {
 			return nil, errors.Wrap(err, "unmarshal")
@@ -63,15 +63,15 @@ func (h *Webhook) GetRepoByID(ctx context.Context, id int64) (*github.Repository
 	if err != nil {
 		return nil, errors.Wrap(err, "marshal")
 	}
-	if _, err := h.cache.Set(ctx, key, string(raw), time.Hour).Result(); err != nil {
+	if _, err := w.cache.Set(ctx, key, string(raw), time.Hour).Result(); err != nil {
 		return nil, errors.Wrap(err, "set")
 	}
 
 	return repo, nil
 }
 
-func (h *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (*Event, error) {
-	ctx, span := h.tracer.Start(ctx, "wh.Transform",
+func (w *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (*Event, error) {
+	ctx, span := w.tracer.Start(ctx, "wh.Transform",
 		trace.WithSpanKind(trace.SpanKindClient),
 	)
 	defer span.End()
@@ -170,8 +170,8 @@ func (h *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (
 	)
 
 	// Fetch owner.
-	if h.cache != nil {
-		repo, err := h.GetRepoByID(ctx, repoID)
+	if w.cache != nil {
+		repo, err := w.GetRepoByID(ctx, repoID)
 		if err != nil {
 			return nil, errors.Wrap(err, "get repo by id")
 		}

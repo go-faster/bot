@@ -91,14 +91,14 @@ func githubUserLink(u *github.User) styling.StyledTextOption {
 	return styling.TextURL(u.GetLogin(), u.GetHTMLURL())
 }
 
-func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
-	ctx, span := h.tracer.Start(ctx, "UpdatePR",
+func (w *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
+	ctx, span := w.tracer.Start(ctx, "UpdatePR",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
 	lg := zctx.From(ctx)
 
-	p, err := h.notifyPeer(ctx)
+	p, err := w.notifyPeer(ctx)
 	if err != nil {
 		return errors.Wrap(err, "peer")
 	}
@@ -112,7 +112,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 		repo = state.Repo
 		pr   = state.PR
 	)
-	existingMsgID, lastMsgID, err := h.findPRNotification(ctx, repo, pr, ch.ChannelID)
+	existingMsgID, lastMsgID, err := w.findPRNotification(ctx, repo, pr, ch.ChannelID)
 	if err != nil {
 		return errors.Wrap(err, "query message state")
 	}
@@ -131,7 +131,7 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	//
 	gonnaSendNewMessage := (existingMsgID == 0 || lastMsgID-existingMsgID > 10) && state.Event == "pr_update"
 
-	r := h.sender.To(p).NoWebpage()
+	r := w.sender.To(p).NoWebpage()
 	// Setup buttons.
 	checksStatus := generateChecksStatus(state.Checks)
 	if u, _ := url.ParseRequestURI(pr.GetHTMLURL()); u != nil && !state.ActionIn("merged", "closed") {
@@ -263,18 +263,18 @@ func (h *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 	}
 
 	return multierr.Append(
-		h.updateLastMsgID(ctx, ch.ChannelID, newMsgID),
-		h.setPRNotification(ctx, repo, pr, newMsgID),
+		w.updateLastMsgID(ctx, ch.ChannelID, newMsgID),
+		w.setPRNotification(ctx, repo, pr, newMsgID),
 	)
 }
 
-func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
+func (w *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent) error {
 	var (
 		repo = e.GetRepo()
 		pr   = e.GetPullRequest()
 	)
 	if !pr.GetMerged() {
-		return h.updater.Emit(PullRequestUpdate{
+		return w.updater.Emit(PullRequestUpdate{
 			Event:  "pr_update",
 			Action: "closed",
 			Repo:   repo,
@@ -283,7 +283,7 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 		})
 	}
 
-	return h.updater.Emit(PullRequestUpdate{
+	return w.updater.Emit(PullRequestUpdate{
 		Event:  "pr_update",
 		Action: "merged",
 		Repo:   repo,
@@ -292,8 +292,8 @@ func (h *Webhook) handlePRClosed(ctx context.Context, e *github.PullRequestEvent
 	})
 }
 
-func (h *Webhook) handlePROpened(ctx context.Context, e *github.PullRequestEvent) error {
-	return h.updater.Emit(PullRequestUpdate{
+func (w *Webhook) handlePROpened(ctx context.Context, e *github.PullRequestEvent) error {
+	return w.updater.Emit(PullRequestUpdate{
 		Event:  "pr_update",
 		Action: "opened",
 		Repo:   e.GetRepo(),
@@ -302,12 +302,12 @@ func (h *Webhook) handlePROpened(ctx context.Context, e *github.PullRequestEvent
 	})
 }
 
-func (h *Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
+func (w *Webhook) handlePR(ctx context.Context, e *github.PullRequestEvent) error {
 	switch e.GetAction() {
 	case "opened":
-		return h.handlePROpened(ctx, e)
+		return w.handlePROpened(ctx, e)
 	case "closed":
-		return h.handlePRClosed(ctx, e)
+		return w.handlePRClosed(ctx, e)
 	}
 	return nil
 }

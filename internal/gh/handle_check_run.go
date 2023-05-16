@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) error {
-	_, span := h.tracer.Start(ctx, "handleCheckRun",
+func (w *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) error {
+	_, span := w.tracer.Start(ctx, "handleCheckRun",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -42,7 +42,7 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 	)
 	lg := zctx.From(ctx)
 
-	pr, err := h.upsertCheck(ctx, e)
+	pr, err := w.upsertCheck(ctx, e)
 	if err != nil {
 		return errors.Wrap(err, "upsert check")
 	}
@@ -56,7 +56,7 @@ func (h *Webhook) handleCheckRun(ctx context.Context, e *github.CheckRunEvent) e
 		zap.String("pr.head_sha", pr.GetHead().GetSHA()),
 	)
 
-	return h.updater.Emit(PullRequestUpdate{
+	return w.updater.Emit(PullRequestUpdate{
 		Event:  "check_update",
 		Action: "",
 		Repo:   e.GetRepo(),
