@@ -12,8 +12,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
-	ctx, span := h.tracer.Start(ctx, "handleStar",
+func (w *Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
+	ctx, span := w.tracer.Start(ctx, "handleStar",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -22,7 +22,7 @@ func (h *Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 		zctx.From(ctx).Debug("Skipping action", zap.String("action", a))
 		return nil
 	}
-	p, err := h.notifyPeer(ctx)
+	p, err := w.notifyPeer(ctx)
 	if err != nil {
 		return errors.Wrap(err, "peer")
 	}
@@ -40,7 +40,7 @@ func (h *Webhook) handleStar(ctx context.Context, e *github.StarEvent) error {
 	if name := sender.GetName(); name != "" {
 		options = append(options, styling.Plain(fmt.Sprintf(" (%s)", name)))
 	}
-	if _, err := h.sender.To(p).NoWebpage().StyledText(ctx, options...); err != nil {
+	if _, err := w.sender.To(p).NoWebpage().StyledText(ctx, options...); err != nil {
 		return errors.Wrap(err, "send")
 	}
 	return nil

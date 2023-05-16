@@ -10,8 +10,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
-	_, span := h.tracer.Start(ctx, "handleCheckSuite",
+func (w *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEvent) error {
+	_, span := w.tracer.Start(ctx, "handleCheckSuite",
 		trace.WithSpanKind(trace.SpanKindServer),
 	)
 	defer span.End()
@@ -53,7 +53,7 @@ func (h *Webhook) handleCheckSuite(ctx context.Context, e *github.CheckSuiteEven
 		zap.String("pr.head_sha", pr.GetHead().GetSHA()),
 	)
 
-	return h.updater.Emit(PullRequestUpdate{
+	return w.updater.Emit(PullRequestUpdate{
 		Event:  "check_update",
 		Action: "",
 		Repo:   e.GetRepo(),
