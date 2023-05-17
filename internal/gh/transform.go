@@ -1,17 +1,11 @@
 package gh
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
 	"net/url"
 	"strings"
-	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
-	"github.com/google/go-github/v52/github"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type Event struct {
@@ -34,48 +28,7 @@ func htmlURL(s string) string {
 	return u.String()
 }
 
-func (w *Webhook) GetRepoByID(ctx context.Context, id int64) (*github.Repository, error) {
-	ctx, span := w.tracer.Start(ctx, "wh.GetRepoByID",
-		trace.WithSpanKind(trace.SpanKindClient),
-	)
-	defer span.End()
-
-	client, err := w.Client(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "client")
-	}
-
-	key := fmt.Sprintf("github:repo:%d", id)
-	if raw, err := w.cache.Get(ctx, key).Result(); err == nil {
-		var repo github.Repository
-		if err := json.Unmarshal([]byte(raw), &repo); err != nil {
-			return nil, errors.Wrap(err, "unmarshal")
-		}
-		return &repo, nil
-	}
-
-	repo, _, err := client.Repositories.GetByID(ctx, id)
-	if err != nil {
-		return nil, errors.Wrap(err, "get by id")
-	}
-
-	raw, err := json.Marshal(repo)
-	if err != nil {
-		return nil, errors.Wrap(err, "marshal")
-	}
-	if _, err := w.cache.Set(ctx, key, string(raw), time.Hour).Result(); err != nil {
-		return nil, errors.Wrap(err, "set")
-	}
-
-	return repo, nil
-}
-
-func (w *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (*Event, error) {
-	ctx, span := w.tracer.Start(ctx, "wh.Transform",
-		trace.WithSpanKind(trace.SpanKindClient),
-	)
-	defer span.End()
-
+func Transform(d *jx.Decoder, e *jx.Encoder) (*Event, error) {
 	var (
 		repoID       int64
 		fullRepoName string
@@ -162,35 +115,12 @@ func (w *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (
 	}); err != nil {
 		return nil, errors.Wrap(err, "decode")
 	}
-
-	var (
-		repoName  string
-		ownerName string
-		ownerID   int64
-	)
-
-	// Fetch owner.
-	if w.cache != nil {
-		repo, err := w.GetRepoByID(ctx, repoID)
-		if err != nil {
-			return nil, errors.Wrap(err, "get repo by id")
-		}
-		ownerID = repo.GetOwner().GetID()
-		ownerName = repo.GetOwner().GetLogin()
-		repoName = repo.GetName()
-	}
-	if ownerName == "" {
-		owner, name, ok := strings.Cut(fullRepoName, "/")
-		if ok {
-			ownerName = owner
-			repoName = name
-		}
-	}
 	e.Field("repository", func(e *jx.Encoder) {
 		e.Obj(func(e *jx.Encoder) {
 			e.Field("id", func(e *jx.Encoder) {
 				e.Int64(repoID)
 			})
+
 			e.Field("full_name", func(e *jx.Encoder) {
 				e.Str(fullRepoName)
 			})
@@ -200,22 +130,17 @@ func (w *Webhook) Transform(ctx context.Context, d *jx.Decoder, e *jx.Encoder) (
 			e.Field("html_url", func(e *jx.Encoder) {
 				e.Str(htmlURL(repoURL))
 			})
-			if repoName != "" {
+			owner, name, ok := strings.Cut(fullRepoName, "/")
+			if ok {
 				e.Field("name", func(e *jx.Encoder) {
-					e.Str(repoName)
+					e.Str(name)
 				})
-			}
-			if ownerName != "" {
+
 				e.Field("owner", func(e *jx.Encoder) {
 					e.Obj(func(e *jx.Encoder) {
 						e.Field("login", func(e *jx.Encoder) {
-							e.Str(ownerName)
+							e.Str(owner)
 						})
-						if ownerID != 0 {
-							e.Field("id", func(e *jx.Encoder) {
-								e.Int64(ownerID)
-							})
-						}
 					})
 				})
 			}
