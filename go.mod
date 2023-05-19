@@ -22,7 +22,7 @@ require (
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/sashabaranov/go-openai v1.9.4
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/tiktoken-go/tokenizer v0.1.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.41.1
