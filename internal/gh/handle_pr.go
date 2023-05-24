@@ -190,14 +190,13 @@ func (w *Webhook) updatePR(ctx context.Context, state PullRequestUpdate) error {
 			)
 		}
 
-		msg := " closed by "
-		merger := pr.GetMergedBy()
-
-		text = append(text,
-			styling.Plain(msg),
-			githubUserLink(merger),
-		)
-
+		text = append(text, styling.Plain("closed"))
+		if merger := pr.GetMergedBy(); merger != nil {
+			text = append(text,
+				styling.Plain(" by "),
+				githubUserLink(merger),
+			)
+		}
 	case "merged":
 		// We can get here only if PR was merged.
 		text = append(text,
