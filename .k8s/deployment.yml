@@ -101,7 +101,7 @@ spec:
             - name: OTEL_TRACES_EXPORTER
               value: "otlp"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://tempo-distributor.monitoring.svc.cluster.local:4317"
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
             - name: HOME
               value: /cache
             - name: HTTP_BOT_ADDR
