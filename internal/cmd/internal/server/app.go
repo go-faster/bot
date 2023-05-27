@@ -31,6 +31,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/cors"
 	"github.com/sashabaranov/go-openai"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -313,7 +314,7 @@ func (a *App) Run(ctx context.Context) error {
 		}
 		server := http.Server{
 			Addr: httpAddr,
-			Handler: otelhttp.NewHandler(h, "",
+			Handler: otelhttp.NewHandler(cors.Default().Handler(h), "",
 				otelhttp.WithMeterProvider(a.m.MeterProvider()),
 				otelhttp.WithTracerProvider(a.m.TracerProvider()),
 				otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
