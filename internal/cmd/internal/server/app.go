@@ -39,6 +39,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
+	"github.com/go-faster/bot/internal/api"
 	"github.com/go-faster/bot/internal/app"
 	"github.com/go-faster/bot/internal/botapi"
 	"github.com/go-faster/bot/internal/dispatch"
@@ -303,7 +304,7 @@ func (a *App) Run(ctx context.Context) error {
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
-		h, err := oas.NewServer(oas.UnimplementedHandler{},
+		h, err := oas.NewServer(&api.Server{},
 			oas.WithMeterProvider(a.m.MeterProvider()),
 			oas.WithTracerProvider(a.m.TracerProvider()),
 		)
