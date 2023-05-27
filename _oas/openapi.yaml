@@ -18,7 +18,7 @@ paths:
       description: "get status"
       responses:
         200:
-          description: Coordinator status
+          description: Go Faster Status
           content:
             "application/json":
               schema:
@@ -41,15 +41,67 @@ components:
         message:
           type: string
       required: [ message ]
+    User:
+      type: object
+      required:
+        - id
+        - nickname
+        - full_name
+        - avatar_url
+        - html_url
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User ID
+        nickname:
+          type: string
+          description: User name
+        full_name:
+          type: string
+          description: User full name
+        avatar_url:
+          type: string
+          format: uri
+          description: User avatar URL
+        html_url:
+          type: string
+          format: uri
+          description: User profile URL
+    UserStat:
+      type: object
+      description: User statistics
+      required:
+        - user
+        - total_commits
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        total_commits:
+          type: integer
+          description: Total commits
+    Statistics:
+      type: object
+      description: Statistics
+      required:
+        - total_commits
+        - top_users
+      properties:
+        total_commits:
+          type: integer
+          description: Total commits
+        top_users:
+          type: array
+          description: Top users
+          items:
+            $ref: "#/components/schemas/UserStat"
     Status:
       type: object
       description: Status
-      required: [ status ]
+      required: [ stat, message ]
       properties:
-        status:
-          type: string
-          description: Status
-          enum: [ "ok", "error" ]
         message:
           type: string
           description: Message
+        stat:
+          $ref: "#/components/schemas/Statistics"

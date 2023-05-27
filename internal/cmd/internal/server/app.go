@@ -305,7 +305,7 @@ func (a *App) Run(ctx context.Context) error {
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
-		h, err := oas.NewServer(&api.Server{},
+		h, err := oas.NewServer(api.NewServer(a.db),
 			oas.WithMeterProvider(a.m.MeterProvider()),
 			oas.WithTracerProvider(a.m.TracerProvider()),
 		)

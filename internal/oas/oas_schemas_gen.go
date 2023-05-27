@@ -4,8 +4,7 @@ package oas
 
 import (
 	"fmt"
-
-	"github.com/go-faster/errors"
+	"net/url"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -54,111 +53,151 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-// NewOptString returns new OptString with value set to v.
-func NewOptString(v string) OptString {
-	return OptString{
-		Value: v,
-		Set:   true,
-	}
+// Statistics.
+// Ref: #/components/schemas/Statistics
+type Statistics struct {
+	// Total commits.
+	TotalCommits int `json:"total_commits"`
+	// Top users.
+	TopUsers []UserStat `json:"top_users"`
 }
 
-// OptString is optional string.
-type OptString struct {
-	Value string
-	Set   bool
+// GetTotalCommits returns the value of TotalCommits.
+func (s *Statistics) GetTotalCommits() int {
+	return s.TotalCommits
 }
 
-// IsSet returns true if OptString was set.
-func (o OptString) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptString) Reset() {
-	var v string
-	o.Value = v
-	o.Set = false
+// GetTopUsers returns the value of TopUsers.
+func (s *Statistics) GetTopUsers() []UserStat {
+	return s.TopUsers
 }
 
-// SetTo sets value to v.
-func (o *OptString) SetTo(v string) {
-	o.Set = true
-	o.Value = v
+// SetTotalCommits sets the value of TotalCommits.
+func (s *Statistics) SetTotalCommits(val int) {
+	s.TotalCommits = val
 }
 
-// Get returns value and boolean that denotes whether value was set.
-func (o OptString) Get() (v string, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptString) Or(d string) string {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
+// SetTopUsers sets the value of TopUsers.
+func (s *Statistics) SetTopUsers(val []UserStat) {
+	s.TopUsers = val
 }
 
 // Status.
 // Ref: #/components/schemas/Status
 type Status struct {
-	// Status.
-	Status StatusStatus `json:"status"`
 	// Message.
-	Message OptString `json:"message"`
-}
-
-// GetStatus returns the value of Status.
-func (s *Status) GetStatus() StatusStatus {
-	return s.Status
+	Message string     `json:"message"`
+	Stat    Statistics `json:"stat"`
 }
 
 // GetMessage returns the value of Message.
-func (s *Status) GetMessage() OptString {
+func (s *Status) GetMessage() string {
 	return s.Message
 }
 
-// SetStatus sets the value of Status.
-func (s *Status) SetStatus(val StatusStatus) {
-	s.Status = val
+// GetStat returns the value of Stat.
+func (s *Status) GetStat() Statistics {
+	return s.Stat
 }
 
 // SetMessage sets the value of Message.
-func (s *Status) SetMessage(val OptString) {
+func (s *Status) SetMessage(val string) {
 	s.Message = val
 }
 
-// Status.
-type StatusStatus string
-
-const (
-	StatusStatusOk    StatusStatus = "ok"
-	StatusStatusError StatusStatus = "error"
-)
-
-// MarshalText implements encoding.TextMarshaler.
-func (s StatusStatus) MarshalText() ([]byte, error) {
-	switch s {
-	case StatusStatusOk:
-		return []byte(s), nil
-	case StatusStatusError:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
+// SetStat sets the value of Stat.
+func (s *Status) SetStat(val Statistics) {
+	s.Stat = val
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *StatusStatus) UnmarshalText(data []byte) error {
-	switch StatusStatus(data) {
-	case StatusStatusOk:
-		*s = StatusStatusOk
-		return nil
-	case StatusStatusError:
-		*s = StatusStatusError
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
+// Ref: #/components/schemas/User
+type User struct {
+	// User ID.
+	ID int64 `json:"id"`
+	// User name.
+	Nickname string `json:"nickname"`
+	// User full name.
+	FullName string `json:"full_name"`
+	// User avatar URL.
+	AvatarURL url.URL `json:"avatar_url"`
+	// User profile URL.
+	HTMLURL url.URL `json:"html_url"`
+}
+
+// GetID returns the value of ID.
+func (s *User) GetID() int64 {
+	return s.ID
+}
+
+// GetNickname returns the value of Nickname.
+func (s *User) GetNickname() string {
+	return s.Nickname
+}
+
+// GetFullName returns the value of FullName.
+func (s *User) GetFullName() string {
+	return s.FullName
+}
+
+// GetAvatarURL returns the value of AvatarURL.
+func (s *User) GetAvatarURL() url.URL {
+	return s.AvatarURL
+}
+
+// GetHTMLURL returns the value of HTMLURL.
+func (s *User) GetHTMLURL() url.URL {
+	return s.HTMLURL
+}
+
+// SetID sets the value of ID.
+func (s *User) SetID(val int64) {
+	s.ID = val
+}
+
+// SetNickname sets the value of Nickname.
+func (s *User) SetNickname(val string) {
+	s.Nickname = val
+}
+
+// SetFullName sets the value of FullName.
+func (s *User) SetFullName(val string) {
+	s.FullName = val
+}
+
+// SetAvatarURL sets the value of AvatarURL.
+func (s *User) SetAvatarURL(val url.URL) {
+	s.AvatarURL = val
+}
+
+// SetHTMLURL sets the value of HTMLURL.
+func (s *User) SetHTMLURL(val url.URL) {
+	s.HTMLURL = val
+}
+
+// User statistics.
+// Ref: #/components/schemas/UserStat
+type UserStat struct {
+	User User `json:"user"`
+	// Total commits.
+	TotalCommits int `json:"total_commits"`
+}
+
+// GetUser returns the value of User.
+func (s *UserStat) GetUser() User {
+	return s.User
+}
+
+// GetTotalCommits returns the value of TotalCommits.
+func (s *UserStat) GetTotalCommits() int {
+	return s.TotalCommits
+}
+
+// SetUser sets the value of User.
+func (s *UserStat) SetUser(val User) {
+	s.User = val
+}
+
+// SetTotalCommits sets the value of TotalCommits.
+func (s *UserStat) SetTotalCommits(val int) {
+	s.TotalCommits = val
 }

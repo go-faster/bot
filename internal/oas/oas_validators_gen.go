@@ -8,16 +8,16 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Status) Validate() error {
+func (s *Statistics) Validate() error {
 	var failures []validate.FieldError
 	if err := func() error {
-		if err := s.Status.Validate(); err != nil {
-			return err
+		if s.TopUsers == nil {
+			return errors.New("nil is invalid value")
 		}
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "status",
+			Name:  "top_users",
 			Error: err,
 		})
 	}
@@ -26,13 +26,21 @@ func (s *Status) Validate() error {
 	}
 	return nil
 }
-func (s StatusStatus) Validate() error {
-	switch s {
-	case "ok":
+func (s *Status) Validate() error {
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := s.Stat.Validate(); err != nil {
+			return err
+		}
 		return nil
-	case "error":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "stat",
+			Error: err,
+		})
 	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
 }

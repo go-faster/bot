@@ -3,16 +3,18 @@ package api
 import (
 	"context"
 
+	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/oas"
 )
 
-type Server struct{}
+func NewServer(db *ent.Client) *Server {
+	return &Server{
+		db: db,
+	}
+}
 
-func (s Server) Status(ctx context.Context) (*oas.Status, error) {
-	return &oas.Status{
-		Status:  oas.StatusStatusOk,
-		Message: oas.NewOptString("All systems operational"),
-	}, nil
+type Server struct {
+	db *ent.Client
 }
 
 func (s Server) NewError(ctx context.Context, err error) *oas.ErrorStatusCode {
