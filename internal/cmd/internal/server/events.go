@@ -102,13 +102,7 @@ func (a *App) FetchEvents(ctx context.Context, start time.Time) error {
 	defer span.End()
 
 	trackedRepo := map[string]struct{}{
-		"ClickHouse/ch-go":      {},
-		"ernado/oss-estimator":  {},
-		"ernado/du":             {},
-		"VKCOM/statshouse":      {},
-		"anonyindian/gotgproto": {},
-		"xelaj/mtproto":         {},
-		"xelaj/tl":              {},
+		"ClickHouse/ch-go": {},
 	}
 
 	ctx, cancel := context.WithTimeout(ctx, time.Minute)
