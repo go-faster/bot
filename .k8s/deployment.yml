@@ -180,7 +180,7 @@ metadata:
   labels:
     app: bot
 spec:
-  schedule: "*/30 * * * *"
+  schedule: "*/15 * * * *"
   jobTemplate:
     spec:
       template:
