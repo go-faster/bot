@@ -3,6 +3,7 @@ package stat
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -58,12 +59,19 @@ type Commit struct {
 func (w *Commit) allCommits(ctx context.Context, tx *ent.Tx, client *github.Client, repo *ent.Repository) error {
 	const perPage = 100
 	for i := 1; ; i++ {
-		commits, _, err := client.Repositories.ListCommits(ctx, repo.Edges.Organization.Name, repo.Name, &github.CommitsListOptions{
+		commits, res, err := client.Repositories.ListCommits(ctx, repo.Edges.Organization.Name, repo.Name, &github.CommitsListOptions{
 			ListOptions: github.ListOptions{
 				PerPage: perPage,
 				Page:    i,
 			},
 		})
+		if res.StatusCode == http.StatusNotFound {
+			zctx.From(ctx).Warn("Repository not found",
+				zap.String("repo", repo.Name),
+				zap.String("org", repo.Edges.Organization.Name),
+			)
+			break
+		}
 		if err != nil {
 			return errors.Wrap(err, "list commits")
 		}
