@@ -20,7 +20,7 @@ func (s *Server) Status(ctx context.Context) (*oas.Status, error) {
 		return nil, errors.Wrap(err, "count commits")
 	}
 	return &oas.Status{
-		Message: "All systems operational",
+		Message: "Weekly stats:",
 		Stat: oas.Statistics{
 			TotalCommits: totalCommits,
 		},
