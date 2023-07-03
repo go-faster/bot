@@ -304,8 +304,8 @@ github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJ
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
 github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9Gz0M=
-github.com/ogen-go/ogen v0.70.0 h1:UywdfPrSyrQA8NvSL1AaAwvMGvMR/yfMRS+/oypYQ3Q=
-github.com/ogen-go/ogen v0.70.0/go.mod h1:R0tCv0Cgat5C705+VAnTZ0CMpGZsRF43aKzl0Nre99s=
+github.com/ogen-go/ogen v0.70.1 h1:XZ6lUu3mcKbLwZf7kPwd4FJY/qDKejjULoD0RXYTxT4=
+github.com/ogen-go/ogen v0.70.1/go.mod h1:5cVMmV5102SE4RTWkcx8L+pzUEnY8CpAodLhi93y/Jw=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/pascaldekloe/name v1.0.1 h1:9lnXOHeqeHHnWLbKfH6X98+4+ETVqFqxN09UXSjcMb0=
