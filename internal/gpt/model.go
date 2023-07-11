@@ -7,19 +7,13 @@ import (
 )
 
 const (
-	model = openai.GPT4
+	model = openai.GPT3Dot5Turbo16K0613
 	// Model token limit.
-	modelTokenLimit = 4096
+	modelTokenLimit = 16_000
 	// Reserve tokens for model to answer.
 	modelAnswerReserve = 1000
-	tokenizerModel     = tokenizer.GPT4
+	tokenizerModel     = tokenizer.GPT35Turbo
 )
-
-// compile time check shenanigans
-var _ = map[bool]struct{}{
-	model == tokenizerModel: {},
-	false:                   {},
-}
 
 func cutDialog(tokenizer tokenizer.Codec, limit int, dialog []openai.ChatCompletionMessage) (_ []openai.ChatCompletionMessage, tokens int, _ error) {
 	for i := len(dialog) - 1; i >= 0; i-- {
