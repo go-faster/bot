@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	model = openai.GPT3Dot5Turbo
+	model = openai.GPT4
 	// Model token limit.
 	modelTokenLimit = 4096
 	// Reserve tokens for model to answer.
 	modelAnswerReserve = 1000
-	tokenizerModel     = tokenizer.GPT35Turbo
+	tokenizerModel     = tokenizer.GPT4
 )
 
 // compile time check shenanigans
