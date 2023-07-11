@@ -250,6 +250,9 @@ func (h *Handler) OnInfo(ctx context.Context, e dispatch.MessageEvent) error {
 	var out strings.Builder
 	out.WriteString("Reply on message with /gpt to generate a GPT continuation.\n")
 	out.WriteString("Reply on generated message to generate a continuation of the dialog.\n\n")
+	out.WriteString("Current model: ")
+	out.WriteString(model)
+	out.WriteString("\n")
 	if _, err := e.Reply().Text(ctx, out.String()); err != nil {
 		return errors.Wrap(err, "send info")
 	}
