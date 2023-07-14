@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	entgo.io/ent v0.12.3
-	github.com/ClickHouse/ch-go v0.57.0
+	github.com/ClickHouse/ch-go v0.58.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.6.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.8
@@ -74,7 +74,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/klauspost/compress v1.16.6 // indirect
+	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
