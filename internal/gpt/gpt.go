@@ -157,8 +157,8 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 
 	ctx = zctx.With(ctx,
 		zap.String("reply", reply.Message),
-		zap.Int("reply_to_msg_id", replyHdr.ReplyToMsgID),
-		zap.Int("top_thread_id", replyHdr.ReplyToTopID),
+		zap.Int("reply_to_msg_id", replyHdr.(*tg.MessageReplyHeader).ReplyToMsgID),
+		zap.Int("top_thread_id", replyHdr.(*tg.MessageReplyHeader).ReplyToTopID),
 	)
 	lg := zctx.From(ctx)
 
@@ -171,7 +171,7 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 	}()
 
 	switch exist, err := tx.GPTDialog.Query().
-		Where(gptdialog.GptMsgID(replyHdr.ReplyToMsgID)).
+		Where(gptdialog.GptMsgID(replyHdr.(*tg.MessageReplyHeader).ReplyToMsgID)).
 		Exist(ctx); {
 	case err != nil:
 		return err
@@ -181,10 +181,10 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 	}
 
 	var (
-		pred     = gptdialog.GptMsgID(replyHdr.ReplyToMsgID)
-		topMsgID = &replyHdr.ReplyToMsgID
+		pred     = gptdialog.GptMsgID(replyHdr.(*tg.MessageReplyHeader).ReplyToMsgID)
+		topMsgID = &replyHdr.(*tg.MessageReplyHeader).ReplyToMsgID
 	)
-	if threadTopID, ok := replyHdr.GetReplyToTopID(); ok {
+	if threadTopID, ok := replyHdr.(*tg.MessageReplyHeader).GetReplyToTopID(); ok {
 		pred = gptdialog.Or(pred, gptdialog.ThreadTopMsgID(threadTopID))
 		topMsgID = &threadTopID
 	}

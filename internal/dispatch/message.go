@@ -62,7 +62,7 @@ func (e MessageEvent) WithReply(ctx context.Context, cb func(reply *tg.Message) 
 		err error
 		log = e.lg.With(
 			zap.Int("msg_id", e.Message.ID),
-			zap.Int("reply_to_msg_id", h.ReplyToMsgID),
+			zap.Int("reply_to_msg_id", h.(*tg.MessageReplyHeader).ReplyToMsgID),
 		)
 	)
 	switch p := e.Peer.(type) {
@@ -72,19 +72,19 @@ func (e MessageEvent) WithReply(ctx context.Context, cb func(reply *tg.Message) 
 		msg, err = e.getChannelMessage(ctx, &tg.InputChannel{
 			ChannelID:  p.ChannelID,
 			AccessHash: p.AccessHash,
-		}, h.ReplyToMsgID)
+		}, h.(*tg.MessageReplyHeader).ReplyToMsgID)
 	case *tg.InputPeerChat:
 		log.Info("Fetching message", zap.Int64("chat_id", p.ChatID))
 
-		msg, err = e.getMessage(ctx, h.ReplyToMsgID)
+		msg, err = e.getMessage(ctx, h.(*tg.MessageReplyHeader).ReplyToMsgID)
 	case *tg.InputPeerUser:
 		log.Info("Fetching message", zap.Int64("user_id", p.UserID))
 
-		msg, err = e.getMessage(ctx, h.ReplyToMsgID)
+		msg, err = e.getMessage(ctx, h.(*tg.MessageReplyHeader).ReplyToMsgID)
 	}
 	if err != nil {
 		log.Warn("Fetch message", zap.Error(err))
-		if _, err := e.Reply().Textf(ctx, "Message %d not found", h.ReplyToMsgID); err != nil {
+		if _, err := e.Reply().Textf(ctx, "Message %d not found", h.(*tg.MessageReplyHeader).ReplyToMsgID); err != nil {
 			return errors.Wrap(err, "send")
 		}
 		return nil
