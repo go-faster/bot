@@ -18,7 +18,7 @@ require (
 	github.com/gotd/td v0.84.0
 	github.com/jackc/pgx/v5 v5.4.2
 	github.com/labstack/echo/v4 v4.10.2
-	github.com/ogen-go/ogen v0.70.1
+	github.com/ogen-go/ogen v0.72.0
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/rs/cors v1.9.0
 	github.com/sashabaranov/go-openai v1.14.1
@@ -117,7 +117,7 @@ require (
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
+	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
