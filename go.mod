@@ -17,7 +17,7 @@ require (
 	github.com/gotd/contrib v0.19.0
 	github.com/gotd/td v0.84.0
 	github.com/jackc/pgx/v5 v5.4.3
-	github.com/labstack/echo/v4 v4.10.2
+	github.com/labstack/echo/v4 v4.11.1
 	github.com/ogen-go/ogen v0.70.1
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/rs/cors v1.9.0
