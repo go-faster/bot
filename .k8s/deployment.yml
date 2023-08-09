@@ -94,6 +94,8 @@ spec:
               value: "8090"
             - name: OTEL_EXPORTER_PROMETHEUS_HOST
               value: "0.0.0.0"
+            - name: PPROF_ADDR
+              value: "0.0.0.0:8090"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.name=go-faster.bot"
             - name: OTEL_LOG_LEVEL
