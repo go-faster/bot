@@ -26,6 +26,7 @@ func (s *Statistics) Validate() error {
 	}
 	return nil
 }
+
 func (s *Status) Validate() error {
 	var failures []validate.FieldError
 	if err := func() error {
