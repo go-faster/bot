@@ -11,7 +11,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
-	github.com/go-faster/sdk v0.8.1
+	github.com/go-faster/sdk v0.8.2
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.3.0
 	github.com/gotd/contrib v0.19.0
