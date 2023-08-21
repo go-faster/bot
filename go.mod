@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	entgo.io/ent v0.12.3
-	github.com/ClickHouse/ch-go v0.58.1
+	github.com/ClickHouse/ch-go v0.58.2
 	github.com/bradleyfalzon/ghinstallation/v2 v2.6.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.8
