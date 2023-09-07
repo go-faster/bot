@@ -22,7 +22,7 @@ spec:
       targetPort: 8090
       name: metrics
   selector:
-    app: bot
+    app.kubernetes.io/name: bot
   sessionAffinity: None
 ---
 apiVersion: networking.k8s.io/v1
@@ -31,7 +31,7 @@ metadata:
   name: bot
   namespace: faster
   labels:
-    app: bot
+    app.kubernetes.io/name: bot
 spec:
   ingressClassName: cilium
   rules:
@@ -52,7 +52,7 @@ metadata:
   name: api
   namespace: faster
   labels:
-    app: bot
+    app.kubernetes.io/name: bot
 spec:
   ingressClassName: cilium
   rules:

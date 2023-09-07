@@ -11,3 +11,19 @@ spec:
     any: true
   endpoints:
     - port: metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: faster
+  name: bot
+  labels:
+    app.kubernetes.io/name: bot
+spec:
+  selector:
+    app.kubernetes.io/name: bot
+  ports:
+    - protocol: TCP
+      port: 8090
+      name: metrics
+      targetPort: metrics

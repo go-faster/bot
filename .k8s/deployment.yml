@@ -1,32 +1,4 @@
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: bot
-  namespace: faster
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: bot
-  endpoints:
-    - port: metrics
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: faster
-  name: bot
-  labels:
-    app.kubernetes.io/name: bot
-spec:
-  selector:
-    app.kubernetes.io/name: bot
-  ports:
-    - protocol: TCP
-      port: 8090
-      name: metrics
-      targetPort: metrics
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
