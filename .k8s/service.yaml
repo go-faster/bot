@@ -5,8 +5,7 @@ metadata:
   namespace: faster
   name: bot
   labels:
-    app: bot
-    prometheus: "true"
+    app.kubernetes.io/name: bot
 spec:
   ports:
     - port: 8080
