@@ -5,7 +5,7 @@ metadata:
   namespace: faster
   name: bot
   labels:
-    app: bot
+    app.kubernetes.io/name: bot
 spec:
   strategy:
     type: Recreate
@@ -177,7 +177,7 @@ metadata:
   namespace: faster
   name: job-commits
   labels:
-    app: bot
+    app.kubernetes.io/name: bot-commits
 spec:
   schedule: "*/15 * * * *"
   jobTemplate:
