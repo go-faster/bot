@@ -257,8 +257,8 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zclconf/go-cty v1.8.0 h1:s4AvqaeQzJIu3ndv4gVIhplVD0krU+bgrcLSVUnaWuA=
 github.com/zclconf/go-cty v1.8.0/go.mod h1:vVKLxnk3puL4qRAv72AO+W99LUD4da90g3uUAzyuvAk=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.42.0 h1:sYefIhrd/A3fO8rmr0vy2tgCLoR8CsbMqwbcUa70x00=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.42.0/go.mod h1:5Ll2ndRzg9UNUrj1n+v4ZCcrD/SYy7BnVrlCQXECowA=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0 h1:pcWR7mkuO5XMK3f0KeGpr70OTR9/ikPk0D1hHEd5dp4=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0/go.mod h1:azTPpa9PvRDSNU/lQbe2CRDQoTcau5moOjS4EzhpyAY=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0 h1:pginetY7+onl4qN1vl0xW/V/v6OBZ0vVdH+esuJgvmM=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0/go.mod h1:XiYsayHc36K3EByOO6nbAXnAWbrUxdjUROCEeeROOH8=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.43.0 h1:NunhgxcK14rU7Hw2gKtV6uCSyohkXPisqneRFjnZNKQ=
