@@ -91,22 +91,27 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 		response, err = s.h.Status(ctx)
 	}
 	if err != nil {
-		recordError("Internal", err)
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
-			encodeErrorResponse(errRes, w, span)
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				recordError("Internal", err)
+			}
 			return
 		}
 		if errors.Is(err, ht.ErrNotImplemented) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
 			return
 		}
-		encodeErrorResponse(s.h.NewError(ctx, err), w, span)
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			recordError("Internal", err)
+		}
 		return
 	}
 
 	if err := encodeStatusResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
 		return
 	}
 }
