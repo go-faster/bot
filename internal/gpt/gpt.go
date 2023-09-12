@@ -128,16 +128,15 @@ func (h *Handler) WithContextPromptTemplate(t *template.Template) *Handler {
 	return h
 }
 
-// WithMessageLimit sets message limit in runes.
+// WithLimitConfig sets message limit in runes.
 func (h *Handler) WithLimitConfig(cfg LimitConfig) *Handler {
 	h.limitCfg = cfg
 	h.limitCfg.setupLimiters(&h.rateLimiters)
 	return h
 }
 
-// OnReply handles replies to gpt generated messages.
-func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr error) {
-	ctx, span := h.tracer.Start(ctx, "OnReply")
+func (h *Handler) OnMessage(ctx context.Context, e dispatch.MessageEvent) (rerr error) {
+	ctx, span := h.tracer.Start(ctx, "OnMessage")
 	defer span.End()
 
 	defer func() {
@@ -148,6 +147,24 @@ func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr er
 			span.SetStatus(codes.Ok, "OK")
 		}
 	}()
+	if _, ok := e.Message.GetReplyTo(); ok {
+		return h.OnReply(ctx, e)
+	}
+	switch e.Peer.(type) {
+	case *tg.InputPeerUser:
+		return e.WithReply(ctx, func(reply *tg.Message) error {
+			return h.generateCompletion(ctx, e, reply, h.db.GPTDialog, nil, nil)
+		})
+	default:
+		// Ignore
+		return nil
+	}
+}
+
+// OnReply handles replies to gpt generated messages.
+func (h *Handler) OnReply(ctx context.Context, e dispatch.MessageEvent) (rerr error) {
+	ctx, span := h.tracer.Start(ctx, "OnReply")
+	defer span.End()
 
 	reply := e.Message
 	replyHdr, ok := reply.GetReplyTo()
