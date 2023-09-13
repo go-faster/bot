@@ -254,8 +254,8 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zclconf/go-cty v1.8.0 h1:s4AvqaeQzJIu3ndv4gVIhplVD0krU+bgrcLSVUnaWuA=
 github.com/zclconf/go-cty v1.8.0/go.mod h1:vVKLxnk3puL4qRAv72AO+W99LUD4da90g3uUAzyuvAk=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0 h1:pcWR7mkuO5XMK3f0KeGpr70OTR9/ikPk0D1hHEd5dp4=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0/go.mod h1:azTPpa9PvRDSNU/lQbe2CRDQoTcau5moOjS4EzhpyAY=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.44.0 h1:9n9+SOwuCyZ0L8SbQYjZ5H+GKojHN3Kl8pBLwBUQqhk=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.44.0/go.mod h1:Wa9/q2K5L+ftWke2iekGNqVzwBWqyhI5OhtHKU7Qe04=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0 h1:KfYpVmrjI7JuToy5k8XV3nkapjWx48k4E4JOtVstzQI=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0/go.mod h1:SeQhzAEccGVZVEy7aH87Nh0km+utSpo1pTv6eMMop48=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.43.0 h1:NunhgxcK14rU7Hw2gKtV6uCSyohkXPisqneRFjnZNKQ=
@@ -264,8 +264,8 @@ go.opentelemetry.io/contrib/propagators/autoprop v0.43.0 h1:5j/y9N1SKXDEnUWaNWqe
 go.opentelemetry.io/contrib/propagators/autoprop v0.43.0/go.mod h1:EzMD9D3cdJTMDqh5gAjCODQ1+QlU8iREsqOfE28CgEA=
 go.opentelemetry.io/contrib/propagators/aws v1.18.0 h1:8SFScyYfxZK/MaW1iW17h/RhHNogbDtpwNJ6Ce95h0A=
 go.opentelemetry.io/contrib/propagators/aws v1.18.0/go.mod h1:0ssYM4GfgGWeoJKLcXduZowVIbIlWd8zCY0CdQqYA0w=
-go.opentelemetry.io/contrib/propagators/b3 v1.18.0 h1:hhSlPVi9AQwOmbMmptPNLfRZOLgENdRM2kb7z9LFe1A=
-go.opentelemetry.io/contrib/propagators/b3 v1.18.0/go.mod h1:qtt+pEu23D7UVP+j33G4i7LopmVu8/6/IwGu3hEm100=
+go.opentelemetry.io/contrib/propagators/b3 v1.19.0 h1:ulz44cpm6V5oAeg5Aw9HyqGFMS6XM7untlMEhD7YzzA=
+go.opentelemetry.io/contrib/propagators/b3 v1.19.0/go.mod h1:OzCmE2IVS+asTI+odXQstRGVfXQ4bXv9nMBRK0nNyqQ=
 go.opentelemetry.io/contrib/propagators/jaeger v1.18.0 h1:T457dcPEUr4+wimXmIs+2lI8vpSnRpxEhSsY2n7+UjU=
 go.opentelemetry.io/contrib/propagators/jaeger v1.18.0/go.mod h1:FTAfGYSYWANl3fOqHpZYeC7AAAv4sdYgJ724NnE1msY=
 go.opentelemetry.io/contrib/propagators/ot v1.18.0 h1:VmzxO7BjUU6oo0ChcKuGdKaSR0vchPxwahHZl64zVUM=
