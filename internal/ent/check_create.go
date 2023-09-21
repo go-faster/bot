@@ -469,12 +469,16 @@ func (u *CheckUpsertOne) IDX(ctx context.Context) int64 {
 // CheckCreateBulk is the builder for creating many Check entities in bulk.
 type CheckCreateBulk struct {
 	config
+	err      error
 	builders []*CheckCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Check entities in the database.
 func (ccb *CheckCreateBulk) Save(ctx context.Context) ([]*Check, error) {
+	if ccb.err != nil {
+		return nil, ccb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ccb.builders))
 	nodes := make([]*Check, len(ccb.builders))
 	mutators := make([]Mutator, len(ccb.builders))
@@ -735,6 +739,9 @@ func (u *CheckUpsertBulk) ClearConclusion() *CheckUpsertBulk {
 
 // Exec executes the query.
 func (u *CheckUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CheckCreateBulk instead", i)

@@ -358,12 +358,16 @@ func (u *OrganizationUpsertOne) IDX(ctx context.Context) int64 {
 // OrganizationCreateBulk is the builder for creating many Organization entities in bulk.
 type OrganizationCreateBulk struct {
 	config
+	err      error
 	builders []*OrganizationCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Organization entities in the database.
 func (ocb *OrganizationCreateBulk) Save(ctx context.Context) ([]*Organization, error) {
+	if ocb.err != nil {
+		return nil, ocb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ocb.builders))
 	nodes := make([]*Organization, len(ocb.builders))
 	mutators := make([]Mutator, len(ocb.builders))
@@ -568,6 +572,9 @@ func (u *OrganizationUpsertBulk) ClearHTMLURL() *OrganizationUpsertBulk {
 
 // Exec executes the query.
 func (u *OrganizationUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrganizationCreateBulk instead", i)

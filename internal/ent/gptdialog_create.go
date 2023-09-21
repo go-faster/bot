@@ -514,12 +514,16 @@ func (u *GPTDialogUpsertOne) IDX(ctx context.Context) int {
 // GPTDialogCreateBulk is the builder for creating many GPTDialog entities in bulk.
 type GPTDialogCreateBulk struct {
 	config
+	err      error
 	builders []*GPTDialogCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the GPTDialog entities in the database.
 func (gdcb *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error) {
+	if gdcb.err != nil {
+		return nil, gdcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(gdcb.builders))
 	nodes := make([]*GPTDialog, len(gdcb.builders))
 	mutators := make([]Mutator, len(gdcb.builders))
@@ -788,6 +792,9 @@ func (u *GPTDialogUpsertBulk) ClearThreadTopMsgID() *GPTDialogUpsertBulk {
 
 // Exec executes the query.
 func (u *GPTDialogUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the GPTDialogCreateBulk instead", i)

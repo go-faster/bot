@@ -18,14 +18,14 @@ require (
 	github.com/gotd/td v0.87.0
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/labstack/echo/v4 v4.11.1
-	github.com/ogen-go/ogen v0.74.0
+	github.com/ogen-go/ogen v0.75.0
 	github.com/redis/go-redis/v9 v9.2.0
 	github.com/rs/cors v1.10.0
 	github.com/sashabaranov/go-openai v1.15.3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tiktoken-go/tokenizer v0.1.0
-	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0
+	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.44.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0
 	go.opentelemetry.io/otel v1.18.0
 	go.opentelemetry.io/otel/metric v1.18.0
@@ -98,7 +98,7 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.43.0 // indirect
 	go.opentelemetry.io/contrib/propagators/autoprop v0.43.0 // indirect
 	go.opentelemetry.io/contrib/propagators/aws v1.18.0 // indirect
-	go.opentelemetry.io/contrib/propagators/b3 v1.18.0 // indirect
+	go.opentelemetry.io/contrib/propagators/b3 v1.19.0 // indirect
 	go.opentelemetry.io/contrib/propagators/jaeger v1.18.0 // indirect
 	go.opentelemetry.io/contrib/propagators/ot v1.18.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.40.0 // indirect

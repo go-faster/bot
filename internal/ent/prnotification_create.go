@@ -524,12 +524,16 @@ func (u *PRNotificationUpsertOne) IDX(ctx context.Context) int {
 // PRNotificationCreateBulk is the builder for creating many PRNotification entities in bulk.
 type PRNotificationCreateBulk struct {
 	config
+	err      error
 	builders []*PRNotificationCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the PRNotification entities in the database.
 func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotification, error) {
+	if pncb.err != nil {
+		return nil, pncb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(pncb.builders))
 	nodes := make([]*PRNotification, len(pncb.builders))
 	mutators := make([]Mutator, len(pncb.builders))
@@ -795,6 +799,9 @@ func (u *PRNotificationUpsertBulk) UpdateMessageID() *PRNotificationUpsertBulk {
 
 // Exec executes the query.
 func (u *PRNotificationUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PRNotificationCreateBulk instead", i)

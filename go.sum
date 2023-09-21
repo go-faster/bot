@@ -189,8 +189,8 @@ github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJ
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
 github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9Gz0M=
-github.com/ogen-go/ogen v0.74.0 h1:EFzCDm9h7RupLMn4RAEC1kIjXa9KUJTLGkMyejVmB34=
-github.com/ogen-go/ogen v0.74.0/go.mod h1:Jr2HmdCICrlXw+29Vcx1EAgx4dIQpXEwCpwuIDqrj6Y=
+github.com/ogen-go/ogen v0.75.0 h1:4p9zxJOPS/lizvKfbqqzRf8jYuzr2NrMJRy69tva6uY=
+github.com/ogen-go/ogen v0.75.0/go.mod h1:Lq8KR3bzieba8gY2uJwRP9r3buXNHClbQhLNOL0PDDM=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/pascaldekloe/name v1.0.1 h1:9lnXOHeqeHHnWLbKfH6X98+4+ETVqFqxN09UXSjcMb0=
@@ -253,8 +253,8 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zclconf/go-cty v1.8.0 h1:s4AvqaeQzJIu3ndv4gVIhplVD0krU+bgrcLSVUnaWuA=
 github.com/zclconf/go-cty v1.8.0/go.mod h1:vVKLxnk3puL4qRAv72AO+W99LUD4da90g3uUAzyuvAk=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0 h1:pcWR7mkuO5XMK3f0KeGpr70OTR9/ikPk0D1hHEd5dp4=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.43.0/go.mod h1:azTPpa9PvRDSNU/lQbe2CRDQoTcau5moOjS4EzhpyAY=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.44.0 h1:9n9+SOwuCyZ0L8SbQYjZ5H+GKojHN3Kl8pBLwBUQqhk=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.44.0/go.mod h1:Wa9/q2K5L+ftWke2iekGNqVzwBWqyhI5OhtHKU7Qe04=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0 h1:KfYpVmrjI7JuToy5k8XV3nkapjWx48k4E4JOtVstzQI=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0/go.mod h1:SeQhzAEccGVZVEy7aH87Nh0km+utSpo1pTv6eMMop48=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.43.0 h1:NunhgxcK14rU7Hw2gKtV6uCSyohkXPisqneRFjnZNKQ=
@@ -263,8 +263,8 @@ go.opentelemetry.io/contrib/propagators/autoprop v0.43.0 h1:5j/y9N1SKXDEnUWaNWqe
 go.opentelemetry.io/contrib/propagators/autoprop v0.43.0/go.mod h1:EzMD9D3cdJTMDqh5gAjCODQ1+QlU8iREsqOfE28CgEA=
 go.opentelemetry.io/contrib/propagators/aws v1.18.0 h1:8SFScyYfxZK/MaW1iW17h/RhHNogbDtpwNJ6Ce95h0A=
 go.opentelemetry.io/contrib/propagators/aws v1.18.0/go.mod h1:0ssYM4GfgGWeoJKLcXduZowVIbIlWd8zCY0CdQqYA0w=
-go.opentelemetry.io/contrib/propagators/b3 v1.18.0 h1:hhSlPVi9AQwOmbMmptPNLfRZOLgENdRM2kb7z9LFe1A=
-go.opentelemetry.io/contrib/propagators/b3 v1.18.0/go.mod h1:qtt+pEu23D7UVP+j33G4i7LopmVu8/6/IwGu3hEm100=
+go.opentelemetry.io/contrib/propagators/b3 v1.19.0 h1:ulz44cpm6V5oAeg5Aw9HyqGFMS6XM7untlMEhD7YzzA=
+go.opentelemetry.io/contrib/propagators/b3 v1.19.0/go.mod h1:OzCmE2IVS+asTI+odXQstRGVfXQ4bXv9nMBRK0nNyqQ=
 go.opentelemetry.io/contrib/propagators/jaeger v1.18.0 h1:T457dcPEUr4+wimXmIs+2lI8vpSnRpxEhSsY2n7+UjU=
 go.opentelemetry.io/contrib/propagators/jaeger v1.18.0/go.mod h1:FTAfGYSYWANl3fOqHpZYeC7AAAv4sdYgJ724NnE1msY=
 go.opentelemetry.io/contrib/propagators/ot v1.18.0 h1:VmzxO7BjUU6oo0ChcKuGdKaSR0vchPxwahHZl64zVUM=

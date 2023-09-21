@@ -392,12 +392,16 @@ func (u *TelegramChannelStateUpsertOne) IDX(ctx context.Context) int {
 // TelegramChannelStateCreateBulk is the builder for creating many TelegramChannelState entities in bulk.
 type TelegramChannelStateCreateBulk struct {
 	config
+	err      error
 	builders []*TelegramChannelStateCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the TelegramChannelState entities in the database.
 func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*TelegramChannelState, error) {
+	if tcscb.err != nil {
+		return nil, tcscb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(tcscb.builders))
 	nodes := make([]*TelegramChannelState, len(tcscb.builders))
 	mutators := make([]Mutator, len(tcscb.builders))
@@ -614,6 +618,9 @@ func (u *TelegramChannelStateUpsertBulk) UpdatePts() *TelegramChannelStateUpsert
 
 // Exec executes the query.
 func (u *TelegramChannelStateUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TelegramChannelStateCreateBulk instead", i)

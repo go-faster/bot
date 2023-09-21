@@ -4707,6 +4707,7 @@ func (m *TelegramChannelStateMutation) ResetPts() {
 // ClearUser clears the "user" edge to the TelegramUserState entity.
 func (m *TelegramChannelStateMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[telegramchannelstate.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the TelegramUserState entity was cleared.

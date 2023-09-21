@@ -279,12 +279,16 @@ func (u *TelegramSessionUpsertOne) IDX(ctx context.Context) uuid.UUID {
 // TelegramSessionCreateBulk is the builder for creating many TelegramSession entities in bulk.
 type TelegramSessionCreateBulk struct {
 	config
+	err      error
 	builders []*TelegramSessionCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the TelegramSession entities in the database.
 func (tscb *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSession, error) {
+	if tscb.err != nil {
+		return nil, tscb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(tscb.builders))
 	nodes := make([]*TelegramSession, len(tscb.builders))
 	mutators := make([]Mutator, len(tscb.builders))
@@ -464,6 +468,9 @@ func (u *TelegramSessionUpsertBulk) UpdateData() *TelegramSessionUpsertBulk {
 
 // Exec executes the query.
 func (u *TelegramSessionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TelegramSessionCreateBulk instead", i)

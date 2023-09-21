@@ -523,12 +523,16 @@ func (u *TelegramUserStateUpsertOne) IDX(ctx context.Context) int64 {
 // TelegramUserStateCreateBulk is the builder for creating many TelegramUserState entities in bulk.
 type TelegramUserStateCreateBulk struct {
 	config
+	err      error
 	builders []*TelegramUserStateCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the TelegramUserState entities in the database.
 func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*TelegramUserState, error) {
+	if tuscb.err != nil {
+		return nil, tuscb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(tuscb.builders))
 	nodes := make([]*TelegramUserState, len(tuscb.builders))
 	mutators := make([]Mutator, len(tuscb.builders))
@@ -783,6 +787,9 @@ func (u *TelegramUserStateUpsertBulk) UpdateSeq() *TelegramUserStateUpsertBulk {
 
 // Exec executes the query.
 func (u *TelegramUserStateUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TelegramUserStateCreateBulk instead", i)

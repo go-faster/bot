@@ -20,6 +20,16 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
+// Invoker invokes operations described by OpenAPI v3 specification.
+type Invoker interface {
+	// Status invokes status operation.
+	//
+	// Get status.
+	//
+	// GET /status
+	Status(ctx context.Context) (*Status, error)
+}
+
 // Client implements OAS client.
 type Client struct {
 	serverURL *url.URL

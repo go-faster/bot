@@ -605,12 +605,16 @@ func (u *RepositoryUpsertOne) IDX(ctx context.Context) int64 {
 // RepositoryCreateBulk is the builder for creating many Repository entities in bulk.
 type RepositoryCreateBulk struct {
 	config
+	err      error
 	builders []*RepositoryCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Repository entities in the database.
 func (rcb *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error) {
+	if rcb.err != nil {
+		return nil, rcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(rcb.builders))
 	nodes := make([]*Repository, len(rcb.builders))
 	mutators := make([]Mutator, len(rcb.builders))
@@ -886,6 +890,9 @@ func (u *RepositoryUpsertBulk) ClearLastEventAt() *RepositoryUpsertBulk {
 
 // Exec executes the query.
 func (u *RepositoryUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the RepositoryCreateBulk instead", i)

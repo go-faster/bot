@@ -282,12 +282,16 @@ func (u *LastChannelMessageUpsertOne) IDX(ctx context.Context) int64 {
 // LastChannelMessageCreateBulk is the builder for creating many LastChannelMessage entities in bulk.
 type LastChannelMessageCreateBulk struct {
 	config
+	err      error
 	builders []*LastChannelMessageCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the LastChannelMessage entities in the database.
 func (lcmcb *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastChannelMessage, error) {
+	if lcmcb.err != nil {
+		return nil, lcmcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(lcmcb.builders))
 	nodes := make([]*LastChannelMessage, len(lcmcb.builders))
 	mutators := make([]Mutator, len(lcmcb.builders))
@@ -478,6 +482,9 @@ func (u *LastChannelMessageUpsertBulk) UpdateMessageID() *LastChannelMessageUpse
 
 // Exec executes the query.
 func (u *LastChannelMessageUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LastChannelMessageCreateBulk instead", i)

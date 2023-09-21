@@ -446,12 +446,16 @@ func (u *GitCommitUpsertOne) IDX(ctx context.Context) string {
 // GitCommitCreateBulk is the builder for creating many GitCommit entities in bulk.
 type GitCommitCreateBulk struct {
 	config
+	err      error
 	builders []*GitCommitCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the GitCommit entities in the database.
 func (gccb *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error) {
+	if gccb.err != nil {
+		return nil, gccb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(gccb.builders))
 	nodes := make([]*GitCommit, len(gccb.builders))
 	mutators := make([]Mutator, len(gccb.builders))
@@ -680,6 +684,9 @@ func (u *GitCommitUpsertBulk) UpdateDate() *GitCommitUpsertBulk {
 
 // Exec executes the query.
 func (u *GitCommitUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the GitCommitCreateBulk instead", i)
