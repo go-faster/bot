@@ -89,7 +89,6 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // GET /status
 func (c *Client) Status(ctx context.Context) (*Status, error) {
 	res, err := c.sendStatus(ctx)
-	_ = res
 	return res, err
 }
 

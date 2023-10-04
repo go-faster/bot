@@ -61,12 +61,13 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 	var response *Status
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "Status",
-			OperationID:   "status",
-			Body:          nil,
-			Params:        middleware.Parameters{},
-			Raw:           r,
+			Context:          ctx,
+			OperationName:    "Status",
+			OperationSummary: "",
+			OperationID:      "status",
+			Body:             nil,
+			Params:           middleware.Parameters{},
+			Raw:              r,
 		}
 
 		type (
