@@ -27,8 +27,7 @@ func setupBot(a *App) error {
 		hgpt := gpt.New(a.openai, a.db, a.m.TracerProvider()).
 			WithLimitConfig(limitCfg)
 		a.mux.HandleFunc("/gpt", "ChatGPT", hgpt.OnCommand)
-		a.mux.HandleFunc("/help", "Help", hgpt.OnInfo)
-		a.mux.SetFallbackFunc(hgpt.OnMessage)
+		a.mux.SetFallbackFunc(hgpt.OnReply)
 	}
 	return nil
 }
