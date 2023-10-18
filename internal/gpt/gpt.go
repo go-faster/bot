@@ -152,7 +152,9 @@ func (h *Handler) OnMessage(ctx context.Context, e dispatch.MessageEvent) (rerr 
 	}
 	switch e.Peer.(type) {
 	case *tg.InputPeerUser:
-		return h.generateCompletion(ctx, e, e.Message, h.db.GPTDialog, nil, nil)
+		return e.WithReply(ctx, func(reply *tg.Message) error {
+			return h.generateCompletion(ctx, e, reply, h.db.GPTDialog, nil, nil)
+		})
 	default:
 		// Ignore
 		return nil
@@ -301,7 +303,7 @@ func createPeerID(p tg.PeerClass) (peerID string, _ bool) {
 func (h *Handler) generateCompletion(
 	ctx context.Context,
 	e dispatch.MessageEvent,
-	promptMsg *tg.Message,
+	reply *tg.Message,
 	tx *ent.GPTDialogClient,
 	dialog []openai.ChatCompletionMessage,
 	topMsgId *int,
@@ -326,7 +328,7 @@ func (h *Handler) generateCompletion(
 		}
 	}()
 
-	prompt := strings.TrimSpace(promptMsg.GetMessage())
+	prompt := strings.TrimSpace(reply.GetMessage())
 	if prompt == "" {
 		// Do not bother with empty messages.
 		// Probably, some stickers/gifs were sent.
@@ -342,9 +344,9 @@ func (h *Handler) generateCompletion(
 		}
 	}
 
-	peerID, ok := createPeerID(promptMsg.PeerID)
+	peerID, ok := createPeerID(reply.PeerID)
 	if !ok {
-		return errors.Errorf("unexpected input peer type %T", promptMsg.PeerID)
+		return errors.Errorf("unexpected input peer type %T", reply.PeerID)
 	}
 
 	if delay, ok := h.peerLimiter.Allow(peerID); !ok {
@@ -445,7 +447,7 @@ func (h *Handler) generateCompletion(
 		b := tx.Create().
 			SetPeerID(peerID).
 			SetPromptMsg(prompt).
-			SetPromptMsgID(promptMsg.ID).
+			SetPromptMsgID(reply.ID).
 			SetGptMsg(gptMessage).
 			SetGptMsgID(msgID).
 			SetNillableThreadTopMsgID(topMsgId)
