@@ -9,7 +9,7 @@ require (
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.9
 	github.com/dustin/go-humanize v1.0.1
-	github.com/go-faster/errors v0.6.1
+	github.com/go-faster/errors v0.7.0
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.9.2
 	github.com/google/go-github/v52 v52.0.0
