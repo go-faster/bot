@@ -18,7 +18,7 @@ require (
 	github.com/gotd/td v0.89.0
 	github.com/jackc/pgx/v5 v5.5.0
 	github.com/labstack/echo/v4 v4.11.3
-	github.com/ogen-go/ogen v0.76.0
+	github.com/ogen-go/ogen v0.77.0
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/rs/cors v1.10.1
 	github.com/sashabaranov/go-openai v1.17.5
@@ -78,7 +78,7 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
