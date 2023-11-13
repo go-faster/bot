@@ -3,7 +3,7 @@ module github.com/go-faster/bot
 go 1.21
 
 require (
-	entgo.io/ent v0.12.4
+	entgo.io/ent v0.12.5
 	github.com/ClickHouse/ch-go v0.58.2
 	github.com/bradleyfalzon/ghinstallation/v2 v2.8.0
 	github.com/brpaz/echozap v1.1.3
