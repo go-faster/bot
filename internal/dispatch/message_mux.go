@@ -7,6 +7,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/zctx"
 	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/tg"
@@ -26,7 +27,7 @@ type MessageMux struct {
 
 // NewMessageMux creates new MessageMux.
 func NewMessageMux() *MessageMux {
-	return &MessageMux{prefixes: map[string]handle{}, tracer: trace.NewNoopTracerProvider().Tracer("")}
+	return &MessageMux{prefixes: map[string]handle{}, tracer: noop.NewTracerProvider().Tracer("nop")}
 }
 
 func (m *MessageMux) WithTracerProvider(provider trace.TracerProvider) *MessageMux {

@@ -10,6 +10,7 @@ import (
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 )
 
 // Bot represents generic Telegram bot state and event dispatcher.
@@ -45,7 +46,7 @@ func NewBot(raw *tg.Client) *Bot {
 		sender:     message.NewSender(raw),
 		downloader: downloader.NewDownloader(),
 		rand:       rand.Reader,
-		tracer:     trace.NewNoopTracerProvider().Tracer(botInstrumentationName),
+		tracer:     noop.NewTracerProvider().Tracer(botInstrumentationName),
 	}
 }
 

@@ -34,6 +34,14 @@ func (gdu *GPTDialogUpdate) SetPromptMsgID(i int) *GPTDialogUpdate {
 	return gdu
 }
 
+// SetNillablePromptMsgID sets the "prompt_msg_id" field if the given value is not nil.
+func (gdu *GPTDialogUpdate) SetNillablePromptMsgID(i *int) *GPTDialogUpdate {
+	if i != nil {
+		gdu.SetPromptMsgID(*i)
+	}
+	return gdu
+}
+
 // AddPromptMsgID adds i to the "prompt_msg_id" field.
 func (gdu *GPTDialogUpdate) AddPromptMsgID(i int) *GPTDialogUpdate {
 	gdu.mutation.AddPromptMsgID(i)
@@ -46,10 +54,26 @@ func (gdu *GPTDialogUpdate) SetPromptMsg(s string) *GPTDialogUpdate {
 	return gdu
 }
 
+// SetNillablePromptMsg sets the "prompt_msg" field if the given value is not nil.
+func (gdu *GPTDialogUpdate) SetNillablePromptMsg(s *string) *GPTDialogUpdate {
+	if s != nil {
+		gdu.SetPromptMsg(*s)
+	}
+	return gdu
+}
+
 // SetGptMsgID sets the "gpt_msg_id" field.
 func (gdu *GPTDialogUpdate) SetGptMsgID(i int) *GPTDialogUpdate {
 	gdu.mutation.ResetGptMsgID()
 	gdu.mutation.SetGptMsgID(i)
+	return gdu
+}
+
+// SetNillableGptMsgID sets the "gpt_msg_id" field if the given value is not nil.
+func (gdu *GPTDialogUpdate) SetNillableGptMsgID(i *int) *GPTDialogUpdate {
+	if i != nil {
+		gdu.SetGptMsgID(*i)
+	}
 	return gdu
 }
 
@@ -62,6 +86,14 @@ func (gdu *GPTDialogUpdate) AddGptMsgID(i int) *GPTDialogUpdate {
 // SetGptMsg sets the "gpt_msg" field.
 func (gdu *GPTDialogUpdate) SetGptMsg(s string) *GPTDialogUpdate {
 	gdu.mutation.SetGptMsg(s)
+	return gdu
+}
+
+// SetNillableGptMsg sets the "gpt_msg" field if the given value is not nil.
+func (gdu *GPTDialogUpdate) SetNillableGptMsg(s *string) *GPTDialogUpdate {
+	if s != nil {
+		gdu.SetGptMsg(*s)
+	}
 	return gdu
 }
 
@@ -187,6 +219,14 @@ func (gduo *GPTDialogUpdateOne) SetPromptMsgID(i int) *GPTDialogUpdateOne {
 	return gduo
 }
 
+// SetNillablePromptMsgID sets the "prompt_msg_id" field if the given value is not nil.
+func (gduo *GPTDialogUpdateOne) SetNillablePromptMsgID(i *int) *GPTDialogUpdateOne {
+	if i != nil {
+		gduo.SetPromptMsgID(*i)
+	}
+	return gduo
+}
+
 // AddPromptMsgID adds i to the "prompt_msg_id" field.
 func (gduo *GPTDialogUpdateOne) AddPromptMsgID(i int) *GPTDialogUpdateOne {
 	gduo.mutation.AddPromptMsgID(i)
@@ -199,10 +239,26 @@ func (gduo *GPTDialogUpdateOne) SetPromptMsg(s string) *GPTDialogUpdateOne {
 	return gduo
 }
 
+// SetNillablePromptMsg sets the "prompt_msg" field if the given value is not nil.
+func (gduo *GPTDialogUpdateOne) SetNillablePromptMsg(s *string) *GPTDialogUpdateOne {
+	if s != nil {
+		gduo.SetPromptMsg(*s)
+	}
+	return gduo
+}
+
 // SetGptMsgID sets the "gpt_msg_id" field.
 func (gduo *GPTDialogUpdateOne) SetGptMsgID(i int) *GPTDialogUpdateOne {
 	gduo.mutation.ResetGptMsgID()
 	gduo.mutation.SetGptMsgID(i)
+	return gduo
+}
+
+// SetNillableGptMsgID sets the "gpt_msg_id" field if the given value is not nil.
+func (gduo *GPTDialogUpdateOne) SetNillableGptMsgID(i *int) *GPTDialogUpdateOne {
+	if i != nil {
+		gduo.SetGptMsgID(*i)
+	}
 	return gduo
 }
 
@@ -215,6 +271,14 @@ func (gduo *GPTDialogUpdateOne) AddGptMsgID(i int) *GPTDialogUpdateOne {
 // SetGptMsg sets the "gpt_msg" field.
 func (gduo *GPTDialogUpdateOne) SetGptMsg(s string) *GPTDialogUpdateOne {
 	gduo.mutation.SetGptMsg(s)
+	return gduo
+}
+
+// SetNillableGptMsg sets the "gpt_msg" field if the given value is not nil.
+func (gduo *GPTDialogUpdateOne) SetNillableGptMsg(s *string) *GPTDialogUpdateOne {
+	if s != nil {
+		gduo.SetGptMsg(*s)
+	}
 	return gduo
 }
 

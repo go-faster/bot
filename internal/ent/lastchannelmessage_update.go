@@ -34,6 +34,14 @@ func (lcmu *LastChannelMessageUpdate) SetMessageID(i int) *LastChannelMessageUpd
 	return lcmu
 }
 
+// SetNillableMessageID sets the "message_id" field if the given value is not nil.
+func (lcmu *LastChannelMessageUpdate) SetNillableMessageID(i *int) *LastChannelMessageUpdate {
+	if i != nil {
+		lcmu.SetMessageID(*i)
+	}
+	return lcmu
+}
+
 // AddMessageID adds i to the "message_id" field.
 func (lcmu *LastChannelMessageUpdate) AddMessageID(i int) *LastChannelMessageUpdate {
 	lcmu.mutation.AddMessageID(i)
@@ -111,6 +119,14 @@ type LastChannelMessageUpdateOne struct {
 func (lcmuo *LastChannelMessageUpdateOne) SetMessageID(i int) *LastChannelMessageUpdateOne {
 	lcmuo.mutation.ResetMessageID()
 	lcmuo.mutation.SetMessageID(i)
+	return lcmuo
+}
+
+// SetNillableMessageID sets the "message_id" field if the given value is not nil.
+func (lcmuo *LastChannelMessageUpdateOne) SetNillableMessageID(i *int) *LastChannelMessageUpdateOne {
+	if i != nil {
+		lcmuo.SetMessageID(*i)
+	}
 	return lcmuo
 }
 

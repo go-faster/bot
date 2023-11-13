@@ -35,6 +35,14 @@ func (tcsu *TelegramChannelStateUpdate) SetChannelID(i int64) *TelegramChannelSt
 	return tcsu
 }
 
+// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
+func (tcsu *TelegramChannelStateUpdate) SetNillableChannelID(i *int64) *TelegramChannelStateUpdate {
+	if i != nil {
+		tcsu.SetChannelID(*i)
+	}
+	return tcsu
+}
+
 // AddChannelID adds i to the "channel_id" field.
 func (tcsu *TelegramChannelStateUpdate) AddChannelID(i int64) *TelegramChannelStateUpdate {
 	tcsu.mutation.AddChannelID(i)
@@ -44,6 +52,14 @@ func (tcsu *TelegramChannelStateUpdate) AddChannelID(i int64) *TelegramChannelSt
 // SetUserID sets the "user_id" field.
 func (tcsu *TelegramChannelStateUpdate) SetUserID(i int64) *TelegramChannelStateUpdate {
 	tcsu.mutation.SetUserID(i)
+	return tcsu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tcsu *TelegramChannelStateUpdate) SetNillableUserID(i *int64) *TelegramChannelStateUpdate {
+	if i != nil {
+		tcsu.SetUserID(*i)
+	}
 	return tcsu
 }
 
@@ -199,6 +215,14 @@ func (tcsuo *TelegramChannelStateUpdateOne) SetChannelID(i int64) *TelegramChann
 	return tcsuo
 }
 
+// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
+func (tcsuo *TelegramChannelStateUpdateOne) SetNillableChannelID(i *int64) *TelegramChannelStateUpdateOne {
+	if i != nil {
+		tcsuo.SetChannelID(*i)
+	}
+	return tcsuo
+}
+
 // AddChannelID adds i to the "channel_id" field.
 func (tcsuo *TelegramChannelStateUpdateOne) AddChannelID(i int64) *TelegramChannelStateUpdateOne {
 	tcsuo.mutation.AddChannelID(i)
@@ -208,6 +232,14 @@ func (tcsuo *TelegramChannelStateUpdateOne) AddChannelID(i int64) *TelegramChann
 // SetUserID sets the "user_id" field.
 func (tcsuo *TelegramChannelStateUpdateOne) SetUserID(i int64) *TelegramChannelStateUpdateOne {
 	tcsuo.mutation.SetUserID(i)
+	return tcsuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tcsuo *TelegramChannelStateUpdateOne) SetNillableUserID(i *int64) *TelegramChannelStateUpdateOne {
+	if i != nil {
+		tcsuo.SetUserID(*i)
+	}
 	return tcsuo
 }
 

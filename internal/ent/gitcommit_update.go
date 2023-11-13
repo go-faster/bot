@@ -35,9 +35,25 @@ func (gcu *GitCommitUpdate) SetMessage(s string) *GitCommitUpdate {
 	return gcu
 }
 
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (gcu *GitCommitUpdate) SetNillableMessage(s *string) *GitCommitUpdate {
+	if s != nil {
+		gcu.SetMessage(*s)
+	}
+	return gcu
+}
+
 // SetAuthorLogin sets the "author_login" field.
 func (gcu *GitCommitUpdate) SetAuthorLogin(s string) *GitCommitUpdate {
 	gcu.mutation.SetAuthorLogin(s)
+	return gcu
+}
+
+// SetNillableAuthorLogin sets the "author_login" field if the given value is not nil.
+func (gcu *GitCommitUpdate) SetNillableAuthorLogin(s *string) *GitCommitUpdate {
+	if s != nil {
+		gcu.SetAuthorLogin(*s)
+	}
 	return gcu
 }
 
@@ -45,6 +61,14 @@ func (gcu *GitCommitUpdate) SetAuthorLogin(s string) *GitCommitUpdate {
 func (gcu *GitCommitUpdate) SetAuthorID(i int64) *GitCommitUpdate {
 	gcu.mutation.ResetAuthorID()
 	gcu.mutation.SetAuthorID(i)
+	return gcu
+}
+
+// SetNillableAuthorID sets the "author_id" field if the given value is not nil.
+func (gcu *GitCommitUpdate) SetNillableAuthorID(i *int64) *GitCommitUpdate {
+	if i != nil {
+		gcu.SetAuthorID(*i)
+	}
 	return gcu
 }
 
@@ -57,6 +81,14 @@ func (gcu *GitCommitUpdate) AddAuthorID(i int64) *GitCommitUpdate {
 // SetDate sets the "date" field.
 func (gcu *GitCommitUpdate) SetDate(t time.Time) *GitCommitUpdate {
 	gcu.mutation.SetDate(t)
+	return gcu
+}
+
+// SetNillableDate sets the "date" field if the given value is not nil.
+func (gcu *GitCommitUpdate) SetNillableDate(t *time.Time) *GitCommitUpdate {
+	if t != nil {
+		gcu.SetDate(*t)
+	}
 	return gcu
 }
 
@@ -196,9 +228,25 @@ func (gcuo *GitCommitUpdateOne) SetMessage(s string) *GitCommitUpdateOne {
 	return gcuo
 }
 
+// SetNillableMessage sets the "message" field if the given value is not nil.
+func (gcuo *GitCommitUpdateOne) SetNillableMessage(s *string) *GitCommitUpdateOne {
+	if s != nil {
+		gcuo.SetMessage(*s)
+	}
+	return gcuo
+}
+
 // SetAuthorLogin sets the "author_login" field.
 func (gcuo *GitCommitUpdateOne) SetAuthorLogin(s string) *GitCommitUpdateOne {
 	gcuo.mutation.SetAuthorLogin(s)
+	return gcuo
+}
+
+// SetNillableAuthorLogin sets the "author_login" field if the given value is not nil.
+func (gcuo *GitCommitUpdateOne) SetNillableAuthorLogin(s *string) *GitCommitUpdateOne {
+	if s != nil {
+		gcuo.SetAuthorLogin(*s)
+	}
 	return gcuo
 }
 
@@ -206,6 +254,14 @@ func (gcuo *GitCommitUpdateOne) SetAuthorLogin(s string) *GitCommitUpdateOne {
 func (gcuo *GitCommitUpdateOne) SetAuthorID(i int64) *GitCommitUpdateOne {
 	gcuo.mutation.ResetAuthorID()
 	gcuo.mutation.SetAuthorID(i)
+	return gcuo
+}
+
+// SetNillableAuthorID sets the "author_id" field if the given value is not nil.
+func (gcuo *GitCommitUpdateOne) SetNillableAuthorID(i *int64) *GitCommitUpdateOne {
+	if i != nil {
+		gcuo.SetAuthorID(*i)
+	}
 	return gcuo
 }
 
@@ -218,6 +274,14 @@ func (gcuo *GitCommitUpdateOne) AddAuthorID(i int64) *GitCommitUpdateOne {
 // SetDate sets the "date" field.
 func (gcuo *GitCommitUpdateOne) SetDate(t time.Time) *GitCommitUpdateOne {
 	gcuo.mutation.SetDate(t)
+	return gcuo
+}
+
+// SetNillableDate sets the "date" field if the given value is not nil.
+func (gcuo *GitCommitUpdateOne) SetNillableDate(t *time.Time) *GitCommitUpdateOne {
+	if t != nil {
+		gcuo.SetDate(*t)
+	}
 	return gcuo
 }
 

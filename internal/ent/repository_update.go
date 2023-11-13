@@ -36,9 +36,25 @@ func (ru *RepositoryUpdate) SetName(s string) *RepositoryUpdate {
 	return ru
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ru *RepositoryUpdate) SetNillableName(s *string) *RepositoryUpdate {
+	if s != nil {
+		ru.SetName(*s)
+	}
+	return ru
+}
+
 // SetFullName sets the "full_name" field.
 func (ru *RepositoryUpdate) SetFullName(s string) *RepositoryUpdate {
 	ru.mutation.SetFullName(s)
+	return ru
+}
+
+// SetNillableFullName sets the "full_name" field if the given value is not nil.
+func (ru *RepositoryUpdate) SetNillableFullName(s *string) *RepositoryUpdate {
+	if s != nil {
+		ru.SetFullName(*s)
+	}
 	return ru
 }
 
@@ -345,9 +361,25 @@ func (ruo *RepositoryUpdateOne) SetName(s string) *RepositoryUpdateOne {
 	return ruo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ruo *RepositoryUpdateOne) SetNillableName(s *string) *RepositoryUpdateOne {
+	if s != nil {
+		ruo.SetName(*s)
+	}
+	return ruo
+}
+
 // SetFullName sets the "full_name" field.
 func (ruo *RepositoryUpdateOne) SetFullName(s string) *RepositoryUpdateOne {
 	ruo.mutation.SetFullName(s)
+	return ruo
+}
+
+// SetNillableFullName sets the "full_name" field if the given value is not nil.
+func (ruo *RepositoryUpdateOne) SetNillableFullName(s *string) *RepositoryUpdateOne {
+	if s != nil {
+		ruo.SetFullName(*s)
+	}
 	return ruo
 }
 

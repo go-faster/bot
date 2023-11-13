@@ -34,6 +34,14 @@ func (pnu *PRNotificationUpdate) SetRepoID(i int64) *PRNotificationUpdate {
 	return pnu
 }
 
+// SetNillableRepoID sets the "repo_id" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillableRepoID(i *int64) *PRNotificationUpdate {
+	if i != nil {
+		pnu.SetRepoID(*i)
+	}
+	return pnu
+}
+
 // AddRepoID adds i to the "repo_id" field.
 func (pnu *PRNotificationUpdate) AddRepoID(i int64) *PRNotificationUpdate {
 	pnu.mutation.AddRepoID(i)
@@ -44,6 +52,14 @@ func (pnu *PRNotificationUpdate) AddRepoID(i int64) *PRNotificationUpdate {
 func (pnu *PRNotificationUpdate) SetPullRequestID(i int) *PRNotificationUpdate {
 	pnu.mutation.ResetPullRequestID()
 	pnu.mutation.SetPullRequestID(i)
+	return pnu
+}
+
+// SetNillablePullRequestID sets the "pull_request_id" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillablePullRequestID(i *int) *PRNotificationUpdate {
+	if i != nil {
+		pnu.SetPullRequestID(*i)
+	}
 	return pnu
 }
 
@@ -99,6 +115,14 @@ func (pnu *PRNotificationUpdate) SetNillablePullRequestAuthorLogin(s *string) *P
 func (pnu *PRNotificationUpdate) SetMessageID(i int) *PRNotificationUpdate {
 	pnu.mutation.ResetMessageID()
 	pnu.mutation.SetMessageID(i)
+	return pnu
+}
+
+// SetNillableMessageID sets the "message_id" field if the given value is not nil.
+func (pnu *PRNotificationUpdate) SetNillableMessageID(i *int) *PRNotificationUpdate {
+	if i != nil {
+		pnu.SetMessageID(*i)
+	}
 	return pnu
 }
 
@@ -203,6 +227,14 @@ func (pnuo *PRNotificationUpdateOne) SetRepoID(i int64) *PRNotificationUpdateOne
 	return pnuo
 }
 
+// SetNillableRepoID sets the "repo_id" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillableRepoID(i *int64) *PRNotificationUpdateOne {
+	if i != nil {
+		pnuo.SetRepoID(*i)
+	}
+	return pnuo
+}
+
 // AddRepoID adds i to the "repo_id" field.
 func (pnuo *PRNotificationUpdateOne) AddRepoID(i int64) *PRNotificationUpdateOne {
 	pnuo.mutation.AddRepoID(i)
@@ -213,6 +245,14 @@ func (pnuo *PRNotificationUpdateOne) AddRepoID(i int64) *PRNotificationUpdateOne
 func (pnuo *PRNotificationUpdateOne) SetPullRequestID(i int) *PRNotificationUpdateOne {
 	pnuo.mutation.ResetPullRequestID()
 	pnuo.mutation.SetPullRequestID(i)
+	return pnuo
+}
+
+// SetNillablePullRequestID sets the "pull_request_id" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillablePullRequestID(i *int) *PRNotificationUpdateOne {
+	if i != nil {
+		pnuo.SetPullRequestID(*i)
+	}
 	return pnuo
 }
 
@@ -268,6 +308,14 @@ func (pnuo *PRNotificationUpdateOne) SetNillablePullRequestAuthorLogin(s *string
 func (pnuo *PRNotificationUpdateOne) SetMessageID(i int) *PRNotificationUpdateOne {
 	pnuo.mutation.ResetMessageID()
 	pnuo.mutation.SetMessageID(i)
+	return pnuo
+}
+
+// SetNillableMessageID sets the "message_id" field if the given value is not nil.
+func (pnuo *PRNotificationUpdateOne) SetNillableMessageID(i *int) *PRNotificationUpdateOne {
+	if i != nil {
+		pnuo.SetMessageID(*i)
+	}
 	return pnuo
 }
 

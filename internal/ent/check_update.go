@@ -34,6 +34,14 @@ func (cu *CheckUpdate) SetRepoID(i int64) *CheckUpdate {
 	return cu
 }
 
+// SetNillableRepoID sets the "repo_id" field if the given value is not nil.
+func (cu *CheckUpdate) SetNillableRepoID(i *int64) *CheckUpdate {
+	if i != nil {
+		cu.SetRepoID(*i)
+	}
+	return cu
+}
+
 // AddRepoID adds i to the "repo_id" field.
 func (cu *CheckUpdate) AddRepoID(i int64) *CheckUpdate {
 	cu.mutation.AddRepoID(i)
@@ -44,6 +52,14 @@ func (cu *CheckUpdate) AddRepoID(i int64) *CheckUpdate {
 func (cu *CheckUpdate) SetPullRequestID(i int) *CheckUpdate {
 	cu.mutation.ResetPullRequestID()
 	cu.mutation.SetPullRequestID(i)
+	return cu
+}
+
+// SetNillablePullRequestID sets the "pull_request_id" field if the given value is not nil.
+func (cu *CheckUpdate) SetNillablePullRequestID(i *int) *CheckUpdate {
+	if i != nil {
+		cu.SetPullRequestID(*i)
+	}
 	return cu
 }
 
@@ -59,9 +75,25 @@ func (cu *CheckUpdate) SetName(s string) *CheckUpdate {
 	return cu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cu *CheckUpdate) SetNillableName(s *string) *CheckUpdate {
+	if s != nil {
+		cu.SetName(*s)
+	}
+	return cu
+}
+
 // SetStatus sets the "status" field.
 func (cu *CheckUpdate) SetStatus(s string) *CheckUpdate {
 	cu.mutation.SetStatus(s)
+	return cu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (cu *CheckUpdate) SetNillableStatus(s *string) *CheckUpdate {
+	if s != nil {
+		cu.SetStatus(*s)
+	}
 	return cu
 }
 
@@ -177,6 +209,14 @@ func (cuo *CheckUpdateOne) SetRepoID(i int64) *CheckUpdateOne {
 	return cuo
 }
 
+// SetNillableRepoID sets the "repo_id" field if the given value is not nil.
+func (cuo *CheckUpdateOne) SetNillableRepoID(i *int64) *CheckUpdateOne {
+	if i != nil {
+		cuo.SetRepoID(*i)
+	}
+	return cuo
+}
+
 // AddRepoID adds i to the "repo_id" field.
 func (cuo *CheckUpdateOne) AddRepoID(i int64) *CheckUpdateOne {
 	cuo.mutation.AddRepoID(i)
@@ -187,6 +227,14 @@ func (cuo *CheckUpdateOne) AddRepoID(i int64) *CheckUpdateOne {
 func (cuo *CheckUpdateOne) SetPullRequestID(i int) *CheckUpdateOne {
 	cuo.mutation.ResetPullRequestID()
 	cuo.mutation.SetPullRequestID(i)
+	return cuo
+}
+
+// SetNillablePullRequestID sets the "pull_request_id" field if the given value is not nil.
+func (cuo *CheckUpdateOne) SetNillablePullRequestID(i *int) *CheckUpdateOne {
+	if i != nil {
+		cuo.SetPullRequestID(*i)
+	}
 	return cuo
 }
 
@@ -202,9 +250,25 @@ func (cuo *CheckUpdateOne) SetName(s string) *CheckUpdateOne {
 	return cuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cuo *CheckUpdateOne) SetNillableName(s *string) *CheckUpdateOne {
+	if s != nil {
+		cuo.SetName(*s)
+	}
+	return cuo
+}
+
 // SetStatus sets the "status" field.
 func (cuo *CheckUpdateOne) SetStatus(s string) *CheckUpdateOne {
 	cuo.mutation.SetStatus(s)
+	return cuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (cuo *CheckUpdateOne) SetNillableStatus(s *string) *CheckUpdateOne {
+	if s != nil {
+		cuo.SetStatus(*s)
+	}
 	return cuo
 }
 

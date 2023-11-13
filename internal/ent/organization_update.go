@@ -34,6 +34,14 @@ func (ou *OrganizationUpdate) SetName(s string) *OrganizationUpdate {
 	return ou
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ou *OrganizationUpdate) SetNillableName(s *string) *OrganizationUpdate {
+	if s != nil {
+		ou.SetName(*s)
+	}
+	return ou
+}
+
 // SetHTMLURL sets the "html_url" field.
 func (ou *OrganizationUpdate) SetHTMLURL(s string) *OrganizationUpdate {
 	ou.mutation.SetHTMLURL(s)
@@ -208,6 +216,14 @@ type OrganizationUpdateOne struct {
 // SetName sets the "name" field.
 func (ouo *OrganizationUpdateOne) SetName(s string) *OrganizationUpdateOne {
 	ouo.mutation.SetName(s)
+	return ouo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ouo *OrganizationUpdateOne) SetNillableName(s *string) *OrganizationUpdateOne {
+	if s != nil {
+		ouo.SetName(*s)
+	}
 	return ouo
 }
 
