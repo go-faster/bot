@@ -45,8 +45,8 @@ github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkp
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
 github.com/fatih/color v1.15.0 h1:kOqh6YHBtK8aywxGerMG2Eq3H6Qgoqeo13Bk2Mv/nBs=
 github.com/fatih/color v1.15.0/go.mod h1:0h5ZqXfHYED7Bhv2ZJamyIOUej9KtShiJESRwBDUSsw=
-github.com/felixge/httpsnoop v1.0.3 h1:s/nj+GCswXYzN5v2DpNMuMQYe+0DDwt5WVCU6CWBdXk=
-github.com/felixge/httpsnoop v1.0.3/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
+github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
+github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-faster/city v1.0.1 h1:4WAxSZ3V2Ws4QRDrscLEDcibJY8uf41H6AhXDrNDcGw=
@@ -216,10 +216,10 @@ github.com/vmihailenco/msgpack/v4 v4.3.12/go.mod h1:gborTTJjAo/GWTqqRjrLCn9pgNN+
 github.com/vmihailenco/tagparser v0.1.1/go.mod h1:OeAg3pn3UbLjkWt+rN9oFYB6u/cQgqMEUPoW2WPyhdI=
 github.com/zclconf/go-cty v1.8.0 h1:s4AvqaeQzJIu3ndv4gVIhplVD0krU+bgrcLSVUnaWuA=
 github.com/zclconf/go-cty v1.8.0/go.mod h1:vVKLxnk3puL4qRAv72AO+W99LUD4da90g3uUAzyuvAk=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.45.0 h1:JJCIHAxGCB5HM3NxeIwFjHc087Xwk96TG9kaZU6TAec=
-go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.45.0/go.mod h1:Px9kH7SJ+NhsgWRtD/eMcs15Tyt4uL3rM7X54qv6pfA=
-go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.45.0 h1:x8Z78aZx8cOF0+Kkazoc7lwUNMGy0LrzEMxTm4BbTxg=
-go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.45.0/go.mod h1:62CPTSry9QZtOaSsE3tOzhx6LzDhHnXJ6xHeMNNiM6Q=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.46.0 h1:gYRavGiL75s1rM1MYzWbq6ptn02tnUt4t3HtDEaeVhE=
+go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.46.0/go.mod h1:XnbQgDkVMrAxz8+hbgLtSiYVO6HTo2D1z9SDlY1gU/Y=
+go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.46.0 h1:1eHu3/pUSWaOgltNK3WJFaywKsTIr/PwvHyDmi0lQA0=
+go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.46.0/go.mod h1:HyABWq60Uy1kjJSa2BVOxUVao8Cdick5AWSKPutqy6U=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.46.0 h1:dRj4IGqk65IHPLsur40gajPeQXxWWjprjeNq6aMJorU=
 go.opentelemetry.io/contrib/instrumentation/runtime v0.46.0/go.mod h1:LD/bFNptUlSeHOX/6FMaAvjfvralTgFd09/EaZtV8X4=
 go.opentelemetry.io/contrib/propagators/autoprop v0.46.0 h1:0L4F8bVXPIB2iiEnOEy68P/qyF9rRCdibHGCVgK8jPI=

@@ -25,8 +25,8 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tiktoken-go/tokenizer v0.1.0
-	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.45.0
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.45.0
+	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.46.0
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.46.0
 	go.opentelemetry.io/otel v1.20.0
 	go.opentelemetry.io/otel/metric v1.20.0
 	go.opentelemetry.io/otel/trace v1.20.0
@@ -50,7 +50,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/fatih/color v1.15.0 // indirect
-	github.com/felixge/httpsnoop v1.0.3 // indirect
+	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/xor v1.0.0 // indirect
