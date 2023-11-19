@@ -14,7 +14,7 @@ import (
 )
 
 func encodeStatusResponse(response *Status, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
 
@@ -28,15 +28,14 @@ func encodeStatusResponse(response *Status, w http.ResponseWriter, span trace.Sp
 }
 
 func encodeErrorResponse(response *ErrorStatusCode, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	code := response.StatusCode
 	if code == 0 {
 		// Set default status code.
 		code = http.StatusOK
 	}
 	w.WriteHeader(code)
-	st := http.StatusText(code)
-	if code >= http.StatusBadRequest {
+	if st := http.StatusText(code); code >= http.StatusBadRequest {
 		span.SetStatus(codes.Error, st)
 	} else {
 		span.SetStatus(codes.Ok, st)
