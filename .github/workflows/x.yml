@@ -3,11 +3,17 @@ name: x
 on:
   push:
     branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 # Common Go workflows from go faster
 # See https://github.com/go-faster/x
 jobs:
   test:
     uses: go-faster/x/.github/workflows/test.yml@main
+    with:
+      enable-386: false
+  cover:
+    uses: go-faster/x/.github/workflows/cover.yml@main
   lint:
     uses: go-faster/x/.github/workflows/lint.yml@main
