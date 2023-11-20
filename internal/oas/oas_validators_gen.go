@@ -9,6 +9,10 @@ import (
 )
 
 func (s *Statistics) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.TopUsers == nil {
@@ -28,6 +32,10 @@ func (s *Statistics) Validate() error {
 }
 
 func (s *Status) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := s.Stat.Validate(); err != nil {
