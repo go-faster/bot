@@ -80,7 +80,7 @@ spec:
               memory: 2G
           env:
             - name: GOMEMLIMIT
-              value: "2G"
+              value: "2048MiB"
             - name: GOMAXPROCS
               value: "3"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
