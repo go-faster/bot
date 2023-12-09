@@ -148,6 +148,11 @@ spec:
                   key: GITHUB_CLIENT_ID
             - name: GITHUB_INSTALLATION_ID
               value: "26766968"
+            - name: OPENAI_PROXY
+              valueFrom:
+                secretKeyRef:
+                  name: bot
+                  key: OPENAI_PROXY
             - name: OPENAI_TOKEN
               valueFrom:
                 secretKeyRef:

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -165,9 +166,23 @@ func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		webhook = webhook.WithSecret(secret)
 	}
 
+	openaiTransport := httpTransport
+	if v := os.Getenv("OPENAI_PROXY"); v != "" {
+		proxyURL, err := url.Parse(v)
+		if err != nil {
+			return nil, errors.Wrap(err, "parse proxy URL")
+		}
+		openaiTransport = otelhttp.NewTransport(&http.Transport{
+			Proxy: http.ProxyURL(proxyURL),
+		},
+			otelhttp.WithTracerProvider(m.TracerProvider()),
+			otelhttp.WithMeterProvider(m.MeterProvider()),
+		)
+		lg.Info("Using proxy for OpenAI")
+	}
 	openaiConfig := openai.DefaultConfig(os.Getenv("OPENAI_TOKEN"))
 	openaiConfig.HTTPClient = &http.Client{
-		Transport: httpTransport,
+		Transport: openaiTransport,
 		Timeout:   time.Minute,
 	}
 
