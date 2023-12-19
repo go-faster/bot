@@ -18,7 +18,7 @@ require (
 	github.com/gotd/td v0.91.0
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/labstack/echo/v4 v4.11.3
-	github.com/ogen-go/ogen v0.80.1
+	github.com/ogen-go/ogen v0.81.0
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/rs/cors v1.10.1
 	github.com/sashabaranov/go-openai v1.17.9
@@ -120,7 +120,7 @@ require (
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.16.0 // indirect
+	golang.org/x/tools v0.16.1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230822172742-b8732ec3820d // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
