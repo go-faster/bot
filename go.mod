@@ -17,7 +17,7 @@ require (
 	github.com/gotd/contrib v0.19.0
 	github.com/gotd/td v0.91.0
 	github.com/jackc/pgx/v5 v5.5.1
-	github.com/labstack/echo/v4 v4.11.3
+	github.com/labstack/echo/v4 v4.11.4
 	github.com/ogen-go/ogen v0.81.0
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/rs/cors v1.10.1
@@ -76,7 +76,7 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
-	github.com/labstack/gommon v0.4.0 // indirect
+	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
