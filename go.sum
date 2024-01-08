@@ -2,8 +2,8 @@ ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 h1:JnYs/y8RJ3+MiIUp+3RgyyeO
 ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935/go.mod h1:isZrlzJ5cpoCoKFoY9knZug7Lq4pP1cm8g3XciLZ0Pw=
 entgo.io/ent v0.12.5 h1:KREM5E4CSoej4zeGa88Ou/gfturAnpUv0mzAjch1sj4=
 entgo.io/ent v0.12.5/go.mod h1:Y3JVAjtlIk8xVZYSn3t3mf8xlZIn5SAOXZQxD6kKI+Q=
-github.com/ClickHouse/ch-go v0.61.0 h1:22JYeFJoFNAU/Vod4etAeUEY28cYt7Ixnwqj1+EUfro=
-github.com/ClickHouse/ch-go v0.61.0/go.mod h1:POJBl0MxEMS91Zd0uTgDDt05KfXEjf5KIwW6lNhje9Y=
+github.com/ClickHouse/ch-go v0.61.1 h1:j5rx3qnvcnYjhnP1IdXE/vdIRQiqgwAzyqOaasA6QCw=
+github.com/ClickHouse/ch-go v0.61.1/go.mod h1:myxt/JZgy2BYHFGQqzmaIpbfr5CMbs3YHVULaWQj5YU=
 github.com/DATA-DOG/go-sqlmock v1.5.0 h1:Shsta01QNfFxHCfpW6YH2STWB0MudeXXEWMr20OEh60=
 github.com/DATA-DOG/go-sqlmock v1.5.0/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 h1:wPbRQzjjwFc0ih8puEVAOFGELsn1zoIIYdxvML7mDxA=
@@ -164,8 +164,8 @@ github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/pascaldekloe/name v1.0.1 h1:9lnXOHeqeHHnWLbKfH6X98+4+ETVqFqxN09UXSjcMb0=
 github.com/pascaldekloe/name v1.0.1/go.mod h1:Z//MfYJnH4jVpQ9wkclwu2I2MkHmXTlT9wR5UZScttM=
-github.com/pierrec/lz4/v4 v4.1.18 h1:xaKrnTkyoqfh1YItXl56+6KJNVYWlEEPuAQW9xsplYQ=
-github.com/pierrec/lz4/v4 v4.1.18/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
+github.com/pierrec/lz4/v4 v4.1.19 h1:tYLzDnjDXh9qIxSTKHwXwOYmm9d887Y7Y1ZkyXYHAN4=
+github.com/pierrec/lz4/v4 v4.1.19/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

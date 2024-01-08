@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	entgo.io/ent v0.12.5
-	github.com/ClickHouse/ch-go v0.61.0
+	github.com/ClickHouse/ch-go v0.61.1
 	github.com/bradleyfalzon/ghinstallation/v2 v2.8.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.9
@@ -84,7 +84,7 @@ require (
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pascaldekloe/name v1.0.1 // indirect
-	github.com/pierrec/lz4/v4 v4.1.18 // indirect
+	github.com/pierrec/lz4/v4 v4.1.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.17.0 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
