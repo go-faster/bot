@@ -19,7 +19,7 @@ require (
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/ogen-go/ogen v0.81.1
-	github.com/redis/go-redis/v9 v9.3.1
+	github.com/redis/go-redis/v9 v9.4.0
 	github.com/rs/cors v1.10.1
 	github.com/sashabaranov/go-openai v1.17.10
 	github.com/spf13/cobra v1.8.0
