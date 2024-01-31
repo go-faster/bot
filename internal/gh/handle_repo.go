@@ -18,6 +18,11 @@ func (w *Webhook) handleRepo(ctx context.Context, e *github.RepositoryEvent) err
 	)
 	defer span.End()
 
+	if e.GetRepo().GetPrivate() {
+		zctx.From(ctx).Info("Private repository", zap.String("repo", e.GetRepo().GetFullName()))
+		return nil
+	}
+
 	switch e.GetAction() {
 	case "created", "publicized":
 		p, err := w.notifyPeer(ctx)
