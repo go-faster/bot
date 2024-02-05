@@ -15,7 +15,7 @@ require (
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.19.0
-	github.com/gotd/td v0.96.1
+	github.com/gotd/td v0.97.0
 	github.com/jackc/pgx/v5 v5.5.3
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/ogen-go/ogen v0.81.2
