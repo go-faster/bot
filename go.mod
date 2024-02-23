@@ -3,7 +3,7 @@ module github.com/go-faster/bot
 go 1.21
 
 require (
-	entgo.io/ent v0.12.5
+	entgo.io/ent v0.13.0
 	github.com/ClickHouse/ch-go v0.61.3
 	github.com/bradleyfalzon/ghinstallation/v2 v2.9.0
 	github.com/brpaz/echozap v1.1.3
@@ -38,7 +38,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
+	ariga.io/atlas v0.19.1-0.20240203083654-5948b60a8e43 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
@@ -77,7 +77,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect
-	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
