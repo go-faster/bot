@@ -16,7 +16,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.19.0
 	github.com/gotd/td v0.98.0
-	github.com/jackc/pgx/v5 v5.5.3
+	github.com/jackc/pgx/v5 v5.5.4
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/ogen-go/ogen v0.82.0
 	github.com/redis/go-redis/v9 v9.5.1
