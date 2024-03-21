@@ -110,7 +110,7 @@ spec:
             - name: TG_NOTIFY_GROUP
               value: go_faster_news
             - name: TG_DEPLOY_NOTIFY_GROUP
-              value: go_faster_news
+              value: gotd_test
             - name: BOT_TOKEN
               valueFrom:
                 secretKeyRef:
