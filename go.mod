@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	entgo.io/ent v0.13.1
-	github.com/ClickHouse/ch-go v0.61.3
+	github.com/ClickHouse/ch-go v0.61.5
 	github.com/bradleyfalzon/ghinstallation/v2 v2.9.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.9
@@ -113,7 +113,7 @@ require (
 	go.opentelemetry.io/otel/exporters/prometheus v0.44.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.44.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.21.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.23.1 // indirect
+	go.opentelemetry.io/otel/sdk v1.24.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.21.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
