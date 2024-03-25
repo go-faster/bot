@@ -15,7 +15,7 @@ require (
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.19.0
-	github.com/gotd/td v0.99.0
+	github.com/gotd/td v0.99.2
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/ogen-go/ogen v0.82.0
@@ -58,7 +58,7 @@ require (
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-logr/zapr v1.3.0 // indirect
-	github.com/go-openapi/inflect v0.20.0 // indirect
+	github.com/go-openapi/inflect v0.21.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
