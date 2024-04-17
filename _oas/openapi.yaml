@@ -25,7 +25,7 @@ paths:
                 $ref: "#/components/schemas/Status"
         default:
           $ref: "#/components/responses/Error"
-  /badge/telegram/${group_name}:
+  /badge/telegram/{group_name}:
     parameters:
       - required: true
         in: path

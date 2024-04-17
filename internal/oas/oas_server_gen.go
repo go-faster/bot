@@ -12,7 +12,7 @@ type Handler interface {
 	//
 	// Get svg badge for telegram group.
 	//
-	// GET /badge/telegram/${group_name}
+	// GET /badge/telegram/{group_name}
 	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error)
 	// Status implements status operation.
 	//

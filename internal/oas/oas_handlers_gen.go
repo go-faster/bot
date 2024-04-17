@@ -24,12 +24,12 @@ import (
 //
 // Get svg badge for telegram group.
 //
-// GET /badge/telegram/${group_name}
+// GET /badge/telegram/{group_name}
 func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/${group_name}"),
+		semconv.HTTPRouteKey.String("/badge/telegram/{group_name}"),
 	}
 
 	// Start a span for this request.

@@ -27,7 +27,7 @@ type Invoker interface {
 	//
 	// Get svg badge for telegram group.
 	//
-	// GET /badge/telegram/${group_name}
+	// GET /badge/telegram/{group_name}
 	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error)
 	// Status invokes status operation.
 	//
@@ -93,7 +93,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 //
 // Get svg badge for telegram group.
 //
-// GET /badge/telegram/${group_name}
+// GET /badge/telegram/{group_name}
 func (c *Client) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error) {
 	res, err := c.sendGetTelegramBadge(ctx, params)
 	return res, err
@@ -103,7 +103,7 @@ func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/${group_name}"),
+		semconv.HTTPRouteKey.String("/badge/telegram/{group_name}"),
 	}
 
 	// Run stopwatch.
@@ -136,7 +136,7 @@ func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/badge/telegram/$"
+	pathParts[0] = "/badge/telegram/"
 	{
 		// Encode "group_name" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{

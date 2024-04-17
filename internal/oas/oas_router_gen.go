@@ -61,9 +61,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'b': // Prefix: "badge/telegram/$"
+			case 'b': // Prefix: "badge/telegram/"
 				origElem := elem
-				if l := len("badge/telegram/$"); len(elem) >= l && elem[0:l] == "badge/telegram/$" {
+				if l := len("badge/telegram/"); len(elem) >= l && elem[0:l] == "badge/telegram/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -205,9 +205,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'b': // Prefix: "badge/telegram/$"
+			case 'b': // Prefix: "badge/telegram/"
 				origElem := elem
-				if l := len("badge/telegram/$"); len(elem) >= l && elem[0:l] == "badge/telegram/$" {
+				if l := len("badge/telegram/"); len(elem) >= l && elem[0:l] == "badge/telegram/" {
 					elem = elem[l:]
 				} else {
 					break
@@ -225,7 +225,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = "GetTelegramBadge"
 						r.summary = ""
 						r.operationID = "getTelegramBadge"
-						r.pathPattern = "/badge/telegram/${group_name}"
+						r.pathPattern = "/badge/telegram/{group_name}"
 						r.args = args
 						r.count = 1
 						return r, true
