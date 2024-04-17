@@ -28,9 +28,9 @@ func generateBadgePath(name, text, style string) string {
 }
 func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (rr oas.GetTelegramBadgeOK, err error) {
 	members := map[string]int{
-		"gotd_en": 237,
-		"gotd_ru": 234,
-		"gotd_cn": 15,
+		"gotd_en":   237,
+		"gotd_ru":   234,
+		"gotd_zhcn": 15,
 	}[params.GroupName]
 	_ = s.tg // TODO(ernado): fetch actual data.
 	title := params.Title.Or(params.GroupName)
