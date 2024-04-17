@@ -3,10 +3,10 @@ package api
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/go-faster/errors"
@@ -28,16 +28,17 @@ func generateBadgePath(name, text, style string) string {
 }
 
 func (s Server) GetTelegramGoTDBadge(ctx context.Context) (oas.GetTelegramGoTDBadgeOK, error) {
+	members := 236 + 234 + 15
 	_ = s.tg // TODO(ernado): fetch actual data.
-	var (
-		message = "tg"
-		members = 236 + 234 + 15
-	)
 	u := &url.URL{
 		Scheme: "https",
 		Host:   "img.shields.io",
-		Path:   generateBadgePath(message, fmt.Sprintf("%d members", members), "blue"),
+		Path:   generateBadgePath(strconv.Itoa(members), "members", "179cde"),
 	}
+	q := u.Query()
+	q.Set("logo", "telegram")
+	u.RawQuery = q.Encode()
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), http.NoBody)
 	if err != nil {
 		return oas.GetTelegramGoTDBadgeOK{}, errors.Wrap(err, "create request")
