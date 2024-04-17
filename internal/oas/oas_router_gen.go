@@ -40,6 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
+	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -60,19 +61,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'b': // Prefix: "badge/telegram/gotd"
+			case 'b': // Prefix: "badge/telegram/$"
 				origElem := elem
-				if l := len("badge/telegram/gotd"); len(elem) >= l && elem[0:l] == "badge/telegram/gotd" {
+				if l := len("badge/telegram/$"); len(elem) >= l && elem[0:l] == "badge/telegram/$" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
+				// Param: "group_name"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
 				if len(elem) == 0 {
 					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleGetTelegramGoTDBadgeRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleGetTelegramBadgeRequest([1]string{
+							args[0],
+						}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "GET")
 					}
@@ -117,7 +125,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [0]string
+	args        [1]string
 }
 
 // Name returns ogen operation name.
@@ -197,24 +205,29 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'b': // Prefix: "badge/telegram/gotd"
+			case 'b': // Prefix: "badge/telegram/$"
 				origElem := elem
-				if l := len("badge/telegram/gotd"); len(elem) >= l && elem[0:l] == "badge/telegram/gotd" {
+				if l := len("badge/telegram/$"); len(elem) >= l && elem[0:l] == "badge/telegram/$" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
+				// Param: "group_name"
+				// Leaf parameter
+				args[0] = elem
+				elem = ""
+
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						// Leaf: GetTelegramGoTDBadge
-						r.name = "GetTelegramGoTDBadge"
+						// Leaf: GetTelegramBadge
+						r.name = "GetTelegramBadge"
 						r.summary = ""
-						r.operationID = "getTelegramGoTDBadge"
-						r.pathPattern = "/badge/telegram/gotd"
+						r.operationID = "getTelegramBadge"
+						r.pathPattern = "/badge/telegram/${group_name}"
 						r.args = args
-						r.count = 0
+						r.count = 1
 						return r, true
 					default:
 						return

@@ -15,7 +15,7 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func decodeGetTelegramGoTDBadgeResponse(resp *http.Response) (res GetTelegramGoTDBadgeOK, _ error) {
+func decodeGetTelegramBadgeResponse(resp *http.Response) (res GetTelegramBadgeOK, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -31,7 +31,7 @@ func decodeGetTelegramGoTDBadgeResponse(resp *http.Response) (res GetTelegramGoT
 				return res, err
 			}
 
-			response := GetTelegramGoTDBadgeOK{Data: bytes.NewReader(b)}
+			response := GetTelegramBadgeOK{Data: bytes.NewReader(b)}
 			return response, nil
 		default:
 			return res, validate.InvalidContentType(ct)

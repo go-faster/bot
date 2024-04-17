@@ -8,12 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// GetTelegramGoTDBadge implements getTelegramGoTDBadge operation.
+	// GetTelegramBadge implements getTelegramBadge operation.
 	//
-	// Get svg badge for gotd telegram groups.
+	// Get svg badge for telegram group.
 	//
-	// GET /badge/telegram/gotd
-	GetTelegramGoTDBadge(ctx context.Context) (GetTelegramGoTDBadgeOK, error)
+	// GET /badge/telegram/${group_name}
+	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error)
 	// Status implements status operation.
 	//
 	// Get status.

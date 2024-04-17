@@ -25,13 +25,25 @@ paths:
                 $ref: "#/components/schemas/Status"
         default:
           $ref: "#/components/responses/Error"
-  /badge/telegram/gotd:
+  /badge/telegram/${group_name}:
+    parameters:
+      - required: true
+        in: path
+        name: group_name
+        schema:
+          type: string
     get:
-      operationId: "getTelegramGoTDBadge"
-      description: "get svg badge for gotd telegram groups"
+      operationId: "getTelegramBadge"
+      description: "get svg badge for telegram group"
+      parameters:
+        - in: query
+          name: title
+          required: false
+          schema:
+            type: string
       responses:
         200:
-          description: Go Faster Badge
+          description: Badge
           content:
             "image/svg+xml":
               schema:

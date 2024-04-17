@@ -16,23 +16,24 @@ import (
 
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
+	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/otelogen"
 )
 
-// handleGetTelegramGoTDBadgeRequest handles getTelegramGoTDBadge operation.
+// handleGetTelegramBadgeRequest handles getTelegramBadge operation.
 //
-// Get svg badge for gotd telegram groups.
+// Get svg badge for telegram group.
 //
-// GET /badge/telegram/gotd
-func (s *Server) handleGetTelegramGoTDBadgeRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /badge/telegram/${group_name}
+func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getTelegramGoTDBadge"),
+		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/gotd"),
+		semconv.HTTPRouteKey.String("/badge/telegram/${group_name}"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "GetTelegramGoTDBadge",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "GetTelegramBadge",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -55,25 +56,48 @@ func (s *Server) handleGetTelegramGoTDBadgeRequest(args [0]string, argsEscaped b
 			span.SetStatus(codes.Error, stage)
 			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: "GetTelegramBadge",
+			ID:   "getTelegramBadge",
+		}
 	)
+	params, err := decodeGetTelegramBadgeParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
-	var response GetTelegramGoTDBadgeOK
+	var response GetTelegramBadgeOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "GetTelegramGoTDBadge",
+			OperationName:    "GetTelegramBadge",
 			OperationSummary: "",
-			OperationID:      "getTelegramGoTDBadge",
+			OperationID:      "getTelegramBadge",
 			Body:             nil,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "title",
+					In:   "query",
+				}: params.Title,
+				{
+					Name: "group_name",
+					In:   "path",
+				}: params.GroupName,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = struct{}
-			Response = GetTelegramGoTDBadgeOK
+			Params   = GetTelegramBadgeParams
+			Response = GetTelegramBadgeOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -82,14 +106,14 @@ func (s *Server) handleGetTelegramGoTDBadgeRequest(args [0]string, argsEscaped b
 		](
 			m,
 			mreq,
-			nil,
+			unpackGetTelegramBadgeParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.GetTelegramGoTDBadge(ctx)
+				response, err = s.h.GetTelegramBadge(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.GetTelegramGoTDBadge(ctx)
+		response, err = s.h.GetTelegramBadge(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -108,7 +132,7 @@ func (s *Server) handleGetTelegramGoTDBadgeRequest(args [0]string, argsEscaped b
 		return
 	}
 
-	if err := encodeGetTelegramGoTDBadgeResponse(response, w, span); err != nil {
+	if err := encodeGetTelegramBadgeResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)

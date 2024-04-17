@@ -26,14 +26,19 @@ func generateBadgePath(name, text, style string) string {
 		style,
 	}, "-")
 }
-
-func (s Server) GetTelegramGoTDBadge(ctx context.Context) (oas.GetTelegramGoTDBadgeOK, error) {
-	members := 236 + 234 + 15
+func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (rr oas.GetTelegramBadgeOK, err error) {
+	members := map[string]int{
+		"gotd_en": 237,
+		"gotd_ru": 234,
+		"gotd_cn": 15,
+	}[params.GroupName]
 	_ = s.tg // TODO(ernado): fetch actual data.
+	title := params.Title.Or(params.GroupName)
+	text := strconv.Itoa(members)
 	u := &url.URL{
 		Scheme: "https",
 		Host:   "img.shields.io",
-		Path:   generateBadgePath(strconv.Itoa(members), "members", "179cde"),
+		Path:   generateBadgePath(title, text, "179cde"),
 	}
 	q := u.Query()
 	q.Set("logo", "telegram")
@@ -41,16 +46,16 @@ func (s Server) GetTelegramGoTDBadge(ctx context.Context) (oas.GetTelegramGoTDBa
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), http.NoBody)
 	if err != nil {
-		return oas.GetTelegramGoTDBadgeOK{}, errors.Wrap(err, "create request")
+		return rr, errors.Wrap(err, "create request")
 	}
 	res, err := s.ht.Do(req)
 	if err != nil {
-		return oas.GetTelegramGoTDBadgeOK{}, errors.Wrap(err, "send request")
+		return rr, errors.Wrap(err, "send request")
 	}
 	defer func() { _ = res.Body.Close() }()
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		return oas.GetTelegramGoTDBadgeOK{}, errors.Wrap(err, "read body")
+		return rr, errors.Wrap(err, "read body")
 	}
-	return oas.GetTelegramGoTDBadgeOK{Data: bytes.NewReader(data)}, nil
+	return oas.GetTelegramBadgeOK{Data: bytes.NewReader(data)}, nil
 }

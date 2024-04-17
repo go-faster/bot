@@ -15,6 +15,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.19.0"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/otelogen"
 	"github.com/ogen-go/ogen/uri"
@@ -22,12 +23,12 @@ import (
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// GetTelegramGoTDBadge invokes getTelegramGoTDBadge operation.
+	// GetTelegramBadge invokes getTelegramBadge operation.
 	//
-	// Get svg badge for gotd telegram groups.
+	// Get svg badge for telegram group.
 	//
-	// GET /badge/telegram/gotd
-	GetTelegramGoTDBadge(ctx context.Context) (GetTelegramGoTDBadgeOK, error)
+	// GET /badge/telegram/${group_name}
+	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error)
 	// Status invokes status operation.
 	//
 	// Get status.
@@ -88,21 +89,21 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// GetTelegramGoTDBadge invokes getTelegramGoTDBadge operation.
+// GetTelegramBadge invokes getTelegramBadge operation.
 //
-// Get svg badge for gotd telegram groups.
+// Get svg badge for telegram group.
 //
-// GET /badge/telegram/gotd
-func (c *Client) GetTelegramGoTDBadge(ctx context.Context) (GetTelegramGoTDBadgeOK, error) {
-	res, err := c.sendGetTelegramGoTDBadge(ctx)
+// GET /badge/telegram/${group_name}
+func (c *Client) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error) {
+	res, err := c.sendGetTelegramBadge(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetTelegramGoTDBadge(ctx context.Context) (res GetTelegramGoTDBadgeOK, err error) {
+func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (res GetTelegramBadgeOK, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getTelegramGoTDBadge"),
+		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/gotd"),
+		semconv.HTTPRouteKey.String("/badge/telegram/${group_name}"),
 	}
 
 	// Run stopwatch.
@@ -117,7 +118,7 @@ func (c *Client) sendGetTelegramGoTDBadge(ctx context.Context) (res GetTelegramG
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetTelegramGoTDBadge",
+	ctx, span := c.cfg.Tracer.Start(ctx, "GetTelegramBadge",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -134,9 +135,48 @@ func (c *Client) sendGetTelegramGoTDBadge(ctx context.Context) (res GetTelegramG
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/badge/telegram/gotd"
+	var pathParts [2]string
+	pathParts[0] = "/badge/telegram/$"
+	{
+		// Encode "group_name" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "group_name",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.GroupName))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "title" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "title",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Title.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -152,7 +192,7 @@ func (c *Client) sendGetTelegramGoTDBadge(ctx context.Context) (res GetTelegramG
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeGetTelegramGoTDBadgeResponse(resp)
+	result, err := decodeGetTelegramBadgeResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

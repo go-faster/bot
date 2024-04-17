@@ -14,7 +14,7 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeGetTelegramGoTDBadgeResponse(response GetTelegramGoTDBadgeOK, w http.ResponseWriter, span trace.Span) error {
+func encodeGetTelegramBadgeResponse(response GetTelegramBadgeOK, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
