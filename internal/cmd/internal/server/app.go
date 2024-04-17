@@ -55,21 +55,22 @@ import (
 )
 
 type App struct {
-	client     *telegram.Client
-	token      string
-	raw        *tg.Client
-	sender     *message.Sender
-	dispatcher tg.UpdateDispatcher
-	mux        *dispatch.MessageMux
-	tracer     trace.Tracer
-	openai     *openai.Client
-	m          *sdkapp.Metrics
-	lg         *zap.Logger
-	wh         *gh.Webhook
-	db         *ent.Client
-	cache      *redis.Client
-	gaps       *updates.Manager
-	rdy        *Readiness
+	client        *telegram.Client
+	token         string
+	raw           *tg.Client
+	sender        *message.Sender
+	dispatcher    tg.UpdateDispatcher
+	mux           *dispatch.MessageMux
+	tracer        trace.Tracer
+	openai        *openai.Client
+	m             *sdkapp.Metrics
+	lg            *zap.Logger
+	wh            *gh.Webhook
+	db            *ent.Client
+	cache         *redis.Client
+	gaps          *updates.Manager
+	rdy           *Readiness
+	httpTransport *otelhttp.Transport
 }
 
 func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -187,21 +188,22 @@ func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 	}
 
 	a := &App{
-		cache:      r,
-		db:         db,
-		client:     client,
-		gaps:       updatesHandler,
-		token:      token,
-		raw:        raw,
-		sender:     sender,
-		dispatcher: dispatcher,
-		mux:        mux,
-		m:          m,
-		lg:         lg,
-		wh:         webhook,
-		openai:     openai.NewClientWithConfig(openaiConfig),
-		rdy:        new(Readiness),
-		tracer:     m.TracerProvider().Tracer(""),
+		cache:         r,
+		db:            db,
+		client:        client,
+		gaps:          updatesHandler,
+		token:         token,
+		raw:           raw,
+		sender:        sender,
+		dispatcher:    dispatcher,
+		mux:           mux,
+		m:             m,
+		lg:            lg,
+		wh:            webhook,
+		openai:        openai.NewClientWithConfig(openaiConfig),
+		rdy:           new(Readiness),
+		tracer:        m.TracerProvider().Tracer(""),
+		httpTransport: httpTransport,
 	}
 
 	var h dispatch.MessageHandler = app.NewMiddleware(mux, dd, m, app.MiddlewareOptions{
@@ -320,7 +322,10 @@ func (a *App) Run(ctx context.Context) error {
 		if httpAddr == "" {
 			httpAddr = "localhost:8080"
 		}
-		h, err := oas.NewServer(api.NewServer(a.db),
+		httpClient := &http.Client{
+			Transport: a.httpTransport,
+		}
+		h, err := oas.NewServer(api.NewServer(a.db, a.client, httpClient),
 			oas.WithMeterProvider(a.m.MeterProvider()),
 			oas.WithTracerProvider(a.m.TracerProvider()),
 		)

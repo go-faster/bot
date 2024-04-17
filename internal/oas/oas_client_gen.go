@@ -22,6 +22,12 @@ import (
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// GetTelegramGoTDBadge invokes getTelegramGoTDBadge operation.
+	//
+	// Get svg badge for gotd telegram groups.
+	//
+	// GET /badge/telegram/gotd
+	GetTelegramGoTDBadge(ctx context.Context) (GetTelegramGoTDBadgeOK, error)
 	// Status invokes status operation.
 	//
 	// Get status.
@@ -80,6 +86,78 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 		return c.serverURL
 	}
 	return u
+}
+
+// GetTelegramGoTDBadge invokes getTelegramGoTDBadge operation.
+//
+// Get svg badge for gotd telegram groups.
+//
+// GET /badge/telegram/gotd
+func (c *Client) GetTelegramGoTDBadge(ctx context.Context) (GetTelegramGoTDBadgeOK, error) {
+	res, err := c.sendGetTelegramGoTDBadge(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetTelegramGoTDBadge(ctx context.Context) (res GetTelegramGoTDBadgeOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getTelegramGoTDBadge"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/badge/telegram/gotd"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "GetTelegramGoTDBadge",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/badge/telegram/gotd"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetTelegramGoTDBadgeResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
 }
 
 // Status invokes status operation.

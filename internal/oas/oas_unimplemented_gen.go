@@ -13,6 +13,15 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// GetTelegramGoTDBadge implements getTelegramGoTDBadge operation.
+//
+// Get svg badge for gotd telegram groups.
+//
+// GET /badge/telegram/gotd
+func (UnimplementedHandler) GetTelegramGoTDBadge(ctx context.Context) (r GetTelegramGoTDBadgeOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // Status implements status operation.
 //
 // Get status.

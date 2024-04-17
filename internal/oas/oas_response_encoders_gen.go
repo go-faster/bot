@@ -3,6 +3,7 @@
 package oas
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-faster/errors"
@@ -12,6 +13,19 @@ import (
 
 	ht "github.com/ogen-go/ogen/http"
 )
+
+func encodeGetTelegramGoTDBadgeResponse(response GetTelegramGoTDBadgeOK, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "image/svg+xml")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	writer := w
+	if _, err := io.Copy(writer, response); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
 
 func encodeStatusResponse(response *Status, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")

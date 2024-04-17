@@ -25,6 +25,20 @@ paths:
                 $ref: "#/components/schemas/Status"
         default:
           $ref: "#/components/responses/Error"
+  /badge/telegram/gotd:
+    get:
+      operationId: "getTelegramGoTDBadge"
+      description: "get svg badge for gotd telegram groups"
+      responses:
+        200:
+          description: Go Faster Badge
+          content:
+            "image/svg+xml":
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: "#/components/responses/Error"
 components:
   responses:
     Error:

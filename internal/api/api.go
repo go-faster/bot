@@ -3,18 +3,25 @@ package api
 import (
 	"context"
 
+	"github.com/gotd/td/telegram"
+	"github.com/ogen-go/ogen/http"
+
 	"github.com/go-faster/bot/internal/ent"
 	"github.com/go-faster/bot/internal/oas"
 )
 
-func NewServer(db *ent.Client) *Server {
+func NewServer(db *ent.Client, tg *telegram.Client, ht http.Client) *Server {
 	return &Server{
 		db: db,
+		tg: tg,
+		ht: ht,
 	}
 }
 
 type Server struct {
 	db *ent.Client
+	tg *telegram.Client
+	ht http.Client
 }
 
 func (s Server) NewError(ctx context.Context, err error) *oas.ErrorStatusCode {
