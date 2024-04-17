@@ -1,6 +1,7 @@
 module github.com/go-faster/bot
 
 go 1.21
+toolchain go1.22.2
 
 require (
 	entgo.io/ent v0.13.1
@@ -18,7 +19,7 @@ require (
 	github.com/gotd/td v0.99.2
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/labstack/echo/v4 v4.12.0
-	github.com/ogen-go/ogen v0.82.0
+	github.com/ogen-go/ogen v1.0.0
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/rs/cors v1.10.1
 	github.com/sashabaranov/go-openai v1.22.0
@@ -48,7 +49,7 @@ require (
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/dlclark/regexp2 v1.10.0 // indirect
+	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
