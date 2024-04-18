@@ -69,6 +69,32 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'o': // Prefix: "online"
+					origElem := elem
+					if l := len("online"); len(elem) >= l && elem[0:l] == "online" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetTelegramOnlineBadgeRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET")
+						}
+
+						return
+					}
+
+					elem = origElem
+				}
 				// Param: "group_name"
 				// Leaf parameter
 				args[0] = elem
@@ -213,6 +239,36 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'o': // Prefix: "online"
+					origElem := elem
+					if l := len("online"); len(elem) >= l && elem[0:l] == "online" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							// Leaf: GetTelegramOnlineBadge
+							r.name = "GetTelegramOnlineBadge"
+							r.summary = ""
+							r.operationID = "getTelegramOnlineBadge"
+							r.pathPattern = "/badge/telegram/online"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				}
 				// Param: "group_name"
 				// Leaf parameter
 				args[0] = elem

@@ -131,3 +131,77 @@ func decodeGetTelegramBadgeParams(args [1]string, argsEscaped bool, r *http.Requ
 	}
 	return params, nil
 }
+
+// GetTelegramOnlineBadgeParams is parameters of getTelegramOnlineBadge operation.
+type GetTelegramOnlineBadgeParams struct {
+	Groups []string
+}
+
+func unpackGetTelegramOnlineBadgeParams(packed middleware.Parameters) (params GetTelegramOnlineBadgeParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "groups",
+			In:   "query",
+		}
+		params.Groups = packed[key].([]string)
+	}
+	return params
+}
+
+func decodeGetTelegramOnlineBadgeParams(args [0]string, argsEscaped bool, r *http.Request) (params GetTelegramOnlineBadgeParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: groups.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "groups",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				return d.DecodeArray(func(d uri.Decoder) error {
+					var paramsDotGroupsVal string
+					if err := func() error {
+						val, err := d.DecodeValue()
+						if err != nil {
+							return err
+						}
+
+						c, err := conv.ToString(val)
+						if err != nil {
+							return err
+						}
+
+						paramsDotGroupsVal = c
+						return nil
+					}(); err != nil {
+						return err
+					}
+					params.Groups = append(params.Groups, paramsDotGroupsVal)
+					return nil
+				})
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if params.Groups == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "groups",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}

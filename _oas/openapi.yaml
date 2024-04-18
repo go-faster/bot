@@ -25,6 +25,22 @@ paths:
                 $ref: "#/components/schemas/Status"
         default:
           $ref: "#/components/responses/Error"
+  /badge/telegram/online:
+    parameters:
+      - required: true
+        in: query
+        name: groups
+        schema:
+          type: array
+          items:
+            type: string
+    get:
+      operationId: "getTelegramOnlineBadge"
+      responses:
+        200:
+          $ref: "#/components/responses/SVG"
+        default:
+          $ref: "#/components/responses/Error"
   /badge/telegram/{group_name}:
     parameters:
       - required: true
@@ -43,23 +59,7 @@ paths:
             type: string
       responses:
         200:
-          description: Badge
-          headers:
-            Cache-Control:
-              description: "The Cache-Control header provides important info on how long a response may be considered fresh"
-              schema:
-                type: string
-              example: "max-age=3600, public, must-revalidate"
-            ETag:
-              description: "The ETag header provides a unique identifier for the response"
-              schema:
-                type: string
-              example: "W/\"123456789\""
-          content:
-            "image/svg+xml":
-              schema:
-                type: string
-                format: binary
+          $ref: "#/components/responses/SVG"
         default:
           $ref: "#/components/responses/Error"
 components:
@@ -70,6 +70,24 @@ components:
         "application/json":
           schema:
             $ref: "#/components/schemas/Error"
+    SVG:
+      description: Badge
+      headers:
+        Cache-Control:
+          description: "The Cache-Control header provides important info on how long a response may be considered fresh"
+          schema:
+            type: string
+          example: "max-age=3600, public, must-revalidate"
+        ETag:
+          description: "The ETag header provides a unique identifier for the response"
+          schema:
+            type: string
+          example: "W/\"123456789\""
+      content:
+        "image/svg+xml":
+          schema:
+            type: string
+            format: binary
   schemas:
     Error:
       type: object

@@ -54,57 +54,6 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-type GetTelegramBadgeOK struct {
-	Data io.Reader
-}
-
-// Read reads data from the Data reader.
-//
-// Kept to satisfy the io.Reader interface.
-func (s GetTelegramBadgeOK) Read(p []byte) (n int, err error) {
-	if s.Data == nil {
-		return 0, io.EOF
-	}
-	return s.Data.Read(p)
-}
-
-// GetTelegramBadgeOKHeaders wraps GetTelegramBadgeOK with response headers.
-type GetTelegramBadgeOKHeaders struct {
-	CacheControl OptString
-	ETag         OptString
-	Response     GetTelegramBadgeOK
-}
-
-// GetCacheControl returns the value of CacheControl.
-func (s *GetTelegramBadgeOKHeaders) GetCacheControl() OptString {
-	return s.CacheControl
-}
-
-// GetETag returns the value of ETag.
-func (s *GetTelegramBadgeOKHeaders) GetETag() OptString {
-	return s.ETag
-}
-
-// GetResponse returns the value of Response.
-func (s *GetTelegramBadgeOKHeaders) GetResponse() GetTelegramBadgeOK {
-	return s.Response
-}
-
-// SetCacheControl sets the value of CacheControl.
-func (s *GetTelegramBadgeOKHeaders) SetCacheControl(val OptString) {
-	s.CacheControl = val
-}
-
-// SetETag sets the value of ETag.
-func (s *GetTelegramBadgeOKHeaders) SetETag(val OptString) {
-	s.ETag = val
-}
-
-// SetResponse sets the value of Response.
-func (s *GetTelegramBadgeOKHeaders) SetResponse(val GetTelegramBadgeOK) {
-	s.Response = val
-}
-
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -149,6 +98,57 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
+}
+
+type SVG struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s SVG) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+// SVGHeaders wraps SVG with response headers.
+type SVGHeaders struct {
+	CacheControl OptString
+	ETag         OptString
+	Response     SVG
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *SVGHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetETag returns the value of ETag.
+func (s *SVGHeaders) GetETag() OptString {
+	return s.ETag
+}
+
+// GetResponse returns the value of Response.
+func (s *SVGHeaders) GetResponse() SVG {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *SVGHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetETag sets the value of ETag.
+func (s *SVGHeaders) SetETag(val OptString) {
+	s.ETag = val
+}
+
+// SetResponse sets the value of Response.
+func (s *SVGHeaders) SetResponse(val SVG) {
+	s.Response = val
 }
 
 // Statistics.
