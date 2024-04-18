@@ -40,7 +40,7 @@ func etag(name string, data []byte) string {
 func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (*oas.GetTelegramBadgeOKHeaders, error) {
 	var members int
 	{
-		peer, err := s.resolver.ResolveDomain(ctx, "@"+params.GroupName)
+		peer, err := s.resolver.ResolveDomain(ctx, params.GroupName)
 		if err != nil {
 			return nil, errors.Wrap(err, "resolve domain")
 		}
