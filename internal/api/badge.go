@@ -50,6 +50,11 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 		if err != nil {
 			return nil, errors.Wrap(err, "get chat")
 		}
+		zctx.From(ctx).Info("Got chat",
+			zap.Int("chats", len(fullChat.Chats)),
+			zap.Int64("id", fullChat.FullChat.(*tg.ChatFull).ID),
+			zap.String("about", fullChat.FullChat.(*tg.ChatFull).About),
+		)
 		for _, chat := range fullChat.Chats {
 			switch c := chat.(type) {
 			case *tg.Chat:
