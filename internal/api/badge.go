@@ -45,16 +45,17 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 		}
 		var inputChannel tg.InputChannel
 		inputChannel.FillFrom(peer.(*tg.InputPeerChannel))
-		fullChat, err := s.tg.API().ChannelsGetFullChannel(ctx, &inputChannel)
+		full, err := s.tg.API().ChannelsGetFullChannel(ctx, &inputChannel)
 		if err != nil {
 			return nil, errors.Wrap(err, "get chat")
 		}
+		chanFull := full.FullChat.(*tg.ChannelFull)
 		s.lg.Info("Got chat",
-			zap.Int("chats", len(fullChat.Chats)),
-			zap.Int64("id", fullChat.FullChat.(*tg.ChatFull).ID),
-			zap.String("about", fullChat.FullChat.(*tg.ChatFull).About),
+			zap.Int("chats", len(full.Chats)),
+			zap.Int64("id", chanFull.ID),
+			zap.String("about", chanFull.About),
 		)
-		for _, chat := range fullChat.Chats {
+		for _, chat := range full.Chats {
 			switch c := chat.(type) {
 			case *tg.Chat:
 				members = c.ParticipantsCount
