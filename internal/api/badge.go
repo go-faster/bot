@@ -54,6 +54,8 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 			switch c := chat.(type) {
 			case *tg.Chat:
 				members = c.ParticipantsCount
+			case *tg.Channel:
+				members = c.ParticipantsCount
 			default:
 				zctx.From(ctx).Warn("unexpected chat type",
 					zap.String("type", fmt.Sprintf("%T", chat)),
