@@ -26,7 +26,8 @@ func generateBadgePath(name, text, style string) string {
 		style,
 	}, "-")
 }
-func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (rr oas.GetTelegramBadgeOK, err error) {
+
+func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (*oas.GetTelegramBadgeOKHeaders, error) {
 	members := map[string]int{
 		"gotd_en":   237,
 		"gotd_ru":   234,
@@ -43,19 +44,24 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 	q := u.Query()
 	q.Set("logo", "telegram")
 	u.RawQuery = q.Encode()
-
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), http.NoBody)
 	if err != nil {
-		return rr, errors.Wrap(err, "create request")
+		return nil, errors.Wrap(err, "create request")
 	}
 	res, err := s.ht.Do(req)
 	if err != nil {
-		return rr, errors.Wrap(err, "send request")
+		return nil, errors.Wrap(err, "send request")
 	}
 	defer func() { _ = res.Body.Close() }()
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		return rr, errors.Wrap(err, "read body")
+		return nil, errors.Wrap(err, "read body")
 	}
-	return oas.GetTelegramBadgeOK{Data: bytes.NewReader(data)}, nil
+
+	return &oas.GetTelegramBadgeOKHeaders{
+		CacheControl: oas.NewOptString("no-cache"),
+		Response: oas.GetTelegramBadgeOK{
+			Data: bytes.NewReader(data),
+		},
+	}, nil
 }

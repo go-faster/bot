@@ -28,7 +28,7 @@ type Invoker interface {
 	// Get svg badge for telegram group.
 	//
 	// GET /badge/telegram/{group_name}
-	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error)
+	GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (*GetTelegramBadgeOKHeaders, error)
 	// Status invokes status operation.
 	//
 	// Get status.
@@ -94,12 +94,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Get svg badge for telegram group.
 //
 // GET /badge/telegram/{group_name}
-func (c *Client) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (GetTelegramBadgeOK, error) {
+func (c *Client) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (*GetTelegramBadgeOKHeaders, error) {
 	res, err := c.sendGetTelegramBadge(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (res GetTelegramBadgeOK, err error) {
+func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (res *GetTelegramBadgeOKHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPMethodKey.String("GET"),

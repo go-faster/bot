@@ -68,6 +68,32 @@ func (s GetTelegramBadgeOK) Read(p []byte) (n int, err error) {
 	return s.Data.Read(p)
 }
 
+// GetTelegramBadgeOKHeaders wraps GetTelegramBadgeOK with response headers.
+type GetTelegramBadgeOKHeaders struct {
+	CacheControl OptString
+	Response     GetTelegramBadgeOK
+}
+
+// GetCacheControl returns the value of CacheControl.
+func (s *GetTelegramBadgeOKHeaders) GetCacheControl() OptString {
+	return s.CacheControl
+}
+
+// GetResponse returns the value of Response.
+func (s *GetTelegramBadgeOKHeaders) GetResponse() GetTelegramBadgeOK {
+	return s.Response
+}
+
+// SetCacheControl sets the value of CacheControl.
+func (s *GetTelegramBadgeOKHeaders) SetCacheControl(val OptString) {
+	s.CacheControl = val
+}
+
+// SetResponse sets the value of Response.
+func (s *GetTelegramBadgeOKHeaders) SetResponse(val GetTelegramBadgeOK) {
+	s.Response = val
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{

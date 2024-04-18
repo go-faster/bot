@@ -44,6 +44,12 @@ paths:
       responses:
         200:
           description: Badge
+          headers:
+            Cache-Control:
+              description: "The Cache-Control header provides important info on how long a response may be considered fresh"
+              schema:
+                type: string
+              example: "Cache-Control: max-age=3600, public, must-revalidate"
           content:
             "image/svg+xml":
               schema:

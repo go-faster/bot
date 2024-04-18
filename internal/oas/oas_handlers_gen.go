@@ -73,7 +73,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 		return
 	}
 
-	var response GetTelegramBadgeOK
+	var response *GetTelegramBadgeOKHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -97,7 +97,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = GetTelegramBadgeParams
-			Response = GetTelegramBadgeOK
+			Response = *GetTelegramBadgeOKHeaders
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

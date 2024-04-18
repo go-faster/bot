@@ -18,7 +18,7 @@ var _ Handler = UnimplementedHandler{}
 // Get svg badge for telegram group.
 //
 // GET /badge/telegram/{group_name}
-func (UnimplementedHandler) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (r GetTelegramBadgeOK, _ error) {
+func (UnimplementedHandler) GetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (r *GetTelegramBadgeOKHeaders, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
