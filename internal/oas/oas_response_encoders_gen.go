@@ -36,6 +36,21 @@ func encodeGetTelegramBadgeResponse(response *GetTelegramBadgeOKHeaders, w http.
 				return errors.Wrap(err, "encode Cache-Control header")
 			}
 		}
+		// Encode "ETag" header.
+		{
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "ETag",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				if val, ok := response.ETag.Get(); ok {
+					return e.EncodeValue(conv.StringToString(val))
+				}
+				return nil
+			}); err != nil {
+				return errors.Wrap(err, "encode ETag header")
+			}
+		}
 	}
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))

@@ -3,6 +3,8 @@ package api
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"hash/crc32"
 	"io"
 	"net/http"
 	"net/url"
@@ -25,6 +27,11 @@ func generateBadgePath(name, text, style string) string {
 		toBadgeStr(text),
 		style,
 	}, "-")
+}
+
+func etag(name string, data []byte) string {
+	crc := crc32.ChecksumIEEE(data)
+	return fmt.Sprintf(`W/"%s-%d-%08X"`, name, len(data), crc)
 }
 
 func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadgeParams) (*oas.GetTelegramBadgeOKHeaders, error) {
@@ -60,6 +67,7 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 
 	return &oas.GetTelegramBadgeOKHeaders{
 		CacheControl: oas.NewOptString("no-cache"),
+		ETag:         oas.NewOptString(etag(params.GroupName, data)),
 		Response: oas.GetTelegramBadgeOK{
 			Data: bytes.NewReader(data),
 		},

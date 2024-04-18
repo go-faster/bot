@@ -74,6 +74,43 @@ func decodeGetTelegramBadgeResponse(resp *http.Response) (res *GetTelegramBadgeO
 					return res, errors.Wrap(err, "parse Cache-Control header")
 				}
 			}
+			// Parse "ETag" header.
+			{
+				cfg := uri.HeaderParameterDecodingConfig{
+					Name:    "ETag",
+					Explode: false,
+				}
+				if err := func() error {
+					if err := h.HasParam(cfg); err == nil {
+						if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+							var wrapperDotETagVal string
+							if err := func() error {
+								val, err := d.DecodeValue()
+								if err != nil {
+									return err
+								}
+
+								c, err := conv.ToString(val)
+								if err != nil {
+									return err
+								}
+
+								wrapperDotETagVal = c
+								return nil
+							}(); err != nil {
+								return err
+							}
+							wrapper.ETag.SetTo(wrapperDotETagVal)
+							return nil
+						}); err != nil {
+							return err
+						}
+					}
+					return nil
+				}(); err != nil {
+					return res, errors.Wrap(err, "parse ETag header")
+				}
+			}
 			return &wrapper, nil
 		default:
 			return res, validate.InvalidContentType(ct)
