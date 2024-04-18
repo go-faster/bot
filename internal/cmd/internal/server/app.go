@@ -329,7 +329,7 @@ func (a *App) Run(ctx context.Context) error {
 		httpClient := &http.Client{
 			Transport: a.httpTransport,
 		}
-		h, err := oas.NewServer(api.NewServer(a.db, a.client, a.resolver, httpClient),
+		h, err := oas.NewServer(api.NewServer(lg, a.db, a.client, a.resolver, httpClient),
 			oas.WithMeterProvider(a.m.MeterProvider()),
 			oas.WithTracerProvider(a.m.TracerProvider()),
 		)

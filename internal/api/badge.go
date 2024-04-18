@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/go-faster/errors"
-	"github.com/go-faster/sdk/zctx"
 	"github.com/gotd/td/tg"
 	"go.uber.org/zap"
 
@@ -50,7 +49,7 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 		if err != nil {
 			return nil, errors.Wrap(err, "get chat")
 		}
-		zctx.From(ctx).Info("Got chat",
+		s.lg.Info("Got chat",
 			zap.Int("chats", len(fullChat.Chats)),
 			zap.Int64("id", fullChat.FullChat.(*tg.ChatFull).ID),
 			zap.String("about", fullChat.FullChat.(*tg.ChatFull).About),
@@ -62,7 +61,7 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 			case *tg.Channel:
 				members = c.ParticipantsCount
 			default:
-				zctx.From(ctx).Warn("unexpected chat type",
+				s.lg.Warn("unexpected chat type",
 					zap.String("type", fmt.Sprintf("%T", chat)),
 				)
 			}
