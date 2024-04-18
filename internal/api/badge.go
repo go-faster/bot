@@ -44,7 +44,9 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 		if err != nil {
 			return nil, errors.Wrap(err, "resolve domain")
 		}
-		fullChat, err := s.tg.API().MessagesGetFullChat(ctx, peer.(*tg.InputPeerChannel).ChannelID)
+		var inputChannel tg.InputChannel
+		inputChannel.FillFrom(peer.(*tg.InputPeerChannel))
+		fullChat, err := s.tg.API().ChannelsGetFullChannel(ctx, &inputChannel)
 		if err != nil {
 			return nil, errors.Wrap(err, "get chat")
 		}
