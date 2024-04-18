@@ -71,6 +71,7 @@ type App struct {
 	gaps          *updates.Manager
 	rdy           *Readiness
 	httpTransport *otelhttp.Transport
+	resolver      peer.Resolver
 }
 
 func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
@@ -129,7 +130,9 @@ func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		},
 	})
 	raw := client.API()
-	sender := message.NewSender(raw)
+	resolver := peer.DefaultResolver(raw)
+	sender := message.NewSender(raw).
+		WithResolver(resolver)
 	dd := downloader.NewDownloader()
 	httpTransport := otelhttp.NewTransport(http.DefaultTransport,
 		otelhttp.WithTracerProvider(m.TracerProvider()),
@@ -195,6 +198,7 @@ func initApp(m *sdkapp.Metrics, lg *zap.Logger) (_ *App, rerr error) {
 		token:         token,
 		raw:           raw,
 		sender:        sender,
+		resolver:      resolver,
 		dispatcher:    dispatcher,
 		mux:           mux,
 		m:             m,
@@ -325,7 +329,7 @@ func (a *App) Run(ctx context.Context) error {
 		httpClient := &http.Client{
 			Transport: a.httpTransport,
 		}
-		h, err := oas.NewServer(api.NewServer(a.db, a.client, httpClient),
+		h, err := oas.NewServer(api.NewServer(a.db, a.client, a.resolver, httpClient),
 			oas.WithMeterProvider(a.m.MeterProvider()),
 			oas.WithTracerProvider(a.m.TracerProvider()),
 		)
