@@ -49,25 +49,10 @@ func (s Server) GetTelegramBadge(ctx context.Context, params oas.GetTelegramBadg
 		if err != nil {
 			return nil, errors.Wrap(err, "get chat")
 		}
-		chanFull := full.FullChat.(*tg.ChannelFull)
+		members = full.FullChat.(*tg.ChannelFull).ParticipantsCount
 		s.lg.Info("Got chat",
-			zap.Int("chats", len(full.Chats)),
-			zap.Int64("id", chanFull.ID),
-			zap.String("about", chanFull.About),
+			zap.Int("participants", members),
 		)
-		for _, chat := range full.Chats {
-			s.lg.Info("Chat", zap.Any("chat", chat))
-			switch c := chat.(type) {
-			case *tg.Chat:
-				members = c.ParticipantsCount
-			case *tg.Channel:
-				members = c.ParticipantsCount
-			default:
-				s.lg.Warn("Unexpected chat type",
-					zap.String("type", fmt.Sprintf("%T", chat)),
-				)
-			}
-		}
 	}
 	var (
 		title = params.Title.Or(params.GroupName)
