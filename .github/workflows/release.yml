@@ -71,7 +71,7 @@ jobs:
         run: go build -v ./cmd/bot
 
       - name: Application image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -80,7 +80,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Migrate image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           file: migrate.Dockerfile
           push: true
