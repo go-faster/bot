@@ -32,7 +32,7 @@ metadata:
   labels:
     app.kubernetes.io/name: bot
 spec:
-  ingressClassName: cilium
+  ingressClassName: nginx
   rules:
   - host: bot.go-faster.org
     http:
@@ -53,7 +53,7 @@ metadata:
   labels:
     app.kubernetes.io/name: bot
 spec:
-  ingressClassName: cilium
+  ingressClassName: nginx
   rules:
     - host: api.go-faster.org
       http:
