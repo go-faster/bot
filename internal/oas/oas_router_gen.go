@@ -252,9 +252,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
 						case "GET":
-							// Leaf: GetTelegramOnlineBadge
 							r.name = "GetTelegramOnlineBadge"
 							r.summary = ""
 							r.operationID = "getTelegramOnlineBadge"
@@ -275,9 +275,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				elem = ""
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "GET":
-						// Leaf: GetTelegramBadge
 						r.name = "GetTelegramBadge"
 						r.summary = ""
 						r.operationID = "getTelegramBadge"
@@ -300,9 +300,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				if len(elem) == 0 {
+					// Leaf node.
 					switch method {
 					case "GET":
-						// Leaf: Status
 						r.name = "Status"
 						r.summary = ""
 						r.operationID = "status"
