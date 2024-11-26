@@ -22,7 +22,7 @@ require (
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/ogen-go/ogen v1.1.0
 	github.com/redis/go-redis/v9 v9.5.1
-	github.com/rs/cors v1.10.1
+	github.com/rs/cors v1.11.1
 	github.com/sashabaranov/go-openai v1.28.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
