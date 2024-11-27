@@ -7,7 +7,7 @@ toolchain go1.22.9
 require (
 	entgo.io/ent v0.13.1
 	github.com/ClickHouse/ch-go v0.61.5
-	github.com/bradleyfalzon/ghinstallation/v2 v2.10.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.12.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.9
 	github.com/dustin/go-humanize v1.0.1
@@ -65,7 +65,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/go-github/v60 v60.0.0 // indirect
+	github.com/google/go-github/v66 v66.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
