@@ -105,7 +105,7 @@ func (tcsc *TelegramChannelStateCreate) check() error {
 	if _, ok := tcsc.mutation.Pts(); !ok {
 		return &ValidationError{Name: "pts", err: errors.New(`ent: missing required field "TelegramChannelState.pts"`)}
 	}
-	if _, ok := tcsc.mutation.UserID(); !ok {
+	if len(tcsc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "TelegramChannelState.user"`)}
 	}
 	return nil

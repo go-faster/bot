@@ -12,7 +12,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.19.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ogen-go/ogen/conv"
@@ -106,7 +106,7 @@ func (c *Client) GetTelegramBadge(ctx context.Context, params GetTelegramBadgePa
 func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBadgeParams) (res *SVGHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/badge/telegram/{group_name}"),
 	}
 
@@ -215,7 +215,7 @@ func (c *Client) GetTelegramOnlineBadge(ctx context.Context, params GetTelegramO
 func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTelegramOnlineBadgeParams) (res *SVGHeaders, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramOnlineBadge"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/badge/telegram/online"),
 	}
 
@@ -314,7 +314,7 @@ func (c *Client) Status(ctx context.Context) (*Status, error) {
 func (c *Client) sendStatus(ctx context.Context) (res *Status, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("status"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/status"),
 	}
 

@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.19.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"go.opentelemetry.io/otel/trace"
 
 	ht "github.com/ogen-go/ogen/http"
@@ -28,7 +28,7 @@ import (
 func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/badge/telegram/{group_name}"),
 	}
 
@@ -153,7 +153,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramOnlineBadge"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/badge/telegram/online"),
 	}
 
@@ -276,7 +276,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("status"),
-		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/status"),
 	}
 

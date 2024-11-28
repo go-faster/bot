@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -61,7 +62,7 @@ func (tsq *TelegramSessionQuery) Order(o ...telegramsession.OrderOption) *Telegr
 // First returns the first TelegramSession entity from the query.
 // Returns a *NotFoundError when no TelegramSession was found.
 func (tsq *TelegramSessionQuery) First(ctx context.Context) (*TelegramSession, error) {
-	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, "First"))
+	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (tsq *TelegramSessionQuery) FirstX(ctx context.Context) *TelegramSession {
 // Returns a *NotFoundError when no TelegramSession ID was found.
 func (tsq *TelegramSessionQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, "FirstID")); err != nil {
+	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -107,7 +108,7 @@ func (tsq *TelegramSessionQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Returns a *NotSingularError when more than one TelegramSession entity is found.
 // Returns a *NotFoundError when no TelegramSession entities are found.
 func (tsq *TelegramSessionQuery) Only(ctx context.Context) (*TelegramSession, error) {
-	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, "Only"))
+	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (tsq *TelegramSessionQuery) OnlyX(ctx context.Context) *TelegramSession {
 // Returns a *NotFoundError when no entities are found.
 func (tsq *TelegramSessionQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, "OnlyID")); err != nil {
+	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -160,7 +161,7 @@ func (tsq *TelegramSessionQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 
 // All executes the query and returns a list of TelegramSessions.
 func (tsq *TelegramSessionQuery) All(ctx context.Context) ([]*TelegramSession, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "All")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryAll)
 	if err := tsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -182,7 +183,7 @@ func (tsq *TelegramSessionQuery) IDs(ctx context.Context) (ids []uuid.UUID, err 
 	if tsq.ctx.Unique == nil && tsq.path != nil {
 		tsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tsq.ctx, "IDs")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryIDs)
 	if err = tsq.Select(telegramsession.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -200,7 +201,7 @@ func (tsq *TelegramSessionQuery) IDsX(ctx context.Context) []uuid.UUID {
 
 // Count returns the count of the given query.
 func (tsq *TelegramSessionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "Count")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryCount)
 	if err := tsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -218,7 +219,7 @@ func (tsq *TelegramSessionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tsq *TelegramSessionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "Exist")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryExist)
 	switch _, err := tsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -450,7 +451,7 @@ func (tsgb *TelegramSessionGroupBy) Aggregate(fns ...AggregateFunc) *TelegramSes
 
 // Scan applies the selector query and scans the result into the given value.
 func (tsgb *TelegramSessionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -498,7 +499,7 @@ func (tss *TelegramSessionSelect) Aggregate(fns ...AggregateFunc) *TelegramSessi
 
 // Scan applies the selector query and scans the result into the given value.
 func (tss *TelegramSessionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tss.ctx, "Select")
+	ctx = setContextOp(ctx, tss.ctx, ent.OpQuerySelect)
 	if err := tss.prepareQuery(ctx); err != nil {
 		return err
 	}
