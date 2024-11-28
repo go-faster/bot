@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (tusq *TelegramUserStateQuery) QueryChannels() *TelegramChannelStateQuery {
 // First returns the first TelegramUserState entity from the query.
 // Returns a *NotFoundError when no TelegramUserState was found.
 func (tusq *TelegramUserStateQuery) First(ctx context.Context) (*TelegramUserState, error) {
-	nodes, err := tusq.Limit(1).All(setContextOp(ctx, tusq.ctx, "First"))
+	nodes, err := tusq.Limit(1).All(setContextOp(ctx, tusq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (tusq *TelegramUserStateQuery) FirstX(ctx context.Context) *TelegramUserSta
 // Returns a *NotFoundError when no TelegramUserState ID was found.
 func (tusq *TelegramUserStateQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tusq.Limit(1).IDs(setContextOp(ctx, tusq.ctx, "FirstID")); err != nil {
+	if ids, err = tusq.Limit(1).IDs(setContextOp(ctx, tusq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (tusq *TelegramUserStateQuery) FirstIDX(ctx context.Context) int64 {
 // Returns a *NotSingularError when more than one TelegramUserState entity is found.
 // Returns a *NotFoundError when no TelegramUserState entities are found.
 func (tusq *TelegramUserStateQuery) Only(ctx context.Context) (*TelegramUserState, error) {
-	nodes, err := tusq.Limit(2).All(setContextOp(ctx, tusq.ctx, "Only"))
+	nodes, err := tusq.Limit(2).All(setContextOp(ctx, tusq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (tusq *TelegramUserStateQuery) OnlyX(ctx context.Context) *TelegramUserStat
 // Returns a *NotFoundError when no entities are found.
 func (tusq *TelegramUserStateQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tusq.Limit(2).IDs(setContextOp(ctx, tusq.ctx, "OnlyID")); err != nil {
+	if ids, err = tusq.Limit(2).IDs(setContextOp(ctx, tusq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (tusq *TelegramUserStateQuery) OnlyIDX(ctx context.Context) int64 {
 
 // All executes the query and returns a list of TelegramUserStates.
 func (tusq *TelegramUserStateQuery) All(ctx context.Context) ([]*TelegramUserState, error) {
-	ctx = setContextOp(ctx, tusq.ctx, "All")
+	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryAll)
 	if err := tusq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (tusq *TelegramUserStateQuery) IDs(ctx context.Context) (ids []int64, err e
 	if tusq.ctx.Unique == nil && tusq.path != nil {
 		tusq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tusq.ctx, "IDs")
+	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryIDs)
 	if err = tusq.Select(telegramuserstate.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (tusq *TelegramUserStateQuery) IDsX(ctx context.Context) []int64 {
 
 // Count returns the count of the given query.
 func (tusq *TelegramUserStateQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tusq.ctx, "Count")
+	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryCount)
 	if err := tusq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (tusq *TelegramUserStateQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tusq *TelegramUserStateQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tusq.ctx, "Exist")
+	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryExist)
 	switch _, err := tusq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -550,7 +551,7 @@ func (tusgb *TelegramUserStateGroupBy) Aggregate(fns ...AggregateFunc) *Telegram
 
 // Scan applies the selector query and scans the result into the given value.
 func (tusgb *TelegramUserStateGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tusgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tusgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tusgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -598,7 +599,7 @@ func (tuss *TelegramUserStateSelect) Aggregate(fns ...AggregateFunc) *TelegramUs
 
 // Scan applies the selector query and scans the result into the given value.
 func (tuss *TelegramUserStateSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tuss.ctx, "Select")
+	ctx = setContextOp(ctx, tuss.ctx, ent.OpQuerySelect)
 	if err := tuss.prepareQuery(ctx); err != nil {
 		return err
 	}

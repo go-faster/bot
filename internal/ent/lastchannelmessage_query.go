@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (lcmq *LastChannelMessageQuery) Order(o ...lastchannelmessage.OrderOption) 
 // First returns the first LastChannelMessage entity from the query.
 // Returns a *NotFoundError when no LastChannelMessage was found.
 func (lcmq *LastChannelMessageQuery) First(ctx context.Context) (*LastChannelMessage, error) {
-	nodes, err := lcmq.Limit(1).All(setContextOp(ctx, lcmq.ctx, "First"))
+	nodes, err := lcmq.Limit(1).All(setContextOp(ctx, lcmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (lcmq *LastChannelMessageQuery) FirstX(ctx context.Context) *LastChannelMes
 // Returns a *NotFoundError when no LastChannelMessage ID was found.
 func (lcmq *LastChannelMessageQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = lcmq.Limit(1).IDs(setContextOp(ctx, lcmq.ctx, "FirstID")); err != nil {
+	if ids, err = lcmq.Limit(1).IDs(setContextOp(ctx, lcmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (lcmq *LastChannelMessageQuery) FirstIDX(ctx context.Context) int64 {
 // Returns a *NotSingularError when more than one LastChannelMessage entity is found.
 // Returns a *NotFoundError when no LastChannelMessage entities are found.
 func (lcmq *LastChannelMessageQuery) Only(ctx context.Context) (*LastChannelMessage, error) {
-	nodes, err := lcmq.Limit(2).All(setContextOp(ctx, lcmq.ctx, "Only"))
+	nodes, err := lcmq.Limit(2).All(setContextOp(ctx, lcmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (lcmq *LastChannelMessageQuery) OnlyX(ctx context.Context) *LastChannelMess
 // Returns a *NotFoundError when no entities are found.
 func (lcmq *LastChannelMessageQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = lcmq.Limit(2).IDs(setContextOp(ctx, lcmq.ctx, "OnlyID")); err != nil {
+	if ids, err = lcmq.Limit(2).IDs(setContextOp(ctx, lcmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (lcmq *LastChannelMessageQuery) OnlyIDX(ctx context.Context) int64 {
 
 // All executes the query and returns a list of LastChannelMessages.
 func (lcmq *LastChannelMessageQuery) All(ctx context.Context) ([]*LastChannelMessage, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, "All")
+	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryAll)
 	if err := lcmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (lcmq *LastChannelMessageQuery) IDs(ctx context.Context) (ids []int64, err 
 	if lcmq.ctx.Unique == nil && lcmq.path != nil {
 		lcmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, lcmq.ctx, "IDs")
+	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryIDs)
 	if err = lcmq.Select(lastchannelmessage.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (lcmq *LastChannelMessageQuery) IDsX(ctx context.Context) []int64 {
 
 // Count returns the count of the given query.
 func (lcmq *LastChannelMessageQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, "Count")
+	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryCount)
 	if err := lcmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (lcmq *LastChannelMessageQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (lcmq *LastChannelMessageQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, "Exist")
+	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryExist)
 	switch _, err := lcmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (lcmgb *LastChannelMessageGroupBy) Aggregate(fns ...AggregateFunc) *LastCha
 
 // Scan applies the selector query and scans the result into the given value.
 func (lcmgb *LastChannelMessageGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, lcmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, lcmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := lcmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (lcms *LastChannelMessageSelect) Aggregate(fns ...AggregateFunc) *LastChann
 
 // Scan applies the selector query and scans the result into the given value.
 func (lcms *LastChannelMessageSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, lcms.ctx, "Select")
+	ctx = setContextOp(ctx, lcms.ctx, ent.OpQuerySelect)
 	if err := lcms.prepareQuery(ctx); err != nil {
 		return err
 	}

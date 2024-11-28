@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -84,7 +85,7 @@ func (tcsq *TelegramChannelStateQuery) QueryUser() *TelegramUserStateQuery {
 // First returns the first TelegramChannelState entity from the query.
 // Returns a *NotFoundError when no TelegramChannelState was found.
 func (tcsq *TelegramChannelStateQuery) First(ctx context.Context) (*TelegramChannelState, error) {
-	nodes, err := tcsq.Limit(1).All(setContextOp(ctx, tcsq.ctx, "First"))
+	nodes, err := tcsq.Limit(1).All(setContextOp(ctx, tcsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +108,7 @@ func (tcsq *TelegramChannelStateQuery) FirstX(ctx context.Context) *TelegramChan
 // Returns a *NotFoundError when no TelegramChannelState ID was found.
 func (tcsq *TelegramChannelStateQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tcsq.Limit(1).IDs(setContextOp(ctx, tcsq.ctx, "FirstID")); err != nil {
+	if ids, err = tcsq.Limit(1).IDs(setContextOp(ctx, tcsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -130,7 +131,7 @@ func (tcsq *TelegramChannelStateQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TelegramChannelState entity is found.
 // Returns a *NotFoundError when no TelegramChannelState entities are found.
 func (tcsq *TelegramChannelStateQuery) Only(ctx context.Context) (*TelegramChannelState, error) {
-	nodes, err := tcsq.Limit(2).All(setContextOp(ctx, tcsq.ctx, "Only"))
+	nodes, err := tcsq.Limit(2).All(setContextOp(ctx, tcsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +159,7 @@ func (tcsq *TelegramChannelStateQuery) OnlyX(ctx context.Context) *TelegramChann
 // Returns a *NotFoundError when no entities are found.
 func (tcsq *TelegramChannelStateQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tcsq.Limit(2).IDs(setContextOp(ctx, tcsq.ctx, "OnlyID")); err != nil {
+	if ids, err = tcsq.Limit(2).IDs(setContextOp(ctx, tcsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -183,7 +184,7 @@ func (tcsq *TelegramChannelStateQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TelegramChannelStates.
 func (tcsq *TelegramChannelStateQuery) All(ctx context.Context) ([]*TelegramChannelState, error) {
-	ctx = setContextOp(ctx, tcsq.ctx, "All")
+	ctx = setContextOp(ctx, tcsq.ctx, ent.OpQueryAll)
 	if err := tcsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -205,7 +206,7 @@ func (tcsq *TelegramChannelStateQuery) IDs(ctx context.Context) (ids []int, err 
 	if tcsq.ctx.Unique == nil && tcsq.path != nil {
 		tcsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tcsq.ctx, "IDs")
+	ctx = setContextOp(ctx, tcsq.ctx, ent.OpQueryIDs)
 	if err = tcsq.Select(telegramchannelstate.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -223,7 +224,7 @@ func (tcsq *TelegramChannelStateQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tcsq *TelegramChannelStateQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tcsq.ctx, "Count")
+	ctx = setContextOp(ctx, tcsq.ctx, ent.OpQueryCount)
 	if err := tcsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -241,7 +242,7 @@ func (tcsq *TelegramChannelStateQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tcsq *TelegramChannelStateQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tcsq.ctx, "Exist")
+	ctx = setContextOp(ctx, tcsq.ctx, ent.OpQueryExist)
 	switch _, err := tcsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -528,7 +529,7 @@ func (tcsgb *TelegramChannelStateGroupBy) Aggregate(fns ...AggregateFunc) *Teleg
 
 // Scan applies the selector query and scans the result into the given value.
 func (tcsgb *TelegramChannelStateGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tcsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tcsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tcsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -576,7 +577,7 @@ func (tcss *TelegramChannelStateSelect) Aggregate(fns ...AggregateFunc) *Telegra
 
 // Scan applies the selector query and scans the result into the given value.
 func (tcss *TelegramChannelStateSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tcss.ctx, "Select")
+	ctx = setContextOp(ctx, tcss.ctx, ent.OpQuerySelect)
 	if err := tcss.prepareQuery(ctx); err != nil {
 		return err
 	}

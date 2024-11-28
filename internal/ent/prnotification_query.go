@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (pnq *PRNotificationQuery) Order(o ...prnotification.OrderOption) *PRNotifi
 // First returns the first PRNotification entity from the query.
 // Returns a *NotFoundError when no PRNotification was found.
 func (pnq *PRNotificationQuery) First(ctx context.Context) (*PRNotification, error) {
-	nodes, err := pnq.Limit(1).All(setContextOp(ctx, pnq.ctx, "First"))
+	nodes, err := pnq.Limit(1).All(setContextOp(ctx, pnq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (pnq *PRNotificationQuery) FirstX(ctx context.Context) *PRNotification {
 // Returns a *NotFoundError when no PRNotification ID was found.
 func (pnq *PRNotificationQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pnq.Limit(1).IDs(setContextOp(ctx, pnq.ctx, "FirstID")); err != nil {
+	if ids, err = pnq.Limit(1).IDs(setContextOp(ctx, pnq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (pnq *PRNotificationQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one PRNotification entity is found.
 // Returns a *NotFoundError when no PRNotification entities are found.
 func (pnq *PRNotificationQuery) Only(ctx context.Context) (*PRNotification, error) {
-	nodes, err := pnq.Limit(2).All(setContextOp(ctx, pnq.ctx, "Only"))
+	nodes, err := pnq.Limit(2).All(setContextOp(ctx, pnq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (pnq *PRNotificationQuery) OnlyX(ctx context.Context) *PRNotification {
 // Returns a *NotFoundError when no entities are found.
 func (pnq *PRNotificationQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pnq.Limit(2).IDs(setContextOp(ctx, pnq.ctx, "OnlyID")); err != nil {
+	if ids, err = pnq.Limit(2).IDs(setContextOp(ctx, pnq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (pnq *PRNotificationQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of PRNotifications.
 func (pnq *PRNotificationQuery) All(ctx context.Context) ([]*PRNotification, error) {
-	ctx = setContextOp(ctx, pnq.ctx, "All")
+	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryAll)
 	if err := pnq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (pnq *PRNotificationQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if pnq.ctx.Unique == nil && pnq.path != nil {
 		pnq.Unique(true)
 	}
-	ctx = setContextOp(ctx, pnq.ctx, "IDs")
+	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryIDs)
 	if err = pnq.Select(prnotification.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (pnq *PRNotificationQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (pnq *PRNotificationQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, pnq.ctx, "Count")
+	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryCount)
 	if err := pnq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (pnq *PRNotificationQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (pnq *PRNotificationQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, pnq.ctx, "Exist")
+	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryExist)
 	switch _, err := pnq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (pngb *PRNotificationGroupBy) Aggregate(fns ...AggregateFunc) *PRNotificati
 
 // Scan applies the selector query and scans the result into the given value.
 func (pngb *PRNotificationGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pngb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, pngb.build.ctx, ent.OpQueryGroupBy)
 	if err := pngb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (pns *PRNotificationSelect) Aggregate(fns ...AggregateFunc) *PRNotification
 
 // Scan applies the selector query and scans the result into the given value.
 func (pns *PRNotificationSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pns.ctx, "Select")
+	ctx = setContextOp(ctx, pns.ctx, ent.OpQuerySelect)
 	if err := pns.prepareQuery(ctx); err != nil {
 		return err
 	}

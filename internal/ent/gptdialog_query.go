@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (gdq *GPTDialogQuery) Order(o ...gptdialog.OrderOption) *GPTDialogQuery {
 // First returns the first GPTDialog entity from the query.
 // Returns a *NotFoundError when no GPTDialog was found.
 func (gdq *GPTDialogQuery) First(ctx context.Context) (*GPTDialog, error) {
-	nodes, err := gdq.Limit(1).All(setContextOp(ctx, gdq.ctx, "First"))
+	nodes, err := gdq.Limit(1).All(setContextOp(ctx, gdq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (gdq *GPTDialogQuery) FirstX(ctx context.Context) *GPTDialog {
 // Returns a *NotFoundError when no GPTDialog ID was found.
 func (gdq *GPTDialogQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = gdq.Limit(1).IDs(setContextOp(ctx, gdq.ctx, "FirstID")); err != nil {
+	if ids, err = gdq.Limit(1).IDs(setContextOp(ctx, gdq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (gdq *GPTDialogQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one GPTDialog entity is found.
 // Returns a *NotFoundError when no GPTDialog entities are found.
 func (gdq *GPTDialogQuery) Only(ctx context.Context) (*GPTDialog, error) {
-	nodes, err := gdq.Limit(2).All(setContextOp(ctx, gdq.ctx, "Only"))
+	nodes, err := gdq.Limit(2).All(setContextOp(ctx, gdq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (gdq *GPTDialogQuery) OnlyX(ctx context.Context) *GPTDialog {
 // Returns a *NotFoundError when no entities are found.
 func (gdq *GPTDialogQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = gdq.Limit(2).IDs(setContextOp(ctx, gdq.ctx, "OnlyID")); err != nil {
+	if ids, err = gdq.Limit(2).IDs(setContextOp(ctx, gdq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (gdq *GPTDialogQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of GPTDialogs.
 func (gdq *GPTDialogQuery) All(ctx context.Context) ([]*GPTDialog, error) {
-	ctx = setContextOp(ctx, gdq.ctx, "All")
+	ctx = setContextOp(ctx, gdq.ctx, ent.OpQueryAll)
 	if err := gdq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (gdq *GPTDialogQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if gdq.ctx.Unique == nil && gdq.path != nil {
 		gdq.Unique(true)
 	}
-	ctx = setContextOp(ctx, gdq.ctx, "IDs")
+	ctx = setContextOp(ctx, gdq.ctx, ent.OpQueryIDs)
 	if err = gdq.Select(gptdialog.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (gdq *GPTDialogQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (gdq *GPTDialogQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, gdq.ctx, "Count")
+	ctx = setContextOp(ctx, gdq.ctx, ent.OpQueryCount)
 	if err := gdq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (gdq *GPTDialogQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (gdq *GPTDialogQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, gdq.ctx, "Exist")
+	ctx = setContextOp(ctx, gdq.ctx, ent.OpQueryExist)
 	switch _, err := gdq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (gdgb *GPTDialogGroupBy) Aggregate(fns ...AggregateFunc) *GPTDialogGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (gdgb *GPTDialogGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gdgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, gdgb.build.ctx, ent.OpQueryGroupBy)
 	if err := gdgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (gds *GPTDialogSelect) Aggregate(fns ...AggregateFunc) *GPTDialogSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (gds *GPTDialogSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gds.ctx, "Select")
+	ctx = setContextOp(ctx, gds.ctx, ent.OpQuerySelect)
 	if err := gds.prepareQuery(ctx); err != nil {
 		return err
 	}

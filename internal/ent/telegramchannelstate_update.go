@@ -129,7 +129,7 @@ func (tcsu *TelegramChannelStateUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tcsu *TelegramChannelStateUpdate) check() error {
-	if _, ok := tcsu.mutation.UserID(); tcsu.mutation.UserCleared() && !ok {
+	if tcsu.mutation.UserCleared() && len(tcsu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TelegramChannelState.user"`)
 	}
 	return nil
@@ -322,7 +322,7 @@ func (tcsuo *TelegramChannelStateUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tcsuo *TelegramChannelStateUpdateOne) check() error {
-	if _, ok := tcsuo.mutation.UserID(); tcsuo.mutation.UserCleared() && !ok {
+	if tcsuo.mutation.UserCleared() && len(tcsuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TelegramChannelState.user"`)
 	}
 	return nil
