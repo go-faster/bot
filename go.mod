@@ -26,7 +26,7 @@ require (
 	github.com/sashabaranov/go-openai v1.28.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tiktoken-go/tokenizer v0.1.1
+	github.com/tiktoken-go/tokenizer v0.2.1
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.57.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.57.0
 	go.opentelemetry.io/otel v1.32.0
