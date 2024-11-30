@@ -33,7 +33,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "GetTelegramBadge",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetTelegramBadgeOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -64,7 +64,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "GetTelegramBadge",
+			Name: GetTelegramBadgeOperation,
 			ID:   "getTelegramBadge",
 		}
 	)
@@ -83,7 +83,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "GetTelegramBadge",
+			OperationName:    GetTelegramBadgeOperation,
 			OperationSummary: "",
 			OperationID:      "getTelegramBadge",
 			Body:             nil,
@@ -158,7 +158,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "GetTelegramOnlineBadge",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetTelegramOnlineBadgeOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -189,7 +189,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "GetTelegramOnlineBadge",
+			Name: GetTelegramOnlineBadgeOperation,
 			ID:   "getTelegramOnlineBadge",
 		}
 	)
@@ -208,7 +208,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "GetTelegramOnlineBadge",
+			OperationName:    GetTelegramOnlineBadgeOperation,
 			OperationSummary: "",
 			OperationID:      "getTelegramOnlineBadge",
 			Body:             nil,
@@ -281,7 +281,7 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "Status",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), StatusOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -317,7 +317,7 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    "Status",
+			OperationName:    StatusOperation,
 			OperationSummary: "",
 			OperationID:      "status",
 			Body:             nil,

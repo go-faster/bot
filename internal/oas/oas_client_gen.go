@@ -122,7 +122,7 @@ func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBad
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetTelegramBadge",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetTelegramBadgeOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -231,7 +231,7 @@ func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTeleg
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetTelegramOnlineBadge",
+	ctx, span := c.cfg.Tracer.Start(ctx, GetTelegramOnlineBadgeOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -330,7 +330,7 @@ func (c *Client) sendStatus(ctx context.Context) (res *Status, err error) {
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "Status",
+	ctx, span := c.cfg.Tracer.Start(ctx, StatusOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
