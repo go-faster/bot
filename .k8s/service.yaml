@@ -34,7 +34,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: bot.gotd.io
+  - host: bot.gotd.dev
     http:
       paths:
       - path: /
@@ -55,7 +55,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: api.gotd.io
+    - host: api.gotd.dev
       http:
         paths:
           - path: /
