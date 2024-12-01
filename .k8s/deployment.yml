@@ -86,11 +86,7 @@ spec:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             - name: OTEL_METRICS_EXPORTER
-              value: "prometheus"
-            - name: OTEL_EXPORTER_PROMETHEUS_PORT
-              value: "8090"
-            - name: OTEL_EXPORTER_PROMETHEUS_HOST
-              value: "0.0.0.0"
+              value: "otlp"
             - name: PPROF_ADDR
               value: "0.0.0.0:8090"
             - name: OTEL_RESOURCE_ATTRIBUTES
@@ -98,6 +94,8 @@ spec:
             - name: OTEL_LOG_LEVEL
               value: "DEBUG"
             - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+            - name: OTEL_LOGS_EXPORTER
               value: "otlp"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-collector.monitoring.svc.cluster.local:4317"
