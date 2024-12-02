@@ -164,8 +164,8 @@ github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9G
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA=
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
-github.com/ogen-go/ogen v1.7.0 h1:EBk0JoVpPaWaWJ6VZoQeuuLNDzufdMJsWJr35su5QnI=
-github.com/ogen-go/ogen v1.7.0/go.mod h1:2ShRm6u/nXUHuwdVKv2SeaG8enBKPKAE3kSbHwwFh6o=
+github.com/ogen-go/ogen v1.8.0 h1:p0LMWXdEz7ddqwHQ8Rnde5V1FuU/fwkCKE35rc6a4cQ=
+github.com/ogen-go/ogen v1.8.0/go.mod h1:2ShRm6u/nXUHuwdVKv2SeaG8enBKPKAE3kSbHwwFh6o=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/pascaldekloe/name v1.0.1 h1:9lnXOHeqeHHnWLbKfH6X98+4+ETVqFqxN09UXSjcMb0=
