@@ -86,7 +86,11 @@ spec:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             - name: OTEL_METRICS_EXPORTER
-              value: "otlp"
+              value: "prometheus"
+            - name: OTEL_EXPORTER_PROMETHEUS_PORT
+              value: "8090"
+            - name: OTEL_EXPORTER_PROMETHEUS_HOST
+              value: "0.0.0.0"
             - name: PPROF_ADDR
               value: "0.0.0.0:8090"
             - name: OTEL_RESOURCE_ATTRIBUTES
