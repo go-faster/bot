@@ -1,0 +1,6 @@
+generator:
+  features:
+    enable:
+      - "ogen/otel"
+      # Enables example tests generation
+      - 'debug/example_tests'
