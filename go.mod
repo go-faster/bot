@@ -19,7 +19,7 @@ require (
 	github.com/gotd/contrib v0.21.0
 	github.com/gotd/td v0.115.0
 	github.com/jackc/pgx/v5 v5.7.1
-	github.com/labstack/echo/v4 v4.13.2
+	github.com/labstack/echo/v4 v4.13.3
 	github.com/ogen-go/ogen v1.8.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/rs/cors v1.11.1
@@ -122,7 +122,7 @@ require (
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.27.0 // indirect
