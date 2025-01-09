@@ -1,6 +1,7 @@
 module github.com/go-faster/bot
 
-go 1.23.0
+go 1.23.3
+
 require (
 	entgo.io/ent v0.14.1
 	github.com/ClickHouse/ch-go v0.63.1
