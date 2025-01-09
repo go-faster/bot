@@ -16,10 +16,10 @@ import (
 type Handler struct {
 	Middleware *oteltg.Middleware
 
-	m *app.Metrics
+	m *app.Telemetry
 }
 
-func NewHandler(m *app.Metrics) Handler {
+func NewHandler(m *app.Telemetry) Handler {
 	return Handler{m: m}
 }
 
