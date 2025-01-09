@@ -46,7 +46,7 @@ func Root() *cobra.Command {
 		Use:   "commits",
 		Short: "Gather commit information and save to database",
 		Run: func(cmd *cobra.Command, args []string) {
-			app.Run(func(ctx context.Context, logger *zap.Logger, m *app.Metrics) error {
+			app.Run(func(ctx context.Context, logger *zap.Logger, m *app.Telemetry) error {
 				start := time.Now()
 
 				tracer := m.TracerProvider().Tracer("command")

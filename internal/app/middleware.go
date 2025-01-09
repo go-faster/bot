@@ -22,7 +22,7 @@ type Middleware struct {
 	next       dispatch.MessageHandler
 	downloader *downloader.Downloader
 	client     *botapi.Client
-	metrics    *app.Metrics
+	metrics    *app.Telemetry
 
 	logger *zap.Logger
 }
@@ -31,7 +31,7 @@ type Middleware struct {
 func NewMiddleware(
 	next dispatch.MessageHandler,
 	d *downloader.Downloader,
-	metrics *app.Metrics,
+	metrics *app.Telemetry,
 	opts MiddlewareOptions,
 ) Middleware {
 	opts.setDefaults()
