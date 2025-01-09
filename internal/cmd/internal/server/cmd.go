@@ -14,8 +14,8 @@ func Root() *cobra.Command {
 		Use:   "server",
 		Short: "Run a go-faster bot server",
 		Run: func(cmd *cobra.Command, args []string) {
-			app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
-				return runBot(ctx, m, lg.Named("bot"))
+			app.Run(func(ctx context.Context, lg *zap.Logger, t *app.Telemetry) error {
+				return runBot(ctx, t, lg.Named("bot"))
 			})
 		},
 	}
