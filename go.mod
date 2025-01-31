@@ -4,7 +4,7 @@ go 1.23.3
 
 require (
 	entgo.io/ent v0.14.1
-	github.com/ClickHouse/ch-go v0.63.1
+	github.com/ClickHouse/ch-go v0.64.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.13.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.10
@@ -85,7 +85,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pascaldekloe/name v1.0.1 // indirect
-	github.com/pierrec/lz4/v4 v4.1.21 // indirect
+	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
