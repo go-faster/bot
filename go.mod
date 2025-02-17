@@ -4,7 +4,7 @@ go 1.23.3
 
 require (
 	entgo.io/ent v0.14.1
-	github.com/ClickHouse/ch-go v0.64.1
+	github.com/ClickHouse/ch-go v0.65.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.13.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.10
