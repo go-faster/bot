@@ -7,7 +7,7 @@ require (
 	github.com/ClickHouse/ch-go v0.65.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.13.0
 	github.com/brpaz/echozap v1.1.3
-	github.com/dmarkham/enumer v1.5.10
+	github.com/dmarkham/enumer v1.5.11
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
