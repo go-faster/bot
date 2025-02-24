@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	entgo.io/ent v0.14.2
 	github.com/ClickHouse/ch-go v0.65.1
-	github.com/bradleyfalzon/ghinstallation/v2 v2.13.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.14.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.11
 	github.com/dustin/go-humanize v1.0.1
@@ -65,7 +65,7 @@ require (
 	github.com/go-openapi/inflect v0.21.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/go-github/v68 v68.0.0 // indirect
+	github.com/google/go-github/v69 v69.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
