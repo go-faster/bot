@@ -21,7 +21,7 @@ require (
 	github.com/ogen-go/ogen v1.10.0
 	github.com/redis/go-redis/v9 v9.7.3
 	github.com/rs/cors v1.11.1
-	github.com/sashabaranov/go-openai v1.38.0
+	github.com/sashabaranov/go-openai v1.38.1
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/tiktoken-go/tokenizer v0.6.0
