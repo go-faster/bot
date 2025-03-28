@@ -2,6 +2,8 @@ module github.com/go-faster/bot
 
 go 1.23.3
 
+toolchain go1.24.1
+
 require (
 	entgo.io/ent v0.14.2
 	github.com/ClickHouse/ch-go v0.65.1
@@ -24,7 +26,7 @@ require (
 	github.com/sashabaranov/go-openai v1.38.1
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/tiktoken-go/tokenizer v0.6.0
+	github.com/tiktoken-go/tokenizer v0.6.1
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.60.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.60.0
 	go.opentelemetry.io/otel v1.35.0
