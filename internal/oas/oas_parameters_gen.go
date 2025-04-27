@@ -193,7 +193,7 @@ func decodeGetTelegramOnlineBadgeParams(args [0]string, argsEscaped bool, r *htt
 				return err
 			}
 		} else {
-			return validate.ErrFieldRequired
+			return err
 		}
 		return nil
 	}(); err != nil {
