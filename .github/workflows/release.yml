@@ -13,7 +13,7 @@ env:
 jobs:
   deploy:
     environment: prod
-    runs-on: ubuntu-latest
+    runs-on: [deploy]
     permissions:
       contents: read
       packages: write
