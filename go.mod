@@ -5,7 +5,7 @@ go 1.23.3
 toolchain go1.24.1
 
 require (
-	entgo.io/ent v0.14.2
+	entgo.io/ent v0.14.4
 	github.com/ClickHouse/ch-go v0.65.1
 	github.com/bradleyfalzon/ghinstallation/v2 v2.15.0
 	github.com/brpaz/echozap v1.1.3
