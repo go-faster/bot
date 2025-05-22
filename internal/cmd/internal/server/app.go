@@ -352,7 +352,10 @@ func (a *App) Run(ctx context.Context) error {
 		}
 		g.Go(func() error {
 			lg.Info("ListenAndServe", zap.String("addr", server.Addr))
-			return server.ListenAndServe()
+			if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+				return errors.Wrap(err, "listen")
+			}
+			return nil
 		})
 		g.Go(func() error {
 			<-ctx.Done()
