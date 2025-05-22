@@ -62,6 +62,29 @@ paths:
           $ref: "#/components/responses/SVG"
         default:
           $ref: "#/components/responses/Error"
+  /github/status:
+    post:
+      description: https://www.githubstatus.com/ webhook
+      operationId: "githubStatus"
+      parameters:
+        - name: secret
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        200:
+          description: "Github status accepted"
+        default:
+          $ref: "#/components/responses/Error"
+
 components:
   responses:
     Error:

@@ -205,3 +205,67 @@ func decodeGetTelegramOnlineBadgeParams(args [0]string, argsEscaped bool, r *htt
 	}
 	return params, nil
 }
+
+// GithubStatusParams is parameters of githubStatus operation.
+type GithubStatusParams struct {
+	Secret OptString
+}
+
+func unpackGithubStatusParams(packed middleware.Parameters) (params GithubStatusParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "secret",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Secret = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGithubStatusParams(args [0]string, argsEscaped bool, r *http.Request) (params GithubStatusParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: secret.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "secret",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSecretVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSecretVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Secret.SetTo(paramsDotSecretVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "secret",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}

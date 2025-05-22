@@ -18,6 +18,12 @@ type Handler interface {
 	//
 	// GET /badge/telegram/online
 	GetTelegramOnlineBadge(ctx context.Context, params GetTelegramOnlineBadgeParams) (*SVGHeaders, error)
+	// GithubStatus implements githubStatus operation.
+	//
+	// Https://www.githubstatus.com/ webhook.
+	//
+	// POST /github/status
+	GithubStatus(ctx context.Context, req GithubStatusReq, params GithubStatusParams) error
 	// Status implements status operation.
 	//
 	// Get status.

@@ -118,6 +118,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
+			case 'g': // Prefix: "github/status"
+
+				if l := len("github/status"); len(elem) >= l && elem[0:l] == "github/status" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleGithubStatusRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
+
 			case 's': // Prefix: "status"
 
 				if l := len("status"); len(elem) >= l && elem[0:l] == "status" {
@@ -289,6 +309,30 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.pathPattern = "/badge/telegram/{group_name}"
 						r.args = args
 						r.count = 1
+						return r, true
+					default:
+						return
+					}
+				}
+
+			case 'g': // Prefix: "github/status"
+
+				if l := len("github/status"); len(elem) >= l && elem[0:l] == "github/status" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "POST":
+						r.name = GithubStatusOperation
+						r.summary = ""
+						r.operationID = "githubStatus"
+						r.pathPattern = "/github/status"
+						r.args = args
+						r.count = 0
 						return r, true
 					default:
 						return

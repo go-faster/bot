@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+
+	"github.com/go-faster/jx"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -52,6 +54,20 @@ func (s *ErrorStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
+}
+
+// GithubStatusOK is response for GithubStatus operation.
+type GithubStatusOK struct{}
+
+type GithubStatusReq map[string]jx.Raw
+
+func (s *GithubStatusReq) init() GithubStatusReq {
+	m := *s
+	if m == nil {
+		m = map[string]jx.Raw{}
+		*s = m
+	}
+	return m
 }
 
 // NewOptString returns new OptString with value set to v.

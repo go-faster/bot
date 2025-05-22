@@ -23,6 +23,20 @@ func TestError_EncodeDecode(t *testing.T) {
 	var typ2 Error
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestGithubStatusReq_EncodeDecode(t *testing.T) {
+	var typ GithubStatusReq
+	typ = make(GithubStatusReq)
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 GithubStatusReq
+	typ2 = make(GithubStatusReq)
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestStatistics_EncodeDecode(t *testing.T) {
 	var typ Statistics
 	typ.SetFake()

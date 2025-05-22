@@ -38,6 +38,12 @@ type Invoker interface {
 	//
 	// GET /badge/telegram/online
 	GetTelegramOnlineBadge(ctx context.Context, params GetTelegramOnlineBadgeParams) (*SVGHeaders, error)
+	// GithubStatus invokes githubStatus operation.
+	//
+	// Https://www.githubstatus.com/ webhook.
+	//
+	// POST /github/status
+	GithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) error
 	// Status invokes status operation.
 	//
 	// Get status.
@@ -294,6 +300,102 @@ func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTeleg
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTelegramOnlineBadgeResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GithubStatus invokes githubStatus operation.
+//
+// Https://www.githubstatus.com/ webhook.
+//
+// POST /github/status
+func (c *Client) GithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) error {
+	_, err := c.sendGithubStatus(ctx, request, params)
+	return err
+}
+
+func (c *Client) sendGithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) (res *GithubStatusOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("githubStatus"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/github/status"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GithubStatusOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/github/status"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "secret" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "secret",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Secret.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeGithubStatusRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGithubStatusResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

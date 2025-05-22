@@ -3,7 +3,10 @@
 package oas
 
 import (
+	"fmt"
 	"net/url"
+
+	"github.com/go-faster/jx"
 )
 
 // SetFake set fake values.
@@ -12,6 +15,17 @@ func (s *Error) SetFake() {
 		{
 			s.Message = "string"
 		}
+	}
+}
+
+// SetFake set fake values.
+func (s *GithubStatusReq) SetFake() {
+	var (
+		elem jx.Raw
+		m    map[string]jx.Raw = s.init()
+	)
+	for i := 0; i < 0; i++ {
+		m[fmt.Sprintf("fake%d", i)] = elem
 	}
 }
 

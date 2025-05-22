@@ -116,6 +116,13 @@ func encodeGetTelegramOnlineBadgeResponse(response *SVGHeaders, w http.ResponseW
 	return nil
 }
 
+func encodeGithubStatusResponse(response *GithubStatusOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
 func encodeStatusResponse(response *Status, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)

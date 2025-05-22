@@ -8,5 +8,6 @@ type OperationName = string
 const (
 	GetTelegramBadgeOperation       OperationName = "GetTelegramBadge"
 	GetTelegramOnlineBadgeOperation OperationName = "GetTelegramOnlineBadge"
+	GithubStatusOperation           OperationName = "GithubStatus"
 	StatusOperation                 OperationName = "Status"
 )
