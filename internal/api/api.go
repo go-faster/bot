@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/go-faster/jx"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/message/peer"
 	"github.com/ogen-go/ogen/http"
@@ -32,13 +33,30 @@ type Server struct {
 }
 
 func (s Server) GithubStatus(ctx context.Context, req oas.GithubStatusReq, params oas.GithubStatusParams) error {
+	var e jx.Encoder
+	e.Obj(func(e *jx.Encoder) {
+		for k, v := range req {
+			e.Field(k, func(e *jx.Encoder) {
+				e.Raw(v)
+			})
+		}
+	})
+
+	var fullObject any
+	_ = json.Unmarshal(e.Bytes(), &fullObject)
+
 	lg := s.lg
-	lg.Info("Github status key", zap.String("key", params.Secret.Value))
+	lg.Info("Github status",
+		zap.String("key", params.Secret.Value),
+		zap.Any("object", fullObject),
+		zap.String("object.raw", e.String()),
+	)
+
 	for k, v := range req {
 		var object any
 		_ = json.Unmarshal(v, &object)
 
-		lg.Debug("Github status",
+		lg.Debug("Github status kv",
 			zap.String("key", k),
 			zap.Any("value", object),
 			zap.Stringer("valuer.raw", v),
