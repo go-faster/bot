@@ -77,8 +77,7 @@ paths:
         content:
           "application/json":
             schema:
-              type: object
-              additionalProperties: true
+              $ref: "#/components/schemas/StatusNotification"
       responses:
         200:
           description: "Github status accepted"
@@ -183,3 +182,186 @@ components:
           description: Message
         stat:
           $ref: "#/components/schemas/Statistics"
+    StatusNotification:
+      oneOf:
+        - $ref: "#/components/schemas/StatusNotificationIncidentUpdate"
+        - $ref: "#/components/schemas/StatusNotificationComponentUpdate"
+    StatusNotificationIncident:
+      type: object
+      description: "Incident object"
+      required:
+        - backfilled
+        - created_at
+        - impact
+        - monitoring_at
+        - postmortem_ignored
+        - postmortem_notified_subscribers
+        - postmortem_notified_twitter
+        - scheduled_auto_transition
+        - scheduled_remind_prior
+        - shortlink
+        - status
+        - updated_at
+        - id
+        - organization_id
+        - incident_updates
+        - name
+      properties:
+        backfilled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        impact:
+          type: string
+        impact_override:
+          type: string
+          nullable: true
+        monitoring_at:
+          type: string
+          format: date-time
+        postmortem_body:
+          type: string
+          nullable: true
+        postmortem_body_last_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        postmortem_ignored:
+          type: boolean
+        postmortem_notified_subscribers:
+          type: boolean
+        postmortem_notified_twitter:
+          type: boolean
+        postmortem_published_at:
+          type: string
+          format: date-time
+          nullable: true
+        resolved_at:
+          type: string
+          format: date-time
+          nullable: true
+        scheduled_auto_transition:
+          type: boolean
+        scheduled_for:
+          type: string
+          format: date-time
+          nullable: true
+        scheduled_remind_prior:
+          type: boolean
+        scheduled_reminded_at:
+          type: string
+          format: date-time
+          nullable: true
+        scheduled_until:
+          type: string
+          format: date-time
+          nullable: true
+        shortlink:
+          type: string
+        status:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+        organization_id:
+          type: string
+        incident_updates:
+          type: array
+          items:
+            type: object
+            required:
+              - body
+              - created_at
+              - display_at
+              - status
+              - updated_at
+              - wants_twitter_update
+              - id
+              - incident_id
+            properties:
+              body:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+              display_at:
+                type: string
+                format: date-time
+              status:
+                type: string
+              twitter_updated_at:
+                type: string
+                format: date-time
+                nullable: true
+              updated_at:
+                type: string
+                format: date-time
+              wants_twitter_update:
+                type: boolean
+              id:
+                type: string
+              incident_id:
+                type: string
+        name:
+          type: string
+    StatusNotificationIncidentUpdate:
+      type: object
+      description: "Incident updates"
+      required:
+        - incident
+      properties:
+        incident:
+          $ref: "#/components/schemas/StatusNotificationIncident"
+    StatusNotificationComponentUpdateInfo:
+      type: object
+      description: "Component update info"
+      required:
+        - created_at
+        - new_status
+        - old_status
+        - id
+        - component_id
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        new_status:
+          type: string
+        old_status:
+          type: string
+        id:
+          type: string
+        component_id:
+          type: string
+    StatusNotificationComponent:
+      type: object
+      description: "Component object"
+      required:
+        - created_at
+        - id
+        - name
+        - status
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+    StatusNotificationComponentUpdate:
+      type: object
+      description: "Component updates"
+      required:
+        - component_update
+        - component
+      properties:
+        component_update:
+          $ref: "#/components/schemas/StatusNotificationComponentUpdateInfo"
+        component:
+          $ref: "#/components/schemas/StatusNotificationComponent"

@@ -15,7 +15,7 @@ import (
 )
 
 func (s *Server) decodeGithubStatusRequest(r *http.Request) (
-	req GithubStatusReq,
+	req StatusNotification,
 	close func() error,
 	rerr error,
 ) {
@@ -54,7 +54,7 @@ func (s *Server) decodeGithubStatusRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request GithubStatusReq
+		var request StatusNotification
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -70,6 +70,14 @@ func (s *Server) decodeGithubStatusRequest(r *http.Request) (
 				Err:         err,
 			}
 			return req, close, err
+		}
+		if err := func() error {
+			if err := request.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return req, close, errors.Wrap(err, "validate")
 		}
 		return request, close, nil
 	default:

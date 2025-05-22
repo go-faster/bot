@@ -43,7 +43,7 @@ type Invoker interface {
 	// Https://www.githubstatus.com/ webhook.
 	//
 	// POST /github/status
-	GithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) error
+	GithubStatus(ctx context.Context, request StatusNotification, params GithubStatusParams) error
 	// Status invokes status operation.
 	//
 	// Get status.
@@ -312,12 +312,12 @@ func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTeleg
 // Https://www.githubstatus.com/ webhook.
 //
 // POST /github/status
-func (c *Client) GithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) error {
+func (c *Client) GithubStatus(ctx context.Context, request StatusNotification, params GithubStatusParams) error {
 	_, err := c.sendGithubStatus(ctx, request, params)
 	return err
 }
 
-func (c *Client) sendGithubStatus(ctx context.Context, request GithubStatusReq, params GithubStatusParams) (res *GithubStatusOK, err error) {
+func (c *Client) sendGithubStatus(ctx context.Context, request StatusNotification, params GithubStatusParams) (res *GithubStatusOK, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("githubStatus"),
 		semconv.HTTPRequestMethodKey.String("POST"),

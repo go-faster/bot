@@ -3,11 +3,10 @@ package api
 import (
 	"context"
 
-	"github.com/go-faster/jx"
+	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/message/peer"
 	"github.com/ogen-go/ogen/http"
-	"github.com/ogen-go/ogen/json"
 	"go.uber.org/zap"
 
 	"github.com/go-faster/bot/internal/ent"
@@ -32,36 +31,20 @@ type Server struct {
 	lg       *zap.Logger
 }
 
-func (s Server) GithubStatus(ctx context.Context, req oas.GithubStatusReq, params oas.GithubStatusParams) error {
-	var e jx.Encoder
-	e.Obj(func(e *jx.Encoder) {
-		for k, v := range req {
-			e.Field(k, func(e *jx.Encoder) {
-				e.Raw(v)
-			})
-		}
-	})
-
-	var fullObject any
-	_ = json.Unmarshal(e.Bytes(), &fullObject)
-
-	lg := s.lg
-	lg.Info("Github status",
-		zap.String("key", params.Secret.Value),
-		zap.Any("object", fullObject),
-		zap.String("object.raw", e.String()),
-	)
-
-	for k, v := range req {
-		var object any
-		_ = json.Unmarshal(v, &object)
-
-		lg.Debug("Github status kv",
-			zap.String("key", k),
-			zap.Any("value", object),
-			zap.Stringer("valuer.raw", v),
-		)
+func (s Server) GithubStatus(ctx context.Context, req oas.StatusNotification, params oas.GithubStatusParams) error {
+	if params.Secret.Value == "" {
+		return errors.New("not authenticated")
 	}
+
+	switch req.Type {
+	case oas.StatusNotificationComponentUpdateStatusNotification:
+		s.lg.Info("Github status: component update")
+	case oas.StatusNotificationIncidentUpdateStatusNotification:
+		s.lg.Info("Github status: incident update")
+	default:
+		return nil
+	}
+
 	return nil
 }
 

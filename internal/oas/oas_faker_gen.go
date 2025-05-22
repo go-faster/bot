@@ -3,10 +3,8 @@
 package oas
 
 import (
-	"fmt"
 	"net/url"
-
-	"github.com/go-faster/jx"
+	"time"
 )
 
 // SetFake set fake values.
@@ -19,14 +17,15 @@ func (s *Error) SetFake() {
 }
 
 // SetFake set fake values.
-func (s *GithubStatusReq) SetFake() {
-	var (
-		elem jx.Raw
-		m    map[string]jx.Raw = s.init()
-	)
-	for i := 0; i < 0; i++ {
-		m[fmt.Sprintf("fake%d", i)] = elem
-	}
+func (s *OptNilDateTime) SetFake() {
+	s.Null = true
+	s.Set = true
+}
+
+// SetFake set fake values.
+func (s *OptNilString) SetFake() {
+	s.Null = true
+	s.Set = true
 }
 
 // SetFake set fake values.
@@ -60,6 +59,272 @@ func (s *Status) SetFake() {
 	{
 		{
 			s.Stat.SetFake()
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotification) SetFake() {
+	var variant StatusNotificationIncidentUpdate
+
+	{
+		variant.SetFake()
+	}
+	s.SetStatusNotificationIncidentUpdate(variant)
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationComponent) SetFake() {
+	{
+		{
+			s.CreatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.ID = "string"
+		}
+	}
+	{
+		{
+			s.Name = "string"
+		}
+	}
+	{
+		{
+			s.Status = "string"
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationComponentUpdate) SetFake() {
+	{
+		{
+			s.ComponentUpdate.SetFake()
+		}
+	}
+	{
+		{
+			s.Component.SetFake()
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationComponentUpdateInfo) SetFake() {
+	{
+		{
+			s.CreatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.NewStatus = "string"
+		}
+	}
+	{
+		{
+			s.OldStatus = "string"
+		}
+	}
+	{
+		{
+			s.ID = "string"
+		}
+	}
+	{
+		{
+			s.ComponentID = "string"
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationIncident) SetFake() {
+	{
+		{
+			s.Backfilled = true
+		}
+	}
+	{
+		{
+			s.CreatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.Impact = "string"
+		}
+	}
+	{
+		{
+			s.ImpactOverride.SetFake()
+		}
+	}
+	{
+		{
+			s.MonitoringAt = time.Now()
+		}
+	}
+	{
+		{
+			s.PostmortemBody.SetFake()
+		}
+	}
+	{
+		{
+			s.PostmortemBodyLastUpdatedAt.SetFake()
+		}
+	}
+	{
+		{
+			s.PostmortemIgnored = true
+		}
+	}
+	{
+		{
+			s.PostmortemNotifiedSubscribers = true
+		}
+	}
+	{
+		{
+			s.PostmortemNotifiedTwitter = true
+		}
+	}
+	{
+		{
+			s.PostmortemPublishedAt.SetFake()
+		}
+	}
+	{
+		{
+			s.ResolvedAt.SetFake()
+		}
+	}
+	{
+		{
+			s.ScheduledAutoTransition = true
+		}
+	}
+	{
+		{
+			s.ScheduledFor.SetFake()
+		}
+	}
+	{
+		{
+			s.ScheduledRemindPrior = true
+		}
+	}
+	{
+		{
+			s.ScheduledRemindedAt.SetFake()
+		}
+	}
+	{
+		{
+			s.ScheduledUntil.SetFake()
+		}
+	}
+	{
+		{
+			s.Shortlink = "string"
+		}
+	}
+	{
+		{
+			s.Status = "string"
+		}
+	}
+	{
+		{
+			s.UpdatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.ID = "string"
+		}
+	}
+	{
+		{
+			s.OrganizationID = "string"
+		}
+	}
+	{
+		{
+			s.IncidentUpdates = nil
+			for i := 0; i < 0; i++ {
+				var elem StatusNotificationIncidentIncidentUpdatesItem
+				{
+					elem.SetFake()
+				}
+				s.IncidentUpdates = append(s.IncidentUpdates, elem)
+			}
+		}
+	}
+	{
+		{
+			s.Name = "string"
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetFake() {
+	{
+		{
+			s.Body = "string"
+		}
+	}
+	{
+		{
+			s.CreatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.DisplayAt = time.Now()
+		}
+	}
+	{
+		{
+			s.Status = "string"
+		}
+	}
+	{
+		{
+			s.TwitterUpdatedAt.SetFake()
+		}
+	}
+	{
+		{
+			s.UpdatedAt = time.Now()
+		}
+	}
+	{
+		{
+			s.WantsTwitterUpdate = true
+		}
+	}
+	{
+		{
+			s.ID = "string"
+		}
+	}
+	{
+		{
+			s.IncidentID = "string"
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *StatusNotificationIncidentUpdate) SetFake() {
+	{
+		{
+			s.Incident.SetFake()
 		}
 	}
 }

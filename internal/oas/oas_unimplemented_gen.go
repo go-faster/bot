@@ -34,7 +34,7 @@ func (UnimplementedHandler) GetTelegramOnlineBadge(ctx context.Context, params G
 // Https://www.githubstatus.com/ webhook.
 //
 // POST /github/status
-func (UnimplementedHandler) GithubStatus(ctx context.Context, req GithubStatusReq, params GithubStatusParams) error {
+func (UnimplementedHandler) GithubStatus(ctx context.Context, req StatusNotification, params GithubStatusParams) error {
 	return ht.ErrNotImplemented
 }
 

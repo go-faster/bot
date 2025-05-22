@@ -23,7 +23,7 @@ type Handler interface {
 	// Https://www.githubstatus.com/ webhook.
 	//
 	// POST /github/status
-	GithubStatus(ctx context.Context, req GithubStatusReq, params GithubStatusParams) error
+	GithubStatus(ctx context.Context, req StatusNotification, params GithubStatusParams) error
 	// Status implements status operation.
 	//
 	// Get status.

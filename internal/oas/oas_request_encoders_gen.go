@@ -12,7 +12,7 @@ import (
 )
 
 func encodeGithubStatusRequest(
-	req GithubStatusReq,
+	req StatusNotification,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

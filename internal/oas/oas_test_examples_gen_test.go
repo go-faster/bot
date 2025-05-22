@@ -23,20 +23,6 @@ func TestError_EncodeDecode(t *testing.T) {
 	var typ2 Error
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
-func TestGithubStatusReq_EncodeDecode(t *testing.T) {
-	var typ GithubStatusReq
-	typ = make(GithubStatusReq)
-	typ.SetFake()
-
-	e := jx.Encoder{}
-	typ.Encode(&e)
-	data := e.Bytes()
-	require.True(t, std.Valid(data), "Encoded: %s", data)
-
-	var typ2 GithubStatusReq
-	typ2 = make(GithubStatusReq)
-	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
-}
 func TestStatistics_EncodeDecode(t *testing.T) {
 	var typ Statistics
 	typ.SetFake()
@@ -59,6 +45,90 @@ func TestStatus_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 Status
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotification_EncodeDecode(t *testing.T) {
+	var typ StatusNotification
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotification
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationComponent_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationComponent
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationComponent
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationComponentUpdate_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationComponentUpdate
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationComponentUpdate
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationComponentUpdateInfo_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationComponentUpdateInfo
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationComponentUpdateInfo
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationIncident_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationIncident
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationIncident
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationIncidentIncidentUpdatesItem_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationIncidentIncidentUpdatesItem
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationIncidentIncidentUpdatesItem
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestStatusNotificationIncidentUpdate_EncodeDecode(t *testing.T) {
+	var typ StatusNotificationIncidentUpdate
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 StatusNotificationIncidentUpdate
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestUser_EncodeDecode(t *testing.T) {

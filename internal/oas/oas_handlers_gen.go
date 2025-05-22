@@ -448,7 +448,7 @@ func (s *Server) handleGithubStatusRequest(args [0]string, argsEscaped bool, w h
 		}
 
 		type (
-			Request  = GithubStatusReq
+			Request  = StatusNotification
 			Params   = GithubStatusParams
 			Response = *GithubStatusOK
 		)

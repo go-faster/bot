@@ -6,8 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-
-	"github.com/go-faster/jx"
+	"time"
 )
 
 func (s *ErrorStatusCode) Error() string {
@@ -59,15 +58,130 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 // GithubStatusOK is response for GithubStatus operation.
 type GithubStatusOK struct{}
 
-type GithubStatusReq map[string]jx.Raw
-
-func (s *GithubStatusReq) init() GithubStatusReq {
-	m := *s
-	if m == nil {
-		m = map[string]jx.Raw{}
-		*s = m
+// NewOptNilDateTime returns new OptNilDateTime with value set to v.
+func NewOptNilDateTime(v time.Time) OptNilDateTime {
+	return OptNilDateTime{
+		Value: v,
+		Set:   true,
 	}
-	return m
+}
+
+// OptNilDateTime is optional nullable time.Time.
+type OptNilDateTime struct {
+	Value time.Time
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilDateTime was set.
+func (o OptNilDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilDateTime) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilDateTime) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v time.Time
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilDateTime) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilString returns new OptNilString with value set to v.
+func NewOptNilString(v string) OptNilString {
+	return OptNilString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilString is optional nullable string.
+type OptNilString struct {
+	Value string
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilString was set.
+func (o OptNilString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilString) SetTo(v string) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilString) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptString returns new OptString with value set to v.
@@ -222,6 +336,598 @@ func (s *Status) SetMessage(val string) {
 // SetStat sets the value of Stat.
 func (s *Status) SetStat(val Statistics) {
 	s.Stat = val
+}
+
+// Ref: #/components/schemas/StatusNotification
+// StatusNotification represents sum type.
+type StatusNotification struct {
+	Type                              StatusNotificationType // switch on this field
+	StatusNotificationIncidentUpdate  StatusNotificationIncidentUpdate
+	StatusNotificationComponentUpdate StatusNotificationComponentUpdate
+}
+
+// StatusNotificationType is oneOf type of StatusNotification.
+type StatusNotificationType string
+
+// Possible values for StatusNotificationType.
+const (
+	StatusNotificationIncidentUpdateStatusNotification  StatusNotificationType = "StatusNotificationIncidentUpdate"
+	StatusNotificationComponentUpdateStatusNotification StatusNotificationType = "StatusNotificationComponentUpdate"
+)
+
+// IsStatusNotificationIncidentUpdate reports whether StatusNotification is StatusNotificationIncidentUpdate.
+func (s StatusNotification) IsStatusNotificationIncidentUpdate() bool {
+	return s.Type == StatusNotificationIncidentUpdateStatusNotification
+}
+
+// IsStatusNotificationComponentUpdate reports whether StatusNotification is StatusNotificationComponentUpdate.
+func (s StatusNotification) IsStatusNotificationComponentUpdate() bool {
+	return s.Type == StatusNotificationComponentUpdateStatusNotification
+}
+
+// SetStatusNotificationIncidentUpdate sets StatusNotification to StatusNotificationIncidentUpdate.
+func (s *StatusNotification) SetStatusNotificationIncidentUpdate(v StatusNotificationIncidentUpdate) {
+	s.Type = StatusNotificationIncidentUpdateStatusNotification
+	s.StatusNotificationIncidentUpdate = v
+}
+
+// GetStatusNotificationIncidentUpdate returns StatusNotificationIncidentUpdate and true boolean if StatusNotification is StatusNotificationIncidentUpdate.
+func (s StatusNotification) GetStatusNotificationIncidentUpdate() (v StatusNotificationIncidentUpdate, ok bool) {
+	if !s.IsStatusNotificationIncidentUpdate() {
+		return v, false
+	}
+	return s.StatusNotificationIncidentUpdate, true
+}
+
+// NewStatusNotificationIncidentUpdateStatusNotification returns new StatusNotification from StatusNotificationIncidentUpdate.
+func NewStatusNotificationIncidentUpdateStatusNotification(v StatusNotificationIncidentUpdate) StatusNotification {
+	var s StatusNotification
+	s.SetStatusNotificationIncidentUpdate(v)
+	return s
+}
+
+// SetStatusNotificationComponentUpdate sets StatusNotification to StatusNotificationComponentUpdate.
+func (s *StatusNotification) SetStatusNotificationComponentUpdate(v StatusNotificationComponentUpdate) {
+	s.Type = StatusNotificationComponentUpdateStatusNotification
+	s.StatusNotificationComponentUpdate = v
+}
+
+// GetStatusNotificationComponentUpdate returns StatusNotificationComponentUpdate and true boolean if StatusNotification is StatusNotificationComponentUpdate.
+func (s StatusNotification) GetStatusNotificationComponentUpdate() (v StatusNotificationComponentUpdate, ok bool) {
+	if !s.IsStatusNotificationComponentUpdate() {
+		return v, false
+	}
+	return s.StatusNotificationComponentUpdate, true
+}
+
+// NewStatusNotificationComponentUpdateStatusNotification returns new StatusNotification from StatusNotificationComponentUpdate.
+func NewStatusNotificationComponentUpdateStatusNotification(v StatusNotificationComponentUpdate) StatusNotification {
+	var s StatusNotification
+	s.SetStatusNotificationComponentUpdate(v)
+	return s
+}
+
+// Component object.
+// Ref: #/components/schemas/StatusNotificationComponent
+type StatusNotificationComponent struct {
+	CreatedAt time.Time `json:"created_at"`
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Status    string    `json:"status"`
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *StatusNotificationComponent) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetID returns the value of ID.
+func (s *StatusNotificationComponent) GetID() string {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *StatusNotificationComponent) GetName() string {
+	return s.Name
+}
+
+// GetStatus returns the value of Status.
+func (s *StatusNotificationComponent) GetStatus() string {
+	return s.Status
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *StatusNotificationComponent) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetID sets the value of ID.
+func (s *StatusNotificationComponent) SetID(val string) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *StatusNotificationComponent) SetName(val string) {
+	s.Name = val
+}
+
+// SetStatus sets the value of Status.
+func (s *StatusNotificationComponent) SetStatus(val string) {
+	s.Status = val
+}
+
+// Component updates.
+// Ref: #/components/schemas/StatusNotificationComponentUpdate
+type StatusNotificationComponentUpdate struct {
+	ComponentUpdate StatusNotificationComponentUpdateInfo `json:"component_update"`
+	Component       StatusNotificationComponent           `json:"component"`
+}
+
+// GetComponentUpdate returns the value of ComponentUpdate.
+func (s *StatusNotificationComponentUpdate) GetComponentUpdate() StatusNotificationComponentUpdateInfo {
+	return s.ComponentUpdate
+}
+
+// GetComponent returns the value of Component.
+func (s *StatusNotificationComponentUpdate) GetComponent() StatusNotificationComponent {
+	return s.Component
+}
+
+// SetComponentUpdate sets the value of ComponentUpdate.
+func (s *StatusNotificationComponentUpdate) SetComponentUpdate(val StatusNotificationComponentUpdateInfo) {
+	s.ComponentUpdate = val
+}
+
+// SetComponent sets the value of Component.
+func (s *StatusNotificationComponentUpdate) SetComponent(val StatusNotificationComponent) {
+	s.Component = val
+}
+
+// Component update info.
+// Ref: #/components/schemas/StatusNotificationComponentUpdateInfo
+type StatusNotificationComponentUpdateInfo struct {
+	CreatedAt   time.Time `json:"created_at"`
+	NewStatus   string    `json:"new_status"`
+	OldStatus   string    `json:"old_status"`
+	ID          string    `json:"id"`
+	ComponentID string    `json:"component_id"`
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *StatusNotificationComponentUpdateInfo) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetNewStatus returns the value of NewStatus.
+func (s *StatusNotificationComponentUpdateInfo) GetNewStatus() string {
+	return s.NewStatus
+}
+
+// GetOldStatus returns the value of OldStatus.
+func (s *StatusNotificationComponentUpdateInfo) GetOldStatus() string {
+	return s.OldStatus
+}
+
+// GetID returns the value of ID.
+func (s *StatusNotificationComponentUpdateInfo) GetID() string {
+	return s.ID
+}
+
+// GetComponentID returns the value of ComponentID.
+func (s *StatusNotificationComponentUpdateInfo) GetComponentID() string {
+	return s.ComponentID
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *StatusNotificationComponentUpdateInfo) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetNewStatus sets the value of NewStatus.
+func (s *StatusNotificationComponentUpdateInfo) SetNewStatus(val string) {
+	s.NewStatus = val
+}
+
+// SetOldStatus sets the value of OldStatus.
+func (s *StatusNotificationComponentUpdateInfo) SetOldStatus(val string) {
+	s.OldStatus = val
+}
+
+// SetID sets the value of ID.
+func (s *StatusNotificationComponentUpdateInfo) SetID(val string) {
+	s.ID = val
+}
+
+// SetComponentID sets the value of ComponentID.
+func (s *StatusNotificationComponentUpdateInfo) SetComponentID(val string) {
+	s.ComponentID = val
+}
+
+// Incident object.
+// Ref: #/components/schemas/StatusNotificationIncident
+type StatusNotificationIncident struct {
+	Backfilled                    bool                                            `json:"backfilled"`
+	CreatedAt                     time.Time                                       `json:"created_at"`
+	Impact                        string                                          `json:"impact"`
+	ImpactOverride                OptNilString                                    `json:"impact_override"`
+	MonitoringAt                  time.Time                                       `json:"monitoring_at"`
+	PostmortemBody                OptNilString                                    `json:"postmortem_body"`
+	PostmortemBodyLastUpdatedAt   OptNilDateTime                                  `json:"postmortem_body_last_updated_at"`
+	PostmortemIgnored             bool                                            `json:"postmortem_ignored"`
+	PostmortemNotifiedSubscribers bool                                            `json:"postmortem_notified_subscribers"`
+	PostmortemNotifiedTwitter     bool                                            `json:"postmortem_notified_twitter"`
+	PostmortemPublishedAt         OptNilDateTime                                  `json:"postmortem_published_at"`
+	ResolvedAt                    OptNilDateTime                                  `json:"resolved_at"`
+	ScheduledAutoTransition       bool                                            `json:"scheduled_auto_transition"`
+	ScheduledFor                  OptNilDateTime                                  `json:"scheduled_for"`
+	ScheduledRemindPrior          bool                                            `json:"scheduled_remind_prior"`
+	ScheduledRemindedAt           OptNilDateTime                                  `json:"scheduled_reminded_at"`
+	ScheduledUntil                OptNilDateTime                                  `json:"scheduled_until"`
+	Shortlink                     string                                          `json:"shortlink"`
+	Status                        string                                          `json:"status"`
+	UpdatedAt                     time.Time                                       `json:"updated_at"`
+	ID                            string                                          `json:"id"`
+	OrganizationID                string                                          `json:"organization_id"`
+	IncidentUpdates               []StatusNotificationIncidentIncidentUpdatesItem `json:"incident_updates"`
+	Name                          string                                          `json:"name"`
+}
+
+// GetBackfilled returns the value of Backfilled.
+func (s *StatusNotificationIncident) GetBackfilled() bool {
+	return s.Backfilled
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *StatusNotificationIncident) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetImpact returns the value of Impact.
+func (s *StatusNotificationIncident) GetImpact() string {
+	return s.Impact
+}
+
+// GetImpactOverride returns the value of ImpactOverride.
+func (s *StatusNotificationIncident) GetImpactOverride() OptNilString {
+	return s.ImpactOverride
+}
+
+// GetMonitoringAt returns the value of MonitoringAt.
+func (s *StatusNotificationIncident) GetMonitoringAt() time.Time {
+	return s.MonitoringAt
+}
+
+// GetPostmortemBody returns the value of PostmortemBody.
+func (s *StatusNotificationIncident) GetPostmortemBody() OptNilString {
+	return s.PostmortemBody
+}
+
+// GetPostmortemBodyLastUpdatedAt returns the value of PostmortemBodyLastUpdatedAt.
+func (s *StatusNotificationIncident) GetPostmortemBodyLastUpdatedAt() OptNilDateTime {
+	return s.PostmortemBodyLastUpdatedAt
+}
+
+// GetPostmortemIgnored returns the value of PostmortemIgnored.
+func (s *StatusNotificationIncident) GetPostmortemIgnored() bool {
+	return s.PostmortemIgnored
+}
+
+// GetPostmortemNotifiedSubscribers returns the value of PostmortemNotifiedSubscribers.
+func (s *StatusNotificationIncident) GetPostmortemNotifiedSubscribers() bool {
+	return s.PostmortemNotifiedSubscribers
+}
+
+// GetPostmortemNotifiedTwitter returns the value of PostmortemNotifiedTwitter.
+func (s *StatusNotificationIncident) GetPostmortemNotifiedTwitter() bool {
+	return s.PostmortemNotifiedTwitter
+}
+
+// GetPostmortemPublishedAt returns the value of PostmortemPublishedAt.
+func (s *StatusNotificationIncident) GetPostmortemPublishedAt() OptNilDateTime {
+	return s.PostmortemPublishedAt
+}
+
+// GetResolvedAt returns the value of ResolvedAt.
+func (s *StatusNotificationIncident) GetResolvedAt() OptNilDateTime {
+	return s.ResolvedAt
+}
+
+// GetScheduledAutoTransition returns the value of ScheduledAutoTransition.
+func (s *StatusNotificationIncident) GetScheduledAutoTransition() bool {
+	return s.ScheduledAutoTransition
+}
+
+// GetScheduledFor returns the value of ScheduledFor.
+func (s *StatusNotificationIncident) GetScheduledFor() OptNilDateTime {
+	return s.ScheduledFor
+}
+
+// GetScheduledRemindPrior returns the value of ScheduledRemindPrior.
+func (s *StatusNotificationIncident) GetScheduledRemindPrior() bool {
+	return s.ScheduledRemindPrior
+}
+
+// GetScheduledRemindedAt returns the value of ScheduledRemindedAt.
+func (s *StatusNotificationIncident) GetScheduledRemindedAt() OptNilDateTime {
+	return s.ScheduledRemindedAt
+}
+
+// GetScheduledUntil returns the value of ScheduledUntil.
+func (s *StatusNotificationIncident) GetScheduledUntil() OptNilDateTime {
+	return s.ScheduledUntil
+}
+
+// GetShortlink returns the value of Shortlink.
+func (s *StatusNotificationIncident) GetShortlink() string {
+	return s.Shortlink
+}
+
+// GetStatus returns the value of Status.
+func (s *StatusNotificationIncident) GetStatus() string {
+	return s.Status
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *StatusNotificationIncident) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetID returns the value of ID.
+func (s *StatusNotificationIncident) GetID() string {
+	return s.ID
+}
+
+// GetOrganizationID returns the value of OrganizationID.
+func (s *StatusNotificationIncident) GetOrganizationID() string {
+	return s.OrganizationID
+}
+
+// GetIncidentUpdates returns the value of IncidentUpdates.
+func (s *StatusNotificationIncident) GetIncidentUpdates() []StatusNotificationIncidentIncidentUpdatesItem {
+	return s.IncidentUpdates
+}
+
+// GetName returns the value of Name.
+func (s *StatusNotificationIncident) GetName() string {
+	return s.Name
+}
+
+// SetBackfilled sets the value of Backfilled.
+func (s *StatusNotificationIncident) SetBackfilled(val bool) {
+	s.Backfilled = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *StatusNotificationIncident) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetImpact sets the value of Impact.
+func (s *StatusNotificationIncident) SetImpact(val string) {
+	s.Impact = val
+}
+
+// SetImpactOverride sets the value of ImpactOverride.
+func (s *StatusNotificationIncident) SetImpactOverride(val OptNilString) {
+	s.ImpactOverride = val
+}
+
+// SetMonitoringAt sets the value of MonitoringAt.
+func (s *StatusNotificationIncident) SetMonitoringAt(val time.Time) {
+	s.MonitoringAt = val
+}
+
+// SetPostmortemBody sets the value of PostmortemBody.
+func (s *StatusNotificationIncident) SetPostmortemBody(val OptNilString) {
+	s.PostmortemBody = val
+}
+
+// SetPostmortemBodyLastUpdatedAt sets the value of PostmortemBodyLastUpdatedAt.
+func (s *StatusNotificationIncident) SetPostmortemBodyLastUpdatedAt(val OptNilDateTime) {
+	s.PostmortemBodyLastUpdatedAt = val
+}
+
+// SetPostmortemIgnored sets the value of PostmortemIgnored.
+func (s *StatusNotificationIncident) SetPostmortemIgnored(val bool) {
+	s.PostmortemIgnored = val
+}
+
+// SetPostmortemNotifiedSubscribers sets the value of PostmortemNotifiedSubscribers.
+func (s *StatusNotificationIncident) SetPostmortemNotifiedSubscribers(val bool) {
+	s.PostmortemNotifiedSubscribers = val
+}
+
+// SetPostmortemNotifiedTwitter sets the value of PostmortemNotifiedTwitter.
+func (s *StatusNotificationIncident) SetPostmortemNotifiedTwitter(val bool) {
+	s.PostmortemNotifiedTwitter = val
+}
+
+// SetPostmortemPublishedAt sets the value of PostmortemPublishedAt.
+func (s *StatusNotificationIncident) SetPostmortemPublishedAt(val OptNilDateTime) {
+	s.PostmortemPublishedAt = val
+}
+
+// SetResolvedAt sets the value of ResolvedAt.
+func (s *StatusNotificationIncident) SetResolvedAt(val OptNilDateTime) {
+	s.ResolvedAt = val
+}
+
+// SetScheduledAutoTransition sets the value of ScheduledAutoTransition.
+func (s *StatusNotificationIncident) SetScheduledAutoTransition(val bool) {
+	s.ScheduledAutoTransition = val
+}
+
+// SetScheduledFor sets the value of ScheduledFor.
+func (s *StatusNotificationIncident) SetScheduledFor(val OptNilDateTime) {
+	s.ScheduledFor = val
+}
+
+// SetScheduledRemindPrior sets the value of ScheduledRemindPrior.
+func (s *StatusNotificationIncident) SetScheduledRemindPrior(val bool) {
+	s.ScheduledRemindPrior = val
+}
+
+// SetScheduledRemindedAt sets the value of ScheduledRemindedAt.
+func (s *StatusNotificationIncident) SetScheduledRemindedAt(val OptNilDateTime) {
+	s.ScheduledRemindedAt = val
+}
+
+// SetScheduledUntil sets the value of ScheduledUntil.
+func (s *StatusNotificationIncident) SetScheduledUntil(val OptNilDateTime) {
+	s.ScheduledUntil = val
+}
+
+// SetShortlink sets the value of Shortlink.
+func (s *StatusNotificationIncident) SetShortlink(val string) {
+	s.Shortlink = val
+}
+
+// SetStatus sets the value of Status.
+func (s *StatusNotificationIncident) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *StatusNotificationIncident) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetID sets the value of ID.
+func (s *StatusNotificationIncident) SetID(val string) {
+	s.ID = val
+}
+
+// SetOrganizationID sets the value of OrganizationID.
+func (s *StatusNotificationIncident) SetOrganizationID(val string) {
+	s.OrganizationID = val
+}
+
+// SetIncidentUpdates sets the value of IncidentUpdates.
+func (s *StatusNotificationIncident) SetIncidentUpdates(val []StatusNotificationIncidentIncidentUpdatesItem) {
+	s.IncidentUpdates = val
+}
+
+// SetName sets the value of Name.
+func (s *StatusNotificationIncident) SetName(val string) {
+	s.Name = val
+}
+
+type StatusNotificationIncidentIncidentUpdatesItem struct {
+	Body               string         `json:"body"`
+	CreatedAt          time.Time      `json:"created_at"`
+	DisplayAt          time.Time      `json:"display_at"`
+	Status             string         `json:"status"`
+	TwitterUpdatedAt   OptNilDateTime `json:"twitter_updated_at"`
+	UpdatedAt          time.Time      `json:"updated_at"`
+	WantsTwitterUpdate bool           `json:"wants_twitter_update"`
+	ID                 string         `json:"id"`
+	IncidentID         string         `json:"incident_id"`
+}
+
+// GetBody returns the value of Body.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetBody() string {
+	return s.Body
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetDisplayAt returns the value of DisplayAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetDisplayAt() time.Time {
+	return s.DisplayAt
+}
+
+// GetStatus returns the value of Status.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetStatus() string {
+	return s.Status
+}
+
+// GetTwitterUpdatedAt returns the value of TwitterUpdatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetTwitterUpdatedAt() OptNilDateTime {
+	return s.TwitterUpdatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// GetWantsTwitterUpdate returns the value of WantsTwitterUpdate.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetWantsTwitterUpdate() bool {
+	return s.WantsTwitterUpdate
+}
+
+// GetID returns the value of ID.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetID() string {
+	return s.ID
+}
+
+// GetIncidentID returns the value of IncidentID.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) GetIncidentID() string {
+	return s.IncidentID
+}
+
+// SetBody sets the value of Body.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetBody(val string) {
+	s.Body = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetDisplayAt sets the value of DisplayAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetDisplayAt(val time.Time) {
+	s.DisplayAt = val
+}
+
+// SetStatus sets the value of Status.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetTwitterUpdatedAt sets the value of TwitterUpdatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetTwitterUpdatedAt(val OptNilDateTime) {
+	s.TwitterUpdatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// SetWantsTwitterUpdate sets the value of WantsTwitterUpdate.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetWantsTwitterUpdate(val bool) {
+	s.WantsTwitterUpdate = val
+}
+
+// SetID sets the value of ID.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetID(val string) {
+	s.ID = val
+}
+
+// SetIncidentID sets the value of IncidentID.
+func (s *StatusNotificationIncidentIncidentUpdatesItem) SetIncidentID(val string) {
+	s.IncidentID = val
+}
+
+// Incident updates.
+// Ref: #/components/schemas/StatusNotificationIncidentUpdate
+type StatusNotificationIncidentUpdate struct {
+	Incident StatusNotificationIncident `json:"incident"`
+}
+
+// GetIncident returns the value of Incident.
+func (s *StatusNotificationIncidentUpdate) GetIncident() StatusNotificationIncident {
+	return s.Incident
+}
+
+// SetIncident sets the value of Incident.
+func (s *StatusNotificationIncidentUpdate) SetIncident(val StatusNotificationIncident) {
+	s.Incident = val
 }
 
 // Ref: #/components/schemas/User
