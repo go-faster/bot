@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 
-	"github.com/go-faster/sdk/zctx"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/message/peer"
 	"github.com/ogen-go/ogen/http"
@@ -33,13 +32,13 @@ type Server struct {
 }
 
 func (s Server) GithubStatus(ctx context.Context, req oas.GithubStatusReq, params oas.GithubStatusParams) error {
-	lg := zctx.From(ctx)
+	lg := s.lg
 	lg.Info("Github status key", zap.String("key", params.Secret.Value))
 	for k, v := range req {
 		var object any
 		_ = json.Unmarshal(v, &object)
 
-		lg.Debug("github status",
+		lg.Debug("Github status",
 			zap.String("key", k),
 			zap.Any("value", object),
 			zap.Stringer("valuer.raw", v),
