@@ -20,7 +20,7 @@ require (
 	github.com/gotd/td v0.125.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/labstack/echo/v4 v4.13.4
-	github.com/ogen-go/ogen v1.13.0
+	github.com/ogen-go/ogen v1.14.0
 	github.com/redis/go-redis/v9 v9.10.0
 	github.com/rs/cors v1.11.1
 	github.com/sashabaranov/go-openai v1.40.1
