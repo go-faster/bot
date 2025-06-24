@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	entgo.io/ent v0.14.4
-	github.com/ClickHouse/ch-go v0.66.0
+	github.com/ClickHouse/ch-go v0.66.1
 	github.com/bradleyfalzon/ghinstallation/v2 v2.16.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.5.11
@@ -35,7 +35,7 @@ require (
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/oauth2 v0.30.0
-	golang.org/x/sync v0.14.0
+	golang.org/x/sync v0.15.0
 	golang.org/x/time v0.11.0
 )
 
