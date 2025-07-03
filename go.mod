@@ -17,7 +17,7 @@ require (
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.21.0
-	github.com/gotd/td v0.125.0
+	github.com/gotd/td v0.126.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/ogen-go/ogen v1.14.0
@@ -29,9 +29,9 @@ require (
 	github.com/tiktoken-go/tokenizer v0.6.2
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.61.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0
-	go.opentelemetry.io/otel v1.36.0
-	go.opentelemetry.io/otel/metric v1.36.0
-	go.opentelemetry.io/otel/trace v1.36.0
+	go.opentelemetry.io/otel v1.37.0
+	go.opentelemetry.io/otel/metric v1.37.0
+	go.opentelemetry.io/otel/trace v1.37.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/oauth2 v0.30.0
@@ -61,7 +61,7 @@ require (
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/xor v1.0.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
-	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-logr/zapr v1.3.0 // indirect
 	github.com/go-openapi/inflect v0.21.2 // indirect
@@ -132,13 +132,13 @@ require (
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
-	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 // indirect
-	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/mod v0.25.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
-	golang.org/x/tools v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/tools v0.34.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	google.golang.org/grpc v1.70.0 // indirect
