@@ -65,35 +65,3 @@ spec:
                 name: bot
                 port:
                   name: http-api
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: http-api
-  namespace: faster
-spec:
-  parentRefs:
-    - name: gateway
-      namespace: cloudflare-gateway
-  hostnames:
-    - api.go-faster.org
-  rules:
-    - backendRefs:
-        - name: bot
-          port: 8081
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: http-bot
-  namespace: faster
-spec:
-  parentRefs:
-    - name: gateway
-      namespace: cloudflare-gateway
-  hostnames:
-    - bot.go-faster.org
-  rules:
-    - backendRefs:
-        - name: bot
-          port: 8080
