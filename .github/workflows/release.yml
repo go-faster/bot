@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_TAG: ghcr.io/${{ github.repository }}
-  KUBECTL_VERSION: v1.29.7
+  KUBECTL_VERSION: v1.33.3
 
 jobs:
   deploy:
