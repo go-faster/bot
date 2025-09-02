@@ -24,7 +24,7 @@ require (
 	github.com/redis/go-redis/v9 v9.12.1
 	github.com/rs/cors v1.11.1
 	github.com/sashabaranov/go-openai v1.41.1
-	github.com/spf13/cobra v1.9.1
+	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	github.com/tiktoken-go/tokenizer v0.7.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.63.0
@@ -102,7 +102,7 @@ require (
 	github.com/samber/slog-common v0.18.1 // indirect
 	github.com/samber/slog-zap/v2 v2.6.2 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/spf13/pflag v1.0.6 // indirect
+	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
