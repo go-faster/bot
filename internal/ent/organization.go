@@ -64,7 +64,7 @@ func (*Organization) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Organization fields.
-func (o *Organization) assignValues(columns []string, values []any) error {
+func (_m *Organization) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -75,21 +75,21 @@ func (o *Organization) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			o.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case organization.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				o.Name = value.String
+				_m.Name = value.String
 			}
 		case organization.FieldHTMLURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field html_url", values[i])
 			} else if value.Valid {
-				o.HTMLURL = value.String
+				_m.HTMLURL = value.String
 			}
 		default:
-			o.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -97,68 +97,68 @@ func (o *Organization) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Organization.
 // This includes values selected through modifiers, order, etc.
-func (o *Organization) Value(name string) (ent.Value, error) {
-	return o.selectValues.Get(name)
+func (_m *Organization) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryRepositories queries the "repositories" edge of the Organization entity.
-func (o *Organization) QueryRepositories() *RepositoryQuery {
-	return NewOrganizationClient(o.config).QueryRepositories(o)
+func (_m *Organization) QueryRepositories() *RepositoryQuery {
+	return NewOrganizationClient(_m.config).QueryRepositories(_m)
 }
 
 // Update returns a builder for updating this Organization.
 // Note that you need to call Organization.Unwrap() before calling this method if this Organization
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (o *Organization) Update() *OrganizationUpdateOne {
-	return NewOrganizationClient(o.config).UpdateOne(o)
+func (_m *Organization) Update() *OrganizationUpdateOne {
+	return NewOrganizationClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Organization entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (o *Organization) Unwrap() *Organization {
-	_tx, ok := o.config.driver.(*txDriver)
+func (_m *Organization) Unwrap() *Organization {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Organization is not a transactional entity")
 	}
-	o.config.driver = _tx.drv
-	return o
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (o *Organization) String() string {
+func (_m *Organization) String() string {
 	var builder strings.Builder
 	builder.WriteString("Organization(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", o.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(o.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("html_url=")
-	builder.WriteString(o.HTMLURL)
+	builder.WriteString(_m.HTMLURL)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedRepositories returns the Repositories named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (o *Organization) NamedRepositories(name string) ([]*Repository, error) {
-	if o.Edges.namedRepositories == nil {
+func (_m *Organization) NamedRepositories(name string) ([]*Repository, error) {
+	if _m.Edges.namedRepositories == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := o.Edges.namedRepositories[name]
+	nodes, ok := _m.Edges.namedRepositories[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (o *Organization) appendNamedRepositories(name string, edges ...*Repository) {
-	if o.Edges.namedRepositories == nil {
-		o.Edges.namedRepositories = make(map[string][]*Repository)
+func (_m *Organization) appendNamedRepositories(name string, edges ...*Repository) {
+	if _m.Edges.namedRepositories == nil {
+		_m.Edges.namedRepositories = make(map[string][]*Repository)
 	}
 	if len(edges) == 0 {
-		o.Edges.namedRepositories[name] = []*Repository{}
+		_m.Edges.namedRepositories[name] = []*Repository{}
 	} else {
-		o.Edges.namedRepositories[name] = append(o.Edges.namedRepositories[name], edges...)
+		_m.Edges.namedRepositories[name] = append(_m.Edges.namedRepositories[name], edges...)
 	}
 }
 

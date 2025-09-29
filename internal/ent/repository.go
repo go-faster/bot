@@ -92,7 +92,7 @@ func (*Repository) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Repository fields.
-func (r *Repository) assignValues(columns []string, values []any) error {
+func (_m *Repository) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -103,52 +103,52 @@ func (r *Repository) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			r.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case repository.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				r.Name = value.String
+				_m.Name = value.String
 			}
 		case repository.FieldFullName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field full_name", values[i])
 			} else if value.Valid {
-				r.FullName = value.String
+				_m.FullName = value.String
 			}
 		case repository.FieldHTMLURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field html_url", values[i])
 			} else if value.Valid {
-				r.HTMLURL = value.String
+				_m.HTMLURL = value.String
 			}
 		case repository.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				r.Description = value.String
+				_m.Description = value.String
 			}
 		case repository.FieldLastPushedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_pushed_at", values[i])
 			} else if value.Valid {
-				r.LastPushedAt = value.Time
+				_m.LastPushedAt = value.Time
 			}
 		case repository.FieldLastEventAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_event_at", values[i])
 			} else if value.Valid {
-				r.LastEventAt = value.Time
+				_m.LastEventAt = value.Time
 			}
 		case repository.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field organization_repositories", value)
 			} else if value.Valid {
-				r.organization_repositories = new(int64)
-				*r.organization_repositories = int64(value.Int64)
+				_m.organization_repositories = new(int64)
+				*_m.organization_repositories = int64(value.Int64)
 			}
 		default:
-			r.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -156,85 +156,85 @@ func (r *Repository) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Repository.
 // This includes values selected through modifiers, order, etc.
-func (r *Repository) Value(name string) (ent.Value, error) {
-	return r.selectValues.Get(name)
+func (_m *Repository) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOrganization queries the "organization" edge of the Repository entity.
-func (r *Repository) QueryOrganization() *OrganizationQuery {
-	return NewRepositoryClient(r.config).QueryOrganization(r)
+func (_m *Repository) QueryOrganization() *OrganizationQuery {
+	return NewRepositoryClient(_m.config).QueryOrganization(_m)
 }
 
 // QueryCommits queries the "commits" edge of the Repository entity.
-func (r *Repository) QueryCommits() *GitCommitQuery {
-	return NewRepositoryClient(r.config).QueryCommits(r)
+func (_m *Repository) QueryCommits() *GitCommitQuery {
+	return NewRepositoryClient(_m.config).QueryCommits(_m)
 }
 
 // Update returns a builder for updating this Repository.
 // Note that you need to call Repository.Unwrap() before calling this method if this Repository
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (r *Repository) Update() *RepositoryUpdateOne {
-	return NewRepositoryClient(r.config).UpdateOne(r)
+func (_m *Repository) Update() *RepositoryUpdateOne {
+	return NewRepositoryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Repository entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (r *Repository) Unwrap() *Repository {
-	_tx, ok := r.config.driver.(*txDriver)
+func (_m *Repository) Unwrap() *Repository {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Repository is not a transactional entity")
 	}
-	r.config.driver = _tx.drv
-	return r
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (r *Repository) String() string {
+func (_m *Repository) String() string {
 	var builder strings.Builder
 	builder.WriteString("Repository(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(r.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("full_name=")
-	builder.WriteString(r.FullName)
+	builder.WriteString(_m.FullName)
 	builder.WriteString(", ")
 	builder.WriteString("html_url=")
-	builder.WriteString(r.HTMLURL)
+	builder.WriteString(_m.HTMLURL)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(r.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("last_pushed_at=")
-	builder.WriteString(r.LastPushedAt.Format(time.ANSIC))
+	builder.WriteString(_m.LastPushedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("last_event_at=")
-	builder.WriteString(r.LastEventAt.Format(time.ANSIC))
+	builder.WriteString(_m.LastEventAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedCommits returns the Commits named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (r *Repository) NamedCommits(name string) ([]*GitCommit, error) {
-	if r.Edges.namedCommits == nil {
+func (_m *Repository) NamedCommits(name string) ([]*GitCommit, error) {
+	if _m.Edges.namedCommits == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := r.Edges.namedCommits[name]
+	nodes, ok := _m.Edges.namedCommits[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (r *Repository) appendNamedCommits(name string, edges ...*GitCommit) {
-	if r.Edges.namedCommits == nil {
-		r.Edges.namedCommits = make(map[string][]*GitCommit)
+func (_m *Repository) appendNamedCommits(name string, edges ...*GitCommit) {
+	if _m.Edges.namedCommits == nil {
+		_m.Edges.namedCommits = make(map[string][]*GitCommit)
 	}
 	if len(edges) == 0 {
-		r.Edges.namedCommits[name] = []*GitCommit{}
+		_m.Edges.namedCommits[name] = []*GitCommit{}
 	} else {
-		r.Edges.namedCommits[name] = append(r.Edges.namedCommits[name], edges...)
+		_m.Edges.namedCommits[name] = append(_m.Edges.namedCommits[name], edges...)
 	}
 }
 

@@ -22,30 +22,30 @@ type LastChannelMessageCreate struct {
 }
 
 // SetMessageID sets the "message_id" field.
-func (lcmc *LastChannelMessageCreate) SetMessageID(i int) *LastChannelMessageCreate {
-	lcmc.mutation.SetMessageID(i)
-	return lcmc
+func (_c *LastChannelMessageCreate) SetMessageID(v int) *LastChannelMessageCreate {
+	_c.mutation.SetMessageID(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (lcmc *LastChannelMessageCreate) SetID(i int64) *LastChannelMessageCreate {
-	lcmc.mutation.SetID(i)
-	return lcmc
+func (_c *LastChannelMessageCreate) SetID(v int64) *LastChannelMessageCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the LastChannelMessageMutation object of the builder.
-func (lcmc *LastChannelMessageCreate) Mutation() *LastChannelMessageMutation {
-	return lcmc.mutation
+func (_c *LastChannelMessageCreate) Mutation() *LastChannelMessageMutation {
+	return _c.mutation
 }
 
 // Save creates the LastChannelMessage in the database.
-func (lcmc *LastChannelMessageCreate) Save(ctx context.Context) (*LastChannelMessage, error) {
-	return withHooks(ctx, lcmc.sqlSave, lcmc.mutation, lcmc.hooks)
+func (_c *LastChannelMessageCreate) Save(ctx context.Context) (*LastChannelMessage, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (lcmc *LastChannelMessageCreate) SaveX(ctx context.Context) *LastChannelMessage {
-	v, err := lcmc.Save(ctx)
+func (_c *LastChannelMessageCreate) SaveX(ctx context.Context) *LastChannelMessage {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -53,32 +53,32 @@ func (lcmc *LastChannelMessageCreate) SaveX(ctx context.Context) *LastChannelMes
 }
 
 // Exec executes the query.
-func (lcmc *LastChannelMessageCreate) Exec(ctx context.Context) error {
-	_, err := lcmc.Save(ctx)
+func (_c *LastChannelMessageCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (lcmc *LastChannelMessageCreate) ExecX(ctx context.Context) {
-	if err := lcmc.Exec(ctx); err != nil {
+func (_c *LastChannelMessageCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (lcmc *LastChannelMessageCreate) check() error {
-	if _, ok := lcmc.mutation.MessageID(); !ok {
+func (_c *LastChannelMessageCreate) check() error {
+	if _, ok := _c.mutation.MessageID(); !ok {
 		return &ValidationError{Name: "message_id", err: errors.New(`ent: missing required field "LastChannelMessage.message_id"`)}
 	}
 	return nil
 }
 
-func (lcmc *LastChannelMessageCreate) sqlSave(ctx context.Context) (*LastChannelMessage, error) {
-	if err := lcmc.check(); err != nil {
+func (_c *LastChannelMessageCreate) sqlSave(ctx context.Context) (*LastChannelMessage, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := lcmc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, lcmc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -88,22 +88,22 @@ func (lcmc *LastChannelMessageCreate) sqlSave(ctx context.Context) (*LastChannel
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	lcmc.mutation.id = &_node.ID
-	lcmc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (lcmc *LastChannelMessageCreate) createSpec() (*LastChannelMessage, *sqlgraph.CreateSpec) {
+func (_c *LastChannelMessageCreate) createSpec() (*LastChannelMessage, *sqlgraph.CreateSpec) {
 	var (
-		_node = &LastChannelMessage{config: lcmc.config}
+		_node = &LastChannelMessage{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(lastchannelmessage.Table, sqlgraph.NewFieldSpec(lastchannelmessage.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = lcmc.conflict
-	if id, ok := lcmc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := lcmc.mutation.MessageID(); ok {
+	if value, ok := _c.mutation.MessageID(); ok {
 		_spec.SetField(lastchannelmessage.FieldMessageID, field.TypeInt, value)
 		_node.MessageID = value
 	}
@@ -126,10 +126,10 @@ func (lcmc *LastChannelMessageCreate) createSpec() (*LastChannelMessage, *sqlgra
 //			SetMessageID(v+v).
 //		}).
 //		Exec(ctx)
-func (lcmc *LastChannelMessageCreate) OnConflict(opts ...sql.ConflictOption) *LastChannelMessageUpsertOne {
-	lcmc.conflict = opts
+func (_c *LastChannelMessageCreate) OnConflict(opts ...sql.ConflictOption) *LastChannelMessageUpsertOne {
+	_c.conflict = opts
 	return &LastChannelMessageUpsertOne{
-		create: lcmc,
+		create: _c,
 	}
 }
 
@@ -139,10 +139,10 @@ func (lcmc *LastChannelMessageCreate) OnConflict(opts ...sql.ConflictOption) *La
 //	client.LastChannelMessage.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (lcmc *LastChannelMessageCreate) OnConflictColumns(columns ...string) *LastChannelMessageUpsertOne {
-	lcmc.conflict = append(lcmc.conflict, sql.ConflictColumns(columns...))
+func (_c *LastChannelMessageCreate) OnConflictColumns(columns ...string) *LastChannelMessageUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &LastChannelMessageUpsertOne{
-		create: lcmc,
+		create: _c,
 	}
 }
 
@@ -288,16 +288,16 @@ type LastChannelMessageCreateBulk struct {
 }
 
 // Save creates the LastChannelMessage entities in the database.
-func (lcmcb *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastChannelMessage, error) {
-	if lcmcb.err != nil {
-		return nil, lcmcb.err
+func (_c *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastChannelMessage, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(lcmcb.builders))
-	nodes := make([]*LastChannelMessage, len(lcmcb.builders))
-	mutators := make([]Mutator, len(lcmcb.builders))
-	for i := range lcmcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*LastChannelMessage, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := lcmcb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*LastChannelMessageMutation)
 				if !ok {
@@ -310,12 +310,12 @@ func (lcmcb *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastCha
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, lcmcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = lcmcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, lcmcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -339,7 +339,7 @@ func (lcmcb *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastCha
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, lcmcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -347,8 +347,8 @@ func (lcmcb *LastChannelMessageCreateBulk) Save(ctx context.Context) ([]*LastCha
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (lcmcb *LastChannelMessageCreateBulk) SaveX(ctx context.Context) []*LastChannelMessage {
-	v, err := lcmcb.Save(ctx)
+func (_c *LastChannelMessageCreateBulk) SaveX(ctx context.Context) []*LastChannelMessage {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -356,14 +356,14 @@ func (lcmcb *LastChannelMessageCreateBulk) SaveX(ctx context.Context) []*LastCha
 }
 
 // Exec executes the query.
-func (lcmcb *LastChannelMessageCreateBulk) Exec(ctx context.Context) error {
-	_, err := lcmcb.Save(ctx)
+func (_c *LastChannelMessageCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (lcmcb *LastChannelMessageCreateBulk) ExecX(ctx context.Context) {
-	if err := lcmcb.Exec(ctx); err != nil {
+func (_c *LastChannelMessageCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -383,10 +383,10 @@ func (lcmcb *LastChannelMessageCreateBulk) ExecX(ctx context.Context) {
 //			SetMessageID(v+v).
 //		}).
 //		Exec(ctx)
-func (lcmcb *LastChannelMessageCreateBulk) OnConflict(opts ...sql.ConflictOption) *LastChannelMessageUpsertBulk {
-	lcmcb.conflict = opts
+func (_c *LastChannelMessageCreateBulk) OnConflict(opts ...sql.ConflictOption) *LastChannelMessageUpsertBulk {
+	_c.conflict = opts
 	return &LastChannelMessageUpsertBulk{
-		create: lcmcb,
+		create: _c,
 	}
 }
 
@@ -396,10 +396,10 @@ func (lcmcb *LastChannelMessageCreateBulk) OnConflict(opts ...sql.ConflictOption
 //	client.LastChannelMessage.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (lcmcb *LastChannelMessageCreateBulk) OnConflictColumns(columns ...string) *LastChannelMessageUpsertBulk {
-	lcmcb.conflict = append(lcmcb.conflict, sql.ConflictColumns(columns...))
+func (_c *LastChannelMessageCreateBulk) OnConflictColumns(columns ...string) *LastChannelMessageUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &LastChannelMessageUpsertBulk{
-		create: lcmcb,
+		create: _c,
 	}
 }
 

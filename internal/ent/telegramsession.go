@@ -40,7 +40,7 @@ func (*TelegramSession) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TelegramSession fields.
-func (ts *TelegramSession) assignValues(columns []string, values []any) error {
+func (_m *TelegramSession) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -50,16 +50,16 @@ func (ts *TelegramSession) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				ts.ID = *value
+				_m.ID = *value
 			}
 		case telegramsession.FieldData:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field data", values[i])
 			} else if value != nil {
-				ts.Data = *value
+				_m.Data = *value
 			}
 		default:
-			ts.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -67,35 +67,35 @@ func (ts *TelegramSession) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TelegramSession.
 // This includes values selected through modifiers, order, etc.
-func (ts *TelegramSession) Value(name string) (ent.Value, error) {
-	return ts.selectValues.Get(name)
+func (_m *TelegramSession) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this TelegramSession.
 // Note that you need to call TelegramSession.Unwrap() before calling this method if this TelegramSession
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ts *TelegramSession) Update() *TelegramSessionUpdateOne {
-	return NewTelegramSessionClient(ts.config).UpdateOne(ts)
+func (_m *TelegramSession) Update() *TelegramSessionUpdateOne {
+	return NewTelegramSessionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TelegramSession entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ts *TelegramSession) Unwrap() *TelegramSession {
-	_tx, ok := ts.config.driver.(*txDriver)
+func (_m *TelegramSession) Unwrap() *TelegramSession {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TelegramSession is not a transactional entity")
 	}
-	ts.config.driver = _tx.drv
-	return ts
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ts *TelegramSession) String() string {
+func (_m *TelegramSession) String() string {
 	var builder strings.Builder
 	builder.WriteString("TelegramSession(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ts.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("data=")
-	builder.WriteString(fmt.Sprintf("%v", ts.Data))
+	builder.WriteString(fmt.Sprintf("%v", _m.Data))
 	builder.WriteByte(')')
 	return builder.String()
 }

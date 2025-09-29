@@ -22,79 +22,79 @@ type PRNotificationCreate struct {
 }
 
 // SetRepoID sets the "repo_id" field.
-func (pnc *PRNotificationCreate) SetRepoID(i int64) *PRNotificationCreate {
-	pnc.mutation.SetRepoID(i)
-	return pnc
+func (_c *PRNotificationCreate) SetRepoID(v int64) *PRNotificationCreate {
+	_c.mutation.SetRepoID(v)
+	return _c
 }
 
 // SetPullRequestID sets the "pull_request_id" field.
-func (pnc *PRNotificationCreate) SetPullRequestID(i int) *PRNotificationCreate {
-	pnc.mutation.SetPullRequestID(i)
-	return pnc
+func (_c *PRNotificationCreate) SetPullRequestID(v int) *PRNotificationCreate {
+	_c.mutation.SetPullRequestID(v)
+	return _c
 }
 
 // SetPullRequestTitle sets the "pull_request_title" field.
-func (pnc *PRNotificationCreate) SetPullRequestTitle(s string) *PRNotificationCreate {
-	pnc.mutation.SetPullRequestTitle(s)
-	return pnc
+func (_c *PRNotificationCreate) SetPullRequestTitle(v string) *PRNotificationCreate {
+	_c.mutation.SetPullRequestTitle(v)
+	return _c
 }
 
 // SetNillablePullRequestTitle sets the "pull_request_title" field if the given value is not nil.
-func (pnc *PRNotificationCreate) SetNillablePullRequestTitle(s *string) *PRNotificationCreate {
-	if s != nil {
-		pnc.SetPullRequestTitle(*s)
+func (_c *PRNotificationCreate) SetNillablePullRequestTitle(v *string) *PRNotificationCreate {
+	if v != nil {
+		_c.SetPullRequestTitle(*v)
 	}
-	return pnc
+	return _c
 }
 
 // SetPullRequestBody sets the "pull_request_body" field.
-func (pnc *PRNotificationCreate) SetPullRequestBody(s string) *PRNotificationCreate {
-	pnc.mutation.SetPullRequestBody(s)
-	return pnc
+func (_c *PRNotificationCreate) SetPullRequestBody(v string) *PRNotificationCreate {
+	_c.mutation.SetPullRequestBody(v)
+	return _c
 }
 
 // SetNillablePullRequestBody sets the "pull_request_body" field if the given value is not nil.
-func (pnc *PRNotificationCreate) SetNillablePullRequestBody(s *string) *PRNotificationCreate {
-	if s != nil {
-		pnc.SetPullRequestBody(*s)
+func (_c *PRNotificationCreate) SetNillablePullRequestBody(v *string) *PRNotificationCreate {
+	if v != nil {
+		_c.SetPullRequestBody(*v)
 	}
-	return pnc
+	return _c
 }
 
 // SetPullRequestAuthorLogin sets the "pull_request_author_login" field.
-func (pnc *PRNotificationCreate) SetPullRequestAuthorLogin(s string) *PRNotificationCreate {
-	pnc.mutation.SetPullRequestAuthorLogin(s)
-	return pnc
+func (_c *PRNotificationCreate) SetPullRequestAuthorLogin(v string) *PRNotificationCreate {
+	_c.mutation.SetPullRequestAuthorLogin(v)
+	return _c
 }
 
 // SetNillablePullRequestAuthorLogin sets the "pull_request_author_login" field if the given value is not nil.
-func (pnc *PRNotificationCreate) SetNillablePullRequestAuthorLogin(s *string) *PRNotificationCreate {
-	if s != nil {
-		pnc.SetPullRequestAuthorLogin(*s)
+func (_c *PRNotificationCreate) SetNillablePullRequestAuthorLogin(v *string) *PRNotificationCreate {
+	if v != nil {
+		_c.SetPullRequestAuthorLogin(*v)
 	}
-	return pnc
+	return _c
 }
 
 // SetMessageID sets the "message_id" field.
-func (pnc *PRNotificationCreate) SetMessageID(i int) *PRNotificationCreate {
-	pnc.mutation.SetMessageID(i)
-	return pnc
+func (_c *PRNotificationCreate) SetMessageID(v int) *PRNotificationCreate {
+	_c.mutation.SetMessageID(v)
+	return _c
 }
 
 // Mutation returns the PRNotificationMutation object of the builder.
-func (pnc *PRNotificationCreate) Mutation() *PRNotificationMutation {
-	return pnc.mutation
+func (_c *PRNotificationCreate) Mutation() *PRNotificationMutation {
+	return _c.mutation
 }
 
 // Save creates the PRNotification in the database.
-func (pnc *PRNotificationCreate) Save(ctx context.Context) (*PRNotification, error) {
-	pnc.defaults()
-	return withHooks(ctx, pnc.sqlSave, pnc.mutation, pnc.hooks)
+func (_c *PRNotificationCreate) Save(ctx context.Context) (*PRNotification, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (pnc *PRNotificationCreate) SaveX(ctx context.Context) *PRNotification {
-	v, err := pnc.Save(ctx)
+func (_c *PRNotificationCreate) SaveX(ctx context.Context) *PRNotification {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -102,63 +102,63 @@ func (pnc *PRNotificationCreate) SaveX(ctx context.Context) *PRNotification {
 }
 
 // Exec executes the query.
-func (pnc *PRNotificationCreate) Exec(ctx context.Context) error {
-	_, err := pnc.Save(ctx)
+func (_c *PRNotificationCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pnc *PRNotificationCreate) ExecX(ctx context.Context) {
-	if err := pnc.Exec(ctx); err != nil {
+func (_c *PRNotificationCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pnc *PRNotificationCreate) defaults() {
-	if _, ok := pnc.mutation.PullRequestTitle(); !ok {
+func (_c *PRNotificationCreate) defaults() {
+	if _, ok := _c.mutation.PullRequestTitle(); !ok {
 		v := prnotification.DefaultPullRequestTitle
-		pnc.mutation.SetPullRequestTitle(v)
+		_c.mutation.SetPullRequestTitle(v)
 	}
-	if _, ok := pnc.mutation.PullRequestBody(); !ok {
+	if _, ok := _c.mutation.PullRequestBody(); !ok {
 		v := prnotification.DefaultPullRequestBody
-		pnc.mutation.SetPullRequestBody(v)
+		_c.mutation.SetPullRequestBody(v)
 	}
-	if _, ok := pnc.mutation.PullRequestAuthorLogin(); !ok {
+	if _, ok := _c.mutation.PullRequestAuthorLogin(); !ok {
 		v := prnotification.DefaultPullRequestAuthorLogin
-		pnc.mutation.SetPullRequestAuthorLogin(v)
+		_c.mutation.SetPullRequestAuthorLogin(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pnc *PRNotificationCreate) check() error {
-	if _, ok := pnc.mutation.RepoID(); !ok {
+func (_c *PRNotificationCreate) check() error {
+	if _, ok := _c.mutation.RepoID(); !ok {
 		return &ValidationError{Name: "repo_id", err: errors.New(`ent: missing required field "PRNotification.repo_id"`)}
 	}
-	if _, ok := pnc.mutation.PullRequestID(); !ok {
+	if _, ok := _c.mutation.PullRequestID(); !ok {
 		return &ValidationError{Name: "pull_request_id", err: errors.New(`ent: missing required field "PRNotification.pull_request_id"`)}
 	}
-	if _, ok := pnc.mutation.PullRequestTitle(); !ok {
+	if _, ok := _c.mutation.PullRequestTitle(); !ok {
 		return &ValidationError{Name: "pull_request_title", err: errors.New(`ent: missing required field "PRNotification.pull_request_title"`)}
 	}
-	if _, ok := pnc.mutation.PullRequestBody(); !ok {
+	if _, ok := _c.mutation.PullRequestBody(); !ok {
 		return &ValidationError{Name: "pull_request_body", err: errors.New(`ent: missing required field "PRNotification.pull_request_body"`)}
 	}
-	if _, ok := pnc.mutation.PullRequestAuthorLogin(); !ok {
+	if _, ok := _c.mutation.PullRequestAuthorLogin(); !ok {
 		return &ValidationError{Name: "pull_request_author_login", err: errors.New(`ent: missing required field "PRNotification.pull_request_author_login"`)}
 	}
-	if _, ok := pnc.mutation.MessageID(); !ok {
+	if _, ok := _c.mutation.MessageID(); !ok {
 		return &ValidationError{Name: "message_id", err: errors.New(`ent: missing required field "PRNotification.message_id"`)}
 	}
 	return nil
 }
 
-func (pnc *PRNotificationCreate) sqlSave(ctx context.Context) (*PRNotification, error) {
-	if err := pnc.check(); err != nil {
+func (_c *PRNotificationCreate) sqlSave(ctx context.Context) (*PRNotification, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := pnc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, pnc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -166,38 +166,38 @@ func (pnc *PRNotificationCreate) sqlSave(ctx context.Context) (*PRNotification, 
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	pnc.mutation.id = &_node.ID
-	pnc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (pnc *PRNotificationCreate) createSpec() (*PRNotification, *sqlgraph.CreateSpec) {
+func (_c *PRNotificationCreate) createSpec() (*PRNotification, *sqlgraph.CreateSpec) {
 	var (
-		_node = &PRNotification{config: pnc.config}
+		_node = &PRNotification{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(prnotification.Table, sqlgraph.NewFieldSpec(prnotification.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = pnc.conflict
-	if value, ok := pnc.mutation.RepoID(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.RepoID(); ok {
 		_spec.SetField(prnotification.FieldRepoID, field.TypeInt64, value)
 		_node.RepoID = value
 	}
-	if value, ok := pnc.mutation.PullRequestID(); ok {
+	if value, ok := _c.mutation.PullRequestID(); ok {
 		_spec.SetField(prnotification.FieldPullRequestID, field.TypeInt, value)
 		_node.PullRequestID = value
 	}
-	if value, ok := pnc.mutation.PullRequestTitle(); ok {
+	if value, ok := _c.mutation.PullRequestTitle(); ok {
 		_spec.SetField(prnotification.FieldPullRequestTitle, field.TypeString, value)
 		_node.PullRequestTitle = value
 	}
-	if value, ok := pnc.mutation.PullRequestBody(); ok {
+	if value, ok := _c.mutation.PullRequestBody(); ok {
 		_spec.SetField(prnotification.FieldPullRequestBody, field.TypeString, value)
 		_node.PullRequestBody = value
 	}
-	if value, ok := pnc.mutation.PullRequestAuthorLogin(); ok {
+	if value, ok := _c.mutation.PullRequestAuthorLogin(); ok {
 		_spec.SetField(prnotification.FieldPullRequestAuthorLogin, field.TypeString, value)
 		_node.PullRequestAuthorLogin = value
 	}
-	if value, ok := pnc.mutation.MessageID(); ok {
+	if value, ok := _c.mutation.MessageID(); ok {
 		_spec.SetField(prnotification.FieldMessageID, field.TypeInt, value)
 		_node.MessageID = value
 	}
@@ -220,10 +220,10 @@ func (pnc *PRNotificationCreate) createSpec() (*PRNotification, *sqlgraph.Create
 //			SetRepoID(v+v).
 //		}).
 //		Exec(ctx)
-func (pnc *PRNotificationCreate) OnConflict(opts ...sql.ConflictOption) *PRNotificationUpsertOne {
-	pnc.conflict = opts
+func (_c *PRNotificationCreate) OnConflict(opts ...sql.ConflictOption) *PRNotificationUpsertOne {
+	_c.conflict = opts
 	return &PRNotificationUpsertOne{
-		create: pnc,
+		create: _c,
 	}
 }
 
@@ -233,10 +233,10 @@ func (pnc *PRNotificationCreate) OnConflict(opts ...sql.ConflictOption) *PRNotif
 //	client.PRNotification.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pnc *PRNotificationCreate) OnConflictColumns(columns ...string) *PRNotificationUpsertOne {
-	pnc.conflict = append(pnc.conflict, sql.ConflictColumns(columns...))
+func (_c *PRNotificationCreate) OnConflictColumns(columns ...string) *PRNotificationUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PRNotificationUpsertOne{
-		create: pnc,
+		create: _c,
 	}
 }
 
@@ -530,16 +530,16 @@ type PRNotificationCreateBulk struct {
 }
 
 // Save creates the PRNotification entities in the database.
-func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotification, error) {
-	if pncb.err != nil {
-		return nil, pncb.err
+func (_c *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotification, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(pncb.builders))
-	nodes := make([]*PRNotification, len(pncb.builders))
-	mutators := make([]Mutator, len(pncb.builders))
-	for i := range pncb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*PRNotification, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := pncb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PRNotificationMutation)
@@ -553,12 +553,12 @@ func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotificati
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, pncb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = pncb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, pncb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -582,7 +582,7 @@ func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotificati
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, pncb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -590,8 +590,8 @@ func (pncb *PRNotificationCreateBulk) Save(ctx context.Context) ([]*PRNotificati
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pncb *PRNotificationCreateBulk) SaveX(ctx context.Context) []*PRNotification {
-	v, err := pncb.Save(ctx)
+func (_c *PRNotificationCreateBulk) SaveX(ctx context.Context) []*PRNotification {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -599,14 +599,14 @@ func (pncb *PRNotificationCreateBulk) SaveX(ctx context.Context) []*PRNotificati
 }
 
 // Exec executes the query.
-func (pncb *PRNotificationCreateBulk) Exec(ctx context.Context) error {
-	_, err := pncb.Save(ctx)
+func (_c *PRNotificationCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pncb *PRNotificationCreateBulk) ExecX(ctx context.Context) {
-	if err := pncb.Exec(ctx); err != nil {
+func (_c *PRNotificationCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -626,10 +626,10 @@ func (pncb *PRNotificationCreateBulk) ExecX(ctx context.Context) {
 //			SetRepoID(v+v).
 //		}).
 //		Exec(ctx)
-func (pncb *PRNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption) *PRNotificationUpsertBulk {
-	pncb.conflict = opts
+func (_c *PRNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption) *PRNotificationUpsertBulk {
+	_c.conflict = opts
 	return &PRNotificationUpsertBulk{
-		create: pncb,
+		create: _c,
 	}
 }
 
@@ -639,10 +639,10 @@ func (pncb *PRNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption) *PR
 //	client.PRNotification.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pncb *PRNotificationCreateBulk) OnConflictColumns(columns ...string) *PRNotificationUpsertBulk {
-	pncb.conflict = append(pncb.conflict, sql.ConflictColumns(columns...))
+func (_c *PRNotificationCreateBulk) OnConflictColumns(columns ...string) *PRNotificationUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PRNotificationUpsertBulk{
-		create: pncb,
+		create: _c,
 	}
 }
 

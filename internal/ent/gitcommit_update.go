@@ -24,112 +24,112 @@ type GitCommitUpdate struct {
 }
 
 // Where appends a list predicates to the GitCommitUpdate builder.
-func (gcu *GitCommitUpdate) Where(ps ...predicate.GitCommit) *GitCommitUpdate {
-	gcu.mutation.Where(ps...)
-	return gcu
+func (_u *GitCommitUpdate) Where(ps ...predicate.GitCommit) *GitCommitUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetMessage sets the "message" field.
-func (gcu *GitCommitUpdate) SetMessage(s string) *GitCommitUpdate {
-	gcu.mutation.SetMessage(s)
-	return gcu
+func (_u *GitCommitUpdate) SetMessage(v string) *GitCommitUpdate {
+	_u.mutation.SetMessage(v)
+	return _u
 }
 
 // SetNillableMessage sets the "message" field if the given value is not nil.
-func (gcu *GitCommitUpdate) SetNillableMessage(s *string) *GitCommitUpdate {
-	if s != nil {
-		gcu.SetMessage(*s)
+func (_u *GitCommitUpdate) SetNillableMessage(v *string) *GitCommitUpdate {
+	if v != nil {
+		_u.SetMessage(*v)
 	}
-	return gcu
+	return _u
 }
 
 // SetAuthorLogin sets the "author_login" field.
-func (gcu *GitCommitUpdate) SetAuthorLogin(s string) *GitCommitUpdate {
-	gcu.mutation.SetAuthorLogin(s)
-	return gcu
+func (_u *GitCommitUpdate) SetAuthorLogin(v string) *GitCommitUpdate {
+	_u.mutation.SetAuthorLogin(v)
+	return _u
 }
 
 // SetNillableAuthorLogin sets the "author_login" field if the given value is not nil.
-func (gcu *GitCommitUpdate) SetNillableAuthorLogin(s *string) *GitCommitUpdate {
-	if s != nil {
-		gcu.SetAuthorLogin(*s)
+func (_u *GitCommitUpdate) SetNillableAuthorLogin(v *string) *GitCommitUpdate {
+	if v != nil {
+		_u.SetAuthorLogin(*v)
 	}
-	return gcu
+	return _u
 }
 
 // SetAuthorID sets the "author_id" field.
-func (gcu *GitCommitUpdate) SetAuthorID(i int64) *GitCommitUpdate {
-	gcu.mutation.ResetAuthorID()
-	gcu.mutation.SetAuthorID(i)
-	return gcu
+func (_u *GitCommitUpdate) SetAuthorID(v int64) *GitCommitUpdate {
+	_u.mutation.ResetAuthorID()
+	_u.mutation.SetAuthorID(v)
+	return _u
 }
 
 // SetNillableAuthorID sets the "author_id" field if the given value is not nil.
-func (gcu *GitCommitUpdate) SetNillableAuthorID(i *int64) *GitCommitUpdate {
-	if i != nil {
-		gcu.SetAuthorID(*i)
+func (_u *GitCommitUpdate) SetNillableAuthorID(v *int64) *GitCommitUpdate {
+	if v != nil {
+		_u.SetAuthorID(*v)
 	}
-	return gcu
+	return _u
 }
 
-// AddAuthorID adds i to the "author_id" field.
-func (gcu *GitCommitUpdate) AddAuthorID(i int64) *GitCommitUpdate {
-	gcu.mutation.AddAuthorID(i)
-	return gcu
+// AddAuthorID adds value to the "author_id" field.
+func (_u *GitCommitUpdate) AddAuthorID(v int64) *GitCommitUpdate {
+	_u.mutation.AddAuthorID(v)
+	return _u
 }
 
 // SetDate sets the "date" field.
-func (gcu *GitCommitUpdate) SetDate(t time.Time) *GitCommitUpdate {
-	gcu.mutation.SetDate(t)
-	return gcu
+func (_u *GitCommitUpdate) SetDate(v time.Time) *GitCommitUpdate {
+	_u.mutation.SetDate(v)
+	return _u
 }
 
 // SetNillableDate sets the "date" field if the given value is not nil.
-func (gcu *GitCommitUpdate) SetNillableDate(t *time.Time) *GitCommitUpdate {
-	if t != nil {
-		gcu.SetDate(*t)
+func (_u *GitCommitUpdate) SetNillableDate(v *time.Time) *GitCommitUpdate {
+	if v != nil {
+		_u.SetDate(*v)
 	}
-	return gcu
+	return _u
 }
 
 // SetRepositoryID sets the "repository" edge to the Repository entity by ID.
-func (gcu *GitCommitUpdate) SetRepositoryID(id int64) *GitCommitUpdate {
-	gcu.mutation.SetRepositoryID(id)
-	return gcu
+func (_u *GitCommitUpdate) SetRepositoryID(id int64) *GitCommitUpdate {
+	_u.mutation.SetRepositoryID(id)
+	return _u
 }
 
 // SetNillableRepositoryID sets the "repository" edge to the Repository entity by ID if the given value is not nil.
-func (gcu *GitCommitUpdate) SetNillableRepositoryID(id *int64) *GitCommitUpdate {
+func (_u *GitCommitUpdate) SetNillableRepositoryID(id *int64) *GitCommitUpdate {
 	if id != nil {
-		gcu = gcu.SetRepositoryID(*id)
+		_u = _u.SetRepositoryID(*id)
 	}
-	return gcu
+	return _u
 }
 
 // SetRepository sets the "repository" edge to the Repository entity.
-func (gcu *GitCommitUpdate) SetRepository(r *Repository) *GitCommitUpdate {
-	return gcu.SetRepositoryID(r.ID)
+func (_u *GitCommitUpdate) SetRepository(v *Repository) *GitCommitUpdate {
+	return _u.SetRepositoryID(v.ID)
 }
 
 // Mutation returns the GitCommitMutation object of the builder.
-func (gcu *GitCommitUpdate) Mutation() *GitCommitMutation {
-	return gcu.mutation
+func (_u *GitCommitUpdate) Mutation() *GitCommitMutation {
+	return _u.mutation
 }
 
 // ClearRepository clears the "repository" edge to the Repository entity.
-func (gcu *GitCommitUpdate) ClearRepository() *GitCommitUpdate {
-	gcu.mutation.ClearRepository()
-	return gcu
+func (_u *GitCommitUpdate) ClearRepository() *GitCommitUpdate {
+	_u.mutation.ClearRepository()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (gcu *GitCommitUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, gcu.sqlSave, gcu.mutation, gcu.hooks)
+func (_u *GitCommitUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gcu *GitCommitUpdate) SaveX(ctx context.Context) int {
-	affected, err := gcu.Save(ctx)
+func (_u *GitCommitUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -137,43 +137,43 @@ func (gcu *GitCommitUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (gcu *GitCommitUpdate) Exec(ctx context.Context) error {
-	_, err := gcu.Save(ctx)
+func (_u *GitCommitUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcu *GitCommitUpdate) ExecX(ctx context.Context) {
-	if err := gcu.Exec(ctx); err != nil {
+func (_u *GitCommitUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gcu *GitCommitUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *GitCommitUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(gitcommit.Table, gitcommit.Columns, sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString))
-	if ps := gcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gcu.mutation.Message(); ok {
+	if value, ok := _u.mutation.Message(); ok {
 		_spec.SetField(gitcommit.FieldMessage, field.TypeString, value)
 	}
-	if value, ok := gcu.mutation.AuthorLogin(); ok {
+	if value, ok := _u.mutation.AuthorLogin(); ok {
 		_spec.SetField(gitcommit.FieldAuthorLogin, field.TypeString, value)
 	}
-	if value, ok := gcu.mutation.AuthorID(); ok {
+	if value, ok := _u.mutation.AuthorID(); ok {
 		_spec.SetField(gitcommit.FieldAuthorID, field.TypeInt64, value)
 	}
-	if value, ok := gcu.mutation.AddedAuthorID(); ok {
+	if value, ok := _u.mutation.AddedAuthorID(); ok {
 		_spec.AddField(gitcommit.FieldAuthorID, field.TypeInt64, value)
 	}
-	if value, ok := gcu.mutation.Date(); ok {
+	if value, ok := _u.mutation.Date(); ok {
 		_spec.SetField(gitcommit.FieldDate, field.TypeTime, value)
 	}
-	if gcu.mutation.RepositoryCleared() {
+	if _u.mutation.RepositoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -186,7 +186,7 @@ func (gcu *GitCommitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gcu.mutation.RepositoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RepositoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -202,7 +202,7 @@ func (gcu *GitCommitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, gcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{gitcommit.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -210,8 +210,8 @@ func (gcu *GitCommitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	gcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // GitCommitUpdateOne is the builder for updating a single GitCommit entity.
@@ -223,119 +223,119 @@ type GitCommitUpdateOne struct {
 }
 
 // SetMessage sets the "message" field.
-func (gcuo *GitCommitUpdateOne) SetMessage(s string) *GitCommitUpdateOne {
-	gcuo.mutation.SetMessage(s)
-	return gcuo
+func (_u *GitCommitUpdateOne) SetMessage(v string) *GitCommitUpdateOne {
+	_u.mutation.SetMessage(v)
+	return _u
 }
 
 // SetNillableMessage sets the "message" field if the given value is not nil.
-func (gcuo *GitCommitUpdateOne) SetNillableMessage(s *string) *GitCommitUpdateOne {
-	if s != nil {
-		gcuo.SetMessage(*s)
+func (_u *GitCommitUpdateOne) SetNillableMessage(v *string) *GitCommitUpdateOne {
+	if v != nil {
+		_u.SetMessage(*v)
 	}
-	return gcuo
+	return _u
 }
 
 // SetAuthorLogin sets the "author_login" field.
-func (gcuo *GitCommitUpdateOne) SetAuthorLogin(s string) *GitCommitUpdateOne {
-	gcuo.mutation.SetAuthorLogin(s)
-	return gcuo
+func (_u *GitCommitUpdateOne) SetAuthorLogin(v string) *GitCommitUpdateOne {
+	_u.mutation.SetAuthorLogin(v)
+	return _u
 }
 
 // SetNillableAuthorLogin sets the "author_login" field if the given value is not nil.
-func (gcuo *GitCommitUpdateOne) SetNillableAuthorLogin(s *string) *GitCommitUpdateOne {
-	if s != nil {
-		gcuo.SetAuthorLogin(*s)
+func (_u *GitCommitUpdateOne) SetNillableAuthorLogin(v *string) *GitCommitUpdateOne {
+	if v != nil {
+		_u.SetAuthorLogin(*v)
 	}
-	return gcuo
+	return _u
 }
 
 // SetAuthorID sets the "author_id" field.
-func (gcuo *GitCommitUpdateOne) SetAuthorID(i int64) *GitCommitUpdateOne {
-	gcuo.mutation.ResetAuthorID()
-	gcuo.mutation.SetAuthorID(i)
-	return gcuo
+func (_u *GitCommitUpdateOne) SetAuthorID(v int64) *GitCommitUpdateOne {
+	_u.mutation.ResetAuthorID()
+	_u.mutation.SetAuthorID(v)
+	return _u
 }
 
 // SetNillableAuthorID sets the "author_id" field if the given value is not nil.
-func (gcuo *GitCommitUpdateOne) SetNillableAuthorID(i *int64) *GitCommitUpdateOne {
-	if i != nil {
-		gcuo.SetAuthorID(*i)
+func (_u *GitCommitUpdateOne) SetNillableAuthorID(v *int64) *GitCommitUpdateOne {
+	if v != nil {
+		_u.SetAuthorID(*v)
 	}
-	return gcuo
+	return _u
 }
 
-// AddAuthorID adds i to the "author_id" field.
-func (gcuo *GitCommitUpdateOne) AddAuthorID(i int64) *GitCommitUpdateOne {
-	gcuo.mutation.AddAuthorID(i)
-	return gcuo
+// AddAuthorID adds value to the "author_id" field.
+func (_u *GitCommitUpdateOne) AddAuthorID(v int64) *GitCommitUpdateOne {
+	_u.mutation.AddAuthorID(v)
+	return _u
 }
 
 // SetDate sets the "date" field.
-func (gcuo *GitCommitUpdateOne) SetDate(t time.Time) *GitCommitUpdateOne {
-	gcuo.mutation.SetDate(t)
-	return gcuo
+func (_u *GitCommitUpdateOne) SetDate(v time.Time) *GitCommitUpdateOne {
+	_u.mutation.SetDate(v)
+	return _u
 }
 
 // SetNillableDate sets the "date" field if the given value is not nil.
-func (gcuo *GitCommitUpdateOne) SetNillableDate(t *time.Time) *GitCommitUpdateOne {
-	if t != nil {
-		gcuo.SetDate(*t)
+func (_u *GitCommitUpdateOne) SetNillableDate(v *time.Time) *GitCommitUpdateOne {
+	if v != nil {
+		_u.SetDate(*v)
 	}
-	return gcuo
+	return _u
 }
 
 // SetRepositoryID sets the "repository" edge to the Repository entity by ID.
-func (gcuo *GitCommitUpdateOne) SetRepositoryID(id int64) *GitCommitUpdateOne {
-	gcuo.mutation.SetRepositoryID(id)
-	return gcuo
+func (_u *GitCommitUpdateOne) SetRepositoryID(id int64) *GitCommitUpdateOne {
+	_u.mutation.SetRepositoryID(id)
+	return _u
 }
 
 // SetNillableRepositoryID sets the "repository" edge to the Repository entity by ID if the given value is not nil.
-func (gcuo *GitCommitUpdateOne) SetNillableRepositoryID(id *int64) *GitCommitUpdateOne {
+func (_u *GitCommitUpdateOne) SetNillableRepositoryID(id *int64) *GitCommitUpdateOne {
 	if id != nil {
-		gcuo = gcuo.SetRepositoryID(*id)
+		_u = _u.SetRepositoryID(*id)
 	}
-	return gcuo
+	return _u
 }
 
 // SetRepository sets the "repository" edge to the Repository entity.
-func (gcuo *GitCommitUpdateOne) SetRepository(r *Repository) *GitCommitUpdateOne {
-	return gcuo.SetRepositoryID(r.ID)
+func (_u *GitCommitUpdateOne) SetRepository(v *Repository) *GitCommitUpdateOne {
+	return _u.SetRepositoryID(v.ID)
 }
 
 // Mutation returns the GitCommitMutation object of the builder.
-func (gcuo *GitCommitUpdateOne) Mutation() *GitCommitMutation {
-	return gcuo.mutation
+func (_u *GitCommitUpdateOne) Mutation() *GitCommitMutation {
+	return _u.mutation
 }
 
 // ClearRepository clears the "repository" edge to the Repository entity.
-func (gcuo *GitCommitUpdateOne) ClearRepository() *GitCommitUpdateOne {
-	gcuo.mutation.ClearRepository()
-	return gcuo
+func (_u *GitCommitUpdateOne) ClearRepository() *GitCommitUpdateOne {
+	_u.mutation.ClearRepository()
+	return _u
 }
 
 // Where appends a list predicates to the GitCommitUpdate builder.
-func (gcuo *GitCommitUpdateOne) Where(ps ...predicate.GitCommit) *GitCommitUpdateOne {
-	gcuo.mutation.Where(ps...)
-	return gcuo
+func (_u *GitCommitUpdateOne) Where(ps ...predicate.GitCommit) *GitCommitUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (gcuo *GitCommitUpdateOne) Select(field string, fields ...string) *GitCommitUpdateOne {
-	gcuo.fields = append([]string{field}, fields...)
-	return gcuo
+func (_u *GitCommitUpdateOne) Select(field string, fields ...string) *GitCommitUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated GitCommit entity.
-func (gcuo *GitCommitUpdateOne) Save(ctx context.Context) (*GitCommit, error) {
-	return withHooks(ctx, gcuo.sqlSave, gcuo.mutation, gcuo.hooks)
+func (_u *GitCommitUpdateOne) Save(ctx context.Context) (*GitCommit, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gcuo *GitCommitUpdateOne) SaveX(ctx context.Context) *GitCommit {
-	node, err := gcuo.Save(ctx)
+func (_u *GitCommitUpdateOne) SaveX(ctx context.Context) *GitCommit {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -343,26 +343,26 @@ func (gcuo *GitCommitUpdateOne) SaveX(ctx context.Context) *GitCommit {
 }
 
 // Exec executes the query on the entity.
-func (gcuo *GitCommitUpdateOne) Exec(ctx context.Context) error {
-	_, err := gcuo.Save(ctx)
+func (_u *GitCommitUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcuo *GitCommitUpdateOne) ExecX(ctx context.Context) {
-	if err := gcuo.Exec(ctx); err != nil {
+func (_u *GitCommitUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gcuo *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, err error) {
+func (_u *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, err error) {
 	_spec := sqlgraph.NewUpdateSpec(gitcommit.Table, gitcommit.Columns, sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString))
-	id, ok := gcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "GitCommit.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := gcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, gitcommit.FieldID)
 		for _, f := range fields {
@@ -374,29 +374,29 @@ func (gcuo *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, 
 			}
 		}
 	}
-	if ps := gcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gcuo.mutation.Message(); ok {
+	if value, ok := _u.mutation.Message(); ok {
 		_spec.SetField(gitcommit.FieldMessage, field.TypeString, value)
 	}
-	if value, ok := gcuo.mutation.AuthorLogin(); ok {
+	if value, ok := _u.mutation.AuthorLogin(); ok {
 		_spec.SetField(gitcommit.FieldAuthorLogin, field.TypeString, value)
 	}
-	if value, ok := gcuo.mutation.AuthorID(); ok {
+	if value, ok := _u.mutation.AuthorID(); ok {
 		_spec.SetField(gitcommit.FieldAuthorID, field.TypeInt64, value)
 	}
-	if value, ok := gcuo.mutation.AddedAuthorID(); ok {
+	if value, ok := _u.mutation.AddedAuthorID(); ok {
 		_spec.AddField(gitcommit.FieldAuthorID, field.TypeInt64, value)
 	}
-	if value, ok := gcuo.mutation.Date(); ok {
+	if value, ok := _u.mutation.Date(); ok {
 		_spec.SetField(gitcommit.FieldDate, field.TypeTime, value)
 	}
-	if gcuo.mutation.RepositoryCleared() {
+	if _u.mutation.RepositoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -409,7 +409,7 @@ func (gcuo *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := gcuo.mutation.RepositoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RepositoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -425,10 +425,10 @@ func (gcuo *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &GitCommit{config: gcuo.config}
+	_node = &GitCommit{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, gcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{gitcommit.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -436,6 +436,6 @@ func (gcuo *GitCommitUpdateOne) sqlSave(ctx context.Context) (_node *GitCommit, 
 		}
 		return nil, err
 	}
-	gcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

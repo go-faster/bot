@@ -23,77 +23,77 @@ type GPTDialogCreate struct {
 }
 
 // SetPeerID sets the "peer_id" field.
-func (gdc *GPTDialogCreate) SetPeerID(s string) *GPTDialogCreate {
-	gdc.mutation.SetPeerID(s)
-	return gdc
+func (_c *GPTDialogCreate) SetPeerID(v string) *GPTDialogCreate {
+	_c.mutation.SetPeerID(v)
+	return _c
 }
 
 // SetPromptMsgID sets the "prompt_msg_id" field.
-func (gdc *GPTDialogCreate) SetPromptMsgID(i int) *GPTDialogCreate {
-	gdc.mutation.SetPromptMsgID(i)
-	return gdc
+func (_c *GPTDialogCreate) SetPromptMsgID(v int) *GPTDialogCreate {
+	_c.mutation.SetPromptMsgID(v)
+	return _c
 }
 
 // SetPromptMsg sets the "prompt_msg" field.
-func (gdc *GPTDialogCreate) SetPromptMsg(s string) *GPTDialogCreate {
-	gdc.mutation.SetPromptMsg(s)
-	return gdc
+func (_c *GPTDialogCreate) SetPromptMsg(v string) *GPTDialogCreate {
+	_c.mutation.SetPromptMsg(v)
+	return _c
 }
 
 // SetGptMsgID sets the "gpt_msg_id" field.
-func (gdc *GPTDialogCreate) SetGptMsgID(i int) *GPTDialogCreate {
-	gdc.mutation.SetGptMsgID(i)
-	return gdc
+func (_c *GPTDialogCreate) SetGptMsgID(v int) *GPTDialogCreate {
+	_c.mutation.SetGptMsgID(v)
+	return _c
 }
 
 // SetGptMsg sets the "gpt_msg" field.
-func (gdc *GPTDialogCreate) SetGptMsg(s string) *GPTDialogCreate {
-	gdc.mutation.SetGptMsg(s)
-	return gdc
+func (_c *GPTDialogCreate) SetGptMsg(v string) *GPTDialogCreate {
+	_c.mutation.SetGptMsg(v)
+	return _c
 }
 
 // SetThreadTopMsgID sets the "thread_top_msg_id" field.
-func (gdc *GPTDialogCreate) SetThreadTopMsgID(i int) *GPTDialogCreate {
-	gdc.mutation.SetThreadTopMsgID(i)
-	return gdc
+func (_c *GPTDialogCreate) SetThreadTopMsgID(v int) *GPTDialogCreate {
+	_c.mutation.SetThreadTopMsgID(v)
+	return _c
 }
 
 // SetNillableThreadTopMsgID sets the "thread_top_msg_id" field if the given value is not nil.
-func (gdc *GPTDialogCreate) SetNillableThreadTopMsgID(i *int) *GPTDialogCreate {
-	if i != nil {
-		gdc.SetThreadTopMsgID(*i)
+func (_c *GPTDialogCreate) SetNillableThreadTopMsgID(v *int) *GPTDialogCreate {
+	if v != nil {
+		_c.SetThreadTopMsgID(*v)
 	}
-	return gdc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (gdc *GPTDialogCreate) SetCreatedAt(t time.Time) *GPTDialogCreate {
-	gdc.mutation.SetCreatedAt(t)
-	return gdc
+func (_c *GPTDialogCreate) SetCreatedAt(v time.Time) *GPTDialogCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (gdc *GPTDialogCreate) SetNillableCreatedAt(t *time.Time) *GPTDialogCreate {
-	if t != nil {
-		gdc.SetCreatedAt(*t)
+func (_c *GPTDialogCreate) SetNillableCreatedAt(v *time.Time) *GPTDialogCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return gdc
+	return _c
 }
 
 // Mutation returns the GPTDialogMutation object of the builder.
-func (gdc *GPTDialogCreate) Mutation() *GPTDialogMutation {
-	return gdc.mutation
+func (_c *GPTDialogCreate) Mutation() *GPTDialogMutation {
+	return _c.mutation
 }
 
 // Save creates the GPTDialog in the database.
-func (gdc *GPTDialogCreate) Save(ctx context.Context) (*GPTDialog, error) {
-	gdc.defaults()
-	return withHooks(ctx, gdc.sqlSave, gdc.mutation, gdc.hooks)
+func (_c *GPTDialogCreate) Save(ctx context.Context) (*GPTDialog, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (gdc *GPTDialogCreate) SaveX(ctx context.Context) *GPTDialog {
-	v, err := gdc.Save(ctx)
+func (_c *GPTDialogCreate) SaveX(ctx context.Context) *GPTDialog {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -101,55 +101,55 @@ func (gdc *GPTDialogCreate) SaveX(ctx context.Context) *GPTDialog {
 }
 
 // Exec executes the query.
-func (gdc *GPTDialogCreate) Exec(ctx context.Context) error {
-	_, err := gdc.Save(ctx)
+func (_c *GPTDialogCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gdc *GPTDialogCreate) ExecX(ctx context.Context) {
-	if err := gdc.Exec(ctx); err != nil {
+func (_c *GPTDialogCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (gdc *GPTDialogCreate) defaults() {
-	if _, ok := gdc.mutation.CreatedAt(); !ok {
+func (_c *GPTDialogCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := gptdialog.DefaultCreatedAt()
-		gdc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (gdc *GPTDialogCreate) check() error {
-	if _, ok := gdc.mutation.PeerID(); !ok {
+func (_c *GPTDialogCreate) check() error {
+	if _, ok := _c.mutation.PeerID(); !ok {
 		return &ValidationError{Name: "peer_id", err: errors.New(`ent: missing required field "GPTDialog.peer_id"`)}
 	}
-	if _, ok := gdc.mutation.PromptMsgID(); !ok {
+	if _, ok := _c.mutation.PromptMsgID(); !ok {
 		return &ValidationError{Name: "prompt_msg_id", err: errors.New(`ent: missing required field "GPTDialog.prompt_msg_id"`)}
 	}
-	if _, ok := gdc.mutation.PromptMsg(); !ok {
+	if _, ok := _c.mutation.PromptMsg(); !ok {
 		return &ValidationError{Name: "prompt_msg", err: errors.New(`ent: missing required field "GPTDialog.prompt_msg"`)}
 	}
-	if _, ok := gdc.mutation.GptMsgID(); !ok {
+	if _, ok := _c.mutation.GptMsgID(); !ok {
 		return &ValidationError{Name: "gpt_msg_id", err: errors.New(`ent: missing required field "GPTDialog.gpt_msg_id"`)}
 	}
-	if _, ok := gdc.mutation.GptMsg(); !ok {
+	if _, ok := _c.mutation.GptMsg(); !ok {
 		return &ValidationError{Name: "gpt_msg", err: errors.New(`ent: missing required field "GPTDialog.gpt_msg"`)}
 	}
-	if _, ok := gdc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "GPTDialog.created_at"`)}
 	}
 	return nil
 }
 
-func (gdc *GPTDialogCreate) sqlSave(ctx context.Context) (*GPTDialog, error) {
-	if err := gdc.check(); err != nil {
+func (_c *GPTDialogCreate) sqlSave(ctx context.Context) (*GPTDialog, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := gdc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, gdc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -157,42 +157,42 @@ func (gdc *GPTDialogCreate) sqlSave(ctx context.Context) (*GPTDialog, error) {
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	gdc.mutation.id = &_node.ID
-	gdc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (gdc *GPTDialogCreate) createSpec() (*GPTDialog, *sqlgraph.CreateSpec) {
+func (_c *GPTDialogCreate) createSpec() (*GPTDialog, *sqlgraph.CreateSpec) {
 	var (
-		_node = &GPTDialog{config: gdc.config}
+		_node = &GPTDialog{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(gptdialog.Table, sqlgraph.NewFieldSpec(gptdialog.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = gdc.conflict
-	if value, ok := gdc.mutation.PeerID(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.PeerID(); ok {
 		_spec.SetField(gptdialog.FieldPeerID, field.TypeString, value)
 		_node.PeerID = value
 	}
-	if value, ok := gdc.mutation.PromptMsgID(); ok {
+	if value, ok := _c.mutation.PromptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsgID, field.TypeInt, value)
 		_node.PromptMsgID = value
 	}
-	if value, ok := gdc.mutation.PromptMsg(); ok {
+	if value, ok := _c.mutation.PromptMsg(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsg, field.TypeString, value)
 		_node.PromptMsg = value
 	}
-	if value, ok := gdc.mutation.GptMsgID(); ok {
+	if value, ok := _c.mutation.GptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldGptMsgID, field.TypeInt, value)
 		_node.GptMsgID = value
 	}
-	if value, ok := gdc.mutation.GptMsg(); ok {
+	if value, ok := _c.mutation.GptMsg(); ok {
 		_spec.SetField(gptdialog.FieldGptMsg, field.TypeString, value)
 		_node.GptMsg = value
 	}
-	if value, ok := gdc.mutation.ThreadTopMsgID(); ok {
+	if value, ok := _c.mutation.ThreadTopMsgID(); ok {
 		_spec.SetField(gptdialog.FieldThreadTopMsgID, field.TypeInt, value)
 		_node.ThreadTopMsgID = value
 	}
-	if value, ok := gdc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(gptdialog.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -215,10 +215,10 @@ func (gdc *GPTDialogCreate) createSpec() (*GPTDialog, *sqlgraph.CreateSpec) {
 //			SetPeerID(v+v).
 //		}).
 //		Exec(ctx)
-func (gdc *GPTDialogCreate) OnConflict(opts ...sql.ConflictOption) *GPTDialogUpsertOne {
-	gdc.conflict = opts
+func (_c *GPTDialogCreate) OnConflict(opts ...sql.ConflictOption) *GPTDialogUpsertOne {
+	_c.conflict = opts
 	return &GPTDialogUpsertOne{
-		create: gdc,
+		create: _c,
 	}
 }
 
@@ -228,10 +228,10 @@ func (gdc *GPTDialogCreate) OnConflict(opts ...sql.ConflictOption) *GPTDialogUps
 //	client.GPTDialog.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gdc *GPTDialogCreate) OnConflictColumns(columns ...string) *GPTDialogUpsertOne {
-	gdc.conflict = append(gdc.conflict, sql.ConflictColumns(columns...))
+func (_c *GPTDialogCreate) OnConflictColumns(columns ...string) *GPTDialogUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GPTDialogUpsertOne{
-		create: gdc,
+		create: _c,
 	}
 }
 
@@ -520,16 +520,16 @@ type GPTDialogCreateBulk struct {
 }
 
 // Save creates the GPTDialog entities in the database.
-func (gdcb *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error) {
-	if gdcb.err != nil {
-		return nil, gdcb.err
+func (_c *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(gdcb.builders))
-	nodes := make([]*GPTDialog, len(gdcb.builders))
-	mutators := make([]Mutator, len(gdcb.builders))
-	for i := range gdcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*GPTDialog, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := gdcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GPTDialogMutation)
@@ -543,12 +543,12 @@ func (gdcb *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, gdcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = gdcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, gdcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -572,7 +572,7 @@ func (gdcb *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, gdcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -580,8 +580,8 @@ func (gdcb *GPTDialogCreateBulk) Save(ctx context.Context) ([]*GPTDialog, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gdcb *GPTDialogCreateBulk) SaveX(ctx context.Context) []*GPTDialog {
-	v, err := gdcb.Save(ctx)
+func (_c *GPTDialogCreateBulk) SaveX(ctx context.Context) []*GPTDialog {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -589,14 +589,14 @@ func (gdcb *GPTDialogCreateBulk) SaveX(ctx context.Context) []*GPTDialog {
 }
 
 // Exec executes the query.
-func (gdcb *GPTDialogCreateBulk) Exec(ctx context.Context) error {
-	_, err := gdcb.Save(ctx)
+func (_c *GPTDialogCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gdcb *GPTDialogCreateBulk) ExecX(ctx context.Context) {
-	if err := gdcb.Exec(ctx); err != nil {
+func (_c *GPTDialogCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -616,10 +616,10 @@ func (gdcb *GPTDialogCreateBulk) ExecX(ctx context.Context) {
 //			SetPeerID(v+v).
 //		}).
 //		Exec(ctx)
-func (gdcb *GPTDialogCreateBulk) OnConflict(opts ...sql.ConflictOption) *GPTDialogUpsertBulk {
-	gdcb.conflict = opts
+func (_c *GPTDialogCreateBulk) OnConflict(opts ...sql.ConflictOption) *GPTDialogUpsertBulk {
+	_c.conflict = opts
 	return &GPTDialogUpsertBulk{
-		create: gdcb,
+		create: _c,
 	}
 }
 
@@ -629,10 +629,10 @@ func (gdcb *GPTDialogCreateBulk) OnConflict(opts ...sql.ConflictOption) *GPTDial
 //	client.GPTDialog.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gdcb *GPTDialogCreateBulk) OnConflictColumns(columns ...string) *GPTDialogUpsertBulk {
-	gdcb.conflict = append(gdcb.conflict, sql.ConflictColumns(columns...))
+func (_c *GPTDialogCreateBulk) OnConflictColumns(columns ...string) *GPTDialogUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GPTDialogUpsertBulk{
-		create: gdcb,
+		create: _c,
 	}
 }
 

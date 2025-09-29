@@ -28,40 +28,40 @@ type LastChannelMessageQuery struct {
 }
 
 // Where adds a new predicate for the LastChannelMessageQuery builder.
-func (lcmq *LastChannelMessageQuery) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageQuery {
-	lcmq.predicates = append(lcmq.predicates, ps...)
-	return lcmq
+func (_q *LastChannelMessageQuery) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (lcmq *LastChannelMessageQuery) Limit(limit int) *LastChannelMessageQuery {
-	lcmq.ctx.Limit = &limit
-	return lcmq
+func (_q *LastChannelMessageQuery) Limit(limit int) *LastChannelMessageQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (lcmq *LastChannelMessageQuery) Offset(offset int) *LastChannelMessageQuery {
-	lcmq.ctx.Offset = &offset
-	return lcmq
+func (_q *LastChannelMessageQuery) Offset(offset int) *LastChannelMessageQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (lcmq *LastChannelMessageQuery) Unique(unique bool) *LastChannelMessageQuery {
-	lcmq.ctx.Unique = &unique
-	return lcmq
+func (_q *LastChannelMessageQuery) Unique(unique bool) *LastChannelMessageQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (lcmq *LastChannelMessageQuery) Order(o ...lastchannelmessage.OrderOption) *LastChannelMessageQuery {
-	lcmq.order = append(lcmq.order, o...)
-	return lcmq
+func (_q *LastChannelMessageQuery) Order(o ...lastchannelmessage.OrderOption) *LastChannelMessageQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // First returns the first LastChannelMessage entity from the query.
 // Returns a *NotFoundError when no LastChannelMessage was found.
-func (lcmq *LastChannelMessageQuery) First(ctx context.Context) (*LastChannelMessage, error) {
-	nodes, err := lcmq.Limit(1).All(setContextOp(ctx, lcmq.ctx, ent.OpQueryFirst))
+func (_q *LastChannelMessageQuery) First(ctx context.Context) (*LastChannelMessage, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +72,8 @@ func (lcmq *LastChannelMessageQuery) First(ctx context.Context) (*LastChannelMes
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) FirstX(ctx context.Context) *LastChannelMessage {
-	node, err := lcmq.First(ctx)
+func (_q *LastChannelMessageQuery) FirstX(ctx context.Context) *LastChannelMessage {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -82,9 +82,9 @@ func (lcmq *LastChannelMessageQuery) FirstX(ctx context.Context) *LastChannelMes
 
 // FirstID returns the first LastChannelMessage ID from the query.
 // Returns a *NotFoundError when no LastChannelMessage ID was found.
-func (lcmq *LastChannelMessageQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *LastChannelMessageQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = lcmq.Limit(1).IDs(setContextOp(ctx, lcmq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -95,8 +95,8 @@ func (lcmq *LastChannelMessageQuery) FirstID(ctx context.Context) (id int64, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := lcmq.FirstID(ctx)
+func (_q *LastChannelMessageQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -106,8 +106,8 @@ func (lcmq *LastChannelMessageQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single LastChannelMessage entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one LastChannelMessage entity is found.
 // Returns a *NotFoundError when no LastChannelMessage entities are found.
-func (lcmq *LastChannelMessageQuery) Only(ctx context.Context) (*LastChannelMessage, error) {
-	nodes, err := lcmq.Limit(2).All(setContextOp(ctx, lcmq.ctx, ent.OpQueryOnly))
+func (_q *LastChannelMessageQuery) Only(ctx context.Context) (*LastChannelMessage, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (lcmq *LastChannelMessageQuery) Only(ctx context.Context) (*LastChannelMess
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) OnlyX(ctx context.Context) *LastChannelMessage {
-	node, err := lcmq.Only(ctx)
+func (_q *LastChannelMessageQuery) OnlyX(ctx context.Context) *LastChannelMessage {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -133,9 +133,9 @@ func (lcmq *LastChannelMessageQuery) OnlyX(ctx context.Context) *LastChannelMess
 // OnlyID is like Only, but returns the only LastChannelMessage ID in the query.
 // Returns a *NotSingularError when more than one LastChannelMessage ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (lcmq *LastChannelMessageQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *LastChannelMessageQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = lcmq.Limit(2).IDs(setContextOp(ctx, lcmq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -150,8 +150,8 @@ func (lcmq *LastChannelMessageQuery) OnlyID(ctx context.Context) (id int64, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := lcmq.OnlyID(ctx)
+func (_q *LastChannelMessageQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,18 +159,18 @@ func (lcmq *LastChannelMessageQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of LastChannelMessages.
-func (lcmq *LastChannelMessageQuery) All(ctx context.Context) ([]*LastChannelMessage, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryAll)
-	if err := lcmq.prepareQuery(ctx); err != nil {
+func (_q *LastChannelMessageQuery) All(ctx context.Context) ([]*LastChannelMessage, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*LastChannelMessage, *LastChannelMessageQuery]()
-	return withInterceptors[[]*LastChannelMessage](ctx, lcmq, qr, lcmq.inters)
+	return withInterceptors[[]*LastChannelMessage](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) AllX(ctx context.Context) []*LastChannelMessage {
-	nodes, err := lcmq.All(ctx)
+func (_q *LastChannelMessageQuery) AllX(ctx context.Context) []*LastChannelMessage {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -178,20 +178,20 @@ func (lcmq *LastChannelMessageQuery) AllX(ctx context.Context) []*LastChannelMes
 }
 
 // IDs executes the query and returns a list of LastChannelMessage IDs.
-func (lcmq *LastChannelMessageQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if lcmq.ctx.Unique == nil && lcmq.path != nil {
-		lcmq.Unique(true)
+func (_q *LastChannelMessageQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryIDs)
-	if err = lcmq.Select(lastchannelmessage.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(lastchannelmessage.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := lcmq.IDs(ctx)
+func (_q *LastChannelMessageQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -199,17 +199,17 @@ func (lcmq *LastChannelMessageQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (lcmq *LastChannelMessageQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryCount)
-	if err := lcmq.prepareQuery(ctx); err != nil {
+func (_q *LastChannelMessageQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, lcmq, querierCount[*LastChannelMessageQuery](), lcmq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*LastChannelMessageQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) CountX(ctx context.Context) int {
-	count, err := lcmq.Count(ctx)
+func (_q *LastChannelMessageQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -217,9 +217,9 @@ func (lcmq *LastChannelMessageQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (lcmq *LastChannelMessageQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, lcmq.ctx, ent.OpQueryExist)
-	switch _, err := lcmq.FirstID(ctx); {
+func (_q *LastChannelMessageQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -230,8 +230,8 @@ func (lcmq *LastChannelMessageQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (lcmq *LastChannelMessageQuery) ExistX(ctx context.Context) bool {
-	exist, err := lcmq.Exist(ctx)
+func (_q *LastChannelMessageQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -240,19 +240,19 @@ func (lcmq *LastChannelMessageQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the LastChannelMessageQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (lcmq *LastChannelMessageQuery) Clone() *LastChannelMessageQuery {
-	if lcmq == nil {
+func (_q *LastChannelMessageQuery) Clone() *LastChannelMessageQuery {
+	if _q == nil {
 		return nil
 	}
 	return &LastChannelMessageQuery{
-		config:     lcmq.config,
-		ctx:        lcmq.ctx.Clone(),
-		order:      append([]lastchannelmessage.OrderOption{}, lcmq.order...),
-		inters:     append([]Interceptor{}, lcmq.inters...),
-		predicates: append([]predicate.LastChannelMessage{}, lcmq.predicates...),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]lastchannelmessage.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.LastChannelMessage{}, _q.predicates...),
 		// clone intermediate query.
-		sql:  lcmq.sql.Clone(),
-		path: lcmq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
@@ -270,10 +270,10 @@ func (lcmq *LastChannelMessageQuery) Clone() *LastChannelMessageQuery {
 //		GroupBy(lastchannelmessage.FieldMessageID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (lcmq *LastChannelMessageQuery) GroupBy(field string, fields ...string) *LastChannelMessageGroupBy {
-	lcmq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &LastChannelMessageGroupBy{build: lcmq}
-	grbuild.flds = &lcmq.ctx.Fields
+func (_q *LastChannelMessageQuery) GroupBy(field string, fields ...string) *LastChannelMessageGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &LastChannelMessageGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = lastchannelmessage.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -291,62 +291,62 @@ func (lcmq *LastChannelMessageQuery) GroupBy(field string, fields ...string) *La
 //	client.LastChannelMessage.Query().
 //		Select(lastchannelmessage.FieldMessageID).
 //		Scan(ctx, &v)
-func (lcmq *LastChannelMessageQuery) Select(fields ...string) *LastChannelMessageSelect {
-	lcmq.ctx.Fields = append(lcmq.ctx.Fields, fields...)
-	sbuild := &LastChannelMessageSelect{LastChannelMessageQuery: lcmq}
+func (_q *LastChannelMessageQuery) Select(fields ...string) *LastChannelMessageSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &LastChannelMessageSelect{LastChannelMessageQuery: _q}
 	sbuild.label = lastchannelmessage.Label
-	sbuild.flds, sbuild.scan = &lcmq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a LastChannelMessageSelect configured with the given aggregations.
-func (lcmq *LastChannelMessageQuery) Aggregate(fns ...AggregateFunc) *LastChannelMessageSelect {
-	return lcmq.Select().Aggregate(fns...)
+func (_q *LastChannelMessageQuery) Aggregate(fns ...AggregateFunc) *LastChannelMessageSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (lcmq *LastChannelMessageQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range lcmq.inters {
+func (_q *LastChannelMessageQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, lcmq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range lcmq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !lastchannelmessage.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if lcmq.path != nil {
-		prev, err := lcmq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		lcmq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (lcmq *LastChannelMessageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*LastChannelMessage, error) {
+func (_q *LastChannelMessageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*LastChannelMessage, error) {
 	var (
 		nodes = []*LastChannelMessage{}
-		_spec = lcmq.querySpec()
+		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*LastChannelMessage).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &LastChannelMessage{config: lcmq.config}
+		node := &LastChannelMessage{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, lcmq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -355,24 +355,24 @@ func (lcmq *LastChannelMessageQuery) sqlAll(ctx context.Context, hooks ...queryH
 	return nodes, nil
 }
 
-func (lcmq *LastChannelMessageQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := lcmq.querySpec()
-	_spec.Node.Columns = lcmq.ctx.Fields
-	if len(lcmq.ctx.Fields) > 0 {
-		_spec.Unique = lcmq.ctx.Unique != nil && *lcmq.ctx.Unique
+func (_q *LastChannelMessageQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, lcmq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (lcmq *LastChannelMessageQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *LastChannelMessageQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(lastchannelmessage.Table, lastchannelmessage.Columns, sqlgraph.NewFieldSpec(lastchannelmessage.FieldID, field.TypeInt64))
-	_spec.From = lcmq.sql
-	if unique := lcmq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if lcmq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := lcmq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, lastchannelmessage.FieldID)
 		for i := range fields {
@@ -381,20 +381,20 @@ func (lcmq *LastChannelMessageQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := lcmq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := lcmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := lcmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := lcmq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -404,33 +404,33 @@ func (lcmq *LastChannelMessageQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (lcmq *LastChannelMessageQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(lcmq.driver.Dialect())
+func (_q *LastChannelMessageQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(lastchannelmessage.Table)
-	columns := lcmq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = lastchannelmessage.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if lcmq.sql != nil {
-		selector = lcmq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if lcmq.ctx.Unique != nil && *lcmq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range lcmq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range lcmq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := lcmq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := lcmq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -443,41 +443,41 @@ type LastChannelMessageGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (lcmgb *LastChannelMessageGroupBy) Aggregate(fns ...AggregateFunc) *LastChannelMessageGroupBy {
-	lcmgb.fns = append(lcmgb.fns, fns...)
-	return lcmgb
+func (_g *LastChannelMessageGroupBy) Aggregate(fns ...AggregateFunc) *LastChannelMessageGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (lcmgb *LastChannelMessageGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, lcmgb.build.ctx, ent.OpQueryGroupBy)
-	if err := lcmgb.build.prepareQuery(ctx); err != nil {
+func (_g *LastChannelMessageGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*LastChannelMessageQuery, *LastChannelMessageGroupBy](ctx, lcmgb.build, lcmgb, lcmgb.build.inters, v)
+	return scanWithInterceptors[*LastChannelMessageQuery, *LastChannelMessageGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (lcmgb *LastChannelMessageGroupBy) sqlScan(ctx context.Context, root *LastChannelMessageQuery, v any) error {
+func (_g *LastChannelMessageGroupBy) sqlScan(ctx context.Context, root *LastChannelMessageQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(lcmgb.fns))
-	for _, fn := range lcmgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*lcmgb.flds)+len(lcmgb.fns))
-		for _, f := range *lcmgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*lcmgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := lcmgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -491,27 +491,27 @@ type LastChannelMessageSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (lcms *LastChannelMessageSelect) Aggregate(fns ...AggregateFunc) *LastChannelMessageSelect {
-	lcms.fns = append(lcms.fns, fns...)
-	return lcms
+func (_s *LastChannelMessageSelect) Aggregate(fns ...AggregateFunc) *LastChannelMessageSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (lcms *LastChannelMessageSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, lcms.ctx, ent.OpQuerySelect)
-	if err := lcms.prepareQuery(ctx); err != nil {
+func (_s *LastChannelMessageSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*LastChannelMessageQuery, *LastChannelMessageSelect](ctx, lcms.LastChannelMessageQuery, lcms, lcms.inters, v)
+	return scanWithInterceptors[*LastChannelMessageQuery, *LastChannelMessageSelect](ctx, _s.LastChannelMessageQuery, _s, _s.inters, v)
 }
 
-func (lcms *LastChannelMessageSelect) sqlScan(ctx context.Context, root *LastChannelMessageQuery, v any) error {
+func (_s *LastChannelMessageSelect) sqlScan(ctx context.Context, root *LastChannelMessageQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(lcms.fns))
-	for _, fn := range lcms.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*lcms.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -519,7 +519,7 @@ func (lcms *LastChannelMessageSelect) sqlScan(ctx context.Context, root *LastCha
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := lcms.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

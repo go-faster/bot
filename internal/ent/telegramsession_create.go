@@ -24,30 +24,30 @@ type TelegramSessionCreate struct {
 }
 
 // SetData sets the "data" field.
-func (tsc *TelegramSessionCreate) SetData(b []byte) *TelegramSessionCreate {
-	tsc.mutation.SetData(b)
-	return tsc
+func (_c *TelegramSessionCreate) SetData(v []byte) *TelegramSessionCreate {
+	_c.mutation.SetData(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tsc *TelegramSessionCreate) SetID(u uuid.UUID) *TelegramSessionCreate {
-	tsc.mutation.SetID(u)
-	return tsc
+func (_c *TelegramSessionCreate) SetID(v uuid.UUID) *TelegramSessionCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the TelegramSessionMutation object of the builder.
-func (tsc *TelegramSessionCreate) Mutation() *TelegramSessionMutation {
-	return tsc.mutation
+func (_c *TelegramSessionCreate) Mutation() *TelegramSessionMutation {
+	return _c.mutation
 }
 
 // Save creates the TelegramSession in the database.
-func (tsc *TelegramSessionCreate) Save(ctx context.Context) (*TelegramSession, error) {
-	return withHooks(ctx, tsc.sqlSave, tsc.mutation, tsc.hooks)
+func (_c *TelegramSessionCreate) Save(ctx context.Context) (*TelegramSession, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tsc *TelegramSessionCreate) SaveX(ctx context.Context) *TelegramSession {
-	v, err := tsc.Save(ctx)
+func (_c *TelegramSessionCreate) SaveX(ctx context.Context) *TelegramSession {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -55,32 +55,32 @@ func (tsc *TelegramSessionCreate) SaveX(ctx context.Context) *TelegramSession {
 }
 
 // Exec executes the query.
-func (tsc *TelegramSessionCreate) Exec(ctx context.Context) error {
-	_, err := tsc.Save(ctx)
+func (_c *TelegramSessionCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsc *TelegramSessionCreate) ExecX(ctx context.Context) {
-	if err := tsc.Exec(ctx); err != nil {
+func (_c *TelegramSessionCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tsc *TelegramSessionCreate) check() error {
-	if _, ok := tsc.mutation.Data(); !ok {
+func (_c *TelegramSessionCreate) check() error {
+	if _, ok := _c.mutation.Data(); !ok {
 		return &ValidationError{Name: "data", err: errors.New(`ent: missing required field "TelegramSession.data"`)}
 	}
 	return nil
 }
 
-func (tsc *TelegramSessionCreate) sqlSave(ctx context.Context) (*TelegramSession, error) {
-	if err := tsc.check(); err != nil {
+func (_c *TelegramSessionCreate) sqlSave(ctx context.Context) (*TelegramSession, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -93,22 +93,22 @@ func (tsc *TelegramSessionCreate) sqlSave(ctx context.Context) (*TelegramSession
 			return nil, err
 		}
 	}
-	tsc.mutation.id = &_node.ID
-	tsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tsc *TelegramSessionCreate) createSpec() (*TelegramSession, *sqlgraph.CreateSpec) {
+func (_c *TelegramSessionCreate) createSpec() (*TelegramSession, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TelegramSession{config: tsc.config}
+		_node = &TelegramSession{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(telegramsession.Table, sqlgraph.NewFieldSpec(telegramsession.FieldID, field.TypeUUID))
 	)
-	_spec.OnConflict = tsc.conflict
-	if id, ok := tsc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := tsc.mutation.Data(); ok {
+	if value, ok := _c.mutation.Data(); ok {
 		_spec.SetField(telegramsession.FieldData, field.TypeBytes, value)
 		_node.Data = value
 	}
@@ -131,10 +131,10 @@ func (tsc *TelegramSessionCreate) createSpec() (*TelegramSession, *sqlgraph.Crea
 //			SetData(v+v).
 //		}).
 //		Exec(ctx)
-func (tsc *TelegramSessionCreate) OnConflict(opts ...sql.ConflictOption) *TelegramSessionUpsertOne {
-	tsc.conflict = opts
+func (_c *TelegramSessionCreate) OnConflict(opts ...sql.ConflictOption) *TelegramSessionUpsertOne {
+	_c.conflict = opts
 	return &TelegramSessionUpsertOne{
-		create: tsc,
+		create: _c,
 	}
 }
 
@@ -144,10 +144,10 @@ func (tsc *TelegramSessionCreate) OnConflict(opts ...sql.ConflictOption) *Telegr
 //	client.TelegramSession.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tsc *TelegramSessionCreate) OnConflictColumns(columns ...string) *TelegramSessionUpsertOne {
-	tsc.conflict = append(tsc.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramSessionCreate) OnConflictColumns(columns ...string) *TelegramSessionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramSessionUpsertOne{
-		create: tsc,
+		create: _c,
 	}
 }
 
@@ -285,16 +285,16 @@ type TelegramSessionCreateBulk struct {
 }
 
 // Save creates the TelegramSession entities in the database.
-func (tscb *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSession, error) {
-	if tscb.err != nil {
-		return nil, tscb.err
+func (_c *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSession, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tscb.builders))
-	nodes := make([]*TelegramSession, len(tscb.builders))
-	mutators := make([]Mutator, len(tscb.builders))
-	for i := range tscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TelegramSession, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tscb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TelegramSessionMutation)
 				if !ok {
@@ -307,12 +307,12 @@ func (tscb *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSes
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -332,7 +332,7 @@ func (tscb *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSes
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -340,8 +340,8 @@ func (tscb *TelegramSessionCreateBulk) Save(ctx context.Context) ([]*TelegramSes
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tscb *TelegramSessionCreateBulk) SaveX(ctx context.Context) []*TelegramSession {
-	v, err := tscb.Save(ctx)
+func (_c *TelegramSessionCreateBulk) SaveX(ctx context.Context) []*TelegramSession {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -349,14 +349,14 @@ func (tscb *TelegramSessionCreateBulk) SaveX(ctx context.Context) []*TelegramSes
 }
 
 // Exec executes the query.
-func (tscb *TelegramSessionCreateBulk) Exec(ctx context.Context) error {
-	_, err := tscb.Save(ctx)
+func (_c *TelegramSessionCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tscb *TelegramSessionCreateBulk) ExecX(ctx context.Context) {
-	if err := tscb.Exec(ctx); err != nil {
+func (_c *TelegramSessionCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -376,10 +376,10 @@ func (tscb *TelegramSessionCreateBulk) ExecX(ctx context.Context) {
 //			SetData(v+v).
 //		}).
 //		Exec(ctx)
-func (tscb *TelegramSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramSessionUpsertBulk {
-	tscb.conflict = opts
+func (_c *TelegramSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramSessionUpsertBulk {
+	_c.conflict = opts
 	return &TelegramSessionUpsertBulk{
-		create: tscb,
+		create: _c,
 	}
 }
 
@@ -389,10 +389,10 @@ func (tscb *TelegramSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *T
 //	client.TelegramSession.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tscb *TelegramSessionCreateBulk) OnConflictColumns(columns ...string) *TelegramSessionUpsertBulk {
-	tscb.conflict = append(tscb.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramSessionCreateBulk) OnConflictColumns(columns ...string) *TelegramSessionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramSessionUpsertBulk{
-		create: tscb,
+		create: _c,
 	}
 }
 

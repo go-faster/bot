@@ -38,7 +38,7 @@ func (*LastChannelMessage) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the LastChannelMessage fields.
-func (lcm *LastChannelMessage) assignValues(columns []string, values []any) error {
+func (_m *LastChannelMessage) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -49,15 +49,15 @@ func (lcm *LastChannelMessage) assignValues(columns []string, values []any) erro
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			lcm.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case lastchannelmessage.FieldMessageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field message_id", values[i])
 			} else if value.Valid {
-				lcm.MessageID = int(value.Int64)
+				_m.MessageID = int(value.Int64)
 			}
 		default:
-			lcm.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -65,35 +65,35 @@ func (lcm *LastChannelMessage) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the LastChannelMessage.
 // This includes values selected through modifiers, order, etc.
-func (lcm *LastChannelMessage) Value(name string) (ent.Value, error) {
-	return lcm.selectValues.Get(name)
+func (_m *LastChannelMessage) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this LastChannelMessage.
 // Note that you need to call LastChannelMessage.Unwrap() before calling this method if this LastChannelMessage
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (lcm *LastChannelMessage) Update() *LastChannelMessageUpdateOne {
-	return NewLastChannelMessageClient(lcm.config).UpdateOne(lcm)
+func (_m *LastChannelMessage) Update() *LastChannelMessageUpdateOne {
+	return NewLastChannelMessageClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the LastChannelMessage entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (lcm *LastChannelMessage) Unwrap() *LastChannelMessage {
-	_tx, ok := lcm.config.driver.(*txDriver)
+func (_m *LastChannelMessage) Unwrap() *LastChannelMessage {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: LastChannelMessage is not a transactional entity")
 	}
-	lcm.config.driver = _tx.drv
-	return lcm
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (lcm *LastChannelMessage) String() string {
+func (_m *LastChannelMessage) String() string {
 	var builder strings.Builder
 	builder.WriteString("LastChannelMessage(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", lcm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("message_id=")
-	builder.WriteString(fmt.Sprintf("%v", lcm.MessageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.MessageID))
 	builder.WriteByte(')')
 	return builder.String()
 }

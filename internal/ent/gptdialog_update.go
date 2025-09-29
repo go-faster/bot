@@ -22,121 +22,121 @@ type GPTDialogUpdate struct {
 }
 
 // Where appends a list predicates to the GPTDialogUpdate builder.
-func (gdu *GPTDialogUpdate) Where(ps ...predicate.GPTDialog) *GPTDialogUpdate {
-	gdu.mutation.Where(ps...)
-	return gdu
+func (_u *GPTDialogUpdate) Where(ps ...predicate.GPTDialog) *GPTDialogUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetPromptMsgID sets the "prompt_msg_id" field.
-func (gdu *GPTDialogUpdate) SetPromptMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.ResetPromptMsgID()
-	gdu.mutation.SetPromptMsgID(i)
-	return gdu
+func (_u *GPTDialogUpdate) SetPromptMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.ResetPromptMsgID()
+	_u.mutation.SetPromptMsgID(v)
+	return _u
 }
 
 // SetNillablePromptMsgID sets the "prompt_msg_id" field if the given value is not nil.
-func (gdu *GPTDialogUpdate) SetNillablePromptMsgID(i *int) *GPTDialogUpdate {
-	if i != nil {
-		gdu.SetPromptMsgID(*i)
+func (_u *GPTDialogUpdate) SetNillablePromptMsgID(v *int) *GPTDialogUpdate {
+	if v != nil {
+		_u.SetPromptMsgID(*v)
 	}
-	return gdu
+	return _u
 }
 
-// AddPromptMsgID adds i to the "prompt_msg_id" field.
-func (gdu *GPTDialogUpdate) AddPromptMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.AddPromptMsgID(i)
-	return gdu
+// AddPromptMsgID adds value to the "prompt_msg_id" field.
+func (_u *GPTDialogUpdate) AddPromptMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.AddPromptMsgID(v)
+	return _u
 }
 
 // SetPromptMsg sets the "prompt_msg" field.
-func (gdu *GPTDialogUpdate) SetPromptMsg(s string) *GPTDialogUpdate {
-	gdu.mutation.SetPromptMsg(s)
-	return gdu
+func (_u *GPTDialogUpdate) SetPromptMsg(v string) *GPTDialogUpdate {
+	_u.mutation.SetPromptMsg(v)
+	return _u
 }
 
 // SetNillablePromptMsg sets the "prompt_msg" field if the given value is not nil.
-func (gdu *GPTDialogUpdate) SetNillablePromptMsg(s *string) *GPTDialogUpdate {
-	if s != nil {
-		gdu.SetPromptMsg(*s)
+func (_u *GPTDialogUpdate) SetNillablePromptMsg(v *string) *GPTDialogUpdate {
+	if v != nil {
+		_u.SetPromptMsg(*v)
 	}
-	return gdu
+	return _u
 }
 
 // SetGptMsgID sets the "gpt_msg_id" field.
-func (gdu *GPTDialogUpdate) SetGptMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.ResetGptMsgID()
-	gdu.mutation.SetGptMsgID(i)
-	return gdu
+func (_u *GPTDialogUpdate) SetGptMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.ResetGptMsgID()
+	_u.mutation.SetGptMsgID(v)
+	return _u
 }
 
 // SetNillableGptMsgID sets the "gpt_msg_id" field if the given value is not nil.
-func (gdu *GPTDialogUpdate) SetNillableGptMsgID(i *int) *GPTDialogUpdate {
-	if i != nil {
-		gdu.SetGptMsgID(*i)
+func (_u *GPTDialogUpdate) SetNillableGptMsgID(v *int) *GPTDialogUpdate {
+	if v != nil {
+		_u.SetGptMsgID(*v)
 	}
-	return gdu
+	return _u
 }
 
-// AddGptMsgID adds i to the "gpt_msg_id" field.
-func (gdu *GPTDialogUpdate) AddGptMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.AddGptMsgID(i)
-	return gdu
+// AddGptMsgID adds value to the "gpt_msg_id" field.
+func (_u *GPTDialogUpdate) AddGptMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.AddGptMsgID(v)
+	return _u
 }
 
 // SetGptMsg sets the "gpt_msg" field.
-func (gdu *GPTDialogUpdate) SetGptMsg(s string) *GPTDialogUpdate {
-	gdu.mutation.SetGptMsg(s)
-	return gdu
+func (_u *GPTDialogUpdate) SetGptMsg(v string) *GPTDialogUpdate {
+	_u.mutation.SetGptMsg(v)
+	return _u
 }
 
 // SetNillableGptMsg sets the "gpt_msg" field if the given value is not nil.
-func (gdu *GPTDialogUpdate) SetNillableGptMsg(s *string) *GPTDialogUpdate {
-	if s != nil {
-		gdu.SetGptMsg(*s)
+func (_u *GPTDialogUpdate) SetNillableGptMsg(v *string) *GPTDialogUpdate {
+	if v != nil {
+		_u.SetGptMsg(*v)
 	}
-	return gdu
+	return _u
 }
 
 // SetThreadTopMsgID sets the "thread_top_msg_id" field.
-func (gdu *GPTDialogUpdate) SetThreadTopMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.ResetThreadTopMsgID()
-	gdu.mutation.SetThreadTopMsgID(i)
-	return gdu
+func (_u *GPTDialogUpdate) SetThreadTopMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.ResetThreadTopMsgID()
+	_u.mutation.SetThreadTopMsgID(v)
+	return _u
 }
 
 // SetNillableThreadTopMsgID sets the "thread_top_msg_id" field if the given value is not nil.
-func (gdu *GPTDialogUpdate) SetNillableThreadTopMsgID(i *int) *GPTDialogUpdate {
-	if i != nil {
-		gdu.SetThreadTopMsgID(*i)
+func (_u *GPTDialogUpdate) SetNillableThreadTopMsgID(v *int) *GPTDialogUpdate {
+	if v != nil {
+		_u.SetThreadTopMsgID(*v)
 	}
-	return gdu
+	return _u
 }
 
-// AddThreadTopMsgID adds i to the "thread_top_msg_id" field.
-func (gdu *GPTDialogUpdate) AddThreadTopMsgID(i int) *GPTDialogUpdate {
-	gdu.mutation.AddThreadTopMsgID(i)
-	return gdu
+// AddThreadTopMsgID adds value to the "thread_top_msg_id" field.
+func (_u *GPTDialogUpdate) AddThreadTopMsgID(v int) *GPTDialogUpdate {
+	_u.mutation.AddThreadTopMsgID(v)
+	return _u
 }
 
 // ClearThreadTopMsgID clears the value of the "thread_top_msg_id" field.
-func (gdu *GPTDialogUpdate) ClearThreadTopMsgID() *GPTDialogUpdate {
-	gdu.mutation.ClearThreadTopMsgID()
-	return gdu
+func (_u *GPTDialogUpdate) ClearThreadTopMsgID() *GPTDialogUpdate {
+	_u.mutation.ClearThreadTopMsgID()
+	return _u
 }
 
 // Mutation returns the GPTDialogMutation object of the builder.
-func (gdu *GPTDialogUpdate) Mutation() *GPTDialogMutation {
-	return gdu.mutation
+func (_u *GPTDialogUpdate) Mutation() *GPTDialogMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (gdu *GPTDialogUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, gdu.sqlSave, gdu.mutation, gdu.hooks)
+func (_u *GPTDialogUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gdu *GPTDialogUpdate) SaveX(ctx context.Context) int {
-	affected, err := gdu.Save(ctx)
+func (_u *GPTDialogUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -144,55 +144,55 @@ func (gdu *GPTDialogUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (gdu *GPTDialogUpdate) Exec(ctx context.Context) error {
-	_, err := gdu.Save(ctx)
+func (_u *GPTDialogUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gdu *GPTDialogUpdate) ExecX(ctx context.Context) {
-	if err := gdu.Exec(ctx); err != nil {
+func (_u *GPTDialogUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gdu *GPTDialogUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *GPTDialogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(gptdialog.Table, gptdialog.Columns, sqlgraph.NewFieldSpec(gptdialog.FieldID, field.TypeInt))
-	if ps := gdu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gdu.mutation.PromptMsgID(); ok {
+	if value, ok := _u.mutation.PromptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gdu.mutation.AddedPromptMsgID(); ok {
+	if value, ok := _u.mutation.AddedPromptMsgID(); ok {
 		_spec.AddField(gptdialog.FieldPromptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gdu.mutation.PromptMsg(); ok {
+	if value, ok := _u.mutation.PromptMsg(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsg, field.TypeString, value)
 	}
-	if value, ok := gdu.mutation.GptMsgID(); ok {
+	if value, ok := _u.mutation.GptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldGptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gdu.mutation.AddedGptMsgID(); ok {
+	if value, ok := _u.mutation.AddedGptMsgID(); ok {
 		_spec.AddField(gptdialog.FieldGptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gdu.mutation.GptMsg(); ok {
+	if value, ok := _u.mutation.GptMsg(); ok {
 		_spec.SetField(gptdialog.FieldGptMsg, field.TypeString, value)
 	}
-	if value, ok := gdu.mutation.ThreadTopMsgID(); ok {
+	if value, ok := _u.mutation.ThreadTopMsgID(); ok {
 		_spec.SetField(gptdialog.FieldThreadTopMsgID, field.TypeInt, value)
 	}
-	if value, ok := gdu.mutation.AddedThreadTopMsgID(); ok {
+	if value, ok := _u.mutation.AddedThreadTopMsgID(); ok {
 		_spec.AddField(gptdialog.FieldThreadTopMsgID, field.TypeInt, value)
 	}
-	if gdu.mutation.ThreadTopMsgIDCleared() {
+	if _u.mutation.ThreadTopMsgIDCleared() {
 		_spec.ClearField(gptdialog.FieldThreadTopMsgID, field.TypeInt)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, gdu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{gptdialog.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -200,8 +200,8 @@ func (gdu *GPTDialogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	gdu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // GPTDialogUpdateOne is the builder for updating a single GPTDialog entity.
@@ -213,128 +213,128 @@ type GPTDialogUpdateOne struct {
 }
 
 // SetPromptMsgID sets the "prompt_msg_id" field.
-func (gduo *GPTDialogUpdateOne) SetPromptMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.ResetPromptMsgID()
-	gduo.mutation.SetPromptMsgID(i)
-	return gduo
+func (_u *GPTDialogUpdateOne) SetPromptMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.ResetPromptMsgID()
+	_u.mutation.SetPromptMsgID(v)
+	return _u
 }
 
 // SetNillablePromptMsgID sets the "prompt_msg_id" field if the given value is not nil.
-func (gduo *GPTDialogUpdateOne) SetNillablePromptMsgID(i *int) *GPTDialogUpdateOne {
-	if i != nil {
-		gduo.SetPromptMsgID(*i)
+func (_u *GPTDialogUpdateOne) SetNillablePromptMsgID(v *int) *GPTDialogUpdateOne {
+	if v != nil {
+		_u.SetPromptMsgID(*v)
 	}
-	return gduo
+	return _u
 }
 
-// AddPromptMsgID adds i to the "prompt_msg_id" field.
-func (gduo *GPTDialogUpdateOne) AddPromptMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.AddPromptMsgID(i)
-	return gduo
+// AddPromptMsgID adds value to the "prompt_msg_id" field.
+func (_u *GPTDialogUpdateOne) AddPromptMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.AddPromptMsgID(v)
+	return _u
 }
 
 // SetPromptMsg sets the "prompt_msg" field.
-func (gduo *GPTDialogUpdateOne) SetPromptMsg(s string) *GPTDialogUpdateOne {
-	gduo.mutation.SetPromptMsg(s)
-	return gduo
+func (_u *GPTDialogUpdateOne) SetPromptMsg(v string) *GPTDialogUpdateOne {
+	_u.mutation.SetPromptMsg(v)
+	return _u
 }
 
 // SetNillablePromptMsg sets the "prompt_msg" field if the given value is not nil.
-func (gduo *GPTDialogUpdateOne) SetNillablePromptMsg(s *string) *GPTDialogUpdateOne {
-	if s != nil {
-		gduo.SetPromptMsg(*s)
+func (_u *GPTDialogUpdateOne) SetNillablePromptMsg(v *string) *GPTDialogUpdateOne {
+	if v != nil {
+		_u.SetPromptMsg(*v)
 	}
-	return gduo
+	return _u
 }
 
 // SetGptMsgID sets the "gpt_msg_id" field.
-func (gduo *GPTDialogUpdateOne) SetGptMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.ResetGptMsgID()
-	gduo.mutation.SetGptMsgID(i)
-	return gduo
+func (_u *GPTDialogUpdateOne) SetGptMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.ResetGptMsgID()
+	_u.mutation.SetGptMsgID(v)
+	return _u
 }
 
 // SetNillableGptMsgID sets the "gpt_msg_id" field if the given value is not nil.
-func (gduo *GPTDialogUpdateOne) SetNillableGptMsgID(i *int) *GPTDialogUpdateOne {
-	if i != nil {
-		gduo.SetGptMsgID(*i)
+func (_u *GPTDialogUpdateOne) SetNillableGptMsgID(v *int) *GPTDialogUpdateOne {
+	if v != nil {
+		_u.SetGptMsgID(*v)
 	}
-	return gduo
+	return _u
 }
 
-// AddGptMsgID adds i to the "gpt_msg_id" field.
-func (gduo *GPTDialogUpdateOne) AddGptMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.AddGptMsgID(i)
-	return gduo
+// AddGptMsgID adds value to the "gpt_msg_id" field.
+func (_u *GPTDialogUpdateOne) AddGptMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.AddGptMsgID(v)
+	return _u
 }
 
 // SetGptMsg sets the "gpt_msg" field.
-func (gduo *GPTDialogUpdateOne) SetGptMsg(s string) *GPTDialogUpdateOne {
-	gduo.mutation.SetGptMsg(s)
-	return gduo
+func (_u *GPTDialogUpdateOne) SetGptMsg(v string) *GPTDialogUpdateOne {
+	_u.mutation.SetGptMsg(v)
+	return _u
 }
 
 // SetNillableGptMsg sets the "gpt_msg" field if the given value is not nil.
-func (gduo *GPTDialogUpdateOne) SetNillableGptMsg(s *string) *GPTDialogUpdateOne {
-	if s != nil {
-		gduo.SetGptMsg(*s)
+func (_u *GPTDialogUpdateOne) SetNillableGptMsg(v *string) *GPTDialogUpdateOne {
+	if v != nil {
+		_u.SetGptMsg(*v)
 	}
-	return gduo
+	return _u
 }
 
 // SetThreadTopMsgID sets the "thread_top_msg_id" field.
-func (gduo *GPTDialogUpdateOne) SetThreadTopMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.ResetThreadTopMsgID()
-	gduo.mutation.SetThreadTopMsgID(i)
-	return gduo
+func (_u *GPTDialogUpdateOne) SetThreadTopMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.ResetThreadTopMsgID()
+	_u.mutation.SetThreadTopMsgID(v)
+	return _u
 }
 
 // SetNillableThreadTopMsgID sets the "thread_top_msg_id" field if the given value is not nil.
-func (gduo *GPTDialogUpdateOne) SetNillableThreadTopMsgID(i *int) *GPTDialogUpdateOne {
-	if i != nil {
-		gduo.SetThreadTopMsgID(*i)
+func (_u *GPTDialogUpdateOne) SetNillableThreadTopMsgID(v *int) *GPTDialogUpdateOne {
+	if v != nil {
+		_u.SetThreadTopMsgID(*v)
 	}
-	return gduo
+	return _u
 }
 
-// AddThreadTopMsgID adds i to the "thread_top_msg_id" field.
-func (gduo *GPTDialogUpdateOne) AddThreadTopMsgID(i int) *GPTDialogUpdateOne {
-	gduo.mutation.AddThreadTopMsgID(i)
-	return gduo
+// AddThreadTopMsgID adds value to the "thread_top_msg_id" field.
+func (_u *GPTDialogUpdateOne) AddThreadTopMsgID(v int) *GPTDialogUpdateOne {
+	_u.mutation.AddThreadTopMsgID(v)
+	return _u
 }
 
 // ClearThreadTopMsgID clears the value of the "thread_top_msg_id" field.
-func (gduo *GPTDialogUpdateOne) ClearThreadTopMsgID() *GPTDialogUpdateOne {
-	gduo.mutation.ClearThreadTopMsgID()
-	return gduo
+func (_u *GPTDialogUpdateOne) ClearThreadTopMsgID() *GPTDialogUpdateOne {
+	_u.mutation.ClearThreadTopMsgID()
+	return _u
 }
 
 // Mutation returns the GPTDialogMutation object of the builder.
-func (gduo *GPTDialogUpdateOne) Mutation() *GPTDialogMutation {
-	return gduo.mutation
+func (_u *GPTDialogUpdateOne) Mutation() *GPTDialogMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the GPTDialogUpdate builder.
-func (gduo *GPTDialogUpdateOne) Where(ps ...predicate.GPTDialog) *GPTDialogUpdateOne {
-	gduo.mutation.Where(ps...)
-	return gduo
+func (_u *GPTDialogUpdateOne) Where(ps ...predicate.GPTDialog) *GPTDialogUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (gduo *GPTDialogUpdateOne) Select(field string, fields ...string) *GPTDialogUpdateOne {
-	gduo.fields = append([]string{field}, fields...)
-	return gduo
+func (_u *GPTDialogUpdateOne) Select(field string, fields ...string) *GPTDialogUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated GPTDialog entity.
-func (gduo *GPTDialogUpdateOne) Save(ctx context.Context) (*GPTDialog, error) {
-	return withHooks(ctx, gduo.sqlSave, gduo.mutation, gduo.hooks)
+func (_u *GPTDialogUpdateOne) Save(ctx context.Context) (*GPTDialog, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gduo *GPTDialogUpdateOne) SaveX(ctx context.Context) *GPTDialog {
-	node, err := gduo.Save(ctx)
+func (_u *GPTDialogUpdateOne) SaveX(ctx context.Context) *GPTDialog {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -342,26 +342,26 @@ func (gduo *GPTDialogUpdateOne) SaveX(ctx context.Context) *GPTDialog {
 }
 
 // Exec executes the query on the entity.
-func (gduo *GPTDialogUpdateOne) Exec(ctx context.Context) error {
-	_, err := gduo.Save(ctx)
+func (_u *GPTDialogUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gduo *GPTDialogUpdateOne) ExecX(ctx context.Context) {
-	if err := gduo.Exec(ctx); err != nil {
+func (_u *GPTDialogUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (gduo *GPTDialogUpdateOne) sqlSave(ctx context.Context) (_node *GPTDialog, err error) {
+func (_u *GPTDialogUpdateOne) sqlSave(ctx context.Context) (_node *GPTDialog, err error) {
 	_spec := sqlgraph.NewUpdateSpec(gptdialog.Table, gptdialog.Columns, sqlgraph.NewFieldSpec(gptdialog.FieldID, field.TypeInt))
-	id, ok := gduo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "GPTDialog.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := gduo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, gptdialog.FieldID)
 		for _, f := range fields {
@@ -373,44 +373,44 @@ func (gduo *GPTDialogUpdateOne) sqlSave(ctx context.Context) (_node *GPTDialog, 
 			}
 		}
 	}
-	if ps := gduo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := gduo.mutation.PromptMsgID(); ok {
+	if value, ok := _u.mutation.PromptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gduo.mutation.AddedPromptMsgID(); ok {
+	if value, ok := _u.mutation.AddedPromptMsgID(); ok {
 		_spec.AddField(gptdialog.FieldPromptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gduo.mutation.PromptMsg(); ok {
+	if value, ok := _u.mutation.PromptMsg(); ok {
 		_spec.SetField(gptdialog.FieldPromptMsg, field.TypeString, value)
 	}
-	if value, ok := gduo.mutation.GptMsgID(); ok {
+	if value, ok := _u.mutation.GptMsgID(); ok {
 		_spec.SetField(gptdialog.FieldGptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gduo.mutation.AddedGptMsgID(); ok {
+	if value, ok := _u.mutation.AddedGptMsgID(); ok {
 		_spec.AddField(gptdialog.FieldGptMsgID, field.TypeInt, value)
 	}
-	if value, ok := gduo.mutation.GptMsg(); ok {
+	if value, ok := _u.mutation.GptMsg(); ok {
 		_spec.SetField(gptdialog.FieldGptMsg, field.TypeString, value)
 	}
-	if value, ok := gduo.mutation.ThreadTopMsgID(); ok {
+	if value, ok := _u.mutation.ThreadTopMsgID(); ok {
 		_spec.SetField(gptdialog.FieldThreadTopMsgID, field.TypeInt, value)
 	}
-	if value, ok := gduo.mutation.AddedThreadTopMsgID(); ok {
+	if value, ok := _u.mutation.AddedThreadTopMsgID(); ok {
 		_spec.AddField(gptdialog.FieldThreadTopMsgID, field.TypeInt, value)
 	}
-	if gduo.mutation.ThreadTopMsgIDCleared() {
+	if _u.mutation.ThreadTopMsgIDCleared() {
 		_spec.ClearField(gptdialog.FieldThreadTopMsgID, field.TypeInt)
 	}
-	_node = &GPTDialog{config: gduo.config}
+	_node = &GPTDialog{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, gduo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{gptdialog.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -418,6 +418,6 @@ func (gduo *GPTDialogUpdateOne) sqlSave(ctx context.Context) (_node *GPTDialog, 
 		}
 		return nil, err
 	}
-	gduo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

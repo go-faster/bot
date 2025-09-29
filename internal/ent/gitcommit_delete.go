@@ -20,56 +20,56 @@ type GitCommitDelete struct {
 }
 
 // Where appends a list predicates to the GitCommitDelete builder.
-func (gcd *GitCommitDelete) Where(ps ...predicate.GitCommit) *GitCommitDelete {
-	gcd.mutation.Where(ps...)
-	return gcd
+func (_d *GitCommitDelete) Where(ps ...predicate.GitCommit) *GitCommitDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (gcd *GitCommitDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, gcd.sqlExec, gcd.mutation, gcd.hooks)
+func (_d *GitCommitDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcd *GitCommitDelete) ExecX(ctx context.Context) int {
-	n, err := gcd.Exec(ctx)
+func (_d *GitCommitDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (gcd *GitCommitDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *GitCommitDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(gitcommit.Table, sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString))
-	if ps := gcd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, gcd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	gcd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // GitCommitDeleteOne is the builder for deleting a single GitCommit entity.
 type GitCommitDeleteOne struct {
-	gcd *GitCommitDelete
+	_d *GitCommitDelete
 }
 
 // Where appends a list predicates to the GitCommitDelete builder.
-func (gcdo *GitCommitDeleteOne) Where(ps ...predicate.GitCommit) *GitCommitDeleteOne {
-	gcdo.gcd.mutation.Where(ps...)
-	return gcdo
+func (_d *GitCommitDeleteOne) Where(ps ...predicate.GitCommit) *GitCommitDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (gcdo *GitCommitDeleteOne) Exec(ctx context.Context) error {
-	n, err := gcdo.gcd.Exec(ctx)
+func (_d *GitCommitDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (gcdo *GitCommitDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcdo *GitCommitDeleteOne) ExecX(ctx context.Context) {
-	if err := gcdo.Exec(ctx); err != nil {
+func (_d *GitCommitDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

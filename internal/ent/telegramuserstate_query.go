@@ -32,44 +32,44 @@ type TelegramUserStateQuery struct {
 }
 
 // Where adds a new predicate for the TelegramUserStateQuery builder.
-func (tusq *TelegramUserStateQuery) Where(ps ...predicate.TelegramUserState) *TelegramUserStateQuery {
-	tusq.predicates = append(tusq.predicates, ps...)
-	return tusq
+func (_q *TelegramUserStateQuery) Where(ps ...predicate.TelegramUserState) *TelegramUserStateQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tusq *TelegramUserStateQuery) Limit(limit int) *TelegramUserStateQuery {
-	tusq.ctx.Limit = &limit
-	return tusq
+func (_q *TelegramUserStateQuery) Limit(limit int) *TelegramUserStateQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tusq *TelegramUserStateQuery) Offset(offset int) *TelegramUserStateQuery {
-	tusq.ctx.Offset = &offset
-	return tusq
+func (_q *TelegramUserStateQuery) Offset(offset int) *TelegramUserStateQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tusq *TelegramUserStateQuery) Unique(unique bool) *TelegramUserStateQuery {
-	tusq.ctx.Unique = &unique
-	return tusq
+func (_q *TelegramUserStateQuery) Unique(unique bool) *TelegramUserStateQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tusq *TelegramUserStateQuery) Order(o ...telegramuserstate.OrderOption) *TelegramUserStateQuery {
-	tusq.order = append(tusq.order, o...)
-	return tusq
+func (_q *TelegramUserStateQuery) Order(o ...telegramuserstate.OrderOption) *TelegramUserStateQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryChannels chains the current query on the "channels" edge.
-func (tusq *TelegramUserStateQuery) QueryChannels() *TelegramChannelStateQuery {
-	query := (&TelegramChannelStateClient{config: tusq.config}).Query()
+func (_q *TelegramUserStateQuery) QueryChannels() *TelegramChannelStateQuery {
+	query := (&TelegramChannelStateClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := tusq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := tusq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -78,7 +78,7 @@ func (tusq *TelegramUserStateQuery) QueryChannels() *TelegramChannelStateQuery {
 			sqlgraph.To(telegramchannelstate.Table, telegramchannelstate.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, telegramuserstate.ChannelsTable, telegramuserstate.ChannelsColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(tusq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -86,8 +86,8 @@ func (tusq *TelegramUserStateQuery) QueryChannels() *TelegramChannelStateQuery {
 
 // First returns the first TelegramUserState entity from the query.
 // Returns a *NotFoundError when no TelegramUserState was found.
-func (tusq *TelegramUserStateQuery) First(ctx context.Context) (*TelegramUserState, error) {
-	nodes, err := tusq.Limit(1).All(setContextOp(ctx, tusq.ctx, ent.OpQueryFirst))
+func (_q *TelegramUserStateQuery) First(ctx context.Context) (*TelegramUserState, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +98,8 @@ func (tusq *TelegramUserStateQuery) First(ctx context.Context) (*TelegramUserSta
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) FirstX(ctx context.Context) *TelegramUserState {
-	node, err := tusq.First(ctx)
+func (_q *TelegramUserStateQuery) FirstX(ctx context.Context) *TelegramUserState {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -108,9 +108,9 @@ func (tusq *TelegramUserStateQuery) FirstX(ctx context.Context) *TelegramUserSta
 
 // FirstID returns the first TelegramUserState ID from the query.
 // Returns a *NotFoundError when no TelegramUserState ID was found.
-func (tusq *TelegramUserStateQuery) FirstID(ctx context.Context) (id int64, err error) {
+func (_q *TelegramUserStateQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tusq.Limit(1).IDs(setContextOp(ctx, tusq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -121,8 +121,8 @@ func (tusq *TelegramUserStateQuery) FirstID(ctx context.Context) (id int64, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) FirstIDX(ctx context.Context) int64 {
-	id, err := tusq.FirstID(ctx)
+func (_q *TelegramUserStateQuery) FirstIDX(ctx context.Context) int64 {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,8 +132,8 @@ func (tusq *TelegramUserStateQuery) FirstIDX(ctx context.Context) int64 {
 // Only returns a single TelegramUserState entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TelegramUserState entity is found.
 // Returns a *NotFoundError when no TelegramUserState entities are found.
-func (tusq *TelegramUserStateQuery) Only(ctx context.Context) (*TelegramUserState, error) {
-	nodes, err := tusq.Limit(2).All(setContextOp(ctx, tusq.ctx, ent.OpQueryOnly))
+func (_q *TelegramUserStateQuery) Only(ctx context.Context) (*TelegramUserState, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -148,8 +148,8 @@ func (tusq *TelegramUserStateQuery) Only(ctx context.Context) (*TelegramUserStat
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) OnlyX(ctx context.Context) *TelegramUserState {
-	node, err := tusq.Only(ctx)
+func (_q *TelegramUserStateQuery) OnlyX(ctx context.Context) *TelegramUserState {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,9 +159,9 @@ func (tusq *TelegramUserStateQuery) OnlyX(ctx context.Context) *TelegramUserStat
 // OnlyID is like Only, but returns the only TelegramUserState ID in the query.
 // Returns a *NotSingularError when more than one TelegramUserState ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tusq *TelegramUserStateQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *TelegramUserStateQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
-	if ids, err = tusq.Limit(2).IDs(setContextOp(ctx, tusq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -176,8 +176,8 @@ func (tusq *TelegramUserStateQuery) OnlyID(ctx context.Context) (id int64, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) OnlyIDX(ctx context.Context) int64 {
-	id, err := tusq.OnlyID(ctx)
+func (_q *TelegramUserStateQuery) OnlyIDX(ctx context.Context) int64 {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -185,18 +185,18 @@ func (tusq *TelegramUserStateQuery) OnlyIDX(ctx context.Context) int64 {
 }
 
 // All executes the query and returns a list of TelegramUserStates.
-func (tusq *TelegramUserStateQuery) All(ctx context.Context) ([]*TelegramUserState, error) {
-	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryAll)
-	if err := tusq.prepareQuery(ctx); err != nil {
+func (_q *TelegramUserStateQuery) All(ctx context.Context) ([]*TelegramUserState, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TelegramUserState, *TelegramUserStateQuery]()
-	return withInterceptors[[]*TelegramUserState](ctx, tusq, qr, tusq.inters)
+	return withInterceptors[[]*TelegramUserState](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) AllX(ctx context.Context) []*TelegramUserState {
-	nodes, err := tusq.All(ctx)
+func (_q *TelegramUserStateQuery) AllX(ctx context.Context) []*TelegramUserState {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,20 +204,20 @@ func (tusq *TelegramUserStateQuery) AllX(ctx context.Context) []*TelegramUserSta
 }
 
 // IDs executes the query and returns a list of TelegramUserState IDs.
-func (tusq *TelegramUserStateQuery) IDs(ctx context.Context) (ids []int64, err error) {
-	if tusq.ctx.Unique == nil && tusq.path != nil {
-		tusq.Unique(true)
+func (_q *TelegramUserStateQuery) IDs(ctx context.Context) (ids []int64, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryIDs)
-	if err = tusq.Select(telegramuserstate.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(telegramuserstate.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) IDsX(ctx context.Context) []int64 {
-	ids, err := tusq.IDs(ctx)
+func (_q *TelegramUserStateQuery) IDsX(ctx context.Context) []int64 {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -225,17 +225,17 @@ func (tusq *TelegramUserStateQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (tusq *TelegramUserStateQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryCount)
-	if err := tusq.prepareQuery(ctx); err != nil {
+func (_q *TelegramUserStateQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tusq, querierCount[*TelegramUserStateQuery](), tusq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TelegramUserStateQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) CountX(ctx context.Context) int {
-	count, err := tusq.Count(ctx)
+func (_q *TelegramUserStateQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -243,9 +243,9 @@ func (tusq *TelegramUserStateQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tusq *TelegramUserStateQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tusq.ctx, ent.OpQueryExist)
-	switch _, err := tusq.FirstID(ctx); {
+func (_q *TelegramUserStateQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -256,8 +256,8 @@ func (tusq *TelegramUserStateQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tusq *TelegramUserStateQuery) ExistX(ctx context.Context) bool {
-	exist, err := tusq.Exist(ctx)
+func (_q *TelegramUserStateQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,32 +266,32 @@ func (tusq *TelegramUserStateQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TelegramUserStateQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tusq *TelegramUserStateQuery) Clone() *TelegramUserStateQuery {
-	if tusq == nil {
+func (_q *TelegramUserStateQuery) Clone() *TelegramUserStateQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TelegramUserStateQuery{
-		config:       tusq.config,
-		ctx:          tusq.ctx.Clone(),
-		order:        append([]telegramuserstate.OrderOption{}, tusq.order...),
-		inters:       append([]Interceptor{}, tusq.inters...),
-		predicates:   append([]predicate.TelegramUserState{}, tusq.predicates...),
-		withChannels: tusq.withChannels.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]telegramuserstate.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.TelegramUserState{}, _q.predicates...),
+		withChannels: _q.withChannels.Clone(),
 		// clone intermediate query.
-		sql:  tusq.sql.Clone(),
-		path: tusq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithChannels tells the query-builder to eager-load the nodes that are connected to
 // the "channels" edge. The optional arguments are used to configure the query builder of the edge.
-func (tusq *TelegramUserStateQuery) WithChannels(opts ...func(*TelegramChannelStateQuery)) *TelegramUserStateQuery {
-	query := (&TelegramChannelStateClient{config: tusq.config}).Query()
+func (_q *TelegramUserStateQuery) WithChannels(opts ...func(*TelegramChannelStateQuery)) *TelegramUserStateQuery {
+	query := (&TelegramChannelStateClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tusq.withChannels = query
-	return tusq
+	_q.withChannels = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -308,10 +308,10 @@ func (tusq *TelegramUserStateQuery) WithChannels(opts ...func(*TelegramChannelSt
 //		GroupBy(telegramuserstate.FieldQts).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tusq *TelegramUserStateQuery) GroupBy(field string, fields ...string) *TelegramUserStateGroupBy {
-	tusq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TelegramUserStateGroupBy{build: tusq}
-	grbuild.flds = &tusq.ctx.Fields
+func (_q *TelegramUserStateQuery) GroupBy(field string, fields ...string) *TelegramUserStateGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TelegramUserStateGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = telegramuserstate.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -329,58 +329,58 @@ func (tusq *TelegramUserStateQuery) GroupBy(field string, fields ...string) *Tel
 //	client.TelegramUserState.Query().
 //		Select(telegramuserstate.FieldQts).
 //		Scan(ctx, &v)
-func (tusq *TelegramUserStateQuery) Select(fields ...string) *TelegramUserStateSelect {
-	tusq.ctx.Fields = append(tusq.ctx.Fields, fields...)
-	sbuild := &TelegramUserStateSelect{TelegramUserStateQuery: tusq}
+func (_q *TelegramUserStateQuery) Select(fields ...string) *TelegramUserStateSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TelegramUserStateSelect{TelegramUserStateQuery: _q}
 	sbuild.label = telegramuserstate.Label
-	sbuild.flds, sbuild.scan = &tusq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TelegramUserStateSelect configured with the given aggregations.
-func (tusq *TelegramUserStateQuery) Aggregate(fns ...AggregateFunc) *TelegramUserStateSelect {
-	return tusq.Select().Aggregate(fns...)
+func (_q *TelegramUserStateQuery) Aggregate(fns ...AggregateFunc) *TelegramUserStateSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tusq *TelegramUserStateQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tusq.inters {
+func (_q *TelegramUserStateQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tusq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tusq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !telegramuserstate.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tusq.path != nil {
-		prev, err := tusq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tusq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (tusq *TelegramUserStateQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TelegramUserState, error) {
+func (_q *TelegramUserStateQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TelegramUserState, error) {
 	var (
 		nodes       = []*TelegramUserState{}
-		_spec       = tusq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			tusq.withChannels != nil,
+			_q.withChannels != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TelegramUserState).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TelegramUserState{config: tusq.config}
+		node := &TelegramUserState{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -388,21 +388,21 @@ func (tusq *TelegramUserStateQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tusq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tusq.withChannels; query != nil {
-		if err := tusq.loadChannels(ctx, query, nodes,
+	if query := _q.withChannels; query != nil {
+		if err := _q.loadChannels(ctx, query, nodes,
 			func(n *TelegramUserState) { n.Edges.Channels = []*TelegramChannelState{} },
 			func(n *TelegramUserState, e *TelegramChannelState) { n.Edges.Channels = append(n.Edges.Channels, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range tusq.withNamedChannels {
-		if err := tusq.loadChannels(ctx, query, nodes,
+	for name, query := range _q.withNamedChannels {
+		if err := _q.loadChannels(ctx, query, nodes,
 			func(n *TelegramUserState) { n.appendNamedChannels(name) },
 			func(n *TelegramUserState, e *TelegramChannelState) { n.appendNamedChannels(name, e) }); err != nil {
 			return nil, err
@@ -411,7 +411,7 @@ func (tusq *TelegramUserStateQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	return nodes, nil
 }
 
-func (tusq *TelegramUserStateQuery) loadChannels(ctx context.Context, query *TelegramChannelStateQuery, nodes []*TelegramUserState, init func(*TelegramUserState), assign func(*TelegramUserState, *TelegramChannelState)) error {
+func (_q *TelegramUserStateQuery) loadChannels(ctx context.Context, query *TelegramChannelStateQuery, nodes []*TelegramUserState, init func(*TelegramUserState), assign func(*TelegramUserState, *TelegramChannelState)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*TelegramUserState)
 	for i := range nodes {
@@ -442,24 +442,24 @@ func (tusq *TelegramUserStateQuery) loadChannels(ctx context.Context, query *Tel
 	return nil
 }
 
-func (tusq *TelegramUserStateQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tusq.querySpec()
-	_spec.Node.Columns = tusq.ctx.Fields
-	if len(tusq.ctx.Fields) > 0 {
-		_spec.Unique = tusq.ctx.Unique != nil && *tusq.ctx.Unique
+func (_q *TelegramUserStateQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tusq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tusq *TelegramUserStateQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TelegramUserStateQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(telegramuserstate.Table, telegramuserstate.Columns, sqlgraph.NewFieldSpec(telegramuserstate.FieldID, field.TypeInt64))
-	_spec.From = tusq.sql
-	if unique := tusq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tusq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tusq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramuserstate.FieldID)
 		for i := range fields {
@@ -468,20 +468,20 @@ func (tusq *TelegramUserStateQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := tusq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tusq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tusq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tusq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -491,33 +491,33 @@ func (tusq *TelegramUserStateQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tusq *TelegramUserStateQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tusq.driver.Dialect())
+func (_q *TelegramUserStateQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(telegramuserstate.Table)
-	columns := tusq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = telegramuserstate.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tusq.sql != nil {
-		selector = tusq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tusq.ctx.Unique != nil && *tusq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tusq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tusq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tusq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tusq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -525,16 +525,16 @@ func (tusq *TelegramUserStateQuery) sqlQuery(ctx context.Context) *sql.Selector 
 
 // WithNamedChannels tells the query-builder to eager-load the nodes that are connected to the "channels"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tusq *TelegramUserStateQuery) WithNamedChannels(name string, opts ...func(*TelegramChannelStateQuery)) *TelegramUserStateQuery {
-	query := (&TelegramChannelStateClient{config: tusq.config}).Query()
+func (_q *TelegramUserStateQuery) WithNamedChannels(name string, opts ...func(*TelegramChannelStateQuery)) *TelegramUserStateQuery {
+	query := (&TelegramChannelStateClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if tusq.withNamedChannels == nil {
-		tusq.withNamedChannels = make(map[string]*TelegramChannelStateQuery)
+	if _q.withNamedChannels == nil {
+		_q.withNamedChannels = make(map[string]*TelegramChannelStateQuery)
 	}
-	tusq.withNamedChannels[name] = query
-	return tusq
+	_q.withNamedChannels[name] = query
+	return _q
 }
 
 // TelegramUserStateGroupBy is the group-by builder for TelegramUserState entities.
@@ -544,41 +544,41 @@ type TelegramUserStateGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tusgb *TelegramUserStateGroupBy) Aggregate(fns ...AggregateFunc) *TelegramUserStateGroupBy {
-	tusgb.fns = append(tusgb.fns, fns...)
-	return tusgb
+func (_g *TelegramUserStateGroupBy) Aggregate(fns ...AggregateFunc) *TelegramUserStateGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tusgb *TelegramUserStateGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tusgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tusgb.build.prepareQuery(ctx); err != nil {
+func (_g *TelegramUserStateGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TelegramUserStateQuery, *TelegramUserStateGroupBy](ctx, tusgb.build, tusgb, tusgb.build.inters, v)
+	return scanWithInterceptors[*TelegramUserStateQuery, *TelegramUserStateGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tusgb *TelegramUserStateGroupBy) sqlScan(ctx context.Context, root *TelegramUserStateQuery, v any) error {
+func (_g *TelegramUserStateGroupBy) sqlScan(ctx context.Context, root *TelegramUserStateQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tusgb.fns))
-	for _, fn := range tusgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tusgb.flds)+len(tusgb.fns))
-		for _, f := range *tusgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tusgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tusgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -592,27 +592,27 @@ type TelegramUserStateSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tuss *TelegramUserStateSelect) Aggregate(fns ...AggregateFunc) *TelegramUserStateSelect {
-	tuss.fns = append(tuss.fns, fns...)
-	return tuss
+func (_s *TelegramUserStateSelect) Aggregate(fns ...AggregateFunc) *TelegramUserStateSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tuss *TelegramUserStateSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tuss.ctx, ent.OpQuerySelect)
-	if err := tuss.prepareQuery(ctx); err != nil {
+func (_s *TelegramUserStateSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TelegramUserStateQuery, *TelegramUserStateSelect](ctx, tuss.TelegramUserStateQuery, tuss, tuss.inters, v)
+	return scanWithInterceptors[*TelegramUserStateQuery, *TelegramUserStateSelect](ctx, _s.TelegramUserStateQuery, _s, _s.inters, v)
 }
 
-func (tuss *TelegramUserStateSelect) sqlScan(ctx context.Context, root *TelegramUserStateQuery, v any) error {
+func (_s *TelegramUserStateSelect) sqlScan(ctx context.Context, root *TelegramUserStateQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tuss.fns))
-	for _, fn := range tuss.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tuss.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -620,7 +620,7 @@ func (tuss *TelegramUserStateSelect) sqlScan(ctx context.Context, root *Telegram
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tuss.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
