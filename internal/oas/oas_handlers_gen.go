@@ -8,16 +8,15 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
-	"go.opentelemetry.io/otel/trace"
-
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/otelogen"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/metric"
+	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type codeRecorder struct {
@@ -86,7 +85,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
 			// max redirects exceeded), in which case status MUST be set to Error.
 			code := statusWriter.status
-			if code >= 100 && code < 500 {
+			if code < 100 || code >= 500 {
 				span.SetStatus(codes.Error, stage)
 			}
 
@@ -115,6 +114,8 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 		return
 	}
 
+	var rawBody []byte
+
 	var response *SVGHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -123,6 +124,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 			OperationSummary: "",
 			OperationID:      "getTelegramBadge",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "title",
@@ -237,7 +239,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
 			// max redirects exceeded), in which case status MUST be set to Error.
 			code := statusWriter.status
-			if code >= 100 && code < 500 {
+			if code < 100 || code >= 500 {
 				span.SetStatus(codes.Error, stage)
 			}
 
@@ -266,6 +268,8 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 		return
 	}
 
+	var rawBody []byte
+
 	var response *SVGHeaders
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -274,6 +278,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 			OperationSummary: "",
 			OperationID:      "getTelegramOnlineBadge",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "groups",
@@ -386,7 +391,7 @@ func (s *Server) handleGithubStatusRequest(args [0]string, argsEscaped bool, w h
 			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
 			// max redirects exceeded), in which case status MUST be set to Error.
 			code := statusWriter.status
-			if code >= 100 && code < 500 {
+			if code < 100 || code >= 500 {
 				span.SetStatus(codes.Error, stage)
 			}
 
@@ -414,7 +419,9 @@ func (s *Server) handleGithubStatusRequest(args [0]string, argsEscaped bool, w h
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return
 	}
-	request, close, err := s.decodeGithubStatusRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeGithubStatusRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -438,6 +445,7 @@ func (s *Server) handleGithubStatusRequest(args [0]string, argsEscaped bool, w h
 			OperationSummary: "",
 			OperationID:      "githubStatus",
 			Body:             request,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "secret",
@@ -550,7 +558,7 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
 			// max redirects exceeded), in which case status MUST be set to Error.
 			code := statusWriter.status
-			if code >= 100 && code < 500 {
+			if code < 100 || code >= 500 {
 				span.SetStatus(codes.Error, stage)
 			}
 
@@ -565,6 +573,8 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 		err error
 	)
 
+	var rawBody []byte
+
 	var response *Status
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -573,6 +583,7 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 			OperationSummary: "",
 			OperationID:      "status",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
