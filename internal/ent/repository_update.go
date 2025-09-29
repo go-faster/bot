@@ -25,187 +25,187 @@ type RepositoryUpdate struct {
 }
 
 // Where appends a list predicates to the RepositoryUpdate builder.
-func (ru *RepositoryUpdate) Where(ps ...predicate.Repository) *RepositoryUpdate {
-	ru.mutation.Where(ps...)
-	return ru
+func (_u *RepositoryUpdate) Where(ps ...predicate.Repository) *RepositoryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ru *RepositoryUpdate) SetName(s string) *RepositoryUpdate {
-	ru.mutation.SetName(s)
-	return ru
+func (_u *RepositoryUpdate) SetName(v string) *RepositoryUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableName(s *string) *RepositoryUpdate {
-	if s != nil {
-		ru.SetName(*s)
+func (_u *RepositoryUpdate) SetNillableName(v *string) *RepositoryUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetFullName sets the "full_name" field.
-func (ru *RepositoryUpdate) SetFullName(s string) *RepositoryUpdate {
-	ru.mutation.SetFullName(s)
-	return ru
+func (_u *RepositoryUpdate) SetFullName(v string) *RepositoryUpdate {
+	_u.mutation.SetFullName(v)
+	return _u
 }
 
 // SetNillableFullName sets the "full_name" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableFullName(s *string) *RepositoryUpdate {
-	if s != nil {
-		ru.SetFullName(*s)
+func (_u *RepositoryUpdate) SetNillableFullName(v *string) *RepositoryUpdate {
+	if v != nil {
+		_u.SetFullName(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetHTMLURL sets the "html_url" field.
-func (ru *RepositoryUpdate) SetHTMLURL(s string) *RepositoryUpdate {
-	ru.mutation.SetHTMLURL(s)
-	return ru
+func (_u *RepositoryUpdate) SetHTMLURL(v string) *RepositoryUpdate {
+	_u.mutation.SetHTMLURL(v)
+	return _u
 }
 
 // SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableHTMLURL(s *string) *RepositoryUpdate {
-	if s != nil {
-		ru.SetHTMLURL(*s)
+func (_u *RepositoryUpdate) SetNillableHTMLURL(v *string) *RepositoryUpdate {
+	if v != nil {
+		_u.SetHTMLURL(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearHTMLURL clears the value of the "html_url" field.
-func (ru *RepositoryUpdate) ClearHTMLURL() *RepositoryUpdate {
-	ru.mutation.ClearHTMLURL()
-	return ru
+func (_u *RepositoryUpdate) ClearHTMLURL() *RepositoryUpdate {
+	_u.mutation.ClearHTMLURL()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ru *RepositoryUpdate) SetDescription(s string) *RepositoryUpdate {
-	ru.mutation.SetDescription(s)
-	return ru
+func (_u *RepositoryUpdate) SetDescription(v string) *RepositoryUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableDescription(s *string) *RepositoryUpdate {
-	if s != nil {
-		ru.SetDescription(*s)
+func (_u *RepositoryUpdate) SetNillableDescription(v *string) *RepositoryUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ru
+	return _u
 }
 
 // SetLastPushedAt sets the "last_pushed_at" field.
-func (ru *RepositoryUpdate) SetLastPushedAt(t time.Time) *RepositoryUpdate {
-	ru.mutation.SetLastPushedAt(t)
-	return ru
+func (_u *RepositoryUpdate) SetLastPushedAt(v time.Time) *RepositoryUpdate {
+	_u.mutation.SetLastPushedAt(v)
+	return _u
 }
 
 // SetNillableLastPushedAt sets the "last_pushed_at" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableLastPushedAt(t *time.Time) *RepositoryUpdate {
-	if t != nil {
-		ru.SetLastPushedAt(*t)
+func (_u *RepositoryUpdate) SetNillableLastPushedAt(v *time.Time) *RepositoryUpdate {
+	if v != nil {
+		_u.SetLastPushedAt(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearLastPushedAt clears the value of the "last_pushed_at" field.
-func (ru *RepositoryUpdate) ClearLastPushedAt() *RepositoryUpdate {
-	ru.mutation.ClearLastPushedAt()
-	return ru
+func (_u *RepositoryUpdate) ClearLastPushedAt() *RepositoryUpdate {
+	_u.mutation.ClearLastPushedAt()
+	return _u
 }
 
 // SetLastEventAt sets the "last_event_at" field.
-func (ru *RepositoryUpdate) SetLastEventAt(t time.Time) *RepositoryUpdate {
-	ru.mutation.SetLastEventAt(t)
-	return ru
+func (_u *RepositoryUpdate) SetLastEventAt(v time.Time) *RepositoryUpdate {
+	_u.mutation.SetLastEventAt(v)
+	return _u
 }
 
 // SetNillableLastEventAt sets the "last_event_at" field if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableLastEventAt(t *time.Time) *RepositoryUpdate {
-	if t != nil {
-		ru.SetLastEventAt(*t)
+func (_u *RepositoryUpdate) SetNillableLastEventAt(v *time.Time) *RepositoryUpdate {
+	if v != nil {
+		_u.SetLastEventAt(*v)
 	}
-	return ru
+	return _u
 }
 
 // ClearLastEventAt clears the value of the "last_event_at" field.
-func (ru *RepositoryUpdate) ClearLastEventAt() *RepositoryUpdate {
-	ru.mutation.ClearLastEventAt()
-	return ru
+func (_u *RepositoryUpdate) ClearLastEventAt() *RepositoryUpdate {
+	_u.mutation.ClearLastEventAt()
+	return _u
 }
 
 // SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (ru *RepositoryUpdate) SetOrganizationID(id int64) *RepositoryUpdate {
-	ru.mutation.SetOrganizationID(id)
-	return ru
+func (_u *RepositoryUpdate) SetOrganizationID(id int64) *RepositoryUpdate {
+	_u.mutation.SetOrganizationID(id)
+	return _u
 }
 
 // SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
-func (ru *RepositoryUpdate) SetNillableOrganizationID(id *int64) *RepositoryUpdate {
+func (_u *RepositoryUpdate) SetNillableOrganizationID(id *int64) *RepositoryUpdate {
 	if id != nil {
-		ru = ru.SetOrganizationID(*id)
+		_u = _u.SetOrganizationID(*id)
 	}
-	return ru
+	return _u
 }
 
 // SetOrganization sets the "organization" edge to the Organization entity.
-func (ru *RepositoryUpdate) SetOrganization(o *Organization) *RepositoryUpdate {
-	return ru.SetOrganizationID(o.ID)
+func (_u *RepositoryUpdate) SetOrganization(v *Organization) *RepositoryUpdate {
+	return _u.SetOrganizationID(v.ID)
 }
 
 // AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
-func (ru *RepositoryUpdate) AddCommitIDs(ids ...string) *RepositoryUpdate {
-	ru.mutation.AddCommitIDs(ids...)
-	return ru
+func (_u *RepositoryUpdate) AddCommitIDs(ids ...string) *RepositoryUpdate {
+	_u.mutation.AddCommitIDs(ids...)
+	return _u
 }
 
 // AddCommits adds the "commits" edges to the GitCommit entity.
-func (ru *RepositoryUpdate) AddCommits(g ...*GitCommit) *RepositoryUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *RepositoryUpdate) AddCommits(v ...*GitCommit) *RepositoryUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ru.AddCommitIDs(ids...)
+	return _u.AddCommitIDs(ids...)
 }
 
 // Mutation returns the RepositoryMutation object of the builder.
-func (ru *RepositoryUpdate) Mutation() *RepositoryMutation {
-	return ru.mutation
+func (_u *RepositoryUpdate) Mutation() *RepositoryMutation {
+	return _u.mutation
 }
 
 // ClearOrganization clears the "organization" edge to the Organization entity.
-func (ru *RepositoryUpdate) ClearOrganization() *RepositoryUpdate {
-	ru.mutation.ClearOrganization()
-	return ru
+func (_u *RepositoryUpdate) ClearOrganization() *RepositoryUpdate {
+	_u.mutation.ClearOrganization()
+	return _u
 }
 
 // ClearCommits clears all "commits" edges to the GitCommit entity.
-func (ru *RepositoryUpdate) ClearCommits() *RepositoryUpdate {
-	ru.mutation.ClearCommits()
-	return ru
+func (_u *RepositoryUpdate) ClearCommits() *RepositoryUpdate {
+	_u.mutation.ClearCommits()
+	return _u
 }
 
 // RemoveCommitIDs removes the "commits" edge to GitCommit entities by IDs.
-func (ru *RepositoryUpdate) RemoveCommitIDs(ids ...string) *RepositoryUpdate {
-	ru.mutation.RemoveCommitIDs(ids...)
-	return ru
+func (_u *RepositoryUpdate) RemoveCommitIDs(ids ...string) *RepositoryUpdate {
+	_u.mutation.RemoveCommitIDs(ids...)
+	return _u
 }
 
 // RemoveCommits removes "commits" edges to GitCommit entities.
-func (ru *RepositoryUpdate) RemoveCommits(g ...*GitCommit) *RepositoryUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *RepositoryUpdate) RemoveCommits(v ...*GitCommit) *RepositoryUpdate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ru.RemoveCommitIDs(ids...)
+	return _u.RemoveCommitIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ru *RepositoryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ru.sqlSave, ru.mutation, ru.hooks)
+func (_u *RepositoryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ru *RepositoryUpdate) SaveX(ctx context.Context) int {
-	affected, err := ru.Save(ctx)
+func (_u *RepositoryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -213,55 +213,55 @@ func (ru *RepositoryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ru *RepositoryUpdate) Exec(ctx context.Context) error {
-	_, err := ru.Save(ctx)
+func (_u *RepositoryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ru *RepositoryUpdate) ExecX(ctx context.Context) {
-	if err := ru.Exec(ctx); err != nil {
+func (_u *RepositoryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *RepositoryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(repository.Table, repository.Columns, sqlgraph.NewFieldSpec(repository.FieldID, field.TypeInt64))
-	if ps := ru.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ru.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.FullName(); ok {
+	if value, ok := _u.mutation.FullName(); ok {
 		_spec.SetField(repository.FieldFullName, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.HTMLURL(); ok {
+	if value, ok := _u.mutation.HTMLURL(); ok {
 		_spec.SetField(repository.FieldHTMLURL, field.TypeString, value)
 	}
-	if ru.mutation.HTMLURLCleared() {
+	if _u.mutation.HTMLURLCleared() {
 		_spec.ClearField(repository.FieldHTMLURL, field.TypeString)
 	}
-	if value, ok := ru.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(repository.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ru.mutation.LastPushedAt(); ok {
+	if value, ok := _u.mutation.LastPushedAt(); ok {
 		_spec.SetField(repository.FieldLastPushedAt, field.TypeTime, value)
 	}
-	if ru.mutation.LastPushedAtCleared() {
+	if _u.mutation.LastPushedAtCleared() {
 		_spec.ClearField(repository.FieldLastPushedAt, field.TypeTime)
 	}
-	if value, ok := ru.mutation.LastEventAt(); ok {
+	if value, ok := _u.mutation.LastEventAt(); ok {
 		_spec.SetField(repository.FieldLastEventAt, field.TypeTime, value)
 	}
-	if ru.mutation.LastEventAtCleared() {
+	if _u.mutation.LastEventAtCleared() {
 		_spec.ClearField(repository.FieldLastEventAt, field.TypeTime)
 	}
-	if ru.mutation.OrganizationCleared() {
+	if _u.mutation.OrganizationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -274,7 +274,7 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrganizationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -290,7 +290,7 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ru.mutation.CommitsCleared() {
+	if _u.mutation.CommitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -303,7 +303,7 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !ru.mutation.CommitsCleared() {
+	if nodes := _u.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !_u.mutation.CommitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -319,7 +319,7 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ru.mutation.CommitsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CommitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -335,7 +335,7 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ru.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{repository.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -343,8 +343,8 @@ func (ru *RepositoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ru.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // RepositoryUpdateOne is the builder for updating a single Repository entity.
@@ -356,194 +356,194 @@ type RepositoryUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ruo *RepositoryUpdateOne) SetName(s string) *RepositoryUpdateOne {
-	ruo.mutation.SetName(s)
-	return ruo
+func (_u *RepositoryUpdateOne) SetName(v string) *RepositoryUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableName(s *string) *RepositoryUpdateOne {
-	if s != nil {
-		ruo.SetName(*s)
+func (_u *RepositoryUpdateOne) SetNillableName(v *string) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetFullName sets the "full_name" field.
-func (ruo *RepositoryUpdateOne) SetFullName(s string) *RepositoryUpdateOne {
-	ruo.mutation.SetFullName(s)
-	return ruo
+func (_u *RepositoryUpdateOne) SetFullName(v string) *RepositoryUpdateOne {
+	_u.mutation.SetFullName(v)
+	return _u
 }
 
 // SetNillableFullName sets the "full_name" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableFullName(s *string) *RepositoryUpdateOne {
-	if s != nil {
-		ruo.SetFullName(*s)
+func (_u *RepositoryUpdateOne) SetNillableFullName(v *string) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetFullName(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetHTMLURL sets the "html_url" field.
-func (ruo *RepositoryUpdateOne) SetHTMLURL(s string) *RepositoryUpdateOne {
-	ruo.mutation.SetHTMLURL(s)
-	return ruo
+func (_u *RepositoryUpdateOne) SetHTMLURL(v string) *RepositoryUpdateOne {
+	_u.mutation.SetHTMLURL(v)
+	return _u
 }
 
 // SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableHTMLURL(s *string) *RepositoryUpdateOne {
-	if s != nil {
-		ruo.SetHTMLURL(*s)
+func (_u *RepositoryUpdateOne) SetNillableHTMLURL(v *string) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetHTMLURL(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearHTMLURL clears the value of the "html_url" field.
-func (ruo *RepositoryUpdateOne) ClearHTMLURL() *RepositoryUpdateOne {
-	ruo.mutation.ClearHTMLURL()
-	return ruo
+func (_u *RepositoryUpdateOne) ClearHTMLURL() *RepositoryUpdateOne {
+	_u.mutation.ClearHTMLURL()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ruo *RepositoryUpdateOne) SetDescription(s string) *RepositoryUpdateOne {
-	ruo.mutation.SetDescription(s)
-	return ruo
+func (_u *RepositoryUpdateOne) SetDescription(v string) *RepositoryUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableDescription(s *string) *RepositoryUpdateOne {
-	if s != nil {
-		ruo.SetDescription(*s)
+func (_u *RepositoryUpdateOne) SetNillableDescription(v *string) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ruo
+	return _u
 }
 
 // SetLastPushedAt sets the "last_pushed_at" field.
-func (ruo *RepositoryUpdateOne) SetLastPushedAt(t time.Time) *RepositoryUpdateOne {
-	ruo.mutation.SetLastPushedAt(t)
-	return ruo
+func (_u *RepositoryUpdateOne) SetLastPushedAt(v time.Time) *RepositoryUpdateOne {
+	_u.mutation.SetLastPushedAt(v)
+	return _u
 }
 
 // SetNillableLastPushedAt sets the "last_pushed_at" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableLastPushedAt(t *time.Time) *RepositoryUpdateOne {
-	if t != nil {
-		ruo.SetLastPushedAt(*t)
+func (_u *RepositoryUpdateOne) SetNillableLastPushedAt(v *time.Time) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetLastPushedAt(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearLastPushedAt clears the value of the "last_pushed_at" field.
-func (ruo *RepositoryUpdateOne) ClearLastPushedAt() *RepositoryUpdateOne {
-	ruo.mutation.ClearLastPushedAt()
-	return ruo
+func (_u *RepositoryUpdateOne) ClearLastPushedAt() *RepositoryUpdateOne {
+	_u.mutation.ClearLastPushedAt()
+	return _u
 }
 
 // SetLastEventAt sets the "last_event_at" field.
-func (ruo *RepositoryUpdateOne) SetLastEventAt(t time.Time) *RepositoryUpdateOne {
-	ruo.mutation.SetLastEventAt(t)
-	return ruo
+func (_u *RepositoryUpdateOne) SetLastEventAt(v time.Time) *RepositoryUpdateOne {
+	_u.mutation.SetLastEventAt(v)
+	return _u
 }
 
 // SetNillableLastEventAt sets the "last_event_at" field if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableLastEventAt(t *time.Time) *RepositoryUpdateOne {
-	if t != nil {
-		ruo.SetLastEventAt(*t)
+func (_u *RepositoryUpdateOne) SetNillableLastEventAt(v *time.Time) *RepositoryUpdateOne {
+	if v != nil {
+		_u.SetLastEventAt(*v)
 	}
-	return ruo
+	return _u
 }
 
 // ClearLastEventAt clears the value of the "last_event_at" field.
-func (ruo *RepositoryUpdateOne) ClearLastEventAt() *RepositoryUpdateOne {
-	ruo.mutation.ClearLastEventAt()
-	return ruo
+func (_u *RepositoryUpdateOne) ClearLastEventAt() *RepositoryUpdateOne {
+	_u.mutation.ClearLastEventAt()
+	return _u
 }
 
 // SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (ruo *RepositoryUpdateOne) SetOrganizationID(id int64) *RepositoryUpdateOne {
-	ruo.mutation.SetOrganizationID(id)
-	return ruo
+func (_u *RepositoryUpdateOne) SetOrganizationID(id int64) *RepositoryUpdateOne {
+	_u.mutation.SetOrganizationID(id)
+	return _u
 }
 
 // SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
-func (ruo *RepositoryUpdateOne) SetNillableOrganizationID(id *int64) *RepositoryUpdateOne {
+func (_u *RepositoryUpdateOne) SetNillableOrganizationID(id *int64) *RepositoryUpdateOne {
 	if id != nil {
-		ruo = ruo.SetOrganizationID(*id)
+		_u = _u.SetOrganizationID(*id)
 	}
-	return ruo
+	return _u
 }
 
 // SetOrganization sets the "organization" edge to the Organization entity.
-func (ruo *RepositoryUpdateOne) SetOrganization(o *Organization) *RepositoryUpdateOne {
-	return ruo.SetOrganizationID(o.ID)
+func (_u *RepositoryUpdateOne) SetOrganization(v *Organization) *RepositoryUpdateOne {
+	return _u.SetOrganizationID(v.ID)
 }
 
 // AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
-func (ruo *RepositoryUpdateOne) AddCommitIDs(ids ...string) *RepositoryUpdateOne {
-	ruo.mutation.AddCommitIDs(ids...)
-	return ruo
+func (_u *RepositoryUpdateOne) AddCommitIDs(ids ...string) *RepositoryUpdateOne {
+	_u.mutation.AddCommitIDs(ids...)
+	return _u
 }
 
 // AddCommits adds the "commits" edges to the GitCommit entity.
-func (ruo *RepositoryUpdateOne) AddCommits(g ...*GitCommit) *RepositoryUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *RepositoryUpdateOne) AddCommits(v ...*GitCommit) *RepositoryUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ruo.AddCommitIDs(ids...)
+	return _u.AddCommitIDs(ids...)
 }
 
 // Mutation returns the RepositoryMutation object of the builder.
-func (ruo *RepositoryUpdateOne) Mutation() *RepositoryMutation {
-	return ruo.mutation
+func (_u *RepositoryUpdateOne) Mutation() *RepositoryMutation {
+	return _u.mutation
 }
 
 // ClearOrganization clears the "organization" edge to the Organization entity.
-func (ruo *RepositoryUpdateOne) ClearOrganization() *RepositoryUpdateOne {
-	ruo.mutation.ClearOrganization()
-	return ruo
+func (_u *RepositoryUpdateOne) ClearOrganization() *RepositoryUpdateOne {
+	_u.mutation.ClearOrganization()
+	return _u
 }
 
 // ClearCommits clears all "commits" edges to the GitCommit entity.
-func (ruo *RepositoryUpdateOne) ClearCommits() *RepositoryUpdateOne {
-	ruo.mutation.ClearCommits()
-	return ruo
+func (_u *RepositoryUpdateOne) ClearCommits() *RepositoryUpdateOne {
+	_u.mutation.ClearCommits()
+	return _u
 }
 
 // RemoveCommitIDs removes the "commits" edge to GitCommit entities by IDs.
-func (ruo *RepositoryUpdateOne) RemoveCommitIDs(ids ...string) *RepositoryUpdateOne {
-	ruo.mutation.RemoveCommitIDs(ids...)
-	return ruo
+func (_u *RepositoryUpdateOne) RemoveCommitIDs(ids ...string) *RepositoryUpdateOne {
+	_u.mutation.RemoveCommitIDs(ids...)
+	return _u
 }
 
 // RemoveCommits removes "commits" edges to GitCommit entities.
-func (ruo *RepositoryUpdateOne) RemoveCommits(g ...*GitCommit) *RepositoryUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_u *RepositoryUpdateOne) RemoveCommits(v ...*GitCommit) *RepositoryUpdateOne {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ruo.RemoveCommitIDs(ids...)
+	return _u.RemoveCommitIDs(ids...)
 }
 
 // Where appends a list predicates to the RepositoryUpdate builder.
-func (ruo *RepositoryUpdateOne) Where(ps ...predicate.Repository) *RepositoryUpdateOne {
-	ruo.mutation.Where(ps...)
-	return ruo
+func (_u *RepositoryUpdateOne) Where(ps ...predicate.Repository) *RepositoryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ruo *RepositoryUpdateOne) Select(field string, fields ...string) *RepositoryUpdateOne {
-	ruo.fields = append([]string{field}, fields...)
-	return ruo
+func (_u *RepositoryUpdateOne) Select(field string, fields ...string) *RepositoryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Repository entity.
-func (ruo *RepositoryUpdateOne) Save(ctx context.Context) (*Repository, error) {
-	return withHooks(ctx, ruo.sqlSave, ruo.mutation, ruo.hooks)
+func (_u *RepositoryUpdateOne) Save(ctx context.Context) (*Repository, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ruo *RepositoryUpdateOne) SaveX(ctx context.Context) *Repository {
-	node, err := ruo.Save(ctx)
+func (_u *RepositoryUpdateOne) SaveX(ctx context.Context) *Repository {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -551,26 +551,26 @@ func (ruo *RepositoryUpdateOne) SaveX(ctx context.Context) *Repository {
 }
 
 // Exec executes the query on the entity.
-func (ruo *RepositoryUpdateOne) Exec(ctx context.Context) error {
-	_, err := ruo.Save(ctx)
+func (_u *RepositoryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ruo *RepositoryUpdateOne) ExecX(ctx context.Context) {
-	if err := ruo.Exec(ctx); err != nil {
+func (_u *RepositoryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository, err error) {
+func (_u *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository, err error) {
 	_spec := sqlgraph.NewUpdateSpec(repository.Table, repository.Columns, sqlgraph.NewFieldSpec(repository.FieldID, field.TypeInt64))
-	id, ok := ruo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Repository.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ruo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, repository.FieldID)
 		for _, f := range fields {
@@ -582,41 +582,41 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 			}
 		}
 	}
-	if ps := ruo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ruo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.FullName(); ok {
+	if value, ok := _u.mutation.FullName(); ok {
 		_spec.SetField(repository.FieldFullName, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.HTMLURL(); ok {
+	if value, ok := _u.mutation.HTMLURL(); ok {
 		_spec.SetField(repository.FieldHTMLURL, field.TypeString, value)
 	}
-	if ruo.mutation.HTMLURLCleared() {
+	if _u.mutation.HTMLURLCleared() {
 		_spec.ClearField(repository.FieldHTMLURL, field.TypeString)
 	}
-	if value, ok := ruo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(repository.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ruo.mutation.LastPushedAt(); ok {
+	if value, ok := _u.mutation.LastPushedAt(); ok {
 		_spec.SetField(repository.FieldLastPushedAt, field.TypeTime, value)
 	}
-	if ruo.mutation.LastPushedAtCleared() {
+	if _u.mutation.LastPushedAtCleared() {
 		_spec.ClearField(repository.FieldLastPushedAt, field.TypeTime)
 	}
-	if value, ok := ruo.mutation.LastEventAt(); ok {
+	if value, ok := _u.mutation.LastEventAt(); ok {
 		_spec.SetField(repository.FieldLastEventAt, field.TypeTime, value)
 	}
-	if ruo.mutation.LastEventAtCleared() {
+	if _u.mutation.LastEventAtCleared() {
 		_spec.ClearField(repository.FieldLastEventAt, field.TypeTime)
 	}
-	if ruo.mutation.OrganizationCleared() {
+	if _u.mutation.OrganizationCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -629,7 +629,7 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OrganizationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -645,7 +645,7 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ruo.mutation.CommitsCleared() {
+	if _u.mutation.CommitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -658,7 +658,7 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !ruo.mutation.CommitsCleared() {
+	if nodes := _u.mutation.RemovedCommitsIDs(); len(nodes) > 0 && !_u.mutation.CommitsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -674,7 +674,7 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ruo.mutation.CommitsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CommitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -690,10 +690,10 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Repository{config: ruo.config}
+	_node = &Repository{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ruo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{repository.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -701,6 +701,6 @@ func (ruo *RepositoryUpdateOne) sqlSave(ctx context.Context) (_node *Repository,
 		}
 		return nil, err
 	}
-	ruo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

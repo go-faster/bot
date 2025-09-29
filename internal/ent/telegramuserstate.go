@@ -66,7 +66,7 @@ func (*TelegramUserState) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TelegramUserState fields.
-func (tus *TelegramUserState) assignValues(columns []string, values []any) error {
+func (_m *TelegramUserState) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -77,33 +77,33 @@ func (tus *TelegramUserState) assignValues(columns []string, values []any) error
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tus.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case telegramuserstate.FieldQts:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field qts", values[i])
 			} else if value.Valid {
-				tus.Qts = int(value.Int64)
+				_m.Qts = int(value.Int64)
 			}
 		case telegramuserstate.FieldPts:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pts", values[i])
 			} else if value.Valid {
-				tus.Pts = int(value.Int64)
+				_m.Pts = int(value.Int64)
 			}
 		case telegramuserstate.FieldDate:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field date", values[i])
 			} else if value.Valid {
-				tus.Date = int(value.Int64)
+				_m.Date = int(value.Int64)
 			}
 		case telegramuserstate.FieldSeq:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field seq", values[i])
 			} else if value.Valid {
-				tus.Seq = int(value.Int64)
+				_m.Seq = int(value.Int64)
 			}
 		default:
-			tus.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -111,74 +111,74 @@ func (tus *TelegramUserState) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TelegramUserState.
 // This includes values selected through modifiers, order, etc.
-func (tus *TelegramUserState) Value(name string) (ent.Value, error) {
-	return tus.selectValues.Get(name)
+func (_m *TelegramUserState) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryChannels queries the "channels" edge of the TelegramUserState entity.
-func (tus *TelegramUserState) QueryChannels() *TelegramChannelStateQuery {
-	return NewTelegramUserStateClient(tus.config).QueryChannels(tus)
+func (_m *TelegramUserState) QueryChannels() *TelegramChannelStateQuery {
+	return NewTelegramUserStateClient(_m.config).QueryChannels(_m)
 }
 
 // Update returns a builder for updating this TelegramUserState.
 // Note that you need to call TelegramUserState.Unwrap() before calling this method if this TelegramUserState
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tus *TelegramUserState) Update() *TelegramUserStateUpdateOne {
-	return NewTelegramUserStateClient(tus.config).UpdateOne(tus)
+func (_m *TelegramUserState) Update() *TelegramUserStateUpdateOne {
+	return NewTelegramUserStateClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TelegramUserState entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tus *TelegramUserState) Unwrap() *TelegramUserState {
-	_tx, ok := tus.config.driver.(*txDriver)
+func (_m *TelegramUserState) Unwrap() *TelegramUserState {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TelegramUserState is not a transactional entity")
 	}
-	tus.config.driver = _tx.drv
-	return tus
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tus *TelegramUserState) String() string {
+func (_m *TelegramUserState) String() string {
 	var builder strings.Builder
 	builder.WriteString("TelegramUserState(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tus.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("qts=")
-	builder.WriteString(fmt.Sprintf("%v", tus.Qts))
+	builder.WriteString(fmt.Sprintf("%v", _m.Qts))
 	builder.WriteString(", ")
 	builder.WriteString("pts=")
-	builder.WriteString(fmt.Sprintf("%v", tus.Pts))
+	builder.WriteString(fmt.Sprintf("%v", _m.Pts))
 	builder.WriteString(", ")
 	builder.WriteString("date=")
-	builder.WriteString(fmt.Sprintf("%v", tus.Date))
+	builder.WriteString(fmt.Sprintf("%v", _m.Date))
 	builder.WriteString(", ")
 	builder.WriteString("seq=")
-	builder.WriteString(fmt.Sprintf("%v", tus.Seq))
+	builder.WriteString(fmt.Sprintf("%v", _m.Seq))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // NamedChannels returns the Channels named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (tus *TelegramUserState) NamedChannels(name string) ([]*TelegramChannelState, error) {
-	if tus.Edges.namedChannels == nil {
+func (_m *TelegramUserState) NamedChannels(name string) ([]*TelegramChannelState, error) {
+	if _m.Edges.namedChannels == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := tus.Edges.namedChannels[name]
+	nodes, ok := _m.Edges.namedChannels[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (tus *TelegramUserState) appendNamedChannels(name string, edges ...*TelegramChannelState) {
-	if tus.Edges.namedChannels == nil {
-		tus.Edges.namedChannels = make(map[string][]*TelegramChannelState)
+func (_m *TelegramUserState) appendNamedChannels(name string, edges ...*TelegramChannelState) {
+	if _m.Edges.namedChannels == nil {
+		_m.Edges.namedChannels = make(map[string][]*TelegramChannelState)
 	}
 	if len(edges) == 0 {
-		tus.Edges.namedChannels[name] = []*TelegramChannelState{}
+		_m.Edges.namedChannels[name] = []*TelegramChannelState{}
 	} else {
-		tus.Edges.namedChannels[name] = append(tus.Edges.namedChannels[name], edges...)
+		_m.Edges.namedChannels[name] = append(_m.Edges.namedChannels[name], edges...)
 	}
 }
 

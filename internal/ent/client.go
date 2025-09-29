@@ -345,8 +345,8 @@ func (c *CheckClient) Update() *CheckUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *CheckClient) UpdateOne(ch *Check) *CheckUpdateOne {
-	mutation := newCheckMutation(c.config, OpUpdateOne, withCheck(ch))
+func (c *CheckClient) UpdateOne(_m *Check) *CheckUpdateOne {
+	mutation := newCheckMutation(c.config, OpUpdateOne, withCheck(_m))
 	return &CheckUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -363,8 +363,8 @@ func (c *CheckClient) Delete() *CheckDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *CheckClient) DeleteOne(ch *Check) *CheckDeleteOne {
-	return c.DeleteOneID(ch.ID)
+func (c *CheckClient) DeleteOne(_m *Check) *CheckDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -478,8 +478,8 @@ func (c *GPTDialogClient) Update() *GPTDialogUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *GPTDialogClient) UpdateOne(gd *GPTDialog) *GPTDialogUpdateOne {
-	mutation := newGPTDialogMutation(c.config, OpUpdateOne, withGPTDialog(gd))
+func (c *GPTDialogClient) UpdateOne(_m *GPTDialog) *GPTDialogUpdateOne {
+	mutation := newGPTDialogMutation(c.config, OpUpdateOne, withGPTDialog(_m))
 	return &GPTDialogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -496,8 +496,8 @@ func (c *GPTDialogClient) Delete() *GPTDialogDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *GPTDialogClient) DeleteOne(gd *GPTDialog) *GPTDialogDeleteOne {
-	return c.DeleteOneID(gd.ID)
+func (c *GPTDialogClient) DeleteOne(_m *GPTDialog) *GPTDialogDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -611,8 +611,8 @@ func (c *GitCommitClient) Update() *GitCommitUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *GitCommitClient) UpdateOne(gc *GitCommit) *GitCommitUpdateOne {
-	mutation := newGitCommitMutation(c.config, OpUpdateOne, withGitCommit(gc))
+func (c *GitCommitClient) UpdateOne(_m *GitCommit) *GitCommitUpdateOne {
+	mutation := newGitCommitMutation(c.config, OpUpdateOne, withGitCommit(_m))
 	return &GitCommitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -629,8 +629,8 @@ func (c *GitCommitClient) Delete() *GitCommitDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *GitCommitClient) DeleteOne(gc *GitCommit) *GitCommitDeleteOne {
-	return c.DeleteOneID(gc.ID)
+func (c *GitCommitClient) DeleteOne(_m *GitCommit) *GitCommitDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -665,16 +665,16 @@ func (c *GitCommitClient) GetX(ctx context.Context, id string) *GitCommit {
 }
 
 // QueryRepository queries the repository edge of a GitCommit.
-func (c *GitCommitClient) QueryRepository(gc *GitCommit) *RepositoryQuery {
+func (c *GitCommitClient) QueryRepository(_m *GitCommit) *RepositoryQuery {
 	query := (&RepositoryClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := gc.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(gitcommit.Table, gitcommit.FieldID, id),
 			sqlgraph.To(repository.Table, repository.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, gitcommit.RepositoryTable, gitcommit.RepositoryColumn),
 		)
-		fromV = sqlgraph.Neighbors(gc.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -760,8 +760,8 @@ func (c *LastChannelMessageClient) Update() *LastChannelMessageUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *LastChannelMessageClient) UpdateOne(lcm *LastChannelMessage) *LastChannelMessageUpdateOne {
-	mutation := newLastChannelMessageMutation(c.config, OpUpdateOne, withLastChannelMessage(lcm))
+func (c *LastChannelMessageClient) UpdateOne(_m *LastChannelMessage) *LastChannelMessageUpdateOne {
+	mutation := newLastChannelMessageMutation(c.config, OpUpdateOne, withLastChannelMessage(_m))
 	return &LastChannelMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -778,8 +778,8 @@ func (c *LastChannelMessageClient) Delete() *LastChannelMessageDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *LastChannelMessageClient) DeleteOne(lcm *LastChannelMessage) *LastChannelMessageDeleteOne {
-	return c.DeleteOneID(lcm.ID)
+func (c *LastChannelMessageClient) DeleteOne(_m *LastChannelMessage) *LastChannelMessageDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -893,8 +893,8 @@ func (c *OrganizationClient) Update() *OrganizationUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationClient) UpdateOne(o *Organization) *OrganizationUpdateOne {
-	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganization(o))
+func (c *OrganizationClient) UpdateOne(_m *Organization) *OrganizationUpdateOne {
+	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganization(_m))
 	return &OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -911,8 +911,8 @@ func (c *OrganizationClient) Delete() *OrganizationDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OrganizationClient) DeleteOne(o *Organization) *OrganizationDeleteOne {
-	return c.DeleteOneID(o.ID)
+func (c *OrganizationClient) DeleteOne(_m *Organization) *OrganizationDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -947,16 +947,16 @@ func (c *OrganizationClient) GetX(ctx context.Context, id int64) *Organization {
 }
 
 // QueryRepositories queries the repositories edge of a Organization.
-func (c *OrganizationClient) QueryRepositories(o *Organization) *RepositoryQuery {
+func (c *OrganizationClient) QueryRepositories(_m *Organization) *RepositoryQuery {
 	query := (&RepositoryClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := o.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(organization.Table, organization.FieldID, id),
 			sqlgraph.To(repository.Table, repository.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, organization.RepositoriesTable, organization.RepositoriesColumn),
 		)
-		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -1042,8 +1042,8 @@ func (c *PRNotificationClient) Update() *PRNotificationUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *PRNotificationClient) UpdateOne(pn *PRNotification) *PRNotificationUpdateOne {
-	mutation := newPRNotificationMutation(c.config, OpUpdateOne, withPRNotification(pn))
+func (c *PRNotificationClient) UpdateOne(_m *PRNotification) *PRNotificationUpdateOne {
+	mutation := newPRNotificationMutation(c.config, OpUpdateOne, withPRNotification(_m))
 	return &PRNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1060,8 +1060,8 @@ func (c *PRNotificationClient) Delete() *PRNotificationDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *PRNotificationClient) DeleteOne(pn *PRNotification) *PRNotificationDeleteOne {
-	return c.DeleteOneID(pn.ID)
+func (c *PRNotificationClient) DeleteOne(_m *PRNotification) *PRNotificationDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1175,8 +1175,8 @@ func (c *RepositoryClient) Update() *RepositoryUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *RepositoryClient) UpdateOne(r *Repository) *RepositoryUpdateOne {
-	mutation := newRepositoryMutation(c.config, OpUpdateOne, withRepository(r))
+func (c *RepositoryClient) UpdateOne(_m *Repository) *RepositoryUpdateOne {
+	mutation := newRepositoryMutation(c.config, OpUpdateOne, withRepository(_m))
 	return &RepositoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1193,8 +1193,8 @@ func (c *RepositoryClient) Delete() *RepositoryDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *RepositoryClient) DeleteOne(r *Repository) *RepositoryDeleteOne {
-	return c.DeleteOneID(r.ID)
+func (c *RepositoryClient) DeleteOne(_m *Repository) *RepositoryDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1229,32 +1229,32 @@ func (c *RepositoryClient) GetX(ctx context.Context, id int64) *Repository {
 }
 
 // QueryOrganization queries the organization edge of a Repository.
-func (c *RepositoryClient) QueryOrganization(r *Repository) *OrganizationQuery {
+func (c *RepositoryClient) QueryOrganization(_m *Repository) *OrganizationQuery {
 	query := (&OrganizationClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := r.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(repository.Table, repository.FieldID, id),
 			sqlgraph.To(organization.Table, organization.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, repository.OrganizationTable, repository.OrganizationColumn),
 		)
-		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // QueryCommits queries the commits edge of a Repository.
-func (c *RepositoryClient) QueryCommits(r *Repository) *GitCommitQuery {
+func (c *RepositoryClient) QueryCommits(_m *Repository) *GitCommitQuery {
 	query := (&GitCommitClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := r.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(repository.Table, repository.FieldID, id),
 			sqlgraph.To(gitcommit.Table, gitcommit.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, repository.CommitsTable, repository.CommitsColumn),
 		)
-		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -1340,8 +1340,8 @@ func (c *TelegramChannelStateClient) Update() *TelegramChannelStateUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TelegramChannelStateClient) UpdateOne(tcs *TelegramChannelState) *TelegramChannelStateUpdateOne {
-	mutation := newTelegramChannelStateMutation(c.config, OpUpdateOne, withTelegramChannelState(tcs))
+func (c *TelegramChannelStateClient) UpdateOne(_m *TelegramChannelState) *TelegramChannelStateUpdateOne {
+	mutation := newTelegramChannelStateMutation(c.config, OpUpdateOne, withTelegramChannelState(_m))
 	return &TelegramChannelStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1358,8 +1358,8 @@ func (c *TelegramChannelStateClient) Delete() *TelegramChannelStateDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TelegramChannelStateClient) DeleteOne(tcs *TelegramChannelState) *TelegramChannelStateDeleteOne {
-	return c.DeleteOneID(tcs.ID)
+func (c *TelegramChannelStateClient) DeleteOne(_m *TelegramChannelState) *TelegramChannelStateDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1394,16 +1394,16 @@ func (c *TelegramChannelStateClient) GetX(ctx context.Context, id int) *Telegram
 }
 
 // QueryUser queries the user edge of a TelegramChannelState.
-func (c *TelegramChannelStateClient) QueryUser(tcs *TelegramChannelState) *TelegramUserStateQuery {
+func (c *TelegramChannelStateClient) QueryUser(_m *TelegramChannelState) *TelegramUserStateQuery {
 	query := (&TelegramUserStateClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tcs.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(telegramchannelstate.Table, telegramchannelstate.FieldID, id),
 			sqlgraph.To(telegramuserstate.Table, telegramuserstate.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, telegramchannelstate.UserTable, telegramchannelstate.UserColumn),
 		)
-		fromV = sqlgraph.Neighbors(tcs.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -1489,8 +1489,8 @@ func (c *TelegramSessionClient) Update() *TelegramSessionUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TelegramSessionClient) UpdateOne(ts *TelegramSession) *TelegramSessionUpdateOne {
-	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSession(ts))
+func (c *TelegramSessionClient) UpdateOne(_m *TelegramSession) *TelegramSessionUpdateOne {
+	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSession(_m))
 	return &TelegramSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1507,8 +1507,8 @@ func (c *TelegramSessionClient) Delete() *TelegramSessionDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TelegramSessionClient) DeleteOne(ts *TelegramSession) *TelegramSessionDeleteOne {
-	return c.DeleteOneID(ts.ID)
+func (c *TelegramSessionClient) DeleteOne(_m *TelegramSession) *TelegramSessionDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1622,8 +1622,8 @@ func (c *TelegramUserStateClient) Update() *TelegramUserStateUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TelegramUserStateClient) UpdateOne(tus *TelegramUserState) *TelegramUserStateUpdateOne {
-	mutation := newTelegramUserStateMutation(c.config, OpUpdateOne, withTelegramUserState(tus))
+func (c *TelegramUserStateClient) UpdateOne(_m *TelegramUserState) *TelegramUserStateUpdateOne {
+	mutation := newTelegramUserStateMutation(c.config, OpUpdateOne, withTelegramUserState(_m))
 	return &TelegramUserStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1640,8 +1640,8 @@ func (c *TelegramUserStateClient) Delete() *TelegramUserStateDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TelegramUserStateClient) DeleteOne(tus *TelegramUserState) *TelegramUserStateDeleteOne {
-	return c.DeleteOneID(tus.ID)
+func (c *TelegramUserStateClient) DeleteOne(_m *TelegramUserState) *TelegramUserStateDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -1676,16 +1676,16 @@ func (c *TelegramUserStateClient) GetX(ctx context.Context, id int64) *TelegramU
 }
 
 // QueryChannels queries the channels edge of a TelegramUserState.
-func (c *TelegramUserStateClient) QueryChannels(tus *TelegramUserState) *TelegramChannelStateQuery {
+func (c *TelegramUserStateClient) QueryChannels(_m *TelegramUserState) *TelegramChannelStateQuery {
 	query := (&TelegramChannelStateClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tus.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(telegramuserstate.Table, telegramuserstate.FieldID, id),
 			sqlgraph.To(telegramchannelstate.Table, telegramchannelstate.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, telegramuserstate.ChannelsTable, telegramuserstate.ChannelsColumn),
 		)
-		fromV = sqlgraph.Neighbors(tus.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -1771,8 +1771,8 @@ func (c *UserClient) Update() *UserUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
+func (c *UserClient) UpdateOne(_m *User) *UserUpdateOne {
+	mutation := newUserMutation(c.config, OpUpdateOne, withUser(_m))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1789,8 +1789,8 @@ func (c *UserClient) Delete() *UserDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
-	return c.DeleteOneID(u.ID)
+func (c *UserClient) DeleteOne(_m *User) *UserDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.

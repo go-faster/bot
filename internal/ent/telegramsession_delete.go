@@ -20,56 +20,56 @@ type TelegramSessionDelete struct {
 }
 
 // Where appends a list predicates to the TelegramSessionDelete builder.
-func (tsd *TelegramSessionDelete) Where(ps ...predicate.TelegramSession) *TelegramSessionDelete {
-	tsd.mutation.Where(ps...)
-	return tsd
+func (_d *TelegramSessionDelete) Where(ps ...predicate.TelegramSession) *TelegramSessionDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (tsd *TelegramSessionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, tsd.sqlExec, tsd.mutation, tsd.hooks)
+func (_d *TelegramSessionDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsd *TelegramSessionDelete) ExecX(ctx context.Context) int {
-	n, err := tsd.Exec(ctx)
+func (_d *TelegramSessionDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (tsd *TelegramSessionDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *TelegramSessionDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(telegramsession.Table, sqlgraph.NewFieldSpec(telegramsession.FieldID, field.TypeUUID))
-	if ps := tsd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, tsd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	tsd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // TelegramSessionDeleteOne is the builder for deleting a single TelegramSession entity.
 type TelegramSessionDeleteOne struct {
-	tsd *TelegramSessionDelete
+	_d *TelegramSessionDelete
 }
 
 // Where appends a list predicates to the TelegramSessionDelete builder.
-func (tsdo *TelegramSessionDeleteOne) Where(ps ...predicate.TelegramSession) *TelegramSessionDeleteOne {
-	tsdo.tsd.mutation.Where(ps...)
-	return tsdo
+func (_d *TelegramSessionDeleteOne) Where(ps ...predicate.TelegramSession) *TelegramSessionDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (tsdo *TelegramSessionDeleteOne) Exec(ctx context.Context) error {
-	n, err := tsdo.tsd.Exec(ctx)
+func (_d *TelegramSessionDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (tsdo *TelegramSessionDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsdo *TelegramSessionDeleteOne) ExecX(ctx context.Context) {
-	if err := tsdo.Exec(ctx); err != nil {
+func (_d *TelegramSessionDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

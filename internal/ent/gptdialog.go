@@ -54,7 +54,7 @@ func (*GPTDialog) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the GPTDialog fields.
-func (gd *GPTDialog) assignValues(columns []string, values []any) error {
+func (_m *GPTDialog) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -65,51 +65,51 @@ func (gd *GPTDialog) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			gd.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case gptdialog.FieldPeerID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field peer_id", values[i])
 			} else if value.Valid {
-				gd.PeerID = value.String
+				_m.PeerID = value.String
 			}
 		case gptdialog.FieldPromptMsgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field prompt_msg_id", values[i])
 			} else if value.Valid {
-				gd.PromptMsgID = int(value.Int64)
+				_m.PromptMsgID = int(value.Int64)
 			}
 		case gptdialog.FieldPromptMsg:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field prompt_msg", values[i])
 			} else if value.Valid {
-				gd.PromptMsg = value.String
+				_m.PromptMsg = value.String
 			}
 		case gptdialog.FieldGptMsgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field gpt_msg_id", values[i])
 			} else if value.Valid {
-				gd.GptMsgID = int(value.Int64)
+				_m.GptMsgID = int(value.Int64)
 			}
 		case gptdialog.FieldGptMsg:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field gpt_msg", values[i])
 			} else if value.Valid {
-				gd.GptMsg = value.String
+				_m.GptMsg = value.String
 			}
 		case gptdialog.FieldThreadTopMsgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field thread_top_msg_id", values[i])
 			} else if value.Valid {
-				gd.ThreadTopMsgID = int(value.Int64)
+				_m.ThreadTopMsgID = int(value.Int64)
 			}
 		case gptdialog.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				gd.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			gd.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -117,53 +117,53 @@ func (gd *GPTDialog) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the GPTDialog.
 // This includes values selected through modifiers, order, etc.
-func (gd *GPTDialog) Value(name string) (ent.Value, error) {
-	return gd.selectValues.Get(name)
+func (_m *GPTDialog) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this GPTDialog.
 // Note that you need to call GPTDialog.Unwrap() before calling this method if this GPTDialog
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (gd *GPTDialog) Update() *GPTDialogUpdateOne {
-	return NewGPTDialogClient(gd.config).UpdateOne(gd)
+func (_m *GPTDialog) Update() *GPTDialogUpdateOne {
+	return NewGPTDialogClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the GPTDialog entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (gd *GPTDialog) Unwrap() *GPTDialog {
-	_tx, ok := gd.config.driver.(*txDriver)
+func (_m *GPTDialog) Unwrap() *GPTDialog {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: GPTDialog is not a transactional entity")
 	}
-	gd.config.driver = _tx.drv
-	return gd
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (gd *GPTDialog) String() string {
+func (_m *GPTDialog) String() string {
 	var builder strings.Builder
 	builder.WriteString("GPTDialog(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", gd.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("peer_id=")
-	builder.WriteString(gd.PeerID)
+	builder.WriteString(_m.PeerID)
 	builder.WriteString(", ")
 	builder.WriteString("prompt_msg_id=")
-	builder.WriteString(fmt.Sprintf("%v", gd.PromptMsgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.PromptMsgID))
 	builder.WriteString(", ")
 	builder.WriteString("prompt_msg=")
-	builder.WriteString(gd.PromptMsg)
+	builder.WriteString(_m.PromptMsg)
 	builder.WriteString(", ")
 	builder.WriteString("gpt_msg_id=")
-	builder.WriteString(fmt.Sprintf("%v", gd.GptMsgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.GptMsgID))
 	builder.WriteString(", ")
 	builder.WriteString("gpt_msg=")
-	builder.WriteString(gd.GptMsg)
+	builder.WriteString(_m.GptMsg)
 	builder.WriteString(", ")
 	builder.WriteString("thread_top_msg_id=")
-	builder.WriteString(fmt.Sprintf("%v", gd.ThreadTopMsgID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ThreadTopMsgID))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(gd.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

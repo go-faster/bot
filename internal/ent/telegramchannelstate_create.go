@@ -23,50 +23,50 @@ type TelegramChannelStateCreate struct {
 }
 
 // SetChannelID sets the "channel_id" field.
-func (tcsc *TelegramChannelStateCreate) SetChannelID(i int64) *TelegramChannelStateCreate {
-	tcsc.mutation.SetChannelID(i)
-	return tcsc
+func (_c *TelegramChannelStateCreate) SetChannelID(v int64) *TelegramChannelStateCreate {
+	_c.mutation.SetChannelID(v)
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (tcsc *TelegramChannelStateCreate) SetUserID(i int64) *TelegramChannelStateCreate {
-	tcsc.mutation.SetUserID(i)
-	return tcsc
+func (_c *TelegramChannelStateCreate) SetUserID(v int64) *TelegramChannelStateCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetPts sets the "pts" field.
-func (tcsc *TelegramChannelStateCreate) SetPts(i int) *TelegramChannelStateCreate {
-	tcsc.mutation.SetPts(i)
-	return tcsc
+func (_c *TelegramChannelStateCreate) SetPts(v int) *TelegramChannelStateCreate {
+	_c.mutation.SetPts(v)
+	return _c
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tcsc *TelegramChannelStateCreate) SetNillablePts(i *int) *TelegramChannelStateCreate {
-	if i != nil {
-		tcsc.SetPts(*i)
+func (_c *TelegramChannelStateCreate) SetNillablePts(v *int) *TelegramChannelStateCreate {
+	if v != nil {
+		_c.SetPts(*v)
 	}
-	return tcsc
+	return _c
 }
 
 // SetUser sets the "user" edge to the TelegramUserState entity.
-func (tcsc *TelegramChannelStateCreate) SetUser(t *TelegramUserState) *TelegramChannelStateCreate {
-	return tcsc.SetUserID(t.ID)
+func (_c *TelegramChannelStateCreate) SetUser(v *TelegramUserState) *TelegramChannelStateCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // Mutation returns the TelegramChannelStateMutation object of the builder.
-func (tcsc *TelegramChannelStateCreate) Mutation() *TelegramChannelStateMutation {
-	return tcsc.mutation
+func (_c *TelegramChannelStateCreate) Mutation() *TelegramChannelStateMutation {
+	return _c.mutation
 }
 
 // Save creates the TelegramChannelState in the database.
-func (tcsc *TelegramChannelStateCreate) Save(ctx context.Context) (*TelegramChannelState, error) {
-	tcsc.defaults()
-	return withHooks(ctx, tcsc.sqlSave, tcsc.mutation, tcsc.hooks)
+func (_c *TelegramChannelStateCreate) Save(ctx context.Context) (*TelegramChannelState, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tcsc *TelegramChannelStateCreate) SaveX(ctx context.Context) *TelegramChannelState {
-	v, err := tcsc.Save(ctx)
+func (_c *TelegramChannelStateCreate) SaveX(ctx context.Context) *TelegramChannelState {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -74,49 +74,49 @@ func (tcsc *TelegramChannelStateCreate) SaveX(ctx context.Context) *TelegramChan
 }
 
 // Exec executes the query.
-func (tcsc *TelegramChannelStateCreate) Exec(ctx context.Context) error {
-	_, err := tcsc.Save(ctx)
+func (_c *TelegramChannelStateCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcsc *TelegramChannelStateCreate) ExecX(ctx context.Context) {
-	if err := tcsc.Exec(ctx); err != nil {
+func (_c *TelegramChannelStateCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (tcsc *TelegramChannelStateCreate) defaults() {
-	if _, ok := tcsc.mutation.Pts(); !ok {
+func (_c *TelegramChannelStateCreate) defaults() {
+	if _, ok := _c.mutation.Pts(); !ok {
 		v := telegramchannelstate.DefaultPts
-		tcsc.mutation.SetPts(v)
+		_c.mutation.SetPts(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tcsc *TelegramChannelStateCreate) check() error {
-	if _, ok := tcsc.mutation.ChannelID(); !ok {
+func (_c *TelegramChannelStateCreate) check() error {
+	if _, ok := _c.mutation.ChannelID(); !ok {
 		return &ValidationError{Name: "channel_id", err: errors.New(`ent: missing required field "TelegramChannelState.channel_id"`)}
 	}
-	if _, ok := tcsc.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "TelegramChannelState.user_id"`)}
 	}
-	if _, ok := tcsc.mutation.Pts(); !ok {
+	if _, ok := _c.mutation.Pts(); !ok {
 		return &ValidationError{Name: "pts", err: errors.New(`ent: missing required field "TelegramChannelState.pts"`)}
 	}
-	if len(tcsc.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "TelegramChannelState.user"`)}
 	}
 	return nil
 }
 
-func (tcsc *TelegramChannelStateCreate) sqlSave(ctx context.Context) (*TelegramChannelState, error) {
-	if err := tcsc.check(); err != nil {
+func (_c *TelegramChannelStateCreate) sqlSave(ctx context.Context) (*TelegramChannelState, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tcsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tcsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -124,26 +124,26 @@ func (tcsc *TelegramChannelStateCreate) sqlSave(ctx context.Context) (*TelegramC
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	tcsc.mutation.id = &_node.ID
-	tcsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tcsc *TelegramChannelStateCreate) createSpec() (*TelegramChannelState, *sqlgraph.CreateSpec) {
+func (_c *TelegramChannelStateCreate) createSpec() (*TelegramChannelState, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TelegramChannelState{config: tcsc.config}
+		_node = &TelegramChannelState{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(telegramchannelstate.Table, sqlgraph.NewFieldSpec(telegramchannelstate.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = tcsc.conflict
-	if value, ok := tcsc.mutation.ChannelID(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.ChannelID(); ok {
 		_spec.SetField(telegramchannelstate.FieldChannelID, field.TypeInt64, value)
 		_node.ChannelID = value
 	}
-	if value, ok := tcsc.mutation.Pts(); ok {
+	if value, ok := _c.mutation.Pts(); ok {
 		_spec.SetField(telegramchannelstate.FieldPts, field.TypeInt, value)
 		_node.Pts = value
 	}
-	if nodes := tcsc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -179,10 +179,10 @@ func (tcsc *TelegramChannelStateCreate) createSpec() (*TelegramChannelState, *sq
 //			SetChannelID(v+v).
 //		}).
 //		Exec(ctx)
-func (tcsc *TelegramChannelStateCreate) OnConflict(opts ...sql.ConflictOption) *TelegramChannelStateUpsertOne {
-	tcsc.conflict = opts
+func (_c *TelegramChannelStateCreate) OnConflict(opts ...sql.ConflictOption) *TelegramChannelStateUpsertOne {
+	_c.conflict = opts
 	return &TelegramChannelStateUpsertOne{
-		create: tcsc,
+		create: _c,
 	}
 }
 
@@ -192,10 +192,10 @@ func (tcsc *TelegramChannelStateCreate) OnConflict(opts ...sql.ConflictOption) *
 //	client.TelegramChannelState.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tcsc *TelegramChannelStateCreate) OnConflictColumns(columns ...string) *TelegramChannelStateUpsertOne {
-	tcsc.conflict = append(tcsc.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramChannelStateCreate) OnConflictColumns(columns ...string) *TelegramChannelStateUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramChannelStateUpsertOne{
-		create: tcsc,
+		create: _c,
 	}
 }
 
@@ -398,16 +398,16 @@ type TelegramChannelStateCreateBulk struct {
 }
 
 // Save creates the TelegramChannelState entities in the database.
-func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*TelegramChannelState, error) {
-	if tcscb.err != nil {
-		return nil, tcscb.err
+func (_c *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*TelegramChannelState, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tcscb.builders))
-	nodes := make([]*TelegramChannelState, len(tcscb.builders))
-	mutators := make([]Mutator, len(tcscb.builders))
-	for i := range tcscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TelegramChannelState, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tcscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TelegramChannelStateMutation)
@@ -421,12 +421,12 @@ func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*Teleg
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tcscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tcscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tcscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -450,7 +450,7 @@ func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*Teleg
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tcscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -458,8 +458,8 @@ func (tcscb *TelegramChannelStateCreateBulk) Save(ctx context.Context) ([]*Teleg
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcscb *TelegramChannelStateCreateBulk) SaveX(ctx context.Context) []*TelegramChannelState {
-	v, err := tcscb.Save(ctx)
+func (_c *TelegramChannelStateCreateBulk) SaveX(ctx context.Context) []*TelegramChannelState {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -467,14 +467,14 @@ func (tcscb *TelegramChannelStateCreateBulk) SaveX(ctx context.Context) []*Teleg
 }
 
 // Exec executes the query.
-func (tcscb *TelegramChannelStateCreateBulk) Exec(ctx context.Context) error {
-	_, err := tcscb.Save(ctx)
+func (_c *TelegramChannelStateCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcscb *TelegramChannelStateCreateBulk) ExecX(ctx context.Context) {
-	if err := tcscb.Exec(ctx); err != nil {
+func (_c *TelegramChannelStateCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -494,10 +494,10 @@ func (tcscb *TelegramChannelStateCreateBulk) ExecX(ctx context.Context) {
 //			SetChannelID(v+v).
 //		}).
 //		Exec(ctx)
-func (tcscb *TelegramChannelStateCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramChannelStateUpsertBulk {
-	tcscb.conflict = opts
+func (_c *TelegramChannelStateCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramChannelStateUpsertBulk {
+	_c.conflict = opts
 	return &TelegramChannelStateUpsertBulk{
-		create: tcscb,
+		create: _c,
 	}
 }
 
@@ -507,10 +507,10 @@ func (tcscb *TelegramChannelStateCreateBulk) OnConflict(opts ...sql.ConflictOpti
 //	client.TelegramChannelState.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tcscb *TelegramChannelStateCreateBulk) OnConflictColumns(columns ...string) *TelegramChannelStateUpsertBulk {
-	tcscb.conflict = append(tcscb.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramChannelStateCreateBulk) OnConflictColumns(columns ...string) *TelegramChannelStateUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramChannelStateUpsertBulk{
-		create: tcscb,
+		create: _c,
 	}
 }
 

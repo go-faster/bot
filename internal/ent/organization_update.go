@@ -23,94 +23,94 @@ type OrganizationUpdate struct {
 }
 
 // Where appends a list predicates to the OrganizationUpdate builder.
-func (ou *OrganizationUpdate) Where(ps ...predicate.Organization) *OrganizationUpdate {
-	ou.mutation.Where(ps...)
-	return ou
+func (_u *OrganizationUpdate) Where(ps ...predicate.Organization) *OrganizationUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ou *OrganizationUpdate) SetName(s string) *OrganizationUpdate {
-	ou.mutation.SetName(s)
-	return ou
+func (_u *OrganizationUpdate) SetName(v string) *OrganizationUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ou *OrganizationUpdate) SetNillableName(s *string) *OrganizationUpdate {
-	if s != nil {
-		ou.SetName(*s)
+func (_u *OrganizationUpdate) SetNillableName(v *string) *OrganizationUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ou
+	return _u
 }
 
 // SetHTMLURL sets the "html_url" field.
-func (ou *OrganizationUpdate) SetHTMLURL(s string) *OrganizationUpdate {
-	ou.mutation.SetHTMLURL(s)
-	return ou
+func (_u *OrganizationUpdate) SetHTMLURL(v string) *OrganizationUpdate {
+	_u.mutation.SetHTMLURL(v)
+	return _u
 }
 
 // SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
-func (ou *OrganizationUpdate) SetNillableHTMLURL(s *string) *OrganizationUpdate {
-	if s != nil {
-		ou.SetHTMLURL(*s)
+func (_u *OrganizationUpdate) SetNillableHTMLURL(v *string) *OrganizationUpdate {
+	if v != nil {
+		_u.SetHTMLURL(*v)
 	}
-	return ou
+	return _u
 }
 
 // ClearHTMLURL clears the value of the "html_url" field.
-func (ou *OrganizationUpdate) ClearHTMLURL() *OrganizationUpdate {
-	ou.mutation.ClearHTMLURL()
-	return ou
+func (_u *OrganizationUpdate) ClearHTMLURL() *OrganizationUpdate {
+	_u.mutation.ClearHTMLURL()
+	return _u
 }
 
 // AddRepositoryIDs adds the "repositories" edge to the Repository entity by IDs.
-func (ou *OrganizationUpdate) AddRepositoryIDs(ids ...int64) *OrganizationUpdate {
-	ou.mutation.AddRepositoryIDs(ids...)
-	return ou
+func (_u *OrganizationUpdate) AddRepositoryIDs(ids ...int64) *OrganizationUpdate {
+	_u.mutation.AddRepositoryIDs(ids...)
+	return _u
 }
 
 // AddRepositories adds the "repositories" edges to the Repository entity.
-func (ou *OrganizationUpdate) AddRepositories(r ...*Repository) *OrganizationUpdate {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *OrganizationUpdate) AddRepositories(v ...*Repository) *OrganizationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.AddRepositoryIDs(ids...)
+	return _u.AddRepositoryIDs(ids...)
 }
 
 // Mutation returns the OrganizationMutation object of the builder.
-func (ou *OrganizationUpdate) Mutation() *OrganizationMutation {
-	return ou.mutation
+func (_u *OrganizationUpdate) Mutation() *OrganizationMutation {
+	return _u.mutation
 }
 
 // ClearRepositories clears all "repositories" edges to the Repository entity.
-func (ou *OrganizationUpdate) ClearRepositories() *OrganizationUpdate {
-	ou.mutation.ClearRepositories()
-	return ou
+func (_u *OrganizationUpdate) ClearRepositories() *OrganizationUpdate {
+	_u.mutation.ClearRepositories()
+	return _u
 }
 
 // RemoveRepositoryIDs removes the "repositories" edge to Repository entities by IDs.
-func (ou *OrganizationUpdate) RemoveRepositoryIDs(ids ...int64) *OrganizationUpdate {
-	ou.mutation.RemoveRepositoryIDs(ids...)
-	return ou
+func (_u *OrganizationUpdate) RemoveRepositoryIDs(ids ...int64) *OrganizationUpdate {
+	_u.mutation.RemoveRepositoryIDs(ids...)
+	return _u
 }
 
 // RemoveRepositories removes "repositories" edges to Repository entities.
-func (ou *OrganizationUpdate) RemoveRepositories(r ...*Repository) *OrganizationUpdate {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *OrganizationUpdate) RemoveRepositories(v ...*Repository) *OrganizationUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ou.RemoveRepositoryIDs(ids...)
+	return _u.RemoveRepositoryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ou *OrganizationUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, ou.sqlSave, ou.mutation, ou.hooks)
+func (_u *OrganizationUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ou *OrganizationUpdate) SaveX(ctx context.Context) int {
-	affected, err := ou.Save(ctx)
+func (_u *OrganizationUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -118,37 +118,37 @@ func (ou *OrganizationUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ou *OrganizationUpdate) Exec(ctx context.Context) error {
-	_, err := ou.Save(ctx)
+func (_u *OrganizationUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ou *OrganizationUpdate) ExecX(ctx context.Context) {
-	if err := ou.Exec(ctx); err != nil {
+func (_u *OrganizationUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *OrganizationUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(organization.Table, organization.Columns, sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64))
-	if ps := ou.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ou.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(organization.FieldName, field.TypeString, value)
 	}
-	if value, ok := ou.mutation.HTMLURL(); ok {
+	if value, ok := _u.mutation.HTMLURL(); ok {
 		_spec.SetField(organization.FieldHTMLURL, field.TypeString, value)
 	}
-	if ou.mutation.HTMLURLCleared() {
+	if _u.mutation.HTMLURLCleared() {
 		_spec.ClearField(organization.FieldHTMLURL, field.TypeString)
 	}
-	if ou.mutation.RepositoriesCleared() {
+	if _u.mutation.RepositoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -161,7 +161,7 @@ func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RemovedRepositoriesIDs(); len(nodes) > 0 && !ou.mutation.RepositoriesCleared() {
+	if nodes := _u.mutation.RemovedRepositoriesIDs(); len(nodes) > 0 && !_u.mutation.RepositoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -177,7 +177,7 @@ func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ou.mutation.RepositoriesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RepositoriesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -193,7 +193,7 @@ func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ou.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{organization.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -201,8 +201,8 @@ func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ou.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // OrganizationUpdateOne is the builder for updating a single Organization entity.
@@ -214,101 +214,101 @@ type OrganizationUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ouo *OrganizationUpdateOne) SetName(s string) *OrganizationUpdateOne {
-	ouo.mutation.SetName(s)
-	return ouo
+func (_u *OrganizationUpdateOne) SetName(v string) *OrganizationUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ouo *OrganizationUpdateOne) SetNillableName(s *string) *OrganizationUpdateOne {
-	if s != nil {
-		ouo.SetName(*s)
+func (_u *OrganizationUpdateOne) SetNillableName(v *string) *OrganizationUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ouo
+	return _u
 }
 
 // SetHTMLURL sets the "html_url" field.
-func (ouo *OrganizationUpdateOne) SetHTMLURL(s string) *OrganizationUpdateOne {
-	ouo.mutation.SetHTMLURL(s)
-	return ouo
+func (_u *OrganizationUpdateOne) SetHTMLURL(v string) *OrganizationUpdateOne {
+	_u.mutation.SetHTMLURL(v)
+	return _u
 }
 
 // SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
-func (ouo *OrganizationUpdateOne) SetNillableHTMLURL(s *string) *OrganizationUpdateOne {
-	if s != nil {
-		ouo.SetHTMLURL(*s)
+func (_u *OrganizationUpdateOne) SetNillableHTMLURL(v *string) *OrganizationUpdateOne {
+	if v != nil {
+		_u.SetHTMLURL(*v)
 	}
-	return ouo
+	return _u
 }
 
 // ClearHTMLURL clears the value of the "html_url" field.
-func (ouo *OrganizationUpdateOne) ClearHTMLURL() *OrganizationUpdateOne {
-	ouo.mutation.ClearHTMLURL()
-	return ouo
+func (_u *OrganizationUpdateOne) ClearHTMLURL() *OrganizationUpdateOne {
+	_u.mutation.ClearHTMLURL()
+	return _u
 }
 
 // AddRepositoryIDs adds the "repositories" edge to the Repository entity by IDs.
-func (ouo *OrganizationUpdateOne) AddRepositoryIDs(ids ...int64) *OrganizationUpdateOne {
-	ouo.mutation.AddRepositoryIDs(ids...)
-	return ouo
+func (_u *OrganizationUpdateOne) AddRepositoryIDs(ids ...int64) *OrganizationUpdateOne {
+	_u.mutation.AddRepositoryIDs(ids...)
+	return _u
 }
 
 // AddRepositories adds the "repositories" edges to the Repository entity.
-func (ouo *OrganizationUpdateOne) AddRepositories(r ...*Repository) *OrganizationUpdateOne {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *OrganizationUpdateOne) AddRepositories(v ...*Repository) *OrganizationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.AddRepositoryIDs(ids...)
+	return _u.AddRepositoryIDs(ids...)
 }
 
 // Mutation returns the OrganizationMutation object of the builder.
-func (ouo *OrganizationUpdateOne) Mutation() *OrganizationMutation {
-	return ouo.mutation
+func (_u *OrganizationUpdateOne) Mutation() *OrganizationMutation {
+	return _u.mutation
 }
 
 // ClearRepositories clears all "repositories" edges to the Repository entity.
-func (ouo *OrganizationUpdateOne) ClearRepositories() *OrganizationUpdateOne {
-	ouo.mutation.ClearRepositories()
-	return ouo
+func (_u *OrganizationUpdateOne) ClearRepositories() *OrganizationUpdateOne {
+	_u.mutation.ClearRepositories()
+	return _u
 }
 
 // RemoveRepositoryIDs removes the "repositories" edge to Repository entities by IDs.
-func (ouo *OrganizationUpdateOne) RemoveRepositoryIDs(ids ...int64) *OrganizationUpdateOne {
-	ouo.mutation.RemoveRepositoryIDs(ids...)
-	return ouo
+func (_u *OrganizationUpdateOne) RemoveRepositoryIDs(ids ...int64) *OrganizationUpdateOne {
+	_u.mutation.RemoveRepositoryIDs(ids...)
+	return _u
 }
 
 // RemoveRepositories removes "repositories" edges to Repository entities.
-func (ouo *OrganizationUpdateOne) RemoveRepositories(r ...*Repository) *OrganizationUpdateOne {
-	ids := make([]int64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+func (_u *OrganizationUpdateOne) RemoveRepositories(v ...*Repository) *OrganizationUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ouo.RemoveRepositoryIDs(ids...)
+	return _u.RemoveRepositoryIDs(ids...)
 }
 
 // Where appends a list predicates to the OrganizationUpdate builder.
-func (ouo *OrganizationUpdateOne) Where(ps ...predicate.Organization) *OrganizationUpdateOne {
-	ouo.mutation.Where(ps...)
-	return ouo
+func (_u *OrganizationUpdateOne) Where(ps ...predicate.Organization) *OrganizationUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ouo *OrganizationUpdateOne) Select(field string, fields ...string) *OrganizationUpdateOne {
-	ouo.fields = append([]string{field}, fields...)
-	return ouo
+func (_u *OrganizationUpdateOne) Select(field string, fields ...string) *OrganizationUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Organization entity.
-func (ouo *OrganizationUpdateOne) Save(ctx context.Context) (*Organization, error) {
-	return withHooks(ctx, ouo.sqlSave, ouo.mutation, ouo.hooks)
+func (_u *OrganizationUpdateOne) Save(ctx context.Context) (*Organization, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ouo *OrganizationUpdateOne) SaveX(ctx context.Context) *Organization {
-	node, err := ouo.Save(ctx)
+func (_u *OrganizationUpdateOne) SaveX(ctx context.Context) *Organization {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -316,26 +316,26 @@ func (ouo *OrganizationUpdateOne) SaveX(ctx context.Context) *Organization {
 }
 
 // Exec executes the query on the entity.
-func (ouo *OrganizationUpdateOne) Exec(ctx context.Context) error {
-	_, err := ouo.Save(ctx)
+func (_u *OrganizationUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ouo *OrganizationUpdateOne) ExecX(ctx context.Context) {
-	if err := ouo.Exec(ctx); err != nil {
+func (_u *OrganizationUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organization, err error) {
+func (_u *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organization, err error) {
 	_spec := sqlgraph.NewUpdateSpec(organization.Table, organization.Columns, sqlgraph.NewFieldSpec(organization.FieldID, field.TypeInt64))
-	id, ok := ouo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Organization.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ouo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, organization.FieldID)
 		for _, f := range fields {
@@ -347,23 +347,23 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 			}
 		}
 	}
-	if ps := ouo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ouo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(organization.FieldName, field.TypeString, value)
 	}
-	if value, ok := ouo.mutation.HTMLURL(); ok {
+	if value, ok := _u.mutation.HTMLURL(); ok {
 		_spec.SetField(organization.FieldHTMLURL, field.TypeString, value)
 	}
-	if ouo.mutation.HTMLURLCleared() {
+	if _u.mutation.HTMLURLCleared() {
 		_spec.ClearField(organization.FieldHTMLURL, field.TypeString)
 	}
-	if ouo.mutation.RepositoriesCleared() {
+	if _u.mutation.RepositoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -376,7 +376,7 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RemovedRepositoriesIDs(); len(nodes) > 0 && !ouo.mutation.RepositoriesCleared() {
+	if nodes := _u.mutation.RemovedRepositoriesIDs(); len(nodes) > 0 && !_u.mutation.RepositoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -392,7 +392,7 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ouo.mutation.RepositoriesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RepositoriesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -408,10 +408,10 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Organization{config: ouo.config}
+	_node = &Organization{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ouo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{organization.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -419,6 +419,6 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 		}
 		return nil, err
 	}
-	ouo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

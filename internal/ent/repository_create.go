@@ -25,127 +25,127 @@ type RepositoryCreate struct {
 }
 
 // SetName sets the "name" field.
-func (rc *RepositoryCreate) SetName(s string) *RepositoryCreate {
-	rc.mutation.SetName(s)
-	return rc
+func (_c *RepositoryCreate) SetName(v string) *RepositoryCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetFullName sets the "full_name" field.
-func (rc *RepositoryCreate) SetFullName(s string) *RepositoryCreate {
-	rc.mutation.SetFullName(s)
-	return rc
+func (_c *RepositoryCreate) SetFullName(v string) *RepositoryCreate {
+	_c.mutation.SetFullName(v)
+	return _c
 }
 
 // SetHTMLURL sets the "html_url" field.
-func (rc *RepositoryCreate) SetHTMLURL(s string) *RepositoryCreate {
-	rc.mutation.SetHTMLURL(s)
-	return rc
+func (_c *RepositoryCreate) SetHTMLURL(v string) *RepositoryCreate {
+	_c.mutation.SetHTMLURL(v)
+	return _c
 }
 
 // SetNillableHTMLURL sets the "html_url" field if the given value is not nil.
-func (rc *RepositoryCreate) SetNillableHTMLURL(s *string) *RepositoryCreate {
-	if s != nil {
-		rc.SetHTMLURL(*s)
+func (_c *RepositoryCreate) SetNillableHTMLURL(v *string) *RepositoryCreate {
+	if v != nil {
+		_c.SetHTMLURL(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (rc *RepositoryCreate) SetDescription(s string) *RepositoryCreate {
-	rc.mutation.SetDescription(s)
-	return rc
+func (_c *RepositoryCreate) SetDescription(v string) *RepositoryCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (rc *RepositoryCreate) SetNillableDescription(s *string) *RepositoryCreate {
-	if s != nil {
-		rc.SetDescription(*s)
+func (_c *RepositoryCreate) SetNillableDescription(v *string) *RepositoryCreate {
+	if v != nil {
+		_c.SetDescription(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetLastPushedAt sets the "last_pushed_at" field.
-func (rc *RepositoryCreate) SetLastPushedAt(t time.Time) *RepositoryCreate {
-	rc.mutation.SetLastPushedAt(t)
-	return rc
+func (_c *RepositoryCreate) SetLastPushedAt(v time.Time) *RepositoryCreate {
+	_c.mutation.SetLastPushedAt(v)
+	return _c
 }
 
 // SetNillableLastPushedAt sets the "last_pushed_at" field if the given value is not nil.
-func (rc *RepositoryCreate) SetNillableLastPushedAt(t *time.Time) *RepositoryCreate {
-	if t != nil {
-		rc.SetLastPushedAt(*t)
+func (_c *RepositoryCreate) SetNillableLastPushedAt(v *time.Time) *RepositoryCreate {
+	if v != nil {
+		_c.SetLastPushedAt(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetLastEventAt sets the "last_event_at" field.
-func (rc *RepositoryCreate) SetLastEventAt(t time.Time) *RepositoryCreate {
-	rc.mutation.SetLastEventAt(t)
-	return rc
+func (_c *RepositoryCreate) SetLastEventAt(v time.Time) *RepositoryCreate {
+	_c.mutation.SetLastEventAt(v)
+	return _c
 }
 
 // SetNillableLastEventAt sets the "last_event_at" field if the given value is not nil.
-func (rc *RepositoryCreate) SetNillableLastEventAt(t *time.Time) *RepositoryCreate {
-	if t != nil {
-		rc.SetLastEventAt(*t)
+func (_c *RepositoryCreate) SetNillableLastEventAt(v *time.Time) *RepositoryCreate {
+	if v != nil {
+		_c.SetLastEventAt(*v)
 	}
-	return rc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (rc *RepositoryCreate) SetID(i int64) *RepositoryCreate {
-	rc.mutation.SetID(i)
-	return rc
+func (_c *RepositoryCreate) SetID(v int64) *RepositoryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (rc *RepositoryCreate) SetOrganizationID(id int64) *RepositoryCreate {
-	rc.mutation.SetOrganizationID(id)
-	return rc
+func (_c *RepositoryCreate) SetOrganizationID(id int64) *RepositoryCreate {
+	_c.mutation.SetOrganizationID(id)
+	return _c
 }
 
 // SetNillableOrganizationID sets the "organization" edge to the Organization entity by ID if the given value is not nil.
-func (rc *RepositoryCreate) SetNillableOrganizationID(id *int64) *RepositoryCreate {
+func (_c *RepositoryCreate) SetNillableOrganizationID(id *int64) *RepositoryCreate {
 	if id != nil {
-		rc = rc.SetOrganizationID(*id)
+		_c = _c.SetOrganizationID(*id)
 	}
-	return rc
+	return _c
 }
 
 // SetOrganization sets the "organization" edge to the Organization entity.
-func (rc *RepositoryCreate) SetOrganization(o *Organization) *RepositoryCreate {
-	return rc.SetOrganizationID(o.ID)
+func (_c *RepositoryCreate) SetOrganization(v *Organization) *RepositoryCreate {
+	return _c.SetOrganizationID(v.ID)
 }
 
 // AddCommitIDs adds the "commits" edge to the GitCommit entity by IDs.
-func (rc *RepositoryCreate) AddCommitIDs(ids ...string) *RepositoryCreate {
-	rc.mutation.AddCommitIDs(ids...)
-	return rc
+func (_c *RepositoryCreate) AddCommitIDs(ids ...string) *RepositoryCreate {
+	_c.mutation.AddCommitIDs(ids...)
+	return _c
 }
 
 // AddCommits adds the "commits" edges to the GitCommit entity.
-func (rc *RepositoryCreate) AddCommits(g ...*GitCommit) *RepositoryCreate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
+func (_c *RepositoryCreate) AddCommits(v ...*GitCommit) *RepositoryCreate {
+	ids := make([]string, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return rc.AddCommitIDs(ids...)
+	return _c.AddCommitIDs(ids...)
 }
 
 // Mutation returns the RepositoryMutation object of the builder.
-func (rc *RepositoryCreate) Mutation() *RepositoryMutation {
-	return rc.mutation
+func (_c *RepositoryCreate) Mutation() *RepositoryMutation {
+	return _c.mutation
 }
 
 // Save creates the Repository in the database.
-func (rc *RepositoryCreate) Save(ctx context.Context) (*Repository, error) {
-	rc.defaults()
-	return withHooks(ctx, rc.sqlSave, rc.mutation, rc.hooks)
+func (_c *RepositoryCreate) Save(ctx context.Context) (*Repository, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (rc *RepositoryCreate) SaveX(ctx context.Context) *Repository {
-	v, err := rc.Save(ctx)
+func (_c *RepositoryCreate) SaveX(ctx context.Context) *Repository {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -153,46 +153,46 @@ func (rc *RepositoryCreate) SaveX(ctx context.Context) *Repository {
 }
 
 // Exec executes the query.
-func (rc *RepositoryCreate) Exec(ctx context.Context) error {
-	_, err := rc.Save(ctx)
+func (_c *RepositoryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rc *RepositoryCreate) ExecX(ctx context.Context) {
-	if err := rc.Exec(ctx); err != nil {
+func (_c *RepositoryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (rc *RepositoryCreate) defaults() {
-	if _, ok := rc.mutation.Description(); !ok {
+func (_c *RepositoryCreate) defaults() {
+	if _, ok := _c.mutation.Description(); !ok {
 		v := repository.DefaultDescription
-		rc.mutation.SetDescription(v)
+		_c.mutation.SetDescription(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (rc *RepositoryCreate) check() error {
-	if _, ok := rc.mutation.Name(); !ok {
+func (_c *RepositoryCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Repository.name"`)}
 	}
-	if _, ok := rc.mutation.FullName(); !ok {
+	if _, ok := _c.mutation.FullName(); !ok {
 		return &ValidationError{Name: "full_name", err: errors.New(`ent: missing required field "Repository.full_name"`)}
 	}
-	if _, ok := rc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Repository.description"`)}
 	}
 	return nil
 }
 
-func (rc *RepositoryCreate) sqlSave(ctx context.Context) (*Repository, error) {
-	if err := rc.check(); err != nil {
+func (_c *RepositoryCreate) sqlSave(ctx context.Context) (*Repository, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := rc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, rc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -202,46 +202,46 @@ func (rc *RepositoryCreate) sqlSave(ctx context.Context) (*Repository, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	rc.mutation.id = &_node.ID
-	rc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
+func (_c *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Repository{config: rc.config}
+		_node = &Repository{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(repository.Table, sqlgraph.NewFieldSpec(repository.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = rc.conflict
-	if id, ok := rc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := rc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(repository.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := rc.mutation.FullName(); ok {
+	if value, ok := _c.mutation.FullName(); ok {
 		_spec.SetField(repository.FieldFullName, field.TypeString, value)
 		_node.FullName = value
 	}
-	if value, ok := rc.mutation.HTMLURL(); ok {
+	if value, ok := _c.mutation.HTMLURL(); ok {
 		_spec.SetField(repository.FieldHTMLURL, field.TypeString, value)
 		_node.HTMLURL = value
 	}
-	if value, ok := rc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(repository.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := rc.mutation.LastPushedAt(); ok {
+	if value, ok := _c.mutation.LastPushedAt(); ok {
 		_spec.SetField(repository.FieldLastPushedAt, field.TypeTime, value)
 		_node.LastPushedAt = value
 	}
-	if value, ok := rc.mutation.LastEventAt(); ok {
+	if value, ok := _c.mutation.LastEventAt(); ok {
 		_spec.SetField(repository.FieldLastEventAt, field.TypeTime, value)
 		_node.LastEventAt = value
 	}
-	if nodes := rc.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OrganizationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -258,7 +258,7 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 		_node.organization_repositories = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := rc.mutation.CommitsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.CommitsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -293,10 +293,10 @@ func (rc *RepositoryCreate) createSpec() (*Repository, *sqlgraph.CreateSpec) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (rc *RepositoryCreate) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertOne {
-	rc.conflict = opts
+func (_c *RepositoryCreate) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertOne {
+	_c.conflict = opts
 	return &RepositoryUpsertOne{
-		create: rc,
+		create: _c,
 	}
 }
 
@@ -306,10 +306,10 @@ func (rc *RepositoryCreate) OnConflict(opts ...sql.ConflictOption) *RepositoryUp
 //	client.Repository.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (rc *RepositoryCreate) OnConflictColumns(columns ...string) *RepositoryUpsertOne {
-	rc.conflict = append(rc.conflict, sql.ConflictColumns(columns...))
+func (_c *RepositoryCreate) OnConflictColumns(columns ...string) *RepositoryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &RepositoryUpsertOne{
-		create: rc,
+		create: _c,
 	}
 }
 
@@ -611,16 +611,16 @@ type RepositoryCreateBulk struct {
 }
 
 // Save creates the Repository entities in the database.
-func (rcb *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error) {
-	if rcb.err != nil {
-		return nil, rcb.err
+func (_c *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(rcb.builders))
-	nodes := make([]*Repository, len(rcb.builders))
-	mutators := make([]Mutator, len(rcb.builders))
-	for i := range rcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Repository, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := rcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*RepositoryMutation)
@@ -634,12 +634,12 @@ func (rcb *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, rcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = rcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, rcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -663,7 +663,7 @@ func (rcb *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, rcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -671,8 +671,8 @@ func (rcb *RepositoryCreateBulk) Save(ctx context.Context) ([]*Repository, error
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (rcb *RepositoryCreateBulk) SaveX(ctx context.Context) []*Repository {
-	v, err := rcb.Save(ctx)
+func (_c *RepositoryCreateBulk) SaveX(ctx context.Context) []*Repository {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -680,14 +680,14 @@ func (rcb *RepositoryCreateBulk) SaveX(ctx context.Context) []*Repository {
 }
 
 // Exec executes the query.
-func (rcb *RepositoryCreateBulk) Exec(ctx context.Context) error {
-	_, err := rcb.Save(ctx)
+func (_c *RepositoryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (rcb *RepositoryCreateBulk) ExecX(ctx context.Context) {
-	if err := rcb.Exec(ctx); err != nil {
+func (_c *RepositoryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -707,10 +707,10 @@ func (rcb *RepositoryCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (rcb *RepositoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertBulk {
-	rcb.conflict = opts
+func (_c *RepositoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *RepositoryUpsertBulk {
+	_c.conflict = opts
 	return &RepositoryUpsertBulk{
-		create: rcb,
+		create: _c,
 	}
 }
 
@@ -720,10 +720,10 @@ func (rcb *RepositoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *Reposit
 //	client.Repository.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (rcb *RepositoryCreateBulk) OnConflictColumns(columns ...string) *RepositoryUpsertBulk {
-	rcb.conflict = append(rcb.conflict, sql.ConflictColumns(columns...))
+func (_c *RepositoryCreateBulk) OnConflictColumns(columns ...string) *RepositoryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &RepositoryUpsertBulk{
-		create: rcb,
+		create: _c,
 	}
 }
 

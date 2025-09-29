@@ -20,56 +20,56 @@ type PRNotificationDelete struct {
 }
 
 // Where appends a list predicates to the PRNotificationDelete builder.
-func (pnd *PRNotificationDelete) Where(ps ...predicate.PRNotification) *PRNotificationDelete {
-	pnd.mutation.Where(ps...)
-	return pnd
+func (_d *PRNotificationDelete) Where(ps ...predicate.PRNotification) *PRNotificationDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (pnd *PRNotificationDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, pnd.sqlExec, pnd.mutation, pnd.hooks)
+func (_d *PRNotificationDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pnd *PRNotificationDelete) ExecX(ctx context.Context) int {
-	n, err := pnd.Exec(ctx)
+func (_d *PRNotificationDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (pnd *PRNotificationDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *PRNotificationDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(prnotification.Table, sqlgraph.NewFieldSpec(prnotification.FieldID, field.TypeInt))
-	if ps := pnd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, pnd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	pnd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // PRNotificationDeleteOne is the builder for deleting a single PRNotification entity.
 type PRNotificationDeleteOne struct {
-	pnd *PRNotificationDelete
+	_d *PRNotificationDelete
 }
 
 // Where appends a list predicates to the PRNotificationDelete builder.
-func (pndo *PRNotificationDeleteOne) Where(ps ...predicate.PRNotification) *PRNotificationDeleteOne {
-	pndo.pnd.mutation.Where(ps...)
-	return pndo
+func (_d *PRNotificationDeleteOne) Where(ps ...predicate.PRNotification) *PRNotificationDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (pndo *PRNotificationDeleteOne) Exec(ctx context.Context) error {
-	n, err := pndo.pnd.Exec(ctx)
+func (_d *PRNotificationDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (pndo *PRNotificationDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pndo *PRNotificationDeleteOne) ExecX(ctx context.Context) {
-	if err := pndo.Exec(ctx); err != nil {
+func (_d *PRNotificationDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

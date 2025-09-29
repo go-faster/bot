@@ -76,7 +76,7 @@ func (*GitCommit) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the GitCommit fields.
-func (gc *GitCommit) assignValues(columns []string, values []any) error {
+func (_m *GitCommit) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -86,41 +86,41 @@ func (gc *GitCommit) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				gc.ID = value.String
+				_m.ID = value.String
 			}
 		case gitcommit.FieldMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field message", values[i])
 			} else if value.Valid {
-				gc.Message = value.String
+				_m.Message = value.String
 			}
 		case gitcommit.FieldAuthorLogin:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field author_login", values[i])
 			} else if value.Valid {
-				gc.AuthorLogin = value.String
+				_m.AuthorLogin = value.String
 			}
 		case gitcommit.FieldAuthorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field author_id", values[i])
 			} else if value.Valid {
-				gc.AuthorID = value.Int64
+				_m.AuthorID = value.Int64
 			}
 		case gitcommit.FieldDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field date", values[i])
 			} else if value.Valid {
-				gc.Date = value.Time
+				_m.Date = value.Time
 			}
 		case gitcommit.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field repository_commits", value)
 			} else if value.Valid {
-				gc.repository_commits = new(int64)
-				*gc.repository_commits = int64(value.Int64)
+				_m.repository_commits = new(int64)
+				*_m.repository_commits = int64(value.Int64)
 			}
 		default:
-			gc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -128,49 +128,49 @@ func (gc *GitCommit) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the GitCommit.
 // This includes values selected through modifiers, order, etc.
-func (gc *GitCommit) Value(name string) (ent.Value, error) {
-	return gc.selectValues.Get(name)
+func (_m *GitCommit) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryRepository queries the "repository" edge of the GitCommit entity.
-func (gc *GitCommit) QueryRepository() *RepositoryQuery {
-	return NewGitCommitClient(gc.config).QueryRepository(gc)
+func (_m *GitCommit) QueryRepository() *RepositoryQuery {
+	return NewGitCommitClient(_m.config).QueryRepository(_m)
 }
 
 // Update returns a builder for updating this GitCommit.
 // Note that you need to call GitCommit.Unwrap() before calling this method if this GitCommit
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (gc *GitCommit) Update() *GitCommitUpdateOne {
-	return NewGitCommitClient(gc.config).UpdateOne(gc)
+func (_m *GitCommit) Update() *GitCommitUpdateOne {
+	return NewGitCommitClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the GitCommit entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (gc *GitCommit) Unwrap() *GitCommit {
-	_tx, ok := gc.config.driver.(*txDriver)
+func (_m *GitCommit) Unwrap() *GitCommit {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: GitCommit is not a transactional entity")
 	}
-	gc.config.driver = _tx.drv
-	return gc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (gc *GitCommit) String() string {
+func (_m *GitCommit) String() string {
 	var builder strings.Builder
 	builder.WriteString("GitCommit(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", gc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("message=")
-	builder.WriteString(gc.Message)
+	builder.WriteString(_m.Message)
 	builder.WriteString(", ")
 	builder.WriteString("author_login=")
-	builder.WriteString(gc.AuthorLogin)
+	builder.WriteString(_m.AuthorLogin)
 	builder.WriteString(", ")
 	builder.WriteString("author_id=")
-	builder.WriteString(fmt.Sprintf("%v", gc.AuthorID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AuthorID))
 	builder.WriteString(", ")
 	builder.WriteString("date=")
-	builder.WriteString(gc.Date.Format(time.ANSIC))
+	builder.WriteString(_m.Date.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

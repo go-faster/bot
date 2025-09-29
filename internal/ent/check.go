@@ -48,7 +48,7 @@ func (*Check) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Check fields.
-func (c *Check) assignValues(columns []string, values []any) error {
+func (_m *Check) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -59,39 +59,39 @@ func (c *Check) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case check.FieldRepoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field repo_id", values[i])
 			} else if value.Valid {
-				c.RepoID = value.Int64
+				_m.RepoID = value.Int64
 			}
 		case check.FieldPullRequestID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pull_request_id", values[i])
 			} else if value.Valid {
-				c.PullRequestID = int(value.Int64)
+				_m.PullRequestID = int(value.Int64)
 			}
 		case check.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				c.Name = value.String
+				_m.Name = value.String
 			}
 		case check.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				c.Status = value.String
+				_m.Status = value.String
 			}
 		case check.FieldConclusion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field conclusion", values[i])
 			} else if value.Valid {
-				c.Conclusion = value.String
+				_m.Conclusion = value.String
 			}
 		default:
-			c.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -99,47 +99,47 @@ func (c *Check) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Check.
 // This includes values selected through modifiers, order, etc.
-func (c *Check) Value(name string) (ent.Value, error) {
-	return c.selectValues.Get(name)
+func (_m *Check) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this Check.
 // Note that you need to call Check.Unwrap() before calling this method if this Check
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (c *Check) Update() *CheckUpdateOne {
-	return NewCheckClient(c.config).UpdateOne(c)
+func (_m *Check) Update() *CheckUpdateOne {
+	return NewCheckClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Check entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (c *Check) Unwrap() *Check {
-	_tx, ok := c.config.driver.(*txDriver)
+func (_m *Check) Unwrap() *Check {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Check is not a transactional entity")
 	}
-	c.config.driver = _tx.drv
-	return c
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (c *Check) String() string {
+func (_m *Check) String() string {
 	var builder strings.Builder
 	builder.WriteString("Check(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("repo_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.RepoID))
+	builder.WriteString(fmt.Sprintf("%v", _m.RepoID))
 	builder.WriteString(", ")
 	builder.WriteString("pull_request_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.PullRequestID))
+	builder.WriteString(fmt.Sprintf("%v", _m.PullRequestID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(c.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(c.Status)
+	builder.WriteString(_m.Status)
 	builder.WriteString(", ")
 	builder.WriteString("conclusion=")
-	builder.WriteString(c.Conclusion)
+	builder.WriteString(_m.Conclusion)
 	builder.WriteByte(')')
 	return builder.String()
 }

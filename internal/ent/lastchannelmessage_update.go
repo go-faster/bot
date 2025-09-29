@@ -22,45 +22,45 @@ type LastChannelMessageUpdate struct {
 }
 
 // Where appends a list predicates to the LastChannelMessageUpdate builder.
-func (lcmu *LastChannelMessageUpdate) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageUpdate {
-	lcmu.mutation.Where(ps...)
-	return lcmu
+func (_u *LastChannelMessageUpdate) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetMessageID sets the "message_id" field.
-func (lcmu *LastChannelMessageUpdate) SetMessageID(i int) *LastChannelMessageUpdate {
-	lcmu.mutation.ResetMessageID()
-	lcmu.mutation.SetMessageID(i)
-	return lcmu
+func (_u *LastChannelMessageUpdate) SetMessageID(v int) *LastChannelMessageUpdate {
+	_u.mutation.ResetMessageID()
+	_u.mutation.SetMessageID(v)
+	return _u
 }
 
 // SetNillableMessageID sets the "message_id" field if the given value is not nil.
-func (lcmu *LastChannelMessageUpdate) SetNillableMessageID(i *int) *LastChannelMessageUpdate {
-	if i != nil {
-		lcmu.SetMessageID(*i)
+func (_u *LastChannelMessageUpdate) SetNillableMessageID(v *int) *LastChannelMessageUpdate {
+	if v != nil {
+		_u.SetMessageID(*v)
 	}
-	return lcmu
+	return _u
 }
 
-// AddMessageID adds i to the "message_id" field.
-func (lcmu *LastChannelMessageUpdate) AddMessageID(i int) *LastChannelMessageUpdate {
-	lcmu.mutation.AddMessageID(i)
-	return lcmu
+// AddMessageID adds value to the "message_id" field.
+func (_u *LastChannelMessageUpdate) AddMessageID(v int) *LastChannelMessageUpdate {
+	_u.mutation.AddMessageID(v)
+	return _u
 }
 
 // Mutation returns the LastChannelMessageMutation object of the builder.
-func (lcmu *LastChannelMessageUpdate) Mutation() *LastChannelMessageMutation {
-	return lcmu.mutation
+func (_u *LastChannelMessageUpdate) Mutation() *LastChannelMessageMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (lcmu *LastChannelMessageUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, lcmu.sqlSave, lcmu.mutation, lcmu.hooks)
+func (_u *LastChannelMessageUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (lcmu *LastChannelMessageUpdate) SaveX(ctx context.Context) int {
-	affected, err := lcmu.Save(ctx)
+func (_u *LastChannelMessageUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -68,34 +68,34 @@ func (lcmu *LastChannelMessageUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (lcmu *LastChannelMessageUpdate) Exec(ctx context.Context) error {
-	_, err := lcmu.Save(ctx)
+func (_u *LastChannelMessageUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (lcmu *LastChannelMessageUpdate) ExecX(ctx context.Context) {
-	if err := lcmu.Exec(ctx); err != nil {
+func (_u *LastChannelMessageUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (lcmu *LastChannelMessageUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *LastChannelMessageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(lastchannelmessage.Table, lastchannelmessage.Columns, sqlgraph.NewFieldSpec(lastchannelmessage.FieldID, field.TypeInt64))
-	if ps := lcmu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := lcmu.mutation.MessageID(); ok {
+	if value, ok := _u.mutation.MessageID(); ok {
 		_spec.SetField(lastchannelmessage.FieldMessageID, field.TypeInt, value)
 	}
-	if value, ok := lcmu.mutation.AddedMessageID(); ok {
+	if value, ok := _u.mutation.AddedMessageID(); ok {
 		_spec.AddField(lastchannelmessage.FieldMessageID, field.TypeInt, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, lcmu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{lastchannelmessage.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -103,8 +103,8 @@ func (lcmu *LastChannelMessageUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		return 0, err
 	}
-	lcmu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // LastChannelMessageUpdateOne is the builder for updating a single LastChannelMessage entity.
@@ -116,52 +116,52 @@ type LastChannelMessageUpdateOne struct {
 }
 
 // SetMessageID sets the "message_id" field.
-func (lcmuo *LastChannelMessageUpdateOne) SetMessageID(i int) *LastChannelMessageUpdateOne {
-	lcmuo.mutation.ResetMessageID()
-	lcmuo.mutation.SetMessageID(i)
-	return lcmuo
+func (_u *LastChannelMessageUpdateOne) SetMessageID(v int) *LastChannelMessageUpdateOne {
+	_u.mutation.ResetMessageID()
+	_u.mutation.SetMessageID(v)
+	return _u
 }
 
 // SetNillableMessageID sets the "message_id" field if the given value is not nil.
-func (lcmuo *LastChannelMessageUpdateOne) SetNillableMessageID(i *int) *LastChannelMessageUpdateOne {
-	if i != nil {
-		lcmuo.SetMessageID(*i)
+func (_u *LastChannelMessageUpdateOne) SetNillableMessageID(v *int) *LastChannelMessageUpdateOne {
+	if v != nil {
+		_u.SetMessageID(*v)
 	}
-	return lcmuo
+	return _u
 }
 
-// AddMessageID adds i to the "message_id" field.
-func (lcmuo *LastChannelMessageUpdateOne) AddMessageID(i int) *LastChannelMessageUpdateOne {
-	lcmuo.mutation.AddMessageID(i)
-	return lcmuo
+// AddMessageID adds value to the "message_id" field.
+func (_u *LastChannelMessageUpdateOne) AddMessageID(v int) *LastChannelMessageUpdateOne {
+	_u.mutation.AddMessageID(v)
+	return _u
 }
 
 // Mutation returns the LastChannelMessageMutation object of the builder.
-func (lcmuo *LastChannelMessageUpdateOne) Mutation() *LastChannelMessageMutation {
-	return lcmuo.mutation
+func (_u *LastChannelMessageUpdateOne) Mutation() *LastChannelMessageMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the LastChannelMessageUpdate builder.
-func (lcmuo *LastChannelMessageUpdateOne) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageUpdateOne {
-	lcmuo.mutation.Where(ps...)
-	return lcmuo
+func (_u *LastChannelMessageUpdateOne) Where(ps ...predicate.LastChannelMessage) *LastChannelMessageUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (lcmuo *LastChannelMessageUpdateOne) Select(field string, fields ...string) *LastChannelMessageUpdateOne {
-	lcmuo.fields = append([]string{field}, fields...)
-	return lcmuo
+func (_u *LastChannelMessageUpdateOne) Select(field string, fields ...string) *LastChannelMessageUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated LastChannelMessage entity.
-func (lcmuo *LastChannelMessageUpdateOne) Save(ctx context.Context) (*LastChannelMessage, error) {
-	return withHooks(ctx, lcmuo.sqlSave, lcmuo.mutation, lcmuo.hooks)
+func (_u *LastChannelMessageUpdateOne) Save(ctx context.Context) (*LastChannelMessage, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (lcmuo *LastChannelMessageUpdateOne) SaveX(ctx context.Context) *LastChannelMessage {
-	node, err := lcmuo.Save(ctx)
+func (_u *LastChannelMessageUpdateOne) SaveX(ctx context.Context) *LastChannelMessage {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -169,26 +169,26 @@ func (lcmuo *LastChannelMessageUpdateOne) SaveX(ctx context.Context) *LastChanne
 }
 
 // Exec executes the query on the entity.
-func (lcmuo *LastChannelMessageUpdateOne) Exec(ctx context.Context) error {
-	_, err := lcmuo.Save(ctx)
+func (_u *LastChannelMessageUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (lcmuo *LastChannelMessageUpdateOne) ExecX(ctx context.Context) {
-	if err := lcmuo.Exec(ctx); err != nil {
+func (_u *LastChannelMessageUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (lcmuo *LastChannelMessageUpdateOne) sqlSave(ctx context.Context) (_node *LastChannelMessage, err error) {
+func (_u *LastChannelMessageUpdateOne) sqlSave(ctx context.Context) (_node *LastChannelMessage, err error) {
 	_spec := sqlgraph.NewUpdateSpec(lastchannelmessage.Table, lastchannelmessage.Columns, sqlgraph.NewFieldSpec(lastchannelmessage.FieldID, field.TypeInt64))
-	id, ok := lcmuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "LastChannelMessage.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := lcmuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, lastchannelmessage.FieldID)
 		for _, f := range fields {
@@ -200,23 +200,23 @@ func (lcmuo *LastChannelMessageUpdateOne) sqlSave(ctx context.Context) (_node *L
 			}
 		}
 	}
-	if ps := lcmuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := lcmuo.mutation.MessageID(); ok {
+	if value, ok := _u.mutation.MessageID(); ok {
 		_spec.SetField(lastchannelmessage.FieldMessageID, field.TypeInt, value)
 	}
-	if value, ok := lcmuo.mutation.AddedMessageID(); ok {
+	if value, ok := _u.mutation.AddedMessageID(); ok {
 		_spec.AddField(lastchannelmessage.FieldMessageID, field.TypeInt, value)
 	}
-	_node = &LastChannelMessage{config: lcmuo.config}
+	_node = &LastChannelMessage{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, lcmuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{lastchannelmessage.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -224,6 +224,6 @@ func (lcmuo *LastChannelMessageUpdateOne) sqlSave(ctx context.Context) (_node *L
 		}
 		return nil, err
 	}
-	lcmuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

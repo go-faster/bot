@@ -22,30 +22,30 @@ type TelegramSessionUpdate struct {
 }
 
 // Where appends a list predicates to the TelegramSessionUpdate builder.
-func (tsu *TelegramSessionUpdate) Where(ps ...predicate.TelegramSession) *TelegramSessionUpdate {
-	tsu.mutation.Where(ps...)
-	return tsu
+func (_u *TelegramSessionUpdate) Where(ps ...predicate.TelegramSession) *TelegramSessionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetData sets the "data" field.
-func (tsu *TelegramSessionUpdate) SetData(b []byte) *TelegramSessionUpdate {
-	tsu.mutation.SetData(b)
-	return tsu
+func (_u *TelegramSessionUpdate) SetData(v []byte) *TelegramSessionUpdate {
+	_u.mutation.SetData(v)
+	return _u
 }
 
 // Mutation returns the TelegramSessionMutation object of the builder.
-func (tsu *TelegramSessionUpdate) Mutation() *TelegramSessionMutation {
-	return tsu.mutation
+func (_u *TelegramSessionUpdate) Mutation() *TelegramSessionMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tsu *TelegramSessionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tsu.sqlSave, tsu.mutation, tsu.hooks)
+func (_u *TelegramSessionUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tsu *TelegramSessionUpdate) SaveX(ctx context.Context) int {
-	affected, err := tsu.Save(ctx)
+func (_u *TelegramSessionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -53,31 +53,31 @@ func (tsu *TelegramSessionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tsu *TelegramSessionUpdate) Exec(ctx context.Context) error {
-	_, err := tsu.Save(ctx)
+func (_u *TelegramSessionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsu *TelegramSessionUpdate) ExecX(ctx context.Context) {
-	if err := tsu.Exec(ctx); err != nil {
+func (_u *TelegramSessionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tsu *TelegramSessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *TelegramSessionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramsession.Table, telegramsession.Columns, sqlgraph.NewFieldSpec(telegramsession.FieldID, field.TypeUUID))
-	if ps := tsu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tsu.mutation.Data(); ok {
+	if value, ok := _u.mutation.Data(); ok {
 		_spec.SetField(telegramsession.FieldData, field.TypeBytes, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tsu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramsession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -85,8 +85,8 @@ func (tsu *TelegramSessionUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	tsu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TelegramSessionUpdateOne is the builder for updating a single TelegramSession entity.
@@ -98,37 +98,37 @@ type TelegramSessionUpdateOne struct {
 }
 
 // SetData sets the "data" field.
-func (tsuo *TelegramSessionUpdateOne) SetData(b []byte) *TelegramSessionUpdateOne {
-	tsuo.mutation.SetData(b)
-	return tsuo
+func (_u *TelegramSessionUpdateOne) SetData(v []byte) *TelegramSessionUpdateOne {
+	_u.mutation.SetData(v)
+	return _u
 }
 
 // Mutation returns the TelegramSessionMutation object of the builder.
-func (tsuo *TelegramSessionUpdateOne) Mutation() *TelegramSessionMutation {
-	return tsuo.mutation
+func (_u *TelegramSessionUpdateOne) Mutation() *TelegramSessionMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the TelegramSessionUpdate builder.
-func (tsuo *TelegramSessionUpdateOne) Where(ps ...predicate.TelegramSession) *TelegramSessionUpdateOne {
-	tsuo.mutation.Where(ps...)
-	return tsuo
+func (_u *TelegramSessionUpdateOne) Where(ps ...predicate.TelegramSession) *TelegramSessionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tsuo *TelegramSessionUpdateOne) Select(field string, fields ...string) *TelegramSessionUpdateOne {
-	tsuo.fields = append([]string{field}, fields...)
-	return tsuo
+func (_u *TelegramSessionUpdateOne) Select(field string, fields ...string) *TelegramSessionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TelegramSession entity.
-func (tsuo *TelegramSessionUpdateOne) Save(ctx context.Context) (*TelegramSession, error) {
-	return withHooks(ctx, tsuo.sqlSave, tsuo.mutation, tsuo.hooks)
+func (_u *TelegramSessionUpdateOne) Save(ctx context.Context) (*TelegramSession, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tsuo *TelegramSessionUpdateOne) SaveX(ctx context.Context) *TelegramSession {
-	node, err := tsuo.Save(ctx)
+func (_u *TelegramSessionUpdateOne) SaveX(ctx context.Context) *TelegramSession {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -136,26 +136,26 @@ func (tsuo *TelegramSessionUpdateOne) SaveX(ctx context.Context) *TelegramSessio
 }
 
 // Exec executes the query on the entity.
-func (tsuo *TelegramSessionUpdateOne) Exec(ctx context.Context) error {
-	_, err := tsuo.Save(ctx)
+func (_u *TelegramSessionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tsuo *TelegramSessionUpdateOne) ExecX(ctx context.Context) {
-	if err := tsuo.Exec(ctx); err != nil {
+func (_u *TelegramSessionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tsuo *TelegramSessionUpdateOne) sqlSave(ctx context.Context) (_node *TelegramSession, err error) {
+func (_u *TelegramSessionUpdateOne) sqlSave(ctx context.Context) (_node *TelegramSession, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramsession.Table, telegramsession.Columns, sqlgraph.NewFieldSpec(telegramsession.FieldID, field.TypeUUID))
-	id, ok := tsuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TelegramSession.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tsuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramsession.FieldID)
 		for _, f := range fields {
@@ -167,20 +167,20 @@ func (tsuo *TelegramSessionUpdateOne) sqlSave(ctx context.Context) (_node *Teleg
 			}
 		}
 	}
-	if ps := tsuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tsuo.mutation.Data(); ok {
+	if value, ok := _u.mutation.Data(); ok {
 		_spec.SetField(telegramsession.FieldData, field.TypeBytes, value)
 	}
-	_node = &TelegramSession{config: tsuo.config}
+	_node = &TelegramSession{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tsuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramsession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -188,6 +188,6 @@ func (tsuo *TelegramSessionUpdateOne) sqlSave(ctx context.Context) (_node *Teleg
 		}
 		return nil, err
 	}
-	tsuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

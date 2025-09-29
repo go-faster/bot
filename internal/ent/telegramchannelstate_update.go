@@ -23,91 +23,91 @@ type TelegramChannelStateUpdate struct {
 }
 
 // Where appends a list predicates to the TelegramChannelStateUpdate builder.
-func (tcsu *TelegramChannelStateUpdate) Where(ps ...predicate.TelegramChannelState) *TelegramChannelStateUpdate {
-	tcsu.mutation.Where(ps...)
-	return tcsu
+func (_u *TelegramChannelStateUpdate) Where(ps ...predicate.TelegramChannelState) *TelegramChannelStateUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetChannelID sets the "channel_id" field.
-func (tcsu *TelegramChannelStateUpdate) SetChannelID(i int64) *TelegramChannelStateUpdate {
-	tcsu.mutation.ResetChannelID()
-	tcsu.mutation.SetChannelID(i)
-	return tcsu
+func (_u *TelegramChannelStateUpdate) SetChannelID(v int64) *TelegramChannelStateUpdate {
+	_u.mutation.ResetChannelID()
+	_u.mutation.SetChannelID(v)
+	return _u
 }
 
 // SetNillableChannelID sets the "channel_id" field if the given value is not nil.
-func (tcsu *TelegramChannelStateUpdate) SetNillableChannelID(i *int64) *TelegramChannelStateUpdate {
-	if i != nil {
-		tcsu.SetChannelID(*i)
+func (_u *TelegramChannelStateUpdate) SetNillableChannelID(v *int64) *TelegramChannelStateUpdate {
+	if v != nil {
+		_u.SetChannelID(*v)
 	}
-	return tcsu
+	return _u
 }
 
-// AddChannelID adds i to the "channel_id" field.
-func (tcsu *TelegramChannelStateUpdate) AddChannelID(i int64) *TelegramChannelStateUpdate {
-	tcsu.mutation.AddChannelID(i)
-	return tcsu
+// AddChannelID adds value to the "channel_id" field.
+func (_u *TelegramChannelStateUpdate) AddChannelID(v int64) *TelegramChannelStateUpdate {
+	_u.mutation.AddChannelID(v)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (tcsu *TelegramChannelStateUpdate) SetUserID(i int64) *TelegramChannelStateUpdate {
-	tcsu.mutation.SetUserID(i)
-	return tcsu
+func (_u *TelegramChannelStateUpdate) SetUserID(v int64) *TelegramChannelStateUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tcsu *TelegramChannelStateUpdate) SetNillableUserID(i *int64) *TelegramChannelStateUpdate {
-	if i != nil {
-		tcsu.SetUserID(*i)
+func (_u *TelegramChannelStateUpdate) SetNillableUserID(v *int64) *TelegramChannelStateUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return tcsu
+	return _u
 }
 
 // SetPts sets the "pts" field.
-func (tcsu *TelegramChannelStateUpdate) SetPts(i int) *TelegramChannelStateUpdate {
-	tcsu.mutation.ResetPts()
-	tcsu.mutation.SetPts(i)
-	return tcsu
+func (_u *TelegramChannelStateUpdate) SetPts(v int) *TelegramChannelStateUpdate {
+	_u.mutation.ResetPts()
+	_u.mutation.SetPts(v)
+	return _u
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tcsu *TelegramChannelStateUpdate) SetNillablePts(i *int) *TelegramChannelStateUpdate {
-	if i != nil {
-		tcsu.SetPts(*i)
+func (_u *TelegramChannelStateUpdate) SetNillablePts(v *int) *TelegramChannelStateUpdate {
+	if v != nil {
+		_u.SetPts(*v)
 	}
-	return tcsu
+	return _u
 }
 
-// AddPts adds i to the "pts" field.
-func (tcsu *TelegramChannelStateUpdate) AddPts(i int) *TelegramChannelStateUpdate {
-	tcsu.mutation.AddPts(i)
-	return tcsu
+// AddPts adds value to the "pts" field.
+func (_u *TelegramChannelStateUpdate) AddPts(v int) *TelegramChannelStateUpdate {
+	_u.mutation.AddPts(v)
+	return _u
 }
 
 // SetUser sets the "user" edge to the TelegramUserState entity.
-func (tcsu *TelegramChannelStateUpdate) SetUser(t *TelegramUserState) *TelegramChannelStateUpdate {
-	return tcsu.SetUserID(t.ID)
+func (_u *TelegramChannelStateUpdate) SetUser(v *TelegramUserState) *TelegramChannelStateUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the TelegramChannelStateMutation object of the builder.
-func (tcsu *TelegramChannelStateUpdate) Mutation() *TelegramChannelStateMutation {
-	return tcsu.mutation
+func (_u *TelegramChannelStateUpdate) Mutation() *TelegramChannelStateMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the TelegramUserState entity.
-func (tcsu *TelegramChannelStateUpdate) ClearUser() *TelegramChannelStateUpdate {
-	tcsu.mutation.ClearUser()
-	return tcsu
+func (_u *TelegramChannelStateUpdate) ClearUser() *TelegramChannelStateUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tcsu *TelegramChannelStateUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tcsu.sqlSave, tcsu.mutation, tcsu.hooks)
+func (_u *TelegramChannelStateUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcsu *TelegramChannelStateUpdate) SaveX(ctx context.Context) int {
-	affected, err := tcsu.Save(ctx)
+func (_u *TelegramChannelStateUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -115,51 +115,51 @@ func (tcsu *TelegramChannelStateUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tcsu *TelegramChannelStateUpdate) Exec(ctx context.Context) error {
-	_, err := tcsu.Save(ctx)
+func (_u *TelegramChannelStateUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcsu *TelegramChannelStateUpdate) ExecX(ctx context.Context) {
-	if err := tcsu.Exec(ctx); err != nil {
+func (_u *TelegramChannelStateUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tcsu *TelegramChannelStateUpdate) check() error {
-	if tcsu.mutation.UserCleared() && len(tcsu.mutation.UserIDs()) > 0 {
+func (_u *TelegramChannelStateUpdate) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TelegramChannelState.user"`)
 	}
 	return nil
 }
 
-func (tcsu *TelegramChannelStateUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tcsu.check(); err != nil {
-		return n, err
+func (_u *TelegramChannelStateUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(telegramchannelstate.Table, telegramchannelstate.Columns, sqlgraph.NewFieldSpec(telegramchannelstate.FieldID, field.TypeInt))
-	if ps := tcsu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tcsu.mutation.ChannelID(); ok {
+	if value, ok := _u.mutation.ChannelID(); ok {
 		_spec.SetField(telegramchannelstate.FieldChannelID, field.TypeInt64, value)
 	}
-	if value, ok := tcsu.mutation.AddedChannelID(); ok {
+	if value, ok := _u.mutation.AddedChannelID(); ok {
 		_spec.AddField(telegramchannelstate.FieldChannelID, field.TypeInt64, value)
 	}
-	if value, ok := tcsu.mutation.Pts(); ok {
+	if value, ok := _u.mutation.Pts(); ok {
 		_spec.SetField(telegramchannelstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tcsu.mutation.AddedPts(); ok {
+	if value, ok := _u.mutation.AddedPts(); ok {
 		_spec.AddField(telegramchannelstate.FieldPts, field.TypeInt, value)
 	}
-	if tcsu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -172,7 +172,7 @@ func (tcsu *TelegramChannelStateUpdate) sqlSave(ctx context.Context) (n int, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tcsu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -188,7 +188,7 @@ func (tcsu *TelegramChannelStateUpdate) sqlSave(ctx context.Context) (n int, err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tcsu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramchannelstate.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -196,8 +196,8 @@ func (tcsu *TelegramChannelStateUpdate) sqlSave(ctx context.Context) (n int, err
 		}
 		return 0, err
 	}
-	tcsu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TelegramChannelStateUpdateOne is the builder for updating a single TelegramChannelState entity.
@@ -209,98 +209,98 @@ type TelegramChannelStateUpdateOne struct {
 }
 
 // SetChannelID sets the "channel_id" field.
-func (tcsuo *TelegramChannelStateUpdateOne) SetChannelID(i int64) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.ResetChannelID()
-	tcsuo.mutation.SetChannelID(i)
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) SetChannelID(v int64) *TelegramChannelStateUpdateOne {
+	_u.mutation.ResetChannelID()
+	_u.mutation.SetChannelID(v)
+	return _u
 }
 
 // SetNillableChannelID sets the "channel_id" field if the given value is not nil.
-func (tcsuo *TelegramChannelStateUpdateOne) SetNillableChannelID(i *int64) *TelegramChannelStateUpdateOne {
-	if i != nil {
-		tcsuo.SetChannelID(*i)
+func (_u *TelegramChannelStateUpdateOne) SetNillableChannelID(v *int64) *TelegramChannelStateUpdateOne {
+	if v != nil {
+		_u.SetChannelID(*v)
 	}
-	return tcsuo
+	return _u
 }
 
-// AddChannelID adds i to the "channel_id" field.
-func (tcsuo *TelegramChannelStateUpdateOne) AddChannelID(i int64) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.AddChannelID(i)
-	return tcsuo
+// AddChannelID adds value to the "channel_id" field.
+func (_u *TelegramChannelStateUpdateOne) AddChannelID(v int64) *TelegramChannelStateUpdateOne {
+	_u.mutation.AddChannelID(v)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (tcsuo *TelegramChannelStateUpdateOne) SetUserID(i int64) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.SetUserID(i)
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) SetUserID(v int64) *TelegramChannelStateUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tcsuo *TelegramChannelStateUpdateOne) SetNillableUserID(i *int64) *TelegramChannelStateUpdateOne {
-	if i != nil {
-		tcsuo.SetUserID(*i)
+func (_u *TelegramChannelStateUpdateOne) SetNillableUserID(v *int64) *TelegramChannelStateUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return tcsuo
+	return _u
 }
 
 // SetPts sets the "pts" field.
-func (tcsuo *TelegramChannelStateUpdateOne) SetPts(i int) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.ResetPts()
-	tcsuo.mutation.SetPts(i)
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) SetPts(v int) *TelegramChannelStateUpdateOne {
+	_u.mutation.ResetPts()
+	_u.mutation.SetPts(v)
+	return _u
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tcsuo *TelegramChannelStateUpdateOne) SetNillablePts(i *int) *TelegramChannelStateUpdateOne {
-	if i != nil {
-		tcsuo.SetPts(*i)
+func (_u *TelegramChannelStateUpdateOne) SetNillablePts(v *int) *TelegramChannelStateUpdateOne {
+	if v != nil {
+		_u.SetPts(*v)
 	}
-	return tcsuo
+	return _u
 }
 
-// AddPts adds i to the "pts" field.
-func (tcsuo *TelegramChannelStateUpdateOne) AddPts(i int) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.AddPts(i)
-	return tcsuo
+// AddPts adds value to the "pts" field.
+func (_u *TelegramChannelStateUpdateOne) AddPts(v int) *TelegramChannelStateUpdateOne {
+	_u.mutation.AddPts(v)
+	return _u
 }
 
 // SetUser sets the "user" edge to the TelegramUserState entity.
-func (tcsuo *TelegramChannelStateUpdateOne) SetUser(t *TelegramUserState) *TelegramChannelStateUpdateOne {
-	return tcsuo.SetUserID(t.ID)
+func (_u *TelegramChannelStateUpdateOne) SetUser(v *TelegramUserState) *TelegramChannelStateUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // Mutation returns the TelegramChannelStateMutation object of the builder.
-func (tcsuo *TelegramChannelStateUpdateOne) Mutation() *TelegramChannelStateMutation {
-	return tcsuo.mutation
+func (_u *TelegramChannelStateUpdateOne) Mutation() *TelegramChannelStateMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the TelegramUserState entity.
-func (tcsuo *TelegramChannelStateUpdateOne) ClearUser() *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.ClearUser()
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) ClearUser() *TelegramChannelStateUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // Where appends a list predicates to the TelegramChannelStateUpdate builder.
-func (tcsuo *TelegramChannelStateUpdateOne) Where(ps ...predicate.TelegramChannelState) *TelegramChannelStateUpdateOne {
-	tcsuo.mutation.Where(ps...)
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) Where(ps ...predicate.TelegramChannelState) *TelegramChannelStateUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tcsuo *TelegramChannelStateUpdateOne) Select(field string, fields ...string) *TelegramChannelStateUpdateOne {
-	tcsuo.fields = append([]string{field}, fields...)
-	return tcsuo
+func (_u *TelegramChannelStateUpdateOne) Select(field string, fields ...string) *TelegramChannelStateUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TelegramChannelState entity.
-func (tcsuo *TelegramChannelStateUpdateOne) Save(ctx context.Context) (*TelegramChannelState, error) {
-	return withHooks(ctx, tcsuo.sqlSave, tcsuo.mutation, tcsuo.hooks)
+func (_u *TelegramChannelStateUpdateOne) Save(ctx context.Context) (*TelegramChannelState, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcsuo *TelegramChannelStateUpdateOne) SaveX(ctx context.Context) *TelegramChannelState {
-	node, err := tcsuo.Save(ctx)
+func (_u *TelegramChannelStateUpdateOne) SaveX(ctx context.Context) *TelegramChannelState {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -308,37 +308,37 @@ func (tcsuo *TelegramChannelStateUpdateOne) SaveX(ctx context.Context) *Telegram
 }
 
 // Exec executes the query on the entity.
-func (tcsuo *TelegramChannelStateUpdateOne) Exec(ctx context.Context) error {
-	_, err := tcsuo.Save(ctx)
+func (_u *TelegramChannelStateUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcsuo *TelegramChannelStateUpdateOne) ExecX(ctx context.Context) {
-	if err := tcsuo.Exec(ctx); err != nil {
+func (_u *TelegramChannelStateUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tcsuo *TelegramChannelStateUpdateOne) check() error {
-	if tcsuo.mutation.UserCleared() && len(tcsuo.mutation.UserIDs()) > 0 {
+func (_u *TelegramChannelStateUpdateOne) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "TelegramChannelState.user"`)
 	}
 	return nil
 }
 
-func (tcsuo *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node *TelegramChannelState, err error) {
-	if err := tcsuo.check(); err != nil {
+func (_u *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node *TelegramChannelState, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(telegramchannelstate.Table, telegramchannelstate.Columns, sqlgraph.NewFieldSpec(telegramchannelstate.FieldID, field.TypeInt))
-	id, ok := tcsuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TelegramChannelState.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tcsuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramchannelstate.FieldID)
 		for _, f := range fields {
@@ -350,26 +350,26 @@ func (tcsuo *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node 
 			}
 		}
 	}
-	if ps := tcsuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tcsuo.mutation.ChannelID(); ok {
+	if value, ok := _u.mutation.ChannelID(); ok {
 		_spec.SetField(telegramchannelstate.FieldChannelID, field.TypeInt64, value)
 	}
-	if value, ok := tcsuo.mutation.AddedChannelID(); ok {
+	if value, ok := _u.mutation.AddedChannelID(); ok {
 		_spec.AddField(telegramchannelstate.FieldChannelID, field.TypeInt64, value)
 	}
-	if value, ok := tcsuo.mutation.Pts(); ok {
+	if value, ok := _u.mutation.Pts(); ok {
 		_spec.SetField(telegramchannelstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tcsuo.mutation.AddedPts(); ok {
+	if value, ok := _u.mutation.AddedPts(); ok {
 		_spec.AddField(telegramchannelstate.FieldPts, field.TypeInt, value)
 	}
-	if tcsuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -382,7 +382,7 @@ func (tcsuo *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tcsuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -398,10 +398,10 @@ func (tcsuo *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TelegramChannelState{config: tcsuo.config}
+	_node = &TelegramChannelState{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tcsuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramchannelstate.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -409,6 +409,6 @@ func (tcsuo *TelegramChannelStateUpdateOne) sqlSave(ctx context.Context) (_node 
 		}
 		return nil, err
 	}
-	tcsuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

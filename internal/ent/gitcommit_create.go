@@ -25,67 +25,67 @@ type GitCommitCreate struct {
 }
 
 // SetMessage sets the "message" field.
-func (gcc *GitCommitCreate) SetMessage(s string) *GitCommitCreate {
-	gcc.mutation.SetMessage(s)
-	return gcc
+func (_c *GitCommitCreate) SetMessage(v string) *GitCommitCreate {
+	_c.mutation.SetMessage(v)
+	return _c
 }
 
 // SetAuthorLogin sets the "author_login" field.
-func (gcc *GitCommitCreate) SetAuthorLogin(s string) *GitCommitCreate {
-	gcc.mutation.SetAuthorLogin(s)
-	return gcc
+func (_c *GitCommitCreate) SetAuthorLogin(v string) *GitCommitCreate {
+	_c.mutation.SetAuthorLogin(v)
+	return _c
 }
 
 // SetAuthorID sets the "author_id" field.
-func (gcc *GitCommitCreate) SetAuthorID(i int64) *GitCommitCreate {
-	gcc.mutation.SetAuthorID(i)
-	return gcc
+func (_c *GitCommitCreate) SetAuthorID(v int64) *GitCommitCreate {
+	_c.mutation.SetAuthorID(v)
+	return _c
 }
 
 // SetDate sets the "date" field.
-func (gcc *GitCommitCreate) SetDate(t time.Time) *GitCommitCreate {
-	gcc.mutation.SetDate(t)
-	return gcc
+func (_c *GitCommitCreate) SetDate(v time.Time) *GitCommitCreate {
+	_c.mutation.SetDate(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (gcc *GitCommitCreate) SetID(s string) *GitCommitCreate {
-	gcc.mutation.SetID(s)
-	return gcc
+func (_c *GitCommitCreate) SetID(v string) *GitCommitCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetRepositoryID sets the "repository" edge to the Repository entity by ID.
-func (gcc *GitCommitCreate) SetRepositoryID(id int64) *GitCommitCreate {
-	gcc.mutation.SetRepositoryID(id)
-	return gcc
+func (_c *GitCommitCreate) SetRepositoryID(id int64) *GitCommitCreate {
+	_c.mutation.SetRepositoryID(id)
+	return _c
 }
 
 // SetNillableRepositoryID sets the "repository" edge to the Repository entity by ID if the given value is not nil.
-func (gcc *GitCommitCreate) SetNillableRepositoryID(id *int64) *GitCommitCreate {
+func (_c *GitCommitCreate) SetNillableRepositoryID(id *int64) *GitCommitCreate {
 	if id != nil {
-		gcc = gcc.SetRepositoryID(*id)
+		_c = _c.SetRepositoryID(*id)
 	}
-	return gcc
+	return _c
 }
 
 // SetRepository sets the "repository" edge to the Repository entity.
-func (gcc *GitCommitCreate) SetRepository(r *Repository) *GitCommitCreate {
-	return gcc.SetRepositoryID(r.ID)
+func (_c *GitCommitCreate) SetRepository(v *Repository) *GitCommitCreate {
+	return _c.SetRepositoryID(v.ID)
 }
 
 // Mutation returns the GitCommitMutation object of the builder.
-func (gcc *GitCommitCreate) Mutation() *GitCommitMutation {
-	return gcc.mutation
+func (_c *GitCommitCreate) Mutation() *GitCommitMutation {
+	return _c.mutation
 }
 
 // Save creates the GitCommit in the database.
-func (gcc *GitCommitCreate) Save(ctx context.Context) (*GitCommit, error) {
-	return withHooks(ctx, gcc.sqlSave, gcc.mutation, gcc.hooks)
+func (_c *GitCommitCreate) Save(ctx context.Context) (*GitCommit, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (gcc *GitCommitCreate) SaveX(ctx context.Context) *GitCommit {
-	v, err := gcc.Save(ctx)
+func (_c *GitCommitCreate) SaveX(ctx context.Context) *GitCommit {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -93,41 +93,41 @@ func (gcc *GitCommitCreate) SaveX(ctx context.Context) *GitCommit {
 }
 
 // Exec executes the query.
-func (gcc *GitCommitCreate) Exec(ctx context.Context) error {
-	_, err := gcc.Save(ctx)
+func (_c *GitCommitCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gcc *GitCommitCreate) ExecX(ctx context.Context) {
-	if err := gcc.Exec(ctx); err != nil {
+func (_c *GitCommitCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (gcc *GitCommitCreate) check() error {
-	if _, ok := gcc.mutation.Message(); !ok {
+func (_c *GitCommitCreate) check() error {
+	if _, ok := _c.mutation.Message(); !ok {
 		return &ValidationError{Name: "message", err: errors.New(`ent: missing required field "GitCommit.message"`)}
 	}
-	if _, ok := gcc.mutation.AuthorLogin(); !ok {
+	if _, ok := _c.mutation.AuthorLogin(); !ok {
 		return &ValidationError{Name: "author_login", err: errors.New(`ent: missing required field "GitCommit.author_login"`)}
 	}
-	if _, ok := gcc.mutation.AuthorID(); !ok {
+	if _, ok := _c.mutation.AuthorID(); !ok {
 		return &ValidationError{Name: "author_id", err: errors.New(`ent: missing required field "GitCommit.author_id"`)}
 	}
-	if _, ok := gcc.mutation.Date(); !ok {
+	if _, ok := _c.mutation.Date(); !ok {
 		return &ValidationError{Name: "date", err: errors.New(`ent: missing required field "GitCommit.date"`)}
 	}
 	return nil
 }
 
-func (gcc *GitCommitCreate) sqlSave(ctx context.Context) (*GitCommit, error) {
-	if err := gcc.check(); err != nil {
+func (_c *GitCommitCreate) sqlSave(ctx context.Context) (*GitCommit, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := gcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, gcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -140,38 +140,38 @@ func (gcc *GitCommitCreate) sqlSave(ctx context.Context) (*GitCommit, error) {
 			return nil, fmt.Errorf("unexpected GitCommit.ID type: %T", _spec.ID.Value)
 		}
 	}
-	gcc.mutation.id = &_node.ID
-	gcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (gcc *GitCommitCreate) createSpec() (*GitCommit, *sqlgraph.CreateSpec) {
+func (_c *GitCommitCreate) createSpec() (*GitCommit, *sqlgraph.CreateSpec) {
 	var (
-		_node = &GitCommit{config: gcc.config}
+		_node = &GitCommit{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(gitcommit.Table, sqlgraph.NewFieldSpec(gitcommit.FieldID, field.TypeString))
 	)
-	_spec.OnConflict = gcc.conflict
-	if id, ok := gcc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := gcc.mutation.Message(); ok {
+	if value, ok := _c.mutation.Message(); ok {
 		_spec.SetField(gitcommit.FieldMessage, field.TypeString, value)
 		_node.Message = value
 	}
-	if value, ok := gcc.mutation.AuthorLogin(); ok {
+	if value, ok := _c.mutation.AuthorLogin(); ok {
 		_spec.SetField(gitcommit.FieldAuthorLogin, field.TypeString, value)
 		_node.AuthorLogin = value
 	}
-	if value, ok := gcc.mutation.AuthorID(); ok {
+	if value, ok := _c.mutation.AuthorID(); ok {
 		_spec.SetField(gitcommit.FieldAuthorID, field.TypeInt64, value)
 		_node.AuthorID = value
 	}
-	if value, ok := gcc.mutation.Date(); ok {
+	if value, ok := _c.mutation.Date(); ok {
 		_spec.SetField(gitcommit.FieldDate, field.TypeTime, value)
 		_node.Date = value
 	}
-	if nodes := gcc.mutation.RepositoryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.RepositoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -207,10 +207,10 @@ func (gcc *GitCommitCreate) createSpec() (*GitCommit, *sqlgraph.CreateSpec) {
 //			SetMessage(v+v).
 //		}).
 //		Exec(ctx)
-func (gcc *GitCommitCreate) OnConflict(opts ...sql.ConflictOption) *GitCommitUpsertOne {
-	gcc.conflict = opts
+func (_c *GitCommitCreate) OnConflict(opts ...sql.ConflictOption) *GitCommitUpsertOne {
+	_c.conflict = opts
 	return &GitCommitUpsertOne{
-		create: gcc,
+		create: _c,
 	}
 }
 
@@ -220,10 +220,10 @@ func (gcc *GitCommitCreate) OnConflict(opts ...sql.ConflictOption) *GitCommitUps
 //	client.GitCommit.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gcc *GitCommitCreate) OnConflictColumns(columns ...string) *GitCommitUpsertOne {
-	gcc.conflict = append(gcc.conflict, sql.ConflictColumns(columns...))
+func (_c *GitCommitCreate) OnConflictColumns(columns ...string) *GitCommitUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GitCommitUpsertOne{
-		create: gcc,
+		create: _c,
 	}
 }
 
@@ -452,16 +452,16 @@ type GitCommitCreateBulk struct {
 }
 
 // Save creates the GitCommit entities in the database.
-func (gccb *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error) {
-	if gccb.err != nil {
-		return nil, gccb.err
+func (_c *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(gccb.builders))
-	nodes := make([]*GitCommit, len(gccb.builders))
-	mutators := make([]Mutator, len(gccb.builders))
-	for i := range gccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*GitCommit, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := gccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GitCommitMutation)
 				if !ok {
@@ -474,12 +474,12 @@ func (gccb *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error)
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, gccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = gccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, gccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -499,7 +499,7 @@ func (gccb *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error)
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, gccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -507,8 +507,8 @@ func (gccb *GitCommitCreateBulk) Save(ctx context.Context) ([]*GitCommit, error)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (gccb *GitCommitCreateBulk) SaveX(ctx context.Context) []*GitCommit {
-	v, err := gccb.Save(ctx)
+func (_c *GitCommitCreateBulk) SaveX(ctx context.Context) []*GitCommit {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -516,14 +516,14 @@ func (gccb *GitCommitCreateBulk) SaveX(ctx context.Context) []*GitCommit {
 }
 
 // Exec executes the query.
-func (gccb *GitCommitCreateBulk) Exec(ctx context.Context) error {
-	_, err := gccb.Save(ctx)
+func (_c *GitCommitCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gccb *GitCommitCreateBulk) ExecX(ctx context.Context) {
-	if err := gccb.Exec(ctx); err != nil {
+func (_c *GitCommitCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -543,10 +543,10 @@ func (gccb *GitCommitCreateBulk) ExecX(ctx context.Context) {
 //			SetMessage(v+v).
 //		}).
 //		Exec(ctx)
-func (gccb *GitCommitCreateBulk) OnConflict(opts ...sql.ConflictOption) *GitCommitUpsertBulk {
-	gccb.conflict = opts
+func (_c *GitCommitCreateBulk) OnConflict(opts ...sql.ConflictOption) *GitCommitUpsertBulk {
+	_c.conflict = opts
 	return &GitCommitUpsertBulk{
-		create: gccb,
+		create: _c,
 	}
 }
 
@@ -556,10 +556,10 @@ func (gccb *GitCommitCreateBulk) OnConflict(opts ...sql.ConflictOption) *GitComm
 //	client.GitCommit.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (gccb *GitCommitCreateBulk) OnConflictColumns(columns ...string) *GitCommitUpsertBulk {
-	gccb.conflict = append(gccb.conflict, sql.ConflictColumns(columns...))
+func (_c *GitCommitCreateBulk) OnConflictColumns(columns ...string) *GitCommitUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &GitCommitUpsertBulk{
-		create: gccb,
+		create: _c,
 	}
 }
 

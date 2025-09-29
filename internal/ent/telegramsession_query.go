@@ -29,40 +29,40 @@ type TelegramSessionQuery struct {
 }
 
 // Where adds a new predicate for the TelegramSessionQuery builder.
-func (tsq *TelegramSessionQuery) Where(ps ...predicate.TelegramSession) *TelegramSessionQuery {
-	tsq.predicates = append(tsq.predicates, ps...)
-	return tsq
+func (_q *TelegramSessionQuery) Where(ps ...predicate.TelegramSession) *TelegramSessionQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (tsq *TelegramSessionQuery) Limit(limit int) *TelegramSessionQuery {
-	tsq.ctx.Limit = &limit
-	return tsq
+func (_q *TelegramSessionQuery) Limit(limit int) *TelegramSessionQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (tsq *TelegramSessionQuery) Offset(offset int) *TelegramSessionQuery {
-	tsq.ctx.Offset = &offset
-	return tsq
+func (_q *TelegramSessionQuery) Offset(offset int) *TelegramSessionQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (tsq *TelegramSessionQuery) Unique(unique bool) *TelegramSessionQuery {
-	tsq.ctx.Unique = &unique
-	return tsq
+func (_q *TelegramSessionQuery) Unique(unique bool) *TelegramSessionQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (tsq *TelegramSessionQuery) Order(o ...telegramsession.OrderOption) *TelegramSessionQuery {
-	tsq.order = append(tsq.order, o...)
-	return tsq
+func (_q *TelegramSessionQuery) Order(o ...telegramsession.OrderOption) *TelegramSessionQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // First returns the first TelegramSession entity from the query.
 // Returns a *NotFoundError when no TelegramSession was found.
-func (tsq *TelegramSessionQuery) First(ctx context.Context) (*TelegramSession, error) {
-	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, ent.OpQueryFirst))
+func (_q *TelegramSessionQuery) First(ctx context.Context) (*TelegramSession, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (tsq *TelegramSessionQuery) First(ctx context.Context) (*TelegramSession, e
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) FirstX(ctx context.Context) *TelegramSession {
-	node, err := tsq.First(ctx)
+func (_q *TelegramSessionQuery) FirstX(ctx context.Context) *TelegramSession {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -83,9 +83,9 @@ func (tsq *TelegramSessionQuery) FirstX(ctx context.Context) *TelegramSession {
 
 // FirstID returns the first TelegramSession ID from the query.
 // Returns a *NotFoundError when no TelegramSession ID was found.
-func (tsq *TelegramSessionQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+func (_q *TelegramSessionQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -96,8 +96,8 @@ func (tsq *TelegramSessionQuery) FirstID(ctx context.Context) (id uuid.UUID, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) FirstIDX(ctx context.Context) uuid.UUID {
-	id, err := tsq.FirstID(ctx)
+func (_q *TelegramSessionQuery) FirstIDX(ctx context.Context) uuid.UUID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,8 +107,8 @@ func (tsq *TelegramSessionQuery) FirstIDX(ctx context.Context) uuid.UUID {
 // Only returns a single TelegramSession entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one TelegramSession entity is found.
 // Returns a *NotFoundError when no TelegramSession entities are found.
-func (tsq *TelegramSessionQuery) Only(ctx context.Context) (*TelegramSession, error) {
-	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, ent.OpQueryOnly))
+func (_q *TelegramSessionQuery) Only(ctx context.Context) (*TelegramSession, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (tsq *TelegramSessionQuery) Only(ctx context.Context) (*TelegramSession, er
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) OnlyX(ctx context.Context) *TelegramSession {
-	node, err := tsq.Only(ctx)
+func (_q *TelegramSessionQuery) OnlyX(ctx context.Context) *TelegramSession {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (tsq *TelegramSessionQuery) OnlyX(ctx context.Context) *TelegramSession {
 // OnlyID is like Only, but returns the only TelegramSession ID in the query.
 // Returns a *NotSingularError when more than one TelegramSession ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tsq *TelegramSessionQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+func (_q *TelegramSessionQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
 	var ids []uuid.UUID
-	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -151,8 +151,8 @@ func (tsq *TelegramSessionQuery) OnlyID(ctx context.Context) (id uuid.UUID, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) OnlyIDX(ctx context.Context) uuid.UUID {
-	id, err := tsq.OnlyID(ctx)
+func (_q *TelegramSessionQuery) OnlyIDX(ctx context.Context) uuid.UUID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,18 +160,18 @@ func (tsq *TelegramSessionQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 }
 
 // All executes the query and returns a list of TelegramSessions.
-func (tsq *TelegramSessionQuery) All(ctx context.Context) ([]*TelegramSession, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryAll)
-	if err := tsq.prepareQuery(ctx); err != nil {
+func (_q *TelegramSessionQuery) All(ctx context.Context) ([]*TelegramSession, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*TelegramSession, *TelegramSessionQuery]()
-	return withInterceptors[[]*TelegramSession](ctx, tsq, qr, tsq.inters)
+	return withInterceptors[[]*TelegramSession](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) AllX(ctx context.Context) []*TelegramSession {
-	nodes, err := tsq.All(ctx)
+func (_q *TelegramSessionQuery) AllX(ctx context.Context) []*TelegramSession {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,20 +179,20 @@ func (tsq *TelegramSessionQuery) AllX(ctx context.Context) []*TelegramSession {
 }
 
 // IDs executes the query and returns a list of TelegramSession IDs.
-func (tsq *TelegramSessionQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
-	if tsq.ctx.Unique == nil && tsq.path != nil {
-		tsq.Unique(true)
+func (_q *TelegramSessionQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryIDs)
-	if err = tsq.Select(telegramsession.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(telegramsession.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) IDsX(ctx context.Context) []uuid.UUID {
-	ids, err := tsq.IDs(ctx)
+func (_q *TelegramSessionQuery) IDsX(ctx context.Context) []uuid.UUID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,17 +200,17 @@ func (tsq *TelegramSessionQuery) IDsX(ctx context.Context) []uuid.UUID {
 }
 
 // Count returns the count of the given query.
-func (tsq *TelegramSessionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryCount)
-	if err := tsq.prepareQuery(ctx); err != nil {
+func (_q *TelegramSessionQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, tsq, querierCount[*TelegramSessionQuery](), tsq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TelegramSessionQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) CountX(ctx context.Context) int {
-	count, err := tsq.Count(ctx)
+func (_q *TelegramSessionQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,9 +218,9 @@ func (tsq *TelegramSessionQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (tsq *TelegramSessionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryExist)
-	switch _, err := tsq.FirstID(ctx); {
+func (_q *TelegramSessionQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -231,8 +231,8 @@ func (tsq *TelegramSessionQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (tsq *TelegramSessionQuery) ExistX(ctx context.Context) bool {
-	exist, err := tsq.Exist(ctx)
+func (_q *TelegramSessionQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,19 +241,19 @@ func (tsq *TelegramSessionQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the TelegramSessionQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (tsq *TelegramSessionQuery) Clone() *TelegramSessionQuery {
-	if tsq == nil {
+func (_q *TelegramSessionQuery) Clone() *TelegramSessionQuery {
+	if _q == nil {
 		return nil
 	}
 	return &TelegramSessionQuery{
-		config:     tsq.config,
-		ctx:        tsq.ctx.Clone(),
-		order:      append([]telegramsession.OrderOption{}, tsq.order...),
-		inters:     append([]Interceptor{}, tsq.inters...),
-		predicates: append([]predicate.TelegramSession{}, tsq.predicates...),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]telegramsession.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.TelegramSession{}, _q.predicates...),
 		// clone intermediate query.
-		sql:  tsq.sql.Clone(),
-		path: tsq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
@@ -271,10 +271,10 @@ func (tsq *TelegramSessionQuery) Clone() *TelegramSessionQuery {
 //		GroupBy(telegramsession.FieldData).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (tsq *TelegramSessionQuery) GroupBy(field string, fields ...string) *TelegramSessionGroupBy {
-	tsq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &TelegramSessionGroupBy{build: tsq}
-	grbuild.flds = &tsq.ctx.Fields
+func (_q *TelegramSessionQuery) GroupBy(field string, fields ...string) *TelegramSessionGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &TelegramSessionGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = telegramsession.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -292,62 +292,62 @@ func (tsq *TelegramSessionQuery) GroupBy(field string, fields ...string) *Telegr
 //	client.TelegramSession.Query().
 //		Select(telegramsession.FieldData).
 //		Scan(ctx, &v)
-func (tsq *TelegramSessionQuery) Select(fields ...string) *TelegramSessionSelect {
-	tsq.ctx.Fields = append(tsq.ctx.Fields, fields...)
-	sbuild := &TelegramSessionSelect{TelegramSessionQuery: tsq}
+func (_q *TelegramSessionQuery) Select(fields ...string) *TelegramSessionSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &TelegramSessionSelect{TelegramSessionQuery: _q}
 	sbuild.label = telegramsession.Label
-	sbuild.flds, sbuild.scan = &tsq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a TelegramSessionSelect configured with the given aggregations.
-func (tsq *TelegramSessionQuery) Aggregate(fns ...AggregateFunc) *TelegramSessionSelect {
-	return tsq.Select().Aggregate(fns...)
+func (_q *TelegramSessionQuery) Aggregate(fns ...AggregateFunc) *TelegramSessionSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (tsq *TelegramSessionQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range tsq.inters {
+func (_q *TelegramSessionQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, tsq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range tsq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !telegramsession.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if tsq.path != nil {
-		prev, err := tsq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		tsq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (tsq *TelegramSessionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TelegramSession, error) {
+func (_q *TelegramSessionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TelegramSession, error) {
 	var (
 		nodes = []*TelegramSession{}
-		_spec = tsq.querySpec()
+		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TelegramSession).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &TelegramSession{config: tsq.config}
+		node := &TelegramSession{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, tsq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -356,24 +356,24 @@ func (tsq *TelegramSessionQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	return nodes, nil
 }
 
-func (tsq *TelegramSessionQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := tsq.querySpec()
-	_spec.Node.Columns = tsq.ctx.Fields
-	if len(tsq.ctx.Fields) > 0 {
-		_spec.Unique = tsq.ctx.Unique != nil && *tsq.ctx.Unique
+func (_q *TelegramSessionQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, tsq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (tsq *TelegramSessionQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *TelegramSessionQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(telegramsession.Table, telegramsession.Columns, sqlgraph.NewFieldSpec(telegramsession.FieldID, field.TypeUUID))
-	_spec.From = tsq.sql
-	if unique := tsq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if tsq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := tsq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramsession.FieldID)
 		for i := range fields {
@@ -382,20 +382,20 @@ func (tsq *TelegramSessionQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := tsq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := tsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := tsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := tsq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -405,33 +405,33 @@ func (tsq *TelegramSessionQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (tsq *TelegramSessionQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(tsq.driver.Dialect())
+func (_q *TelegramSessionQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(telegramsession.Table)
-	columns := tsq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = telegramsession.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if tsq.sql != nil {
-		selector = tsq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if tsq.ctx.Unique != nil && *tsq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range tsq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range tsq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := tsq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := tsq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -444,41 +444,41 @@ type TelegramSessionGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (tsgb *TelegramSessionGroupBy) Aggregate(fns ...AggregateFunc) *TelegramSessionGroupBy {
-	tsgb.fns = append(tsgb.fns, fns...)
-	return tsgb
+func (_g *TelegramSessionGroupBy) Aggregate(fns ...AggregateFunc) *TelegramSessionGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tsgb *TelegramSessionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tsgb.build.ctx, ent.OpQueryGroupBy)
-	if err := tsgb.build.prepareQuery(ctx); err != nil {
+func (_g *TelegramSessionGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TelegramSessionQuery, *TelegramSessionGroupBy](ctx, tsgb.build, tsgb, tsgb.build.inters, v)
+	return scanWithInterceptors[*TelegramSessionQuery, *TelegramSessionGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (tsgb *TelegramSessionGroupBy) sqlScan(ctx context.Context, root *TelegramSessionQuery, v any) error {
+func (_g *TelegramSessionGroupBy) sqlScan(ctx context.Context, root *TelegramSessionQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(tsgb.fns))
-	for _, fn := range tsgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*tsgb.flds)+len(tsgb.fns))
-		for _, f := range *tsgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*tsgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tsgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -492,27 +492,27 @@ type TelegramSessionSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (tss *TelegramSessionSelect) Aggregate(fns ...AggregateFunc) *TelegramSessionSelect {
-	tss.fns = append(tss.fns, fns...)
-	return tss
+func (_s *TelegramSessionSelect) Aggregate(fns ...AggregateFunc) *TelegramSessionSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (tss *TelegramSessionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tss.ctx, ent.OpQuerySelect)
-	if err := tss.prepareQuery(ctx); err != nil {
+func (_s *TelegramSessionSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*TelegramSessionQuery, *TelegramSessionSelect](ctx, tss.TelegramSessionQuery, tss, tss.inters, v)
+	return scanWithInterceptors[*TelegramSessionQuery, *TelegramSessionSelect](ctx, _s.TelegramSessionQuery, _s, _s.inters, v)
 }
 
-func (tss *TelegramSessionSelect) sqlScan(ctx context.Context, root *TelegramSessionQuery, v any) error {
+func (_s *TelegramSessionSelect) sqlScan(ctx context.Context, root *TelegramSessionQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(tss.fns))
-	for _, fn := range tss.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*tss.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -520,7 +520,7 @@ func (tss *TelegramSessionSelect) sqlScan(ctx context.Context, root *TelegramSes
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := tss.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

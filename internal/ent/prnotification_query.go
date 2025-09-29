@@ -28,40 +28,40 @@ type PRNotificationQuery struct {
 }
 
 // Where adds a new predicate for the PRNotificationQuery builder.
-func (pnq *PRNotificationQuery) Where(ps ...predicate.PRNotification) *PRNotificationQuery {
-	pnq.predicates = append(pnq.predicates, ps...)
-	return pnq
+func (_q *PRNotificationQuery) Where(ps ...predicate.PRNotification) *PRNotificationQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (pnq *PRNotificationQuery) Limit(limit int) *PRNotificationQuery {
-	pnq.ctx.Limit = &limit
-	return pnq
+func (_q *PRNotificationQuery) Limit(limit int) *PRNotificationQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (pnq *PRNotificationQuery) Offset(offset int) *PRNotificationQuery {
-	pnq.ctx.Offset = &offset
-	return pnq
+func (_q *PRNotificationQuery) Offset(offset int) *PRNotificationQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (pnq *PRNotificationQuery) Unique(unique bool) *PRNotificationQuery {
-	pnq.ctx.Unique = &unique
-	return pnq
+func (_q *PRNotificationQuery) Unique(unique bool) *PRNotificationQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (pnq *PRNotificationQuery) Order(o ...prnotification.OrderOption) *PRNotificationQuery {
-	pnq.order = append(pnq.order, o...)
-	return pnq
+func (_q *PRNotificationQuery) Order(o ...prnotification.OrderOption) *PRNotificationQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // First returns the first PRNotification entity from the query.
 // Returns a *NotFoundError when no PRNotification was found.
-func (pnq *PRNotificationQuery) First(ctx context.Context) (*PRNotification, error) {
-	nodes, err := pnq.Limit(1).All(setContextOp(ctx, pnq.ctx, ent.OpQueryFirst))
+func (_q *PRNotificationQuery) First(ctx context.Context) (*PRNotification, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +72,8 @@ func (pnq *PRNotificationQuery) First(ctx context.Context) (*PRNotification, err
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (pnq *PRNotificationQuery) FirstX(ctx context.Context) *PRNotification {
-	node, err := pnq.First(ctx)
+func (_q *PRNotificationQuery) FirstX(ctx context.Context) *PRNotification {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -82,9 +82,9 @@ func (pnq *PRNotificationQuery) FirstX(ctx context.Context) *PRNotification {
 
 // FirstID returns the first PRNotification ID from the query.
 // Returns a *NotFoundError when no PRNotification ID was found.
-func (pnq *PRNotificationQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *PRNotificationQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pnq.Limit(1).IDs(setContextOp(ctx, pnq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -95,8 +95,8 @@ func (pnq *PRNotificationQuery) FirstID(ctx context.Context) (id int, err error)
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (pnq *PRNotificationQuery) FirstIDX(ctx context.Context) int {
-	id, err := pnq.FirstID(ctx)
+func (_q *PRNotificationQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -106,8 +106,8 @@ func (pnq *PRNotificationQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single PRNotification entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one PRNotification entity is found.
 // Returns a *NotFoundError when no PRNotification entities are found.
-func (pnq *PRNotificationQuery) Only(ctx context.Context) (*PRNotification, error) {
-	nodes, err := pnq.Limit(2).All(setContextOp(ctx, pnq.ctx, ent.OpQueryOnly))
+func (_q *PRNotificationQuery) Only(ctx context.Context) (*PRNotification, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (pnq *PRNotificationQuery) Only(ctx context.Context) (*PRNotification, erro
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (pnq *PRNotificationQuery) OnlyX(ctx context.Context) *PRNotification {
-	node, err := pnq.Only(ctx)
+func (_q *PRNotificationQuery) OnlyX(ctx context.Context) *PRNotification {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -133,9 +133,9 @@ func (pnq *PRNotificationQuery) OnlyX(ctx context.Context) *PRNotification {
 // OnlyID is like Only, but returns the only PRNotification ID in the query.
 // Returns a *NotSingularError when more than one PRNotification ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (pnq *PRNotificationQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *PRNotificationQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pnq.Limit(2).IDs(setContextOp(ctx, pnq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -150,8 +150,8 @@ func (pnq *PRNotificationQuery) OnlyID(ctx context.Context) (id int, err error) 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (pnq *PRNotificationQuery) OnlyIDX(ctx context.Context) int {
-	id, err := pnq.OnlyID(ctx)
+func (_q *PRNotificationQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -159,18 +159,18 @@ func (pnq *PRNotificationQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of PRNotifications.
-func (pnq *PRNotificationQuery) All(ctx context.Context) ([]*PRNotification, error) {
-	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryAll)
-	if err := pnq.prepareQuery(ctx); err != nil {
+func (_q *PRNotificationQuery) All(ctx context.Context) ([]*PRNotification, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*PRNotification, *PRNotificationQuery]()
-	return withInterceptors[[]*PRNotification](ctx, pnq, qr, pnq.inters)
+	return withInterceptors[[]*PRNotification](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (pnq *PRNotificationQuery) AllX(ctx context.Context) []*PRNotification {
-	nodes, err := pnq.All(ctx)
+func (_q *PRNotificationQuery) AllX(ctx context.Context) []*PRNotification {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -178,20 +178,20 @@ func (pnq *PRNotificationQuery) AllX(ctx context.Context) []*PRNotification {
 }
 
 // IDs executes the query and returns a list of PRNotification IDs.
-func (pnq *PRNotificationQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if pnq.ctx.Unique == nil && pnq.path != nil {
-		pnq.Unique(true)
+func (_q *PRNotificationQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryIDs)
-	if err = pnq.Select(prnotification.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(prnotification.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (pnq *PRNotificationQuery) IDsX(ctx context.Context) []int {
-	ids, err := pnq.IDs(ctx)
+func (_q *PRNotificationQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -199,17 +199,17 @@ func (pnq *PRNotificationQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (pnq *PRNotificationQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryCount)
-	if err := pnq.prepareQuery(ctx); err != nil {
+func (_q *PRNotificationQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, pnq, querierCount[*PRNotificationQuery](), pnq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*PRNotificationQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (pnq *PRNotificationQuery) CountX(ctx context.Context) int {
-	count, err := pnq.Count(ctx)
+func (_q *PRNotificationQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -217,9 +217,9 @@ func (pnq *PRNotificationQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (pnq *PRNotificationQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, pnq.ctx, ent.OpQueryExist)
-	switch _, err := pnq.FirstID(ctx); {
+func (_q *PRNotificationQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -230,8 +230,8 @@ func (pnq *PRNotificationQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (pnq *PRNotificationQuery) ExistX(ctx context.Context) bool {
-	exist, err := pnq.Exist(ctx)
+func (_q *PRNotificationQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -240,19 +240,19 @@ func (pnq *PRNotificationQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the PRNotificationQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (pnq *PRNotificationQuery) Clone() *PRNotificationQuery {
-	if pnq == nil {
+func (_q *PRNotificationQuery) Clone() *PRNotificationQuery {
+	if _q == nil {
 		return nil
 	}
 	return &PRNotificationQuery{
-		config:     pnq.config,
-		ctx:        pnq.ctx.Clone(),
-		order:      append([]prnotification.OrderOption{}, pnq.order...),
-		inters:     append([]Interceptor{}, pnq.inters...),
-		predicates: append([]predicate.PRNotification{}, pnq.predicates...),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]prnotification.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.PRNotification{}, _q.predicates...),
 		// clone intermediate query.
-		sql:  pnq.sql.Clone(),
-		path: pnq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
@@ -270,10 +270,10 @@ func (pnq *PRNotificationQuery) Clone() *PRNotificationQuery {
 //		GroupBy(prnotification.FieldRepoID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (pnq *PRNotificationQuery) GroupBy(field string, fields ...string) *PRNotificationGroupBy {
-	pnq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &PRNotificationGroupBy{build: pnq}
-	grbuild.flds = &pnq.ctx.Fields
+func (_q *PRNotificationQuery) GroupBy(field string, fields ...string) *PRNotificationGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &PRNotificationGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = prnotification.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -291,62 +291,62 @@ func (pnq *PRNotificationQuery) GroupBy(field string, fields ...string) *PRNotif
 //	client.PRNotification.Query().
 //		Select(prnotification.FieldRepoID).
 //		Scan(ctx, &v)
-func (pnq *PRNotificationQuery) Select(fields ...string) *PRNotificationSelect {
-	pnq.ctx.Fields = append(pnq.ctx.Fields, fields...)
-	sbuild := &PRNotificationSelect{PRNotificationQuery: pnq}
+func (_q *PRNotificationQuery) Select(fields ...string) *PRNotificationSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &PRNotificationSelect{PRNotificationQuery: _q}
 	sbuild.label = prnotification.Label
-	sbuild.flds, sbuild.scan = &pnq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a PRNotificationSelect configured with the given aggregations.
-func (pnq *PRNotificationQuery) Aggregate(fns ...AggregateFunc) *PRNotificationSelect {
-	return pnq.Select().Aggregate(fns...)
+func (_q *PRNotificationQuery) Aggregate(fns ...AggregateFunc) *PRNotificationSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (pnq *PRNotificationQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range pnq.inters {
+func (_q *PRNotificationQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, pnq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range pnq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !prnotification.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if pnq.path != nil {
-		prev, err := pnq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		pnq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (pnq *PRNotificationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PRNotification, error) {
+func (_q *PRNotificationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PRNotification, error) {
 	var (
 		nodes = []*PRNotification{}
-		_spec = pnq.querySpec()
+		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*PRNotification).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &PRNotification{config: pnq.config}
+		node := &PRNotification{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, pnq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -355,24 +355,24 @@ func (pnq *PRNotificationQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	return nodes, nil
 }
 
-func (pnq *PRNotificationQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := pnq.querySpec()
-	_spec.Node.Columns = pnq.ctx.Fields
-	if len(pnq.ctx.Fields) > 0 {
-		_spec.Unique = pnq.ctx.Unique != nil && *pnq.ctx.Unique
+func (_q *PRNotificationQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, pnq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (pnq *PRNotificationQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *PRNotificationQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(prnotification.Table, prnotification.Columns, sqlgraph.NewFieldSpec(prnotification.FieldID, field.TypeInt))
-	_spec.From = pnq.sql
-	if unique := pnq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if pnq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := pnq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, prnotification.FieldID)
 		for i := range fields {
@@ -381,20 +381,20 @@ func (pnq *PRNotificationQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := pnq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := pnq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := pnq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := pnq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -404,33 +404,33 @@ func (pnq *PRNotificationQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (pnq *PRNotificationQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(pnq.driver.Dialect())
+func (_q *PRNotificationQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(prnotification.Table)
-	columns := pnq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = prnotification.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if pnq.sql != nil {
-		selector = pnq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if pnq.ctx.Unique != nil && *pnq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range pnq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range pnq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := pnq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := pnq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -443,41 +443,41 @@ type PRNotificationGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (pngb *PRNotificationGroupBy) Aggregate(fns ...AggregateFunc) *PRNotificationGroupBy {
-	pngb.fns = append(pngb.fns, fns...)
-	return pngb
+func (_g *PRNotificationGroupBy) Aggregate(fns ...AggregateFunc) *PRNotificationGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (pngb *PRNotificationGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pngb.build.ctx, ent.OpQueryGroupBy)
-	if err := pngb.build.prepareQuery(ctx); err != nil {
+func (_g *PRNotificationGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PRNotificationQuery, *PRNotificationGroupBy](ctx, pngb.build, pngb, pngb.build.inters, v)
+	return scanWithInterceptors[*PRNotificationQuery, *PRNotificationGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (pngb *PRNotificationGroupBy) sqlScan(ctx context.Context, root *PRNotificationQuery, v any) error {
+func (_g *PRNotificationGroupBy) sqlScan(ctx context.Context, root *PRNotificationQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(pngb.fns))
-	for _, fn := range pngb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*pngb.flds)+len(pngb.fns))
-		for _, f := range *pngb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*pngb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := pngb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -491,27 +491,27 @@ type PRNotificationSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (pns *PRNotificationSelect) Aggregate(fns ...AggregateFunc) *PRNotificationSelect {
-	pns.fns = append(pns.fns, fns...)
-	return pns
+func (_s *PRNotificationSelect) Aggregate(fns ...AggregateFunc) *PRNotificationSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (pns *PRNotificationSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pns.ctx, ent.OpQuerySelect)
-	if err := pns.prepareQuery(ctx); err != nil {
+func (_s *PRNotificationSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PRNotificationQuery, *PRNotificationSelect](ctx, pns.PRNotificationQuery, pns, pns.inters, v)
+	return scanWithInterceptors[*PRNotificationQuery, *PRNotificationSelect](ctx, _s.PRNotificationQuery, _s, _s.inters, v)
 }
 
-func (pns *PRNotificationSelect) sqlScan(ctx context.Context, root *PRNotificationQuery, v any) error {
+func (_s *PRNotificationSelect) sqlScan(ctx context.Context, root *PRNotificationQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(pns.fns))
-	for _, fn := range pns.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*pns.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -519,7 +519,7 @@ func (pns *PRNotificationSelect) sqlScan(ctx context.Context, root *PRNotificati
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := pns.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

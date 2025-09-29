@@ -23,144 +23,144 @@ type TelegramUserStateUpdate struct {
 }
 
 // Where appends a list predicates to the TelegramUserStateUpdate builder.
-func (tusu *TelegramUserStateUpdate) Where(ps ...predicate.TelegramUserState) *TelegramUserStateUpdate {
-	tusu.mutation.Where(ps...)
-	return tusu
+func (_u *TelegramUserStateUpdate) Where(ps ...predicate.TelegramUserState) *TelegramUserStateUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetQts sets the "qts" field.
-func (tusu *TelegramUserStateUpdate) SetQts(i int) *TelegramUserStateUpdate {
-	tusu.mutation.ResetQts()
-	tusu.mutation.SetQts(i)
-	return tusu
+func (_u *TelegramUserStateUpdate) SetQts(v int) *TelegramUserStateUpdate {
+	_u.mutation.ResetQts()
+	_u.mutation.SetQts(v)
+	return _u
 }
 
 // SetNillableQts sets the "qts" field if the given value is not nil.
-func (tusu *TelegramUserStateUpdate) SetNillableQts(i *int) *TelegramUserStateUpdate {
-	if i != nil {
-		tusu.SetQts(*i)
+func (_u *TelegramUserStateUpdate) SetNillableQts(v *int) *TelegramUserStateUpdate {
+	if v != nil {
+		_u.SetQts(*v)
 	}
-	return tusu
+	return _u
 }
 
-// AddQts adds i to the "qts" field.
-func (tusu *TelegramUserStateUpdate) AddQts(i int) *TelegramUserStateUpdate {
-	tusu.mutation.AddQts(i)
-	return tusu
+// AddQts adds value to the "qts" field.
+func (_u *TelegramUserStateUpdate) AddQts(v int) *TelegramUserStateUpdate {
+	_u.mutation.AddQts(v)
+	return _u
 }
 
 // SetPts sets the "pts" field.
-func (tusu *TelegramUserStateUpdate) SetPts(i int) *TelegramUserStateUpdate {
-	tusu.mutation.ResetPts()
-	tusu.mutation.SetPts(i)
-	return tusu
+func (_u *TelegramUserStateUpdate) SetPts(v int) *TelegramUserStateUpdate {
+	_u.mutation.ResetPts()
+	_u.mutation.SetPts(v)
+	return _u
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tusu *TelegramUserStateUpdate) SetNillablePts(i *int) *TelegramUserStateUpdate {
-	if i != nil {
-		tusu.SetPts(*i)
+func (_u *TelegramUserStateUpdate) SetNillablePts(v *int) *TelegramUserStateUpdate {
+	if v != nil {
+		_u.SetPts(*v)
 	}
-	return tusu
+	return _u
 }
 
-// AddPts adds i to the "pts" field.
-func (tusu *TelegramUserStateUpdate) AddPts(i int) *TelegramUserStateUpdate {
-	tusu.mutation.AddPts(i)
-	return tusu
+// AddPts adds value to the "pts" field.
+func (_u *TelegramUserStateUpdate) AddPts(v int) *TelegramUserStateUpdate {
+	_u.mutation.AddPts(v)
+	return _u
 }
 
 // SetDate sets the "date" field.
-func (tusu *TelegramUserStateUpdate) SetDate(i int) *TelegramUserStateUpdate {
-	tusu.mutation.ResetDate()
-	tusu.mutation.SetDate(i)
-	return tusu
+func (_u *TelegramUserStateUpdate) SetDate(v int) *TelegramUserStateUpdate {
+	_u.mutation.ResetDate()
+	_u.mutation.SetDate(v)
+	return _u
 }
 
 // SetNillableDate sets the "date" field if the given value is not nil.
-func (tusu *TelegramUserStateUpdate) SetNillableDate(i *int) *TelegramUserStateUpdate {
-	if i != nil {
-		tusu.SetDate(*i)
+func (_u *TelegramUserStateUpdate) SetNillableDate(v *int) *TelegramUserStateUpdate {
+	if v != nil {
+		_u.SetDate(*v)
 	}
-	return tusu
+	return _u
 }
 
-// AddDate adds i to the "date" field.
-func (tusu *TelegramUserStateUpdate) AddDate(i int) *TelegramUserStateUpdate {
-	tusu.mutation.AddDate(i)
-	return tusu
+// AddDate adds value to the "date" field.
+func (_u *TelegramUserStateUpdate) AddDate(v int) *TelegramUserStateUpdate {
+	_u.mutation.AddDate(v)
+	return _u
 }
 
 // SetSeq sets the "seq" field.
-func (tusu *TelegramUserStateUpdate) SetSeq(i int) *TelegramUserStateUpdate {
-	tusu.mutation.ResetSeq()
-	tusu.mutation.SetSeq(i)
-	return tusu
+func (_u *TelegramUserStateUpdate) SetSeq(v int) *TelegramUserStateUpdate {
+	_u.mutation.ResetSeq()
+	_u.mutation.SetSeq(v)
+	return _u
 }
 
 // SetNillableSeq sets the "seq" field if the given value is not nil.
-func (tusu *TelegramUserStateUpdate) SetNillableSeq(i *int) *TelegramUserStateUpdate {
-	if i != nil {
-		tusu.SetSeq(*i)
+func (_u *TelegramUserStateUpdate) SetNillableSeq(v *int) *TelegramUserStateUpdate {
+	if v != nil {
+		_u.SetSeq(*v)
 	}
-	return tusu
+	return _u
 }
 
-// AddSeq adds i to the "seq" field.
-func (tusu *TelegramUserStateUpdate) AddSeq(i int) *TelegramUserStateUpdate {
-	tusu.mutation.AddSeq(i)
-	return tusu
+// AddSeq adds value to the "seq" field.
+func (_u *TelegramUserStateUpdate) AddSeq(v int) *TelegramUserStateUpdate {
+	_u.mutation.AddSeq(v)
+	return _u
 }
 
 // AddChannelIDs adds the "channels" edge to the TelegramChannelState entity by IDs.
-func (tusu *TelegramUserStateUpdate) AddChannelIDs(ids ...int) *TelegramUserStateUpdate {
-	tusu.mutation.AddChannelIDs(ids...)
-	return tusu
+func (_u *TelegramUserStateUpdate) AddChannelIDs(ids ...int) *TelegramUserStateUpdate {
+	_u.mutation.AddChannelIDs(ids...)
+	return _u
 }
 
 // AddChannels adds the "channels" edges to the TelegramChannelState entity.
-func (tusu *TelegramUserStateUpdate) AddChannels(t ...*TelegramChannelState) *TelegramUserStateUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TelegramUserStateUpdate) AddChannels(v ...*TelegramChannelState) *TelegramUserStateUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tusu.AddChannelIDs(ids...)
+	return _u.AddChannelIDs(ids...)
 }
 
 // Mutation returns the TelegramUserStateMutation object of the builder.
-func (tusu *TelegramUserStateUpdate) Mutation() *TelegramUserStateMutation {
-	return tusu.mutation
+func (_u *TelegramUserStateUpdate) Mutation() *TelegramUserStateMutation {
+	return _u.mutation
 }
 
 // ClearChannels clears all "channels" edges to the TelegramChannelState entity.
-func (tusu *TelegramUserStateUpdate) ClearChannels() *TelegramUserStateUpdate {
-	tusu.mutation.ClearChannels()
-	return tusu
+func (_u *TelegramUserStateUpdate) ClearChannels() *TelegramUserStateUpdate {
+	_u.mutation.ClearChannels()
+	return _u
 }
 
 // RemoveChannelIDs removes the "channels" edge to TelegramChannelState entities by IDs.
-func (tusu *TelegramUserStateUpdate) RemoveChannelIDs(ids ...int) *TelegramUserStateUpdate {
-	tusu.mutation.RemoveChannelIDs(ids...)
-	return tusu
+func (_u *TelegramUserStateUpdate) RemoveChannelIDs(ids ...int) *TelegramUserStateUpdate {
+	_u.mutation.RemoveChannelIDs(ids...)
+	return _u
 }
 
 // RemoveChannels removes "channels" edges to TelegramChannelState entities.
-func (tusu *TelegramUserStateUpdate) RemoveChannels(t ...*TelegramChannelState) *TelegramUserStateUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TelegramUserStateUpdate) RemoveChannels(v ...*TelegramChannelState) *TelegramUserStateUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tusu.RemoveChannelIDs(ids...)
+	return _u.RemoveChannelIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tusu *TelegramUserStateUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tusu.sqlSave, tusu.mutation, tusu.hooks)
+func (_u *TelegramUserStateUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tusu *TelegramUserStateUpdate) SaveX(ctx context.Context) int {
-	affected, err := tusu.Save(ctx)
+func (_u *TelegramUserStateUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -168,52 +168,52 @@ func (tusu *TelegramUserStateUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tusu *TelegramUserStateUpdate) Exec(ctx context.Context) error {
-	_, err := tusu.Save(ctx)
+func (_u *TelegramUserStateUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tusu *TelegramUserStateUpdate) ExecX(ctx context.Context) {
-	if err := tusu.Exec(ctx); err != nil {
+func (_u *TelegramUserStateUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tusu *TelegramUserStateUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *TelegramUserStateUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramuserstate.Table, telegramuserstate.Columns, sqlgraph.NewFieldSpec(telegramuserstate.FieldID, field.TypeInt64))
-	if ps := tusu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tusu.mutation.Qts(); ok {
+	if value, ok := _u.mutation.Qts(); ok {
 		_spec.SetField(telegramuserstate.FieldQts, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.AddedQts(); ok {
+	if value, ok := _u.mutation.AddedQts(); ok {
 		_spec.AddField(telegramuserstate.FieldQts, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.Pts(); ok {
+	if value, ok := _u.mutation.Pts(); ok {
 		_spec.SetField(telegramuserstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.AddedPts(); ok {
+	if value, ok := _u.mutation.AddedPts(); ok {
 		_spec.AddField(telegramuserstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.Date(); ok {
+	if value, ok := _u.mutation.Date(); ok {
 		_spec.SetField(telegramuserstate.FieldDate, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.AddedDate(); ok {
+	if value, ok := _u.mutation.AddedDate(); ok {
 		_spec.AddField(telegramuserstate.FieldDate, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.Seq(); ok {
+	if value, ok := _u.mutation.Seq(); ok {
 		_spec.SetField(telegramuserstate.FieldSeq, field.TypeInt, value)
 	}
-	if value, ok := tusu.mutation.AddedSeq(); ok {
+	if value, ok := _u.mutation.AddedSeq(); ok {
 		_spec.AddField(telegramuserstate.FieldSeq, field.TypeInt, value)
 	}
-	if tusu.mutation.ChannelsCleared() {
+	if _u.mutation.ChannelsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -226,7 +226,7 @@ func (tusu *TelegramUserStateUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tusu.mutation.RemovedChannelsIDs(); len(nodes) > 0 && !tusu.mutation.ChannelsCleared() {
+	if nodes := _u.mutation.RemovedChannelsIDs(); len(nodes) > 0 && !_u.mutation.ChannelsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -242,7 +242,7 @@ func (tusu *TelegramUserStateUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tusu.mutation.ChannelsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChannelsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -258,7 +258,7 @@ func (tusu *TelegramUserStateUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tusu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramuserstate.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -266,8 +266,8 @@ func (tusu *TelegramUserStateUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	tusu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TelegramUserStateUpdateOne is the builder for updating a single TelegramUserState entity.
@@ -279,151 +279,151 @@ type TelegramUserStateUpdateOne struct {
 }
 
 // SetQts sets the "qts" field.
-func (tusuo *TelegramUserStateUpdateOne) SetQts(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.ResetQts()
-	tusuo.mutation.SetQts(i)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) SetQts(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.ResetQts()
+	_u.mutation.SetQts(v)
+	return _u
 }
 
 // SetNillableQts sets the "qts" field if the given value is not nil.
-func (tusuo *TelegramUserStateUpdateOne) SetNillableQts(i *int) *TelegramUserStateUpdateOne {
-	if i != nil {
-		tusuo.SetQts(*i)
+func (_u *TelegramUserStateUpdateOne) SetNillableQts(v *int) *TelegramUserStateUpdateOne {
+	if v != nil {
+		_u.SetQts(*v)
 	}
-	return tusuo
+	return _u
 }
 
-// AddQts adds i to the "qts" field.
-func (tusuo *TelegramUserStateUpdateOne) AddQts(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.AddQts(i)
-	return tusuo
+// AddQts adds value to the "qts" field.
+func (_u *TelegramUserStateUpdateOne) AddQts(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.AddQts(v)
+	return _u
 }
 
 // SetPts sets the "pts" field.
-func (tusuo *TelegramUserStateUpdateOne) SetPts(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.ResetPts()
-	tusuo.mutation.SetPts(i)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) SetPts(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.ResetPts()
+	_u.mutation.SetPts(v)
+	return _u
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tusuo *TelegramUserStateUpdateOne) SetNillablePts(i *int) *TelegramUserStateUpdateOne {
-	if i != nil {
-		tusuo.SetPts(*i)
+func (_u *TelegramUserStateUpdateOne) SetNillablePts(v *int) *TelegramUserStateUpdateOne {
+	if v != nil {
+		_u.SetPts(*v)
 	}
-	return tusuo
+	return _u
 }
 
-// AddPts adds i to the "pts" field.
-func (tusuo *TelegramUserStateUpdateOne) AddPts(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.AddPts(i)
-	return tusuo
+// AddPts adds value to the "pts" field.
+func (_u *TelegramUserStateUpdateOne) AddPts(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.AddPts(v)
+	return _u
 }
 
 // SetDate sets the "date" field.
-func (tusuo *TelegramUserStateUpdateOne) SetDate(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.ResetDate()
-	tusuo.mutation.SetDate(i)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) SetDate(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.ResetDate()
+	_u.mutation.SetDate(v)
+	return _u
 }
 
 // SetNillableDate sets the "date" field if the given value is not nil.
-func (tusuo *TelegramUserStateUpdateOne) SetNillableDate(i *int) *TelegramUserStateUpdateOne {
-	if i != nil {
-		tusuo.SetDate(*i)
+func (_u *TelegramUserStateUpdateOne) SetNillableDate(v *int) *TelegramUserStateUpdateOne {
+	if v != nil {
+		_u.SetDate(*v)
 	}
-	return tusuo
+	return _u
 }
 
-// AddDate adds i to the "date" field.
-func (tusuo *TelegramUserStateUpdateOne) AddDate(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.AddDate(i)
-	return tusuo
+// AddDate adds value to the "date" field.
+func (_u *TelegramUserStateUpdateOne) AddDate(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.AddDate(v)
+	return _u
 }
 
 // SetSeq sets the "seq" field.
-func (tusuo *TelegramUserStateUpdateOne) SetSeq(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.ResetSeq()
-	tusuo.mutation.SetSeq(i)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) SetSeq(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.ResetSeq()
+	_u.mutation.SetSeq(v)
+	return _u
 }
 
 // SetNillableSeq sets the "seq" field if the given value is not nil.
-func (tusuo *TelegramUserStateUpdateOne) SetNillableSeq(i *int) *TelegramUserStateUpdateOne {
-	if i != nil {
-		tusuo.SetSeq(*i)
+func (_u *TelegramUserStateUpdateOne) SetNillableSeq(v *int) *TelegramUserStateUpdateOne {
+	if v != nil {
+		_u.SetSeq(*v)
 	}
-	return tusuo
+	return _u
 }
 
-// AddSeq adds i to the "seq" field.
-func (tusuo *TelegramUserStateUpdateOne) AddSeq(i int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.AddSeq(i)
-	return tusuo
+// AddSeq adds value to the "seq" field.
+func (_u *TelegramUserStateUpdateOne) AddSeq(v int) *TelegramUserStateUpdateOne {
+	_u.mutation.AddSeq(v)
+	return _u
 }
 
 // AddChannelIDs adds the "channels" edge to the TelegramChannelState entity by IDs.
-func (tusuo *TelegramUserStateUpdateOne) AddChannelIDs(ids ...int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.AddChannelIDs(ids...)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) AddChannelIDs(ids ...int) *TelegramUserStateUpdateOne {
+	_u.mutation.AddChannelIDs(ids...)
+	return _u
 }
 
 // AddChannels adds the "channels" edges to the TelegramChannelState entity.
-func (tusuo *TelegramUserStateUpdateOne) AddChannels(t ...*TelegramChannelState) *TelegramUserStateUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TelegramUserStateUpdateOne) AddChannels(v ...*TelegramChannelState) *TelegramUserStateUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tusuo.AddChannelIDs(ids...)
+	return _u.AddChannelIDs(ids...)
 }
 
 // Mutation returns the TelegramUserStateMutation object of the builder.
-func (tusuo *TelegramUserStateUpdateOne) Mutation() *TelegramUserStateMutation {
-	return tusuo.mutation
+func (_u *TelegramUserStateUpdateOne) Mutation() *TelegramUserStateMutation {
+	return _u.mutation
 }
 
 // ClearChannels clears all "channels" edges to the TelegramChannelState entity.
-func (tusuo *TelegramUserStateUpdateOne) ClearChannels() *TelegramUserStateUpdateOne {
-	tusuo.mutation.ClearChannels()
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) ClearChannels() *TelegramUserStateUpdateOne {
+	_u.mutation.ClearChannels()
+	return _u
 }
 
 // RemoveChannelIDs removes the "channels" edge to TelegramChannelState entities by IDs.
-func (tusuo *TelegramUserStateUpdateOne) RemoveChannelIDs(ids ...int) *TelegramUserStateUpdateOne {
-	tusuo.mutation.RemoveChannelIDs(ids...)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) RemoveChannelIDs(ids ...int) *TelegramUserStateUpdateOne {
+	_u.mutation.RemoveChannelIDs(ids...)
+	return _u
 }
 
 // RemoveChannels removes "channels" edges to TelegramChannelState entities.
-func (tusuo *TelegramUserStateUpdateOne) RemoveChannels(t ...*TelegramChannelState) *TelegramUserStateUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_u *TelegramUserStateUpdateOne) RemoveChannels(v ...*TelegramChannelState) *TelegramUserStateUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tusuo.RemoveChannelIDs(ids...)
+	return _u.RemoveChannelIDs(ids...)
 }
 
 // Where appends a list predicates to the TelegramUserStateUpdate builder.
-func (tusuo *TelegramUserStateUpdateOne) Where(ps ...predicate.TelegramUserState) *TelegramUserStateUpdateOne {
-	tusuo.mutation.Where(ps...)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) Where(ps ...predicate.TelegramUserState) *TelegramUserStateUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tusuo *TelegramUserStateUpdateOne) Select(field string, fields ...string) *TelegramUserStateUpdateOne {
-	tusuo.fields = append([]string{field}, fields...)
-	return tusuo
+func (_u *TelegramUserStateUpdateOne) Select(field string, fields ...string) *TelegramUserStateUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TelegramUserState entity.
-func (tusuo *TelegramUserStateUpdateOne) Save(ctx context.Context) (*TelegramUserState, error) {
-	return withHooks(ctx, tusuo.sqlSave, tusuo.mutation, tusuo.hooks)
+func (_u *TelegramUserStateUpdateOne) Save(ctx context.Context) (*TelegramUserState, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tusuo *TelegramUserStateUpdateOne) SaveX(ctx context.Context) *TelegramUserState {
-	node, err := tusuo.Save(ctx)
+func (_u *TelegramUserStateUpdateOne) SaveX(ctx context.Context) *TelegramUserState {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -431,26 +431,26 @@ func (tusuo *TelegramUserStateUpdateOne) SaveX(ctx context.Context) *TelegramUse
 }
 
 // Exec executes the query on the entity.
-func (tusuo *TelegramUserStateUpdateOne) Exec(ctx context.Context) error {
-	_, err := tusuo.Save(ctx)
+func (_u *TelegramUserStateUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tusuo *TelegramUserStateUpdateOne) ExecX(ctx context.Context) {
-	if err := tusuo.Exec(ctx); err != nil {
+func (_u *TelegramUserStateUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *TelegramUserState, err error) {
+func (_u *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *TelegramUserState, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramuserstate.Table, telegramuserstate.Columns, sqlgraph.NewFieldSpec(telegramuserstate.FieldID, field.TypeInt64))
-	id, ok := tusuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TelegramUserState.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tusuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramuserstate.FieldID)
 		for _, f := range fields {
@@ -462,38 +462,38 @@ func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *Te
 			}
 		}
 	}
-	if ps := tusuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tusuo.mutation.Qts(); ok {
+	if value, ok := _u.mutation.Qts(); ok {
 		_spec.SetField(telegramuserstate.FieldQts, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.AddedQts(); ok {
+	if value, ok := _u.mutation.AddedQts(); ok {
 		_spec.AddField(telegramuserstate.FieldQts, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.Pts(); ok {
+	if value, ok := _u.mutation.Pts(); ok {
 		_spec.SetField(telegramuserstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.AddedPts(); ok {
+	if value, ok := _u.mutation.AddedPts(); ok {
 		_spec.AddField(telegramuserstate.FieldPts, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.Date(); ok {
+	if value, ok := _u.mutation.Date(); ok {
 		_spec.SetField(telegramuserstate.FieldDate, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.AddedDate(); ok {
+	if value, ok := _u.mutation.AddedDate(); ok {
 		_spec.AddField(telegramuserstate.FieldDate, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.Seq(); ok {
+	if value, ok := _u.mutation.Seq(); ok {
 		_spec.SetField(telegramuserstate.FieldSeq, field.TypeInt, value)
 	}
-	if value, ok := tusuo.mutation.AddedSeq(); ok {
+	if value, ok := _u.mutation.AddedSeq(); ok {
 		_spec.AddField(telegramuserstate.FieldSeq, field.TypeInt, value)
 	}
-	if tusuo.mutation.ChannelsCleared() {
+	if _u.mutation.ChannelsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -506,7 +506,7 @@ func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *Te
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tusuo.mutation.RemovedChannelsIDs(); len(nodes) > 0 && !tusuo.mutation.ChannelsCleared() {
+	if nodes := _u.mutation.RemovedChannelsIDs(); len(nodes) > 0 && !_u.mutation.ChannelsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -522,7 +522,7 @@ func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *Te
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tusuo.mutation.ChannelsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.ChannelsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -538,10 +538,10 @@ func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *Te
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &TelegramUserState{config: tusuo.config}
+	_node = &TelegramUserState{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tusuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramuserstate.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -549,6 +549,6 @@ func (tusuo *TelegramUserStateUpdateOne) sqlSave(ctx context.Context) (_node *Te
 		}
 		return nil, err
 	}
-	tusuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

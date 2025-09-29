@@ -20,56 +20,56 @@ type GPTDialogDelete struct {
 }
 
 // Where appends a list predicates to the GPTDialogDelete builder.
-func (gdd *GPTDialogDelete) Where(ps ...predicate.GPTDialog) *GPTDialogDelete {
-	gdd.mutation.Where(ps...)
-	return gdd
+func (_d *GPTDialogDelete) Where(ps ...predicate.GPTDialog) *GPTDialogDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (gdd *GPTDialogDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, gdd.sqlExec, gdd.mutation, gdd.hooks)
+func (_d *GPTDialogDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gdd *GPTDialogDelete) ExecX(ctx context.Context) int {
-	n, err := gdd.Exec(ctx)
+func (_d *GPTDialogDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (gdd *GPTDialogDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *GPTDialogDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(gptdialog.Table, sqlgraph.NewFieldSpec(gptdialog.FieldID, field.TypeInt))
-	if ps := gdd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, gdd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	gdd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // GPTDialogDeleteOne is the builder for deleting a single GPTDialog entity.
 type GPTDialogDeleteOne struct {
-	gdd *GPTDialogDelete
+	_d *GPTDialogDelete
 }
 
 // Where appends a list predicates to the GPTDialogDelete builder.
-func (gddo *GPTDialogDeleteOne) Where(ps ...predicate.GPTDialog) *GPTDialogDeleteOne {
-	gddo.gdd.mutation.Where(ps...)
-	return gddo
+func (_d *GPTDialogDeleteOne) Where(ps ...predicate.GPTDialog) *GPTDialogDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (gddo *GPTDialogDeleteOne) Exec(ctx context.Context) error {
-	n, err := gddo.gdd.Exec(ctx)
+func (_d *GPTDialogDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (gddo *GPTDialogDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (gddo *GPTDialogDeleteOne) ExecX(ctx context.Context) {
-	if err := gddo.Exec(ctx); err != nil {
+func (_d *GPTDialogDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

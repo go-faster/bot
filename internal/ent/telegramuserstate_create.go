@@ -23,96 +23,96 @@ type TelegramUserStateCreate struct {
 }
 
 // SetQts sets the "qts" field.
-func (tusc *TelegramUserStateCreate) SetQts(i int) *TelegramUserStateCreate {
-	tusc.mutation.SetQts(i)
-	return tusc
+func (_c *TelegramUserStateCreate) SetQts(v int) *TelegramUserStateCreate {
+	_c.mutation.SetQts(v)
+	return _c
 }
 
 // SetNillableQts sets the "qts" field if the given value is not nil.
-func (tusc *TelegramUserStateCreate) SetNillableQts(i *int) *TelegramUserStateCreate {
-	if i != nil {
-		tusc.SetQts(*i)
+func (_c *TelegramUserStateCreate) SetNillableQts(v *int) *TelegramUserStateCreate {
+	if v != nil {
+		_c.SetQts(*v)
 	}
-	return tusc
+	return _c
 }
 
 // SetPts sets the "pts" field.
-func (tusc *TelegramUserStateCreate) SetPts(i int) *TelegramUserStateCreate {
-	tusc.mutation.SetPts(i)
-	return tusc
+func (_c *TelegramUserStateCreate) SetPts(v int) *TelegramUserStateCreate {
+	_c.mutation.SetPts(v)
+	return _c
 }
 
 // SetNillablePts sets the "pts" field if the given value is not nil.
-func (tusc *TelegramUserStateCreate) SetNillablePts(i *int) *TelegramUserStateCreate {
-	if i != nil {
-		tusc.SetPts(*i)
+func (_c *TelegramUserStateCreate) SetNillablePts(v *int) *TelegramUserStateCreate {
+	if v != nil {
+		_c.SetPts(*v)
 	}
-	return tusc
+	return _c
 }
 
 // SetDate sets the "date" field.
-func (tusc *TelegramUserStateCreate) SetDate(i int) *TelegramUserStateCreate {
-	tusc.mutation.SetDate(i)
-	return tusc
+func (_c *TelegramUserStateCreate) SetDate(v int) *TelegramUserStateCreate {
+	_c.mutation.SetDate(v)
+	return _c
 }
 
 // SetNillableDate sets the "date" field if the given value is not nil.
-func (tusc *TelegramUserStateCreate) SetNillableDate(i *int) *TelegramUserStateCreate {
-	if i != nil {
-		tusc.SetDate(*i)
+func (_c *TelegramUserStateCreate) SetNillableDate(v *int) *TelegramUserStateCreate {
+	if v != nil {
+		_c.SetDate(*v)
 	}
-	return tusc
+	return _c
 }
 
 // SetSeq sets the "seq" field.
-func (tusc *TelegramUserStateCreate) SetSeq(i int) *TelegramUserStateCreate {
-	tusc.mutation.SetSeq(i)
-	return tusc
+func (_c *TelegramUserStateCreate) SetSeq(v int) *TelegramUserStateCreate {
+	_c.mutation.SetSeq(v)
+	return _c
 }
 
 // SetNillableSeq sets the "seq" field if the given value is not nil.
-func (tusc *TelegramUserStateCreate) SetNillableSeq(i *int) *TelegramUserStateCreate {
-	if i != nil {
-		tusc.SetSeq(*i)
+func (_c *TelegramUserStateCreate) SetNillableSeq(v *int) *TelegramUserStateCreate {
+	if v != nil {
+		_c.SetSeq(*v)
 	}
-	return tusc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tusc *TelegramUserStateCreate) SetID(i int64) *TelegramUserStateCreate {
-	tusc.mutation.SetID(i)
-	return tusc
+func (_c *TelegramUserStateCreate) SetID(v int64) *TelegramUserStateCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddChannelIDs adds the "channels" edge to the TelegramChannelState entity by IDs.
-func (tusc *TelegramUserStateCreate) AddChannelIDs(ids ...int) *TelegramUserStateCreate {
-	tusc.mutation.AddChannelIDs(ids...)
-	return tusc
+func (_c *TelegramUserStateCreate) AddChannelIDs(ids ...int) *TelegramUserStateCreate {
+	_c.mutation.AddChannelIDs(ids...)
+	return _c
 }
 
 // AddChannels adds the "channels" edges to the TelegramChannelState entity.
-func (tusc *TelegramUserStateCreate) AddChannels(t ...*TelegramChannelState) *TelegramUserStateCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+func (_c *TelegramUserStateCreate) AddChannels(v ...*TelegramChannelState) *TelegramUserStateCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return tusc.AddChannelIDs(ids...)
+	return _c.AddChannelIDs(ids...)
 }
 
 // Mutation returns the TelegramUserStateMutation object of the builder.
-func (tusc *TelegramUserStateCreate) Mutation() *TelegramUserStateMutation {
-	return tusc.mutation
+func (_c *TelegramUserStateCreate) Mutation() *TelegramUserStateMutation {
+	return _c.mutation
 }
 
 // Save creates the TelegramUserState in the database.
-func (tusc *TelegramUserStateCreate) Save(ctx context.Context) (*TelegramUserState, error) {
-	tusc.defaults()
-	return withHooks(ctx, tusc.sqlSave, tusc.mutation, tusc.hooks)
+func (_c *TelegramUserStateCreate) Save(ctx context.Context) (*TelegramUserState, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tusc *TelegramUserStateCreate) SaveX(ctx context.Context) *TelegramUserState {
-	v, err := tusc.Save(ctx)
+func (_c *TelegramUserStateCreate) SaveX(ctx context.Context) *TelegramUserState {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -120,61 +120,61 @@ func (tusc *TelegramUserStateCreate) SaveX(ctx context.Context) *TelegramUserSta
 }
 
 // Exec executes the query.
-func (tusc *TelegramUserStateCreate) Exec(ctx context.Context) error {
-	_, err := tusc.Save(ctx)
+func (_c *TelegramUserStateCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tusc *TelegramUserStateCreate) ExecX(ctx context.Context) {
-	if err := tusc.Exec(ctx); err != nil {
+func (_c *TelegramUserStateCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (tusc *TelegramUserStateCreate) defaults() {
-	if _, ok := tusc.mutation.Qts(); !ok {
+func (_c *TelegramUserStateCreate) defaults() {
+	if _, ok := _c.mutation.Qts(); !ok {
 		v := telegramuserstate.DefaultQts
-		tusc.mutation.SetQts(v)
+		_c.mutation.SetQts(v)
 	}
-	if _, ok := tusc.mutation.Pts(); !ok {
+	if _, ok := _c.mutation.Pts(); !ok {
 		v := telegramuserstate.DefaultPts
-		tusc.mutation.SetPts(v)
+		_c.mutation.SetPts(v)
 	}
-	if _, ok := tusc.mutation.Date(); !ok {
+	if _, ok := _c.mutation.Date(); !ok {
 		v := telegramuserstate.DefaultDate
-		tusc.mutation.SetDate(v)
+		_c.mutation.SetDate(v)
 	}
-	if _, ok := tusc.mutation.Seq(); !ok {
+	if _, ok := _c.mutation.Seq(); !ok {
 		v := telegramuserstate.DefaultSeq
-		tusc.mutation.SetSeq(v)
+		_c.mutation.SetSeq(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tusc *TelegramUserStateCreate) check() error {
-	if _, ok := tusc.mutation.Qts(); !ok {
+func (_c *TelegramUserStateCreate) check() error {
+	if _, ok := _c.mutation.Qts(); !ok {
 		return &ValidationError{Name: "qts", err: errors.New(`ent: missing required field "TelegramUserState.qts"`)}
 	}
-	if _, ok := tusc.mutation.Pts(); !ok {
+	if _, ok := _c.mutation.Pts(); !ok {
 		return &ValidationError{Name: "pts", err: errors.New(`ent: missing required field "TelegramUserState.pts"`)}
 	}
-	if _, ok := tusc.mutation.Date(); !ok {
+	if _, ok := _c.mutation.Date(); !ok {
 		return &ValidationError{Name: "date", err: errors.New(`ent: missing required field "TelegramUserState.date"`)}
 	}
-	if _, ok := tusc.mutation.Seq(); !ok {
+	if _, ok := _c.mutation.Seq(); !ok {
 		return &ValidationError{Name: "seq", err: errors.New(`ent: missing required field "TelegramUserState.seq"`)}
 	}
 	return nil
 }
 
-func (tusc *TelegramUserStateCreate) sqlSave(ctx context.Context) (*TelegramUserState, error) {
-	if err := tusc.check(); err != nil {
+func (_c *TelegramUserStateCreate) sqlSave(ctx context.Context) (*TelegramUserState, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tusc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tusc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -184,38 +184,38 @@ func (tusc *TelegramUserStateCreate) sqlSave(ctx context.Context) (*TelegramUser
 		id := _spec.ID.Value.(int64)
 		_node.ID = int64(id)
 	}
-	tusc.mutation.id = &_node.ID
-	tusc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tusc *TelegramUserStateCreate) createSpec() (*TelegramUserState, *sqlgraph.CreateSpec) {
+func (_c *TelegramUserStateCreate) createSpec() (*TelegramUserState, *sqlgraph.CreateSpec) {
 	var (
-		_node = &TelegramUserState{config: tusc.config}
+		_node = &TelegramUserState{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(telegramuserstate.Table, sqlgraph.NewFieldSpec(telegramuserstate.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = tusc.conflict
-	if id, ok := tusc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := tusc.mutation.Qts(); ok {
+	if value, ok := _c.mutation.Qts(); ok {
 		_spec.SetField(telegramuserstate.FieldQts, field.TypeInt, value)
 		_node.Qts = value
 	}
-	if value, ok := tusc.mutation.Pts(); ok {
+	if value, ok := _c.mutation.Pts(); ok {
 		_spec.SetField(telegramuserstate.FieldPts, field.TypeInt, value)
 		_node.Pts = value
 	}
-	if value, ok := tusc.mutation.Date(); ok {
+	if value, ok := _c.mutation.Date(); ok {
 		_spec.SetField(telegramuserstate.FieldDate, field.TypeInt, value)
 		_node.Date = value
 	}
-	if value, ok := tusc.mutation.Seq(); ok {
+	if value, ok := _c.mutation.Seq(); ok {
 		_spec.SetField(telegramuserstate.FieldSeq, field.TypeInt, value)
 		_node.Seq = value
 	}
-	if nodes := tusc.mutation.ChannelsIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.ChannelsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -250,10 +250,10 @@ func (tusc *TelegramUserStateCreate) createSpec() (*TelegramUserState, *sqlgraph
 //			SetQts(v+v).
 //		}).
 //		Exec(ctx)
-func (tusc *TelegramUserStateCreate) OnConflict(opts ...sql.ConflictOption) *TelegramUserStateUpsertOne {
-	tusc.conflict = opts
+func (_c *TelegramUserStateCreate) OnConflict(opts ...sql.ConflictOption) *TelegramUserStateUpsertOne {
+	_c.conflict = opts
 	return &TelegramUserStateUpsertOne{
-		create: tusc,
+		create: _c,
 	}
 }
 
@@ -263,10 +263,10 @@ func (tusc *TelegramUserStateCreate) OnConflict(opts ...sql.ConflictOption) *Tel
 //	client.TelegramUserState.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tusc *TelegramUserStateCreate) OnConflictColumns(columns ...string) *TelegramUserStateUpsertOne {
-	tusc.conflict = append(tusc.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramUserStateCreate) OnConflictColumns(columns ...string) *TelegramUserStateUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramUserStateUpsertOne{
-		create: tusc,
+		create: _c,
 	}
 }
 
@@ -529,16 +529,16 @@ type TelegramUserStateCreateBulk struct {
 }
 
 // Save creates the TelegramUserState entities in the database.
-func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*TelegramUserState, error) {
-	if tuscb.err != nil {
-		return nil, tuscb.err
+func (_c *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*TelegramUserState, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tuscb.builders))
-	nodes := make([]*TelegramUserState, len(tuscb.builders))
-	mutators := make([]Mutator, len(tuscb.builders))
-	for i := range tuscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*TelegramUserState, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tuscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TelegramUserStateMutation)
@@ -552,12 +552,12 @@ func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*Telegram
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tuscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tuscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tuscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -581,7 +581,7 @@ func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*Telegram
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tuscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -589,8 +589,8 @@ func (tuscb *TelegramUserStateCreateBulk) Save(ctx context.Context) ([]*Telegram
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tuscb *TelegramUserStateCreateBulk) SaveX(ctx context.Context) []*TelegramUserState {
-	v, err := tuscb.Save(ctx)
+func (_c *TelegramUserStateCreateBulk) SaveX(ctx context.Context) []*TelegramUserState {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -598,14 +598,14 @@ func (tuscb *TelegramUserStateCreateBulk) SaveX(ctx context.Context) []*Telegram
 }
 
 // Exec executes the query.
-func (tuscb *TelegramUserStateCreateBulk) Exec(ctx context.Context) error {
-	_, err := tuscb.Save(ctx)
+func (_c *TelegramUserStateCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tuscb *TelegramUserStateCreateBulk) ExecX(ctx context.Context) {
-	if err := tuscb.Exec(ctx); err != nil {
+func (_c *TelegramUserStateCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -625,10 +625,10 @@ func (tuscb *TelegramUserStateCreateBulk) ExecX(ctx context.Context) {
 //			SetQts(v+v).
 //		}).
 //		Exec(ctx)
-func (tuscb *TelegramUserStateCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramUserStateUpsertBulk {
-	tuscb.conflict = opts
+func (_c *TelegramUserStateCreateBulk) OnConflict(opts ...sql.ConflictOption) *TelegramUserStateUpsertBulk {
+	_c.conflict = opts
 	return &TelegramUserStateUpsertBulk{
-		create: tuscb,
+		create: _c,
 	}
 }
 
@@ -638,10 +638,10 @@ func (tuscb *TelegramUserStateCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.TelegramUserState.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tuscb *TelegramUserStateCreateBulk) OnConflictColumns(columns ...string) *TelegramUserStateUpsertBulk {
-	tuscb.conflict = append(tuscb.conflict, sql.ConflictColumns(columns...))
+func (_c *TelegramUserStateCreateBulk) OnConflictColumns(columns ...string) *TelegramUserStateUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TelegramUserStateUpsertBulk{
-		create: tuscb,
+		create: _c,
 	}
 }
 
