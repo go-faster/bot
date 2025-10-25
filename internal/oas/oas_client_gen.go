@@ -112,7 +112,7 @@ func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramBadge"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/{group_name}"),
+		semconv.URLTemplateKey.String("/badge/telegram/{group_name}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -222,7 +222,7 @@ func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTeleg
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getTelegramOnlineBadge"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/badge/telegram/online"),
+		semconv.URLTemplateKey.String("/badge/telegram/online"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -322,7 +322,7 @@ func (c *Client) sendGithubStatus(ctx context.Context, request StatusNotificatio
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("githubStatus"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/github/status"),
+		semconv.URLTemplateKey.String("/github/status"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -419,7 +419,7 @@ func (c *Client) sendStatus(ctx context.Context) (res *Status, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("status"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/status"),
+		semconv.URLTemplateKey.String("/status"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 

@@ -16,7 +16,7 @@ import (
 
 // GetTelegramBadgeParams is parameters of getTelegramBadge operation.
 type GetTelegramBadgeParams struct {
-	Title     OptString
+	Title     OptString `json:",omitempty,omitzero"`
 	GroupName string
 }
 
@@ -133,7 +133,7 @@ func decodeGetTelegramBadgeParams(args [1]string, argsEscaped bool, r *http.Requ
 
 // GetTelegramOnlineBadgeParams is parameters of getTelegramOnlineBadge operation.
 type GetTelegramOnlineBadgeParams struct {
-	Groups []string
+	Groups []string `json:",omitempty"`
 }
 
 func unpackGetTelegramOnlineBadgeParams(packed middleware.Parameters) (params GetTelegramOnlineBadgeParams) {
@@ -207,7 +207,7 @@ func decodeGetTelegramOnlineBadgeParams(args [0]string, argsEscaped bool, r *htt
 
 // GithubStatusParams is parameters of githubStatus operation.
 type GithubStatusParams struct {
-	Secret OptString
+	Secret OptString `json:",omitempty,omitzero"`
 }
 
 func unpackGithubStatusParams(packed middleware.Parameters) (params GithubStatusParams) {
