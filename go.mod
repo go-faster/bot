@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	entgo.io/ent v0.14.5
-	github.com/ClickHouse/ch-go v0.68.0
+	github.com/ClickHouse/ch-go v0.69.0
 	github.com/bradleyfalzon/ghinstallation/v2 v2.17.0
 	github.com/brpaz/echozap v1.1.3
 	github.com/dmarkham/enumer v1.6.1
@@ -100,7 +100,7 @@ require (
 	github.com/samber/lo v1.47.0 // indirect
 	github.com/samber/slog-common v0.18.1 // indirect
 	github.com/samber/slog-zap/v2 v2.6.2 // indirect
-	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
