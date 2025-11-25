@@ -160,18 +160,6 @@ spec:
                 secretKeyRef:
                   name: bot
                   key: OPENAI_TOKEN
-            - name: CLICKHOUSE_ADDR
-              value: chendpoint-db.clickhouse.svc.cluster.local:9000
-            - name: CLICKHOUSE_USER
-              valueFrom:
-                secretKeyRef:
-                  name: bot
-                  key: CLICKHOUSE_USER
-            - name: CLICKHOUSE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: bot
-                  key: CLICKHOUSE_PASSWORD
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

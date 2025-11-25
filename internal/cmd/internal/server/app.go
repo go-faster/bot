@@ -12,7 +12,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ClickHouse/ch-go"
 	"github.com/brpaz/echozap"
 	"github.com/go-faster/errors"
 	sdkapp "github.com/go-faster/sdk/app"
@@ -369,20 +368,6 @@ func (a *App) Run(ctx context.Context) error {
 			return nil
 		})
 	}
-	g.Go(func() error {
-		ticker := time.NewTicker(time.Minute * 2)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			case now := <-ticker.C:
-				if err := a.FetchEvents(ctx, now.Add(-time.Minute*10)); err != nil {
-					a.lg.Error("FetchEvents error", zap.Error(err))
-				}
-			}
-		}
-	})
 	readyRedis := a.rdy.Register()
 	g.Go(func() error {
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
@@ -394,35 +379,6 @@ func (a *App) Run(ctx context.Context) error {
 
 		readyRedis.Store(true)
 		a.lg.Info("Redis connection established")
-		return nil
-	})
-	readyClickhouse := a.rdy.Register()
-	g.Go(func() error {
-		db, err := ch.Dial(ctx, ch.Options{
-			Address:        os.Getenv("CLICKHOUSE_ADDR"),
-			Compression:    ch.CompressionZSTD,
-			TracerProvider: a.m.TracerProvider(),
-			MeterProvider:  a.m.MeterProvider(),
-			Database:       "faster",
-
-			Password: os.Getenv("CLICKHOUSE_PASSWORD"),
-			User:     os.Getenv("CLICKHOUSE_USER"),
-
-			OpenTelemetryInstrumentation: true,
-		})
-		if err != nil {
-			return errors.Wrap(err, "connect to clickhouse")
-		}
-		a.lg.Info("Clickhouse connection established",
-			zap.Stringer("server", db.ServerInfo()),
-		)
-		if err := db.Ping(ctx); err != nil {
-			return errors.Wrap(err, "ping clickhouse")
-		}
-		readyClickhouse.Store(true)
-		if err := db.Close(); err != nil {
-			return errors.Wrap(err, "close clickhouse")
-		}
 		return nil
 	})
 	readyTelegram := a.rdy.Register()

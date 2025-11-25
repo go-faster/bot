@@ -16,7 +16,6 @@ func setupBot(a *App) error {
 		return err
 	})
 	a.mux.Handle("/stat", "Metrics and version", app.NewHandler(a.m))
-	a.mux.HandleFunc("/events", "GitHub events", a.HandleEvents)
 	a.mux.HandleFunc("/gh_pat", "Set GitHub personal token", a.HandleGitHubPersonalToken)
 	a.mux.HandleFunc("/gh_test", "GitHub test", a.HandleGitHubTest)
 	{
