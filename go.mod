@@ -11,7 +11,7 @@ require (
 	github.com/dmarkham/enumer v1.6.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
-	github.com/go-faster/sdk v0.30.0
+	github.com/go-faster/sdk v0.31.0
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.21.1
