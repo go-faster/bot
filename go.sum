@@ -57,8 +57,8 @@ github.com/go-faster/errors v0.7.1 h1:MkJTnDoEdi9pDabt1dpWf7AA8/BaSYZqibYyhZ20AY
 github.com/go-faster/errors v0.7.1/go.mod h1:5ySTjWFiphBs07IKuiL69nxdfd5+fzh1u7FPGZP2quo=
 github.com/go-faster/jx v1.2.0 h1:T2YHJPrFaYu21fJtUxC9GzmluKu8rVIFDwwGBKTDseI=
 github.com/go-faster/jx v1.2.0/go.mod h1:UWLOVDmMG597a5tBFPLIWJdUxz5/2emOpfsj9Neg0PE=
-github.com/go-faster/sdk v0.31.0 h1:pN8FXHXrlIs1FppqG/nsuCDsuCQlew4TukAITBEF8uI=
-github.com/go-faster/sdk v0.31.0/go.mod h1:flkEbDwo9RFMfib6ifJW57HeW6CPI2Ggd3Ppi2WGKC0=
+github.com/go-faster/sdk v0.32.0 h1:Cm2MYDDaWJNg0+GR/SFq4ZDcUFi8btwA5EVOMFQWH4g=
+github.com/go-faster/sdk v0.32.0/go.mod h1:8X2Z6GmWjKnot7lwnbeZjzcVk5im/f8YhRi7A/Dl8lI=
 github.com/go-faster/xor v0.3.0/go.mod h1:x5CaDY9UKErKzqfRfFZdfu+OSTfoZny3w5Ak7UxcipQ=
 github.com/go-faster/xor v1.0.0 h1:2o8vTOgErSGHP3/7XwA5ib1FTtUsNtwCoLLBjl31X38=
 github.com/go-faster/xor v1.0.0/go.mod h1:x5CaDY9UKErKzqfRfFZdfu+OSTfoZny3w5Ak7UxcipQ=
