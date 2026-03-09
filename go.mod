@@ -1,8 +1,6 @@
 module github.com/go-faster/bot
 
-go 1.24.0
-
-toolchain go1.24.1
+go 1.25.0
 
 require (
 	entgo.io/ent v0.14.5
@@ -32,9 +30,9 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.1
-	golang.org/x/oauth2 v0.33.0
-	golang.org/x/sync v0.18.0
-	golang.org/x/time v0.14.0
+	golang.org/x/oauth2 v0.36.0
+	golang.org/x/sync v0.20.0
+	golang.org/x/time v0.15.0
 )
 
 require (
