@@ -17,6 +17,7 @@ import (
 
 func encodeGetTelegramBadgeResponse(response *SVGHeaders, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "image/svg+xml")
+	w.Header().Set("Access-Control-Expose-Headers", "Etag")
 	// Encoding response headers.
 	{
 		h := uri.NewHeaderEncoder(w.Header())
@@ -67,6 +68,7 @@ func encodeGetTelegramBadgeResponse(response *SVGHeaders, w http.ResponseWriter,
 
 func encodeGetTelegramOnlineBadgeResponse(response *SVGHeaders, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "image/svg+xml")
+	w.Header().Set("Access-Control-Expose-Headers", "Etag")
 	// Encoding response headers.
 	{
 		h := uri.NewHeaderEncoder(w.Header())
