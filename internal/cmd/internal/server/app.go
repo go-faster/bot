@@ -18,6 +18,7 @@ import (
 	"github.com/go-faster/sdk/zctx"
 	"github.com/google/uuid"
 	"github.com/gotd/contrib/oteltg"
+	"github.com/gotd/log/logzap"
 	"github.com/gotd/td/bin"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/downloader"
@@ -99,7 +100,7 @@ func initApp(m *sdkapp.Telemetry, lg *zap.Logger) (_ *App, rerr error) {
 	updatesHandler := updates.New(updates.Config{
 		Handler:        dispatcher,
 		Storage:        gapsStore,
-		Logger:         lg.Named("gaps"),
+		Logger:         logzap.New(lg.Named("gaps")),
 		TracerProvider: m.TracerProvider(),
 	})
 
@@ -111,7 +112,7 @@ func initApp(m *sdkapp.Telemetry, lg *zap.Logger) (_ *App, rerr error) {
 	uuidNameSpaceBotToken := uuid.MustParse("24085c34-5e70-4b1b-9fd9-a82a98879839")
 	client := telegram.NewClient(appID, appHash, telegram.Options{
 		UpdateHandler: updatesHandler,
-		Logger:        lg.Named("client"),
+		Logger:        logzap.New(lg.Named("client")),
 		SessionStorage: entsession.Storage{
 			Database: db,
 			UUID:     uuid.NewSHA1(uuidNameSpaceBotToken, []byte(token)),
