@@ -52,7 +52,33 @@ func Root() *cobra.Command {
 				tracer := m.TracerProvider().Tracer("command")
 
 				ctx, span := tracer.Start(ctx, "job.commits")
-				defer span.End()
+				defer func() {
+					// End the root span first, then force-flush telemetry.
+					//
+					// This is a short-lived one-shot job: the batch span
+					// processor exports asynchronously on a timer, so without an
+					// explicit flush the root span and its children may never be
+					// exported before the process exits. Use a detached context
+					// so the flush is not affected by shutdown cancellation.
+					span.End()
+
+					flushCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+					defer cancel()
+					if tp, ok := m.TracerProvider().(interface {
+						ForceFlush(context.Context) error
+					}); ok {
+						if err := tp.ForceFlush(flushCtx); err != nil {
+							logger.Warn("Flush traces", zap.Error(err))
+						}
+					}
+					if mp, ok := m.MeterProvider().(interface {
+						ForceFlush(context.Context) error
+					}); ok {
+						if err := mp.ForceFlush(flushCtx); err != nil {
+							logger.Warn("Flush metrics", zap.Error(err))
+						}
+					}
+				}()
 
 				httpTransport := otelhttp.NewTransport(http.DefaultTransport,
 					otelhttp.WithTracerProvider(m.TracerProvider()),
