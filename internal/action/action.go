@@ -42,9 +42,9 @@ type Action struct {
 
 func (a Action) String() string {
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("%s(%s=%d)", a.Type, a.Entity, a.ID))
+	fmt.Fprintf(&b, "%s(%s=%d)", a.Type, a.Entity, a.ID)
 	if a.RepositoryID != 0 {
-		b.WriteString(fmt.Sprintf(" r=%d", a.RepositoryID))
+		fmt.Fprintf(&b, " r=%d", a.RepositoryID)
 	}
 	return b.String()
 }
