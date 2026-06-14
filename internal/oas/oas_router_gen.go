@@ -167,12 +167,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Route is route object.
 type Route struct {
-	name        string
-	summary     string
-	operationID string
-	pathPattern string
-	count       int
-	args        [1]string
+	name           string
+	summary        string
+	operationID    string
+	operationGroup string
+	pathPattern    string
+	count          int
+	args           [1]string
 }
 
 // Name returns ogen operation name.
@@ -190,6 +191,11 @@ func (r Route) Summary() string {
 // OperationID returns OpenAPI operationId.
 func (r Route) OperationID() string {
 	return r.operationID
+}
+
+// OperationGroup returns the x-ogen-operation-group value.
+func (r Route) OperationGroup() string {
+	return r.operationGroup
 }
 
 // PathPattern returns OpenAPI path.
@@ -279,6 +285,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = GetTelegramOnlineBadgeOperation
 							r.summary = ""
 							r.operationID = "getTelegramOnlineBadge"
+							r.operationGroup = ""
 							r.pathPattern = "/badge/telegram/online"
 							r.args = args
 							r.count = 0
@@ -306,6 +313,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = GetTelegramBadgeOperation
 						r.summary = ""
 						r.operationID = "getTelegramBadge"
+						r.operationGroup = ""
 						r.pathPattern = "/badge/telegram/{group_name}"
 						r.args = args
 						r.count = 1
@@ -330,6 +338,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = GithubStatusOperation
 						r.summary = ""
 						r.operationID = "githubStatus"
+						r.operationGroup = ""
 						r.pathPattern = "/github/status"
 						r.args = args
 						r.count = 0
@@ -354,6 +363,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.name = StatusOperation
 						r.summary = ""
 						r.operationID = "status"
+						r.operationGroup = ""
 						r.pathPattern = "/status"
 						r.args = args
 						r.count = 0

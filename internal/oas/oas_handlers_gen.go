@@ -29,6 +29,10 @@ func (c *codeRecorder) WriteHeader(status int) {
 	c.ResponseWriter.WriteHeader(status)
 }
 
+func (c *codeRecorder) Unwrap() http.ResponseWriter {
+	return c.ResponseWriter
+}
+
 // handleGetTelegramBadgeRequest handles getTelegramBadge operation.
 //
 // Get svg badge for telegram group.

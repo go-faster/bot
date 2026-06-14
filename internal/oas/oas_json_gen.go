@@ -478,8 +478,13 @@ func (s *StatusNotification) Decode(d *jx.Decoder) error {
 	if err := d.Capture(func(d *jx.Decoder) error {
 		return d.ObjBytes(func(d *jx.Decoder, key []byte) error {
 			switch string(key) {
-			case "incident":
-				match := StatusNotificationIncidentUpdateStatusNotification
+			case "component":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.Object {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := StatusNotificationComponentUpdateStatusNotification
 				if found && s.Type != match {
 					s.Type = ""
 					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
@@ -487,6 +492,11 @@ func (s *StatusNotification) Decode(d *jx.Decoder) error {
 				found = true
 				s.Type = match
 			case "component_update":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.Object {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
 				match := StatusNotificationComponentUpdateStatusNotification
 				if found && s.Type != match {
 					s.Type = ""
@@ -494,8 +504,13 @@ func (s *StatusNotification) Decode(d *jx.Decoder) error {
 				}
 				found = true
 				s.Type = match
-			case "component":
-				match := StatusNotificationComponentUpdateStatusNotification
+			case "incident":
+				// Type-based discrimination: check if field has expected JSON type
+				if typ := d.Next(); typ != jx.Object {
+					// Field exists but has wrong type, not a match for this variant
+					return d.Skip()
+				}
+				match := StatusNotificationIncidentUpdateStatusNotification
 				if found && s.Type != match {
 					s.Type = ""
 					return errors.Errorf("multiple oneOf matches: (%v, %v)", s.Type, match)
