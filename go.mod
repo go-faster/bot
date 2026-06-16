@@ -12,7 +12,7 @@ require (
 	github.com/go-faster/sdk v0.35.0
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/uuid v1.6.0
-	github.com/gotd/contrib v0.21.1
+	github.com/gotd/contrib v0.24.0
 	github.com/gotd/log/logzap v0.1.1
 	github.com/gotd/td v0.157.1
 	github.com/jackc/pgx/v5 v5.10.0
@@ -52,7 +52,7 @@ require (
 	github.com/coder/websocket v1.8.15 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/dlclark/regexp2 v1.11.5 // indirect
+	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
