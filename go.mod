@@ -1,6 +1,6 @@
 module github.com/go-faster/bot
 
-go 1.25.0
+go 1.26
 
 require (
 	entgo.io/ent v0.14.5
@@ -23,7 +23,7 @@ require (
 	github.com/sashabaranov/go-openai v1.41.2
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
-	github.com/tiktoken-go/tokenizer v0.7.0
+	github.com/tiktoken-go/tokenizer v0.8.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho v0.69.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.69.0
 	go.opentelemetry.io/otel v1.44.0
@@ -52,6 +52,7 @@ require (
 	github.com/coder/websocket v1.8.15 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.12.0 // indirect
+	github.com/dlclark/regexp2/v2 v2.1.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
