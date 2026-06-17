@@ -14,7 +14,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.24.0
 	github.com/gotd/log/logzap v0.1.1
-	github.com/gotd/td v0.157.1
+	github.com/gotd/td v0.158.0
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/labstack/echo/v4 v4.15.2
 	github.com/ogen-go/ogen v1.20.3
