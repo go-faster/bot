@@ -71,7 +71,7 @@ func (s *Server) handleGetTelegramBadgeRequest(args [1]string, argsEscaped bool,
 		if code != 0 {
 			codeAttr := semconv.HTTPResponseStatusCode(code)
 			attrs = append(attrs, codeAttr)
-			span.SetAttributes(codeAttr)
+			span.SetAttributes(attrs...)
 		}
 		attrOpt := metric.WithAttributes(attrs...)
 
@@ -227,7 +227,7 @@ func (s *Server) handleGetTelegramOnlineBadgeRequest(args [0]string, argsEscaped
 		if code != 0 {
 			codeAttr := semconv.HTTPResponseStatusCode(code)
 			attrs = append(attrs, codeAttr)
-			span.SetAttributes(codeAttr)
+			span.SetAttributes(attrs...)
 		}
 		attrOpt := metric.WithAttributes(attrs...)
 
@@ -381,7 +381,7 @@ func (s *Server) handleGithubStatusRequest(args [0]string, argsEscaped bool, w h
 		if code != 0 {
 			codeAttr := semconv.HTTPResponseStatusCode(code)
 			attrs = append(attrs, codeAttr)
-			span.SetAttributes(codeAttr)
+			span.SetAttributes(attrs...)
 		}
 		attrOpt := metric.WithAttributes(attrs...)
 
@@ -550,7 +550,7 @@ func (s *Server) handleStatusRequest(args [0]string, argsEscaped bool, w http.Re
 		if code != 0 {
 			codeAttr := semconv.HTTPResponseStatusCode(code)
 			attrs = append(attrs, codeAttr)
-			span.SetAttributes(codeAttr)
+			span.SetAttributes(attrs...)
 		}
 		attrOpt := metric.WithAttributes(attrs...)
 

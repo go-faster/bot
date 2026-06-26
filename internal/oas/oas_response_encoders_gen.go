@@ -53,7 +53,6 @@ func encodeGetTelegramBadgeResponse(response *SVGHeaders, w http.ResponseWriter,
 		}
 	}
 	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
 
 	writer := w
 	if closer, ok := response.Response.Data.(io.Closer); ok {
@@ -104,7 +103,6 @@ func encodeGetTelegramOnlineBadgeResponse(response *SVGHeaders, w http.ResponseW
 		}
 	}
 	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
 
 	writer := w
 	if closer, ok := response.Response.Data.(io.Closer); ok {
@@ -119,7 +117,6 @@ func encodeGetTelegramOnlineBadgeResponse(response *SVGHeaders, w http.ResponseW
 
 func encodeGithubStatusResponse(response *GithubStatusOK, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
 
 	return nil
 }
@@ -127,7 +124,6 @@ func encodeGithubStatusResponse(response *GithubStatusOK, w http.ResponseWriter,
 func encodeStatusResponse(response *Status, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
 
 	e := new(jx.Encoder)
 	response.Encode(e)
@@ -146,10 +142,8 @@ func encodeErrorResponse(response *ErrorStatusCode, w http.ResponseWriter, span 
 		code = http.StatusOK
 	}
 	w.WriteHeader(code)
-	if st := http.StatusText(code); code >= http.StatusBadRequest {
-		span.SetStatus(codes.Error, st)
-	} else {
-		span.SetStatus(codes.Ok, st)
+	if code >= http.StatusInternalServerError {
+		span.SetStatus(codes.Error, http.StatusText(code))
 	}
 
 	e := new(jx.Encoder)

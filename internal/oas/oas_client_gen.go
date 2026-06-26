@@ -4,6 +4,7 @@ package oas
 
 import (
 	"context"
+	"io"
 	"net/url"
 	"strings"
 	"time"
@@ -192,7 +193,13 @@ func (c *Client) sendGetTelegramBadge(ctx context.Context, params GetTelegramBad
 		return res, errors.Wrap(err, "do request")
 	}
 	body := resp.Body
-	defer body.Close()
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTelegramBadgeResponse(resp)
@@ -291,7 +298,13 @@ func (c *Client) sendGetTelegramOnlineBadge(ctx context.Context, params GetTeleg
 		return res, errors.Wrap(err, "do request")
 	}
 	body := resp.Body
-	defer body.Close()
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTelegramOnlineBadgeResponse(resp)
@@ -389,7 +402,13 @@ func (c *Client) sendGithubStatus(ctx context.Context, request StatusNotificatio
 		return res, errors.Wrap(err, "do request")
 	}
 	body := resp.Body
-	defer body.Close()
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
 
 	stage = "DecodeResponse"
 	result, err := decodeGithubStatusResponse(resp)
@@ -463,7 +482,13 @@ func (c *Client) sendStatus(ctx context.Context) (res *Status, err error) {
 		return res, errors.Wrap(err, "do request")
 	}
 	body := resp.Body
-	defer body.Close()
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
 
 	stage = "DecodeResponse"
 	result, err := decodeStatusResponse(resp)
