@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Mandatory unless "latest" is set below.
-      - uses: ariga/atlas-action@v1
+      - uses: ariga/atlas-action@v1.16.0
         with:
           dir: migrations
           dir-format: atlas
