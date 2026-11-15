@@ -1,0 +1,57 @@
+# Access for the release workflow: the KUBE secret holds a kubeconfig with the
+# bot-deploy-token token. The workflow does not apply this file; apply it as
+# cluster admin: kubectl apply -f .k8s/rbac.yml
+# Revoke: kubectl -n faster delete secret bot-deploy-token
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bot-deploy
+  namespace: faster
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: bot-deploy
+  namespace: faster
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors"]
+    verbs: ["get", "list", "watch", "create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: bot-deploy
+  namespace: faster
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: bot-deploy
+subjects:
+  - kind: ServiceAccount
+    name: bot-deploy
+    namespace: faster
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bot-deploy-token
+  namespace: faster
+  annotations:
+    kubernetes.io/service-account.name: bot-deploy
+type: kubernetes.io/service-account-token
