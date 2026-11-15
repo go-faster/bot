@@ -159,6 +159,7 @@ func decodeGetTelegramOnlineBadgeParams(args [0]string, argsEscaped bool, r *htt
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				params.Groups = nil
 				return d.DecodeArray(func(d uri.Decoder) error {
 					var paramsDotGroupsVal string
 					if err := func() error {
