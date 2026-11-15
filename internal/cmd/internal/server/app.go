@@ -34,7 +34,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/cors"
 	"github.com/sashabaranov/go-openai"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho" //nolint:staticcheck // SA1019: the replacement needs echo v5
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
