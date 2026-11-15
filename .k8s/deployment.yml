@@ -83,8 +83,6 @@ spec:
               value: "2048MiB"
             - name: GOMAXPROCS
               value: "3"
-            - name: OTEL_EXPORTER_OTLP_PROTOCOL
-              value: "grpc"
             - name: OTEL_METRICS_EXPORTER
               value: "prometheus"
             - name: OTEL_EXPORTER_PROMETHEUS_PORT
@@ -98,11 +96,9 @@ spec:
             - name: OTEL_LOG_LEVEL
               value: "DEBUG"
             - name: OTEL_TRACES_EXPORTER
-              value: "otlp"
+              value: "none"
             - name: OTEL_LOGS_EXPORTER
-              value: "otlp"
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+              value: "none"
             - name: HOME
               value: /cache
             - name: HTTP_BOT_ADDR
@@ -198,8 +194,6 @@ spec:
                 value: "128MiB"
               - name: GOMAXPROCS
                 value: "2"
-              - name: OTEL_EXPORTER_OTLP_PROTOCOL
-                value: "grpc"
               - name: OTEL_METRICS_EXPORTER
                 value: "none"
               - name: OTEL_RESOURCE_ATTRIBUTES
@@ -207,9 +201,9 @@ spec:
               - name: OTEL_LOG_LEVEL
                 value: "DEBUG"
               - name: OTEL_TRACES_EXPORTER
-                value: "otlp"
-              - name: OTEL_EXPORTER_OTLP_ENDPOINT
-                value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+                value: "none"
+              - name: OTEL_LOGS_EXPORTER
+                value: "none"
               - name: GITHUB_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
