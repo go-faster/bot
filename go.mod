@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/bradleyfalzon/ghinstallation/v2 v2.19.0
 	github.com/brpaz/echozap v1.1.3
-	github.com/dmarkham/enumer v1.6.3
+	github.com/dmarkham/enumer v1.7.2
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
 	github.com/go-faster/sdk v0.40.0
