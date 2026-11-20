@@ -18,7 +18,7 @@ require (
 	github.com/jackc/pgx/v5 v5.13.0
 	github.com/labstack/echo/v4 v4.16.5
 	github.com/ogen-go/ogen v1.25.0
-	github.com/redis/go-redis/v9 v9.21.0
+	github.com/redis/go-redis/v9 v9.23.0
 	github.com/rs/cors v1.11.1
 	github.com/sashabaranov/go-openai v1.43.0
 	github.com/spf13/cobra v1.10.2
@@ -134,7 +134,7 @@ require (
 	go.opentelemetry.io/otel/sdk/log v1.47.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.47.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.11.1 // indirect
-	go.uber.org/atomic v1.11.0 // indirect
+	go.uber.org/atomic v1.12.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
