@@ -205,8 +205,8 @@ github.com/samber/slog-common v0.21.0 h1:Wo2hTly1Br5RjYqX/BTWJJeDnTE85oWk/7vqlpZ
 github.com/samber/slog-common v0.21.0/go.mod h1:d/6OaSlzdkl9PFpfRLgn8FwY1OW6EFmPtBpsHX4MrU0=
 github.com/samber/slog-zap/v2 v2.7.0 h1:BUOIcnHXtXDiCV7sEzZsvmGu6fuaMUdu29yOyUiU+dc=
 github.com/samber/slog-zap/v2 v2.7.0/go.mod h1:xgh/yVE+5h/7IHg8KB/18XFNg3z2XNFSbjt9IE4qzek=
-github.com/sashabaranov/go-openai v1.43.0 h1:HNRpO8TAQ01ssO7aPXO/68QRlcCCYQQ5GfHbFceRZcY=
-github.com/sashabaranov/go-openai v1.43.0/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
+github.com/sashabaranov/go-openai v1.44.0 h1:wC3U/UMuaeuHSwQ4I1dg2oQJAx2NFUJ82th3NOAjIvc=
+github.com/sashabaranov/go-openai v1.44.0/go.mod h1:lj5b/K+zjTSFxVLijLSTDZuP7adOgerWeFyZLUhAKRg=
 github.com/segmentio/asm v1.2.1 h1:DTNbBqs57ioxAD4PrArqftgypG4/qNpXoJx8TVXxPR0=
 github.com/segmentio/asm v1.2.1/go.mod h1:BqMnlJP91P8d+4ibuonYZw9mfnzI9HfxselHZr5aAcs=
 github.com/sergi/go-diff v1.3.1 h1:xkr+Oxo4BOQKmkn/B9eMK0g5Kg/983T9DqqPHwYqD+8=
